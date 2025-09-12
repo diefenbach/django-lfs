@@ -1,9 +1,10 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -12,35 +13,64 @@ from django.views.generic import FormView, DeleteView, RedirectView, TemplateVie
 
 from lfs.cart.models import Cart
 from lfs.manage.carts.forms import CartFilterForm
-from lfs.manage.carts.mixins import CartFilterMixin, CartPaginationMixin, CartDataMixin, CartContextMixin
-from lfs.manage.carts.services import CartFilterService
+from lfs.manage.carts.services import CartFilterService, CartDataService
 from lfs.manage.mixins import DirectDeleteMixin
 
 
-class CartListView(
-    PermissionRequiredMixin, CartFilterMixin, CartPaginationMixin, CartDataMixin, CartContextMixin, TemplateView
-):
+class CartListView(PermissionRequiredMixin, TemplateView):
     """Shows a table view of all carts with filtering and pagination."""
 
     permission_required = "core.manage_shop"
     template_name = "manage/cart/cart_list.html"
-    model = Cart
 
     def get_context_data(self, **kwargs):
         """Extends context with carts and filter form."""
         ctx = super().get_context_data(**kwargs)
 
-        carts_page = self.get_paginated_carts()
-        carts_with_data = self.get_carts_with_data(carts_page)
+        # Initialize services
+        filter_service = CartFilterService()
+        data_service = CartDataService()
+
+        # Get filters from session
+        cart_filters = self.request.session.get("cart-filters", {})
+
+        # Filter carts
+        queryset = Cart.objects.all().order_by("-modification_date")
+        filtered_carts = filter_service.filter_carts(queryset, cart_filters)
+
+        # Paginate carts
+        paginator = Paginator(filtered_carts, 22)
+        page_number = self.request.GET.get("page", 1)
+        carts_page = paginator.get_page(page_number)
+
+        # Enrich carts with data
+        carts_with_data = data_service.get_carts_with_data(carts_page, self.request)
+
+        # Prepare filter form
+        filter_form_initial = self._get_filter_form_initial(cart_filters, filter_service)
+        filter_form = CartFilterForm(initial=filter_form_initial)
 
         ctx.update(
             {
                 "carts_page": carts_page,
                 "carts_with_data": carts_with_data,
-                **self.get_cart_context_data(),
+                "cart_filters": cart_filters,
+                "filter_form": filter_form,
             }
         )
         return ctx
+
+    def _get_filter_form_initial(self, cart_filters, filter_service):
+        """Get initial data for filter form."""
+        start = None
+        end = None
+
+        if cart_filters.get("start"):
+            start = filter_service.parse_iso_date(cart_filters["start"])
+        if cart_filters.get("end"):
+            end = filter_service.parse_iso_date(cart_filters["end"])
+
+        return {"start": start, "end": end}
 
 
 class NoCartsView(PermissionRequiredMixin, TemplateView):
@@ -50,63 +80,72 @@ class NoCartsView(PermissionRequiredMixin, TemplateView):
     template_name = "manage/cart/no_carts.html"
 
 
-class CartTabMixin(CartFilterMixin, CartPaginationMixin, CartContextMixin):
-    """Mixin for tab navigation in Cart views."""
+class CartDataView(PermissionRequiredMixin, TemplateView):
+    """View for data tab of a Cart."""
 
     template_name = "manage/cart/cart.html"
-    tab_name: Optional[str] = None
-    model = Cart
+    tab_name = "data"
+    permission_required = "core.manage_shop"
 
     def get_cart(self) -> Cart:
         """Gets the Cart object."""
         return get_object_or_404(Cart, pk=self.kwargs["id"])
 
-    def get_paginated_carts(self):
-        """Returns paginated carts for sidebar."""
-        return super().get_paginated_carts(page_size=10)
-
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """Extends context with sidebar navigation and Cart."""
+        """Extends context for data tab."""
         ctx = super().get_context_data(**kwargs)
-        cart = getattr(self, "object", None) or self.get_cart()
+
+        # Initialize services
+        filter_service = CartFilterService()
+        data_service = CartDataService()
+
+        # Get current cart
+        cart = self.get_cart()
+
+        # Get filters from session
+        cart_filters = self.request.session.get("cart-filters", {})
 
         # Get paginated carts for sidebar
-        carts_page = self.get_paginated_carts()
+        queryset = Cart.objects.all().order_by("-modification_date")
+        filtered_carts = filter_service.filter_carts(queryset, cart_filters)
+        paginator = Paginator(filtered_carts, 10)
+        page_number = self.request.GET.get("page", 1)
+        carts_page = paginator.get_page(page_number)
+
+        # Get enriched cart data (summary + customer) via service
+        cart_data = data_service.get_carts_with_data([cart], self.request)
+        cart_data = cart_data[0] if cart_data else None
+
+        # Prepare filter form
+        filter_form_initial = self._get_filter_form_initial(cart_filters, filter_service)
+        filter_form = CartFilterForm(initial=filter_form_initial)
 
         ctx.update(
             {
                 "cart": cart,
                 "carts_page": carts_page,
                 "active_tab": self.tab_name,
-                **self.get_cart_context_data(),
-            }
-        )
-        return ctx
-
-
-class CartDataView(PermissionRequiredMixin, CartTabMixin, CartDataMixin, TemplateView):
-    """View for data tab of a Cart."""
-
-    tab_name = "data"
-    permission_required = "core.manage_shop"
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """Extends context for data tab."""
-        ctx = super().get_context_data(**kwargs)
-        cart = self.get_cart()
-
-        # Get enriched cart data (summary + customer) via service
-        cart_data = self.get_cart_with_data(cart)
-
-        ctx.update(
-            {
-                "cart_total": cart_data["total"],
-                "cart_products": ", ".join(cart_data["products"]),
-                "customer": cart_data["customer"],
+                "cart_filters": cart_filters,
+                "filter_form": filter_form,
+                "cart_total": cart_data["total"] if cart_data else 0,
+                "cart_products": ", ".join(cart_data["products"]) if cart_data else "",
+                "customer": cart_data["customer"] if cart_data else None,
                 "cart_items": cart.get_items(),
             }
         )
         return ctx
+
+    def _get_filter_form_initial(self, cart_filters, filter_service):
+        """Get initial data for filter form."""
+        start = None
+        end = None
+
+        if cart_filters.get("start"):
+            start = filter_service.parse_iso_date(cart_filters["start"])
+        if cart_filters.get("end"):
+            end = filter_service.parse_iso_date(cart_filters["end"])
+
+        return {"start": start, "end": end}
 
 
 class ApplyCartFiltersView(PermissionRequiredMixin, FormView):

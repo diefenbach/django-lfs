@@ -30,7 +30,7 @@ from lfs.catalog.settings import (
 )
 from lfs.manage.portlets.views import PortletsInlineView
 from lfs.manage.mixins import DirectDeleteMixin
-from lfs.manage.products.mixins import ProductFilterMixin, ProductPaginationMixin, ProductDataMixin, ProductContextMixin
+from lfs.manage.products.services import ProductFilterService, ProductDataService
 
 from .forms import (
     ProductFilterForm,
@@ -51,32 +51,72 @@ from lfs.caching.listeners import update_product_cache
 from lfs.core.signals import product_removed_property_group
 
 
-class ProductListView(
-    PermissionRequiredMixin,
-    ProductFilterMixin,
-    ProductPaginationMixin,
-    ProductDataMixin,
-    ProductContextMixin,
-    TemplateView,
-):
+class ProductListView(PermissionRequiredMixin, TemplateView):
     """Shows a table view of all products with filtering and pagination."""
 
     permission_required = "core.manage_shop"
     template_name = "manage/products/product_list.html"
-    model = Product
 
     def get_context_data(self, **kwargs):
         """Extends context with products and filter form."""
+        from django.core.paginator import Paginator
+        from django.db.models import Q
+        from lfs.catalog.settings import VARIANT as PRODUCT_VARIANT, PRODUCT_TYPE_LOOKUP
+
         ctx = super().get_context_data(**kwargs)
 
-        products_page = self.get_paginated_products()
-        products_with_data = self.get_products_with_data(products_page)
+        # Initialize services
+        filter_service = ProductFilterService()
+        data_service = ProductDataService()
+
+        # Get filters from session
+        product_filters = self.request.session.get("product-filters", {})
+
+        # Filter products
+        try:
+            queryset = Product.objects.exclude(sub_type=PRODUCT_VARIANT).order_by("-creation_date")
+            filtered_products = filter_service.filter_products(queryset, product_filters)
+        except Exception:
+            filtered_products = Product.objects.none()
+
+        # Paginate products
+        paginator = Paginator(filtered_products, 22)
+        page_number = self.request.GET.get("page", 1)
+        products_page = paginator.get_page(page_number)
+
+        # Enrich products with data
+        products_with_data = []
+        for product in products_page:
+            product_data = {
+                "product": product,
+                "categories": ", ".join([cat.name for cat in product.categories.all()[:3]]),
+                "price": product.get_price(None),  # Get price for anonymous user
+                "stock": product.stock_amount if product.manage_stock_amount else None,
+                "active": product.active,
+                "sub_type_display": PRODUCT_TYPE_LOOKUP.get(product.sub_type, product.sub_type),
+            }
+            products_with_data.append(product_data)
+
+        # Prepare filter form
+        try:
+            filter_form = ProductFilterForm(
+                initial={
+                    "name": product_filters.get("name", ""),
+                    "sku": product_filters.get("sku", ""),
+                    "sub_type": product_filters.get("sub_type", ""),
+                    "price_calculator": product_filters.get("price_calculator", ""),
+                    "status": product_filters.get("status", ""),
+                }
+            )
+        except Exception:
+            filter_form = ProductFilterForm()
 
         ctx.update(
             {
                 "products_page": products_page,
                 "products_with_data": products_with_data,
-                **self.get_product_context_data(),
+                "product_filters": product_filters,
+                "filter_form": filter_form,
             }
         )
         return ctx

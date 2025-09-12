@@ -1,9 +1,10 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from datetime import timedelta
 import json
 
 from django.conf import settings
 from django.core.cache import cache
+from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -25,13 +26,11 @@ from lfs.core.utils import LazyEncoder
 from lfs.mail import utils as mail_utils
 from lfs.order.models import Order
 from lfs.manage.mixins import DirectDeleteMixin
-from lfs.manage.orders.mixins import OrderFilterMixin, OrderPaginationMixin, OrderDataMixin, OrderContextMixin
-from lfs.manage.orders.services import OrderFilterService
+from lfs.manage.orders.services import OrderFilterService, OrderDataService
+from lfs.manage.orders.forms import OrderFilterForm
 
 
-class OrderListView(
-    PermissionRequiredMixin, OrderFilterMixin, OrderPaginationMixin, OrderDataMixin, OrderContextMixin, TemplateView
-):
+class OrderListView(PermissionRequiredMixin, TemplateView):
     """Shows a table view of all orders with filtering and pagination."""
 
     permission_required = "core.manage_shop"
@@ -41,15 +40,34 @@ class OrderListView(
         """Extends context with orders and filter form."""
         ctx = super().get_context_data(**kwargs)
 
-        orders_page = self.get_paginated_orders()
-        orders_with_data = self.get_orders_with_data(orders_page)
-        order_filters = self.get_order_filters()
+        # Initialize services
+        filter_service = OrderFilterService()
+        data_service = OrderDataService()
+
+        # Get filters from session
+        order_filters = self.request.session.get("order-filters", {})
+
+        # Filter orders
+        queryset = Order.objects.all().order_by("-created")
+        filtered_orders = filter_service.filter_orders(queryset, order_filters)
+
+        # Paginate orders
+        paginator = Paginator(filtered_orders, 20)
+        page_number = self.request.GET.get("page", 1)
+        orders_page = paginator.get_page(page_number)
+
+        # Enrich orders with data
+        orders_with_data = data_service.get_orders_with_data(orders_page)
 
         # Build states context for template compatibility
         states = []
         state_id = order_filters.get("state")
         for state in lfs.order.settings.ORDER_STATES:
             states.append({"id": state[0], "name": state[1], "selected": state_id == str(state[0])})
+
+        # Prepare filter form
+        filter_form_initial = self._get_filter_form_initial(order_filters, filter_service)
+        filter_form = OrderFilterForm(initial=filter_form_initial)
 
         ctx.update(
             {
@@ -60,34 +78,61 @@ class OrderListView(
                 "start": order_filters.get("start", ""),
                 "end": order_filters.get("end", ""),
                 "name": order_filters.get("name", ""),
-                **self.get_order_context_data(),
+                "order_filters": order_filters,
+                "filter_form": filter_form,
             }
         )
         return ctx
 
+    def _get_filter_form_initial(self, order_filters, filter_service):
+        """Get initial data for filter form."""
+        start = None
+        end = None
 
-class OrderTabMixin(OrderFilterMixin, OrderPaginationMixin, OrderContextMixin):
-    """Mixin for tab navigation in Order views."""
+        if order_filters.get("start"):
+            start = filter_service.parse_iso_date(order_filters["start"])
+        if order_filters.get("end"):
+            end = filter_service.parse_iso_date(order_filters["end"])
+
+        return {
+            "name": order_filters.get("name", ""),
+            "state": order_filters.get("state", ""),
+            "start": start,
+            "end": end,
+        }
+
+
+class OrderDataView(PermissionRequiredMixin, TemplateView):
+    """View for data tab of an Order."""
 
     template_name = "manage/order/order.html"
-    tab_name: Optional[str] = None
+    tab_name = "data"
+    permission_required = "core.manage_shop"
 
     def get_order(self) -> Order:
         """Gets the Order object."""
         return lfs_get_object_or_404(Order, pk=self.kwargs["order_id"])
 
-    def get_paginated_orders(self, page_size=8):
-        """Returns paginated orders for sidebar."""
-        return super().get_paginated_orders(page_size=page_size)
-
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """Extends context with sidebar navigation and Order."""
+        """Extends context for data tab."""
         ctx = super().get_context_data(**kwargs)
-        order = getattr(self, "object", None) or self.get_order()
+
+        # Initialize services
+        filter_service = OrderFilterService()
+        data_service = OrderDataService()
+
+        # Get current order
+        order = self.get_order()
+
+        # Get filters from session
+        order_filters = self.request.session.get("order-filters", {})
 
         # Get paginated orders for sidebar
-        orders_page = self.get_paginated_orders()
-        order_filters = self.get_order_filters()
+        queryset = Order.objects.all().order_by("-created")
+        filtered_orders = filter_service.filter_orders(queryset, order_filters)
+        paginator = Paginator(filtered_orders, 8)
+        page_number = self.request.GET.get("page", 1)
+        orders_page = paginator.get_page(page_number)
 
         # Build states context for template compatibility
         states = []
@@ -102,6 +147,13 @@ class OrderTabMixin(OrderFilterMixin, OrderPaginationMixin, OrderContextMixin):
                 }
             )
 
+        # Get enriched order data (summary + customer) via service
+        order_data = data_service.get_order_with_data(order)
+
+        # Prepare filter form
+        filter_form_initial = self._get_filter_form_initial(order_filters, filter_service)
+        filter_form = OrderFilterForm(initial=filter_form_initial)
+
         ctx.update(
             {
                 "current_order": order,
@@ -111,35 +163,32 @@ class OrderTabMixin(OrderFilterMixin, OrderPaginationMixin, OrderContextMixin):
                 "start": order_filters.get("start", ""),
                 "end": order_filters.get("end", ""),
                 "name": order_filters.get("name", ""),
-                **self.get_order_context_data(),
-            }
-        )
-        return ctx
-
-
-class OrderDataView(PermissionRequiredMixin, OrderTabMixin, OrderDataMixin, TemplateView):
-    """View for data tab of an Order."""
-
-    tab_name = "data"
-    permission_required = "core.manage_shop"
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """Extends context for data tab."""
-        ctx = super().get_context_data(**kwargs)
-        order = self.get_order()
-
-        # Get enriched order data (summary + customer) via service
-        order_data = self.get_order_with_data(order)
-
-        ctx.update(
-            {
-                "order_total": order_data["total"],
-                "order_products": ", ".join(order_data["products"]),
-                "customer_name": order_data["customer_name"],
+                "order_filters": order_filters,
+                "filter_form": filter_form,
+                "order_total": order_data["total"] if order_data else 0,
+                "order_products": ", ".join(order_data["products"]) if order_data else "",
+                "customer_name": order_data["customer_name"] if order_data else "",
                 "order_items": order.items.all(),
             }
         )
         return ctx
+
+    def _get_filter_form_initial(self, order_filters, filter_service):
+        """Get initial data for filter form."""
+        start = None
+        end = None
+
+        if order_filters.get("start"):
+            start = filter_service.parse_iso_date(order_filters["start"])
+        if order_filters.get("end"):
+            end = filter_service.parse_iso_date(order_filters["end"])
+
+        return {
+            "name": order_filters.get("name", ""),
+            "state": order_filters.get("state", ""),
+            "start": start,
+            "end": end,
+        }
 
 
 class ApplyOrderFiltersView(PermissionRequiredMixin, FormView):
