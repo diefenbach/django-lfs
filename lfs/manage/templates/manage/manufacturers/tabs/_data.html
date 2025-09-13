@@ -4,8 +4,7 @@
     <form method="post" enctype="multipart/form-data" action="{% url 'lfs_manage_manufacturer' manufacturer.id %}">
         {% csrf_token %}
         <div class="row">
-            <div class="col-md-8">
-                <h5 class="mb-3">{% trans "Manufacturer Data" %}</h5>
+            <div class="col-md-8">                
                 {{ form|crispy }}
                 
                 {% if manufacturer.image %}

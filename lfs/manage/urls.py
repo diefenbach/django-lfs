@@ -7,13 +7,6 @@ import lfs.manage.products
 # Removed imports for non-existent product modules
 import lfs.manage.views.export
 import lfs.manage.views.utils
-from lfs.catalog.models import Product
-from lfs.catalog.models import Category
-from lfs.core.models import Shop
-from lfs.manage.products.forms import SEOForm as ProductSEOForm
-from lfs.manage.shop.views import ShopSEOView
-from lfs.manage.seo.views import SEOView
-from lfs.manufacturer.models import Manufacturer
 
 
 urlpatterns = [
@@ -133,9 +126,3 @@ urlpatterns = [
         name="lfs_manage_environment",
     ),
 ]
-
-# Manufacturer / SEO
-urlpatterns += SEOView.get_seo_urlpattern(Manufacturer)
-urlpatterns += ShopSEOView.get_seo_urlpattern(Shop)
-urlpatterns += SEOView.get_seo_urlpattern(Product, form_klass=ProductSEOForm, template_name="manage/products/seo.html")
-urlpatterns += SEOView.get_seo_urlpattern(Category)
