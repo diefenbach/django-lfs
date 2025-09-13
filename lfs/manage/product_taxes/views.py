@@ -9,7 +9,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 
-from lfs.catalog.models import Product
 from lfs.tax.models import Tax
 from lfs.manage.mixins import DirectDeleteMixin
 
@@ -139,10 +138,5 @@ class TaxDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMi
     def delete(self, request, *args, **kwargs):
         """Override delete to clean up references before deletion."""
         tax = self.get_object()
-
-        # Remove the tax from all products
-        for product in Product.objects.filter(tax=tax):
-            product.tax = None
-            product.save()
 
         return super().delete(request, *args, **kwargs)
