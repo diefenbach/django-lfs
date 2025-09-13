@@ -5,7 +5,6 @@ import lfs.manage.information.views
 import lfs.manage.products
 
 # Removed imports for non-existent product modules
-import lfs.manage.views.criteria
 import lfs.manage.views.export
 import lfs.manage.views.utils
 from lfs.catalog.models import Product
@@ -14,38 +13,21 @@ from lfs.core.models import Shop
 from lfs.manage.products.forms import SEOForm as ProductSEOForm
 from lfs.manage.shop.views import ShopSEOView
 from lfs.manage.seo.views import SEOView
-from lfs.manage.manufacturers import views as manufacturers_views
 from lfs.manufacturer.models import Manufacturer
 
 
 urlpatterns = [
     path("", include("lfs.manage.dashboard.urls")),
-    # Delivery Times
     path("", include("lfs.manage.delivery_times.urls")),
-    # Manufacturers
     path("", include("lfs.manage.manufacturers.urls")),
-    # Legacy Manufacturer URLs (for backward compatibility)
-    re_path(
-        r"^manufacturer-dispatcher$", manufacturers_views.manufacturer_dispatcher, name="lfs_manufacturer_dispatcher"
-    ),
-    # Featured Products
     path("", include("lfs.manage.featured.urls")),
-    # Marketing
     path("", include("lfs.manage.review_mails.urls")),
-    # Topseller Products
     path("", include("lfs.manage.topseller.urls")),
-    # Voucher Groups
     path("", include("lfs.manage.voucher.urls")),
-    # Portlets
     path("", include("lfs.manage.portlets.urls")),
-    # Product
-    # Product management URLs are now handled by modern class-based views in products/urls.py
     path("", include("lfs.manage.images.urls")),
-    # Property Groups
     path("", include("lfs.manage.property_groups.urls")),
-    # Properties
     path("", include("lfs.manage.properties.urls")),
-    # Product properties
     re_path(
         r"^update-product-properties/(?P<id>\d*)$",
         lfs.manage.products.views.ProductPropertiesView.as_view(),
@@ -56,15 +38,23 @@ urlpatterns = [
         lfs.manage.products.views.ProductPropertiesView.as_view(),
         name="lfs_update_product_property_groups",
     ),
-    # Carts
     path("", include("lfs.manage.carts.urls")),
-    # Categories
     path("", include("lfs.manage.categories.urls")),
-    # Customers (refactored views)
     path("", include("lfs.manage.customers.urls")),
-    # Products (refactored views)
     path("", include("lfs.manage.products.urls")),
-    # export
+    path("", include("lfs.manage.shipping_methods.urls")),
+    path("", include("lfs.manage.discounts.urls")),
+    path("", include("lfs.manage.pages.urls")),
+    path("", include("lfs.manage.payment_methods.urls")),
+    path("", include("lfs.manage.orders.urls")),
+    path("", include("lfs.manage.criteria.urls")),
+    path("", include("lfs.manage.static_blocks.urls")),
+    path("", include("lfs.manage.reviews.urls")),
+    path("", include("lfs.manage.shop.urls")),
+    path("", include("lfs.manage.actions.urls")),
+    path("", include("lfs.manage.product_taxes.urls")),
+    path("", include("lfs.manage.customer_taxes.urls")),
+    # Export
     re_path(r"^export-dispatcher$", lfs.manage.views.export.export_dispatcher, name="lfs_export_dispatcher"),
     re_path(r"^export/(?P<export_id>\d*)$", lfs.manage.views.export.manage_export, name="lfs_export"),
     re_path(
@@ -102,36 +92,6 @@ urlpatterns = [
         lfs.manage.views.export.update_category_variants_option,
         name="lfs_export_update_category_variants_option",
     ),
-    # Shipping Methods
-    path("", include("lfs.manage.shipping_methods.urls")),
-    path("", include("lfs.manage.discounts.urls")),
-    path("", include("lfs.manage.pages.urls")),
-    path("", include("lfs.manage.payment_methods.urls")),
-    path("", include("lfs.manage.orders.urls")),
-    # Order numbers - now handled by class-based views
-    # Criteria
-    re_path(r"^add-criterion", lfs.manage.views.criteria.add_criterion, name="lfs_add_criterion"),
-    re_path(
-        r"^change-criterion",
-        lfs.manage.views.criteria.change_criterion_form,
-        name="lfs_change_criterion_form",
-    ),
-    re_path(
-        r"^delete-criterion",
-        lfs.manage.views.criteria.delete_criterion,
-        name="lfs_delete_criterion",
-    ),
-    path("", include("lfs.manage.static_blocks.urls")),
-    path("", include("lfs.manage.reviews.urls")),
-    # Shop
-    path("", include("lfs.manage.shop.urls")),
-    # Legacy shop URLs removed - now handled by class-based views
-    # Actions
-    path("", include("lfs.manage.actions.urls")),
-    # Product Taxes
-    path("", include("lfs.manage.product_taxes.urls")),
-    # Customer Taxes
-    path("", include("lfs.manage.customer_taxes.urls")),
     # Utils
     re_path(r"^utilities$", lfs.manage.views.utils.utilities, name="lfs_manage_utils"),
     re_path(r"^clear-cache$", lfs.manage.views.utils.clear_cache, name="lfs_clear_cache"),
