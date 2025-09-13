@@ -1,0 +1,11 @@
+{% load i18n static %}
+
+<div class="tab-pane fade show active" id="portlets-content" role="tabpanel" aria-labelledby="portlets-tab">
+    <h5 class="mb-3">{% trans "Portlets" %}</h5>
+    {{ portlets|safe }}
+</div>
+
+<script>
+    window.LFS_SORT_PORTLETS_URL = '{% url "lfs_sort_portlets" %}';
+</script>
+<script src="{% static 'lfs/manage/js/portlets.js' %}"></script>

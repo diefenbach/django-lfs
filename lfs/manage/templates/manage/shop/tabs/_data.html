@@ -1,0 +1,19 @@
+{% load i18n crispy_forms_tags %}
+
+<div class="tab-pane fade show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
+    <form method="post" enctype="multipart/form-data" action="{% url 'lfs_manage_shop_data' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8 lfs-form-with-border">
+                {% crispy form %}
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i>
+                {% trans "Save Shop Data" %}
+            </button>
+        </div>
+    </form>
+</div>

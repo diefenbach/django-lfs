@@ -12,7 +12,7 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import Category
 from lfs.core.models import Shop
 from lfs.manage.products.forms import SEOForm as ProductSEOForm
-from lfs.manage.views.shop import ShopSEOView
+from lfs.manage.shop.views import ShopSEOView
 from lfs.manage.seo.views import SEOView
 from lfs.manage.manufacturers import views as manufacturers_views
 from lfs.manufacturer.models import Manufacturer
@@ -112,10 +112,7 @@ urlpatterns = [
     path("", include("lfs.manage.pages.urls")),
     path("", include("lfs.manage.payment_methods.urls")),
     path("", include("lfs.manage.orders.urls")),
-    # Order numbers
-    re_path(
-        r"^save-order-numbers-tab$", lfs.manage.views.shop.save_order_numbers_tab, name="lfs_save_order_numbers_tab"
-    ),
+    # Order numbers - now handled by class-based views
     # Criteria
     re_path(r"^add-criterion", lfs.manage.views.criteria.add_criterion, name="lfs_add_criterion"),
     re_path(
@@ -131,13 +128,8 @@ urlpatterns = [
     path("", include("lfs.manage.static_blocks.urls")),
     path("", include("lfs.manage.reviews.urls")),
     # Shop
-    re_path(r"^shop$", lfs.manage.views.shop.manage_shop, name="lfs_manage_shop"),
-    re_path(r"^save-shop-data-tab$", lfs.manage.views.shop.save_data_tab, name="lfs_save_shop_data_tab"),
-    re_path(
-        r"^save-shop-default-values-tab$",
-        lfs.manage.views.shop.save_default_values_tab,
-        name="lfs_save_shop_default_values_tab",
-    ),
+    path("", include("lfs.manage.shop.urls")),
+    # Legacy shop URLs removed - now handled by class-based views
     # Actions
     path("", include("lfs.manage.actions.urls")),
     # Product Taxes

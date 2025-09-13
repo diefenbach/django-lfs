@@ -1,33 +1,59 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n static crispy_forms_tags %}
 
 {% block help_link %}user/management/shop/preferences.html{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
-
+{% block section %}manage-shop{% endblock %}
 {% block content %}
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Shop' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#default_values">{% trans 'Default Values' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#order_numbers">{% trans 'Order Numbers' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
-        </ul>
+    <div class="lfs-shop">
+        <div class="row">
+            <main class="col-12 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2 mb-4">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item active" aria-current="page">Shop Settings</li>
+                            </ol>
+                        </nav>                                
+                    </div>
 
-        <div id="data">
-            {{ data|safe }}
-        </div>
-        <div id="default_values">
-            {{ default_values|safe }}
-        </div>
-        <div id="order_numbers">
-            {{ order_numbers|safe }}
-        </div>
-        <div id="seo">
-            {{ seo|safe }}
-        </div>
-        <div id="portlets">
-            {{ portlets|safe }}
+                    <ul class="nav nav-tabs" id="shopTabs" role="tablist" hx-swap-oob="true">
+                        {% for key, url in tabs %}
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                href="{{ url }}" 
+                                role="tab"
+                                aria-controls="{{ key }}-content"
+                                aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                    {% if key == "data" %}{% trans "Shop" %}
+                                    {% elif key == "default_values" %}{% trans "Default Values" %}
+                                    {% elif key == "order_numbers" %}{% trans "Order Numbers" %}
+                                    {% elif key == "seo" %}{% trans "SEO" %}
+                                    {% elif key == "portlets" %}{% trans "Portlets" %}
+                                    {% else %}{% trans key|title %}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4" id="shopTabsContent">
+                        {% if active_tab == "data" %}
+                            {% include "manage/shop/tabs/_data.html" %}
+                        {% elif active_tab == "default_values" %}
+                            {% include "manage/shop/tabs/_default_values.html" %}
+                        {% elif active_tab == "order_numbers" %}
+                            {% include "manage/shop/tabs/_order_numbers.html" %}
+                        {% elif active_tab == "seo" %}
+                            {% include "manage/shop/tabs/_seo.html" %}
+                        {% elif active_tab == "portlets" %}
+                            {% include "manage/shop/tabs/_portlets.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}

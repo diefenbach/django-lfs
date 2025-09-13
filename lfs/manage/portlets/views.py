@@ -27,6 +27,7 @@ def get_portlet_management_url(obj):
     from lfs.page.models import Page
     from lfs.catalog.models import Category
     from lfs.manufacturer.models import Manufacturer
+    from lfs.core.models import Shop
 
     if isinstance(obj, Page):
         return reverse("lfs_manage_page_portlets", kwargs={"id": obj.id})
@@ -34,6 +35,8 @@ def get_portlet_management_url(obj):
         return reverse("lfs_manage_category_portlets", kwargs={"id": obj.id})
     elif isinstance(obj, Manufacturer):
         return reverse("lfs_manage_manufacturer_portlets", kwargs={"id": obj.id})
+    elif isinstance(obj, Shop):
+        return reverse("lfs_manage_shop_portlets")
     else:
         # Fallback to page portlets for unknown object types
         return reverse("lfs_manage_page_portlets", kwargs={"id": 1})
