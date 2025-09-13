@@ -112,7 +112,7 @@
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_rating_mails' %}">{% trans 'Rating Mails' %}</a></li>
                         </ul>
                     </li>
-                    {% comment %} <li class="nav-item dropdown">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="utilsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {% trans 'Utils' %}
                         </a>
@@ -121,7 +121,7 @@
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_utils' %}">{% trans 'Miscellaneous' %}</a></li>
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_environment' %}">{% trans 'Environment' %}</a></li>
                         </ul>
-                    </li> {% endcomment %}
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ LFS_DOCS }}{% block help_link %}{% endblock %}" target="_blank">
                             {% trans "Help" %}
