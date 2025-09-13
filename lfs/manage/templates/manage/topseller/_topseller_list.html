@@ -31,7 +31,7 @@
                                 <th class="small">{% trans 'Active' %}</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="sortable-table">
                             {% for topseller_item in topseller %}
                                 <tr data-id="{{ topseller_item.id }}">
                                     <td>
