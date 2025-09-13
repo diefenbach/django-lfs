@@ -16,3 +16,6 @@
 **Expected Behavior**: Validation errors should remain visible within the modal.
 
 **Proposed Solution**: Implement HTMX handling to keep the modal open and display form errors within the modal during validation failures.
+
+## Product Taxes
+- Add a producs tab like in discounts, for instance
