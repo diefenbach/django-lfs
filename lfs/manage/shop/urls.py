@@ -32,4 +32,9 @@ urlpatterns = [
         lfs.manage.shop.views.ShopPortletsView.as_view(),
         name="lfs_manage_shop_portlets",
     ),
+    path(
+        "shop/carousel/",
+        lfs.manage.shop.views.ShopCarouselView.as_view(),
+        name="lfs_manage_shop_carousel",
+    ),
 ]

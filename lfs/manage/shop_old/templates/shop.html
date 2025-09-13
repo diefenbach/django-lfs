@@ -1,0 +1,36 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+{% load lfs_carousel_tags %}
+
+{% block help_link %}user/management/shop/preferences.html{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Shop' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#default_values">{% trans 'Default Values' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#order_numbers">{% trans 'Order Numbers' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#carousel-items">Karussell</a></li>
+        </ul>
+
+        <div id="data">
+            {{ data|safe }}
+        </div>
+        <div id="default_values">
+            {{ default_values|safe }}
+        </div>
+        <div id="order_numbers">
+            {{ order_numbers|safe }}
+        </div>
+        <div id="seo">
+            {{ seo|safe }}
+        </div>
+        <div id="portlets">
+            {{ portlets|safe }}
+        </div>
+        {% carousel_management shop %}
+    </div>
+{% endblock %}

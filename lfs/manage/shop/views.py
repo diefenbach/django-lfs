@@ -58,6 +58,7 @@ class ShopTabMixin:
             ("order_numbers", reverse("lfs_manage_shop_order_numbers")),
             ("seo", reverse("lfs_manage_shop_seo")),
             ("portlets", reverse("lfs_manage_shop_portlets")),
+            ("carousel", reverse("lfs_manage_shop_carousel")),
         ]
         return tabs
 
@@ -190,4 +191,16 @@ class ShopPortletsView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         shop = self.get_shop()
         ctx["portlets"] = PortletsInlineView().get(self.request, shop)
+        return ctx
+
+
+class ShopCarouselView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
+    """View for carousel tab of Shop."""
+
+    tab_name = "carousel"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with carousel management."""
+        ctx = super().get_context_data(**kwargs)
         return ctx

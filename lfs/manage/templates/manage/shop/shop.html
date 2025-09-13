@@ -1,5 +1,5 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n static crispy_forms_tags %}
+{% load i18n static crispy_forms_tags lfs_carousel_tags %}
 
 {% block help_link %}user/management/shop/preferences.html{% endblock %}
 {% block section %}manage-shop{% endblock %}
@@ -30,6 +30,7 @@
                                     {% elif key == "order_numbers" %}{% trans "Order Numbers" %}
                                     {% elif key == "seo" %}{% trans "SEO" %}
                                     {% elif key == "portlets" %}{% trans "Portlets" %}
+                                    {% elif key == "carousel" %}Karussell
                                     {% else %}{% trans key|title %}{% endif %}
                                 </a>
                             </li>
@@ -47,6 +48,8 @@
                             {% include "manage/shop/tabs/_seo.html" %}
                         {% elif active_tab == "portlets" %}
                             {% include "manage/shop/tabs/_portlets.html" %}
+                        {% elif active_tab == "carousel" %}
+                            {% carousel_management shop %}
                         {% endif %}
                     </div>
                 </div>
