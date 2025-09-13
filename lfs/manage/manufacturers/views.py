@@ -32,12 +32,6 @@ class ManageManufacturersView(PermissionRequiredMixin, RedirectView):
             return reverse("lfs_manage_no_manufacturers")
 
 
-# Legacy function-based view for backward compatibility
-def manufacturer_dispatcher(request):
-    """Legacy dispatcher - redirects to class-based view."""
-    return ManageManufacturersView.as_view()(request)
-
-
 class ManufacturerTabMixin:
     """Mixin for tab navigation in Manufacturer views."""
 
