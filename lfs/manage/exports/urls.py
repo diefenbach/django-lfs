@@ -1,0 +1,40 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("export-dispatcher", views.export_dispatcher, name="lfs_export_dispatcher"),
+    path("export/<int:export_id>", views.manage_export, name="lfs_export"),
+    path(
+        "export-inline/<int:export_id>/<int:category_id>",
+        views.export_inline,
+        name="lfs_export_inline",
+    ),
+    path(
+        "edit-category/<int:export_id>/<int:category_id>",
+        views.edit_category,
+        name="lfs_export_edit_category",
+    ),
+    path(
+        "edit-product/<int:export_id>/<int:product_id>",
+        views.edit_product,
+        name="lfs_export_edit_product",
+    ),
+    path(
+        "category-state/<int:export_id>/<int:category_id>",
+        views.category_state,
+        name="lfs_export_category_state",
+    ),
+    path(
+        "update-export-data/<int:export_id>",
+        views.update_data,
+        name="lfs_export_update_export_data",
+    ),
+    path("add-export", views.add_export, name="lfs_export_add_export"),
+    path("delete-export/<int:export_id>", views.delete_export, name="lfs_export_delete_export"),
+    path("export-export/<slug>", views.export, name="lfs_export_export"),
+    path(
+        "update-category-variants-option/<int:export_id>/<int:category_id>",
+        views.update_category_variants_option,
+        name="lfs_export_update_category_variants_option",
+    ),
+]

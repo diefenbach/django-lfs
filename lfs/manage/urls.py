@@ -5,7 +5,6 @@ import lfs.manage.information.views
 import lfs.manage.products
 
 # Removed imports for non-existent product modules
-import lfs.manage.views.export
 import lfs.manage.views.utils
 
 
@@ -37,62 +36,7 @@ urlpatterns = [
     path("", include("lfs.manage.static_blocks.urls")),
     path("", include("lfs.manage.topseller.urls")),
     path("", include("lfs.manage.voucher.urls")),
-    # Export
-    path(
-        "export-dispatcher",
-        lfs.manage.views.export.export_dispatcher,
-        name="lfs_export_dispatcher",
-    ),
-    path(
-        "export/<int:export_id>",
-        lfs.manage.views.export.manage_export,
-        name="lfs_export",
-    ),
-    path(
-        "export-inline/<int:export_id>/<int:category_id>",
-        lfs.manage.views.export.export_inline,
-        name="lfs_export_inline",
-    ),
-    path(
-        "edit-category/<int:export_id>/<int:category_id>",
-        lfs.manage.views.export.edit_category,
-        name="lfs_export_edit_category",
-    ),
-    path(
-        "edit-product/<int:export_id>/<int:product_id>",
-        lfs.manage.views.export.edit_product,
-        name="lfs_export_edit_product",
-    ),
-    path(
-        "category-state/<int:export_id>/<int:category_id>",
-        lfs.manage.views.export.category_state,
-        name="lfs_export_category_state",
-    ),
-    path(
-        "update-export-data/<int:export_id>",
-        lfs.manage.views.export.update_data,
-        name="lfs_export_update_export_data",
-    ),
-    path(
-        "add-export",
-        lfs.manage.views.export.add_export,
-        name="lfs_export_add_export",
-    ),
-    path(
-        "delete-export/<int:export_id>",
-        lfs.manage.views.export.delete_export,
-        name="lfs_export_delete_export",
-    ),
-    path(
-        "export-export/<slug>",
-        lfs.manage.views.export.export,
-        name="lfs_export_export",
-    ),
-    path(
-        "update-category-variants-option/<int:export_id>/<int:category_id>",
-        lfs.manage.views.export.update_category_variants_option,
-        name="lfs_export_update_category_variants_option",
-    ),
+    path("", include("lfs.manage.exports.urls")),
     # Utils
     path(
         "utilities",
