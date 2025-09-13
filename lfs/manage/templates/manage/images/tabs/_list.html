@@ -14,7 +14,7 @@
                            placeholder="{% trans 'Search images...' %}"
                            name="q"
                            value="{{ query }}"
-                           hx-get="{% url 'lfs_manage_images_list_ajax' %}"
+                           hx-get="{% url 'lfs_manage_images_list' %}"
                            hx-target="#files-list"
                            hx-select="#files-list"
                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
@@ -42,10 +42,18 @@
                     <i class="bi bi-images me-2"></i>
                     {% trans 'Global Images' %}
                 </h2>
-                <!-- Pagination in header -->
-                {% if pagination and pagination.has_other_pages %}
-                    {% include 'manage/snippets/pagination.html' with page_obj=pagination url_name='lfs_manage_images_list' page_info_position='beside' %}
-                {% endif %}
+                <div class="d-flex align-items-center">
+                    <!-- Pagination in header -->
+                    {% if pagination and pagination.has_other_pages %}
+                        {% include 'manage/snippets/pagination.html' with page_obj=pagination url_name='lfs_manage_images_list' page_info_position='beside' %}
+                    {% endif %}
+                    <i class="bi bi-question-circle text-muted ms-2" 
+                       data-bs-toggle="popover" 
+                       data-bs-placement="top" 
+                       data-bs-content="{% trans 'These are global images that can be used throughout your shop within the WYSIWYG editors.' %}"
+                       data-bs-trigger="hover"
+                       style="cursor: help; font-size: 1.25rem;"></i>
+                </div>
             </div>
         </div>
         <div class="card-body overflow-y-auto">
@@ -54,91 +62,48 @@
 
                 <div class="images-list-container">
                     {% if images %}
-                        <form action="{% url 'lfs_manage_images_delete' %}" method="POST" class="images-form">
-                            {% csrf_token %}
-                            
-                            <div class="row g-3 mb-4">
-                                {% for image in images %}
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                                        <div class="card h-100 image-card" data-image-id="{{ image.pk }}">
-                                            <div class="position-relative">
-                                                <img 
-                                                    src="{{ image.image.url_100x100 }}" 
-                                                    alt="{{ image.title }}"
-                                                    loading="lazy"
-                                                    class="card-img-top"
-                                                    style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto; display: block;"
-                                                />
-                                                <div class="position-absolute top-0 start-0 p-2">
-                                                    <div class="form-check">
-                                                        <input 
-                                                            id="image-toggle-{{ image.pk }}" 
-                                                            class="form-check-input toggle-images" 
-                                                            type="checkbox" 
-                                                            name="images" 
-                                                            value="{{ image.id }}"
-                                                            aria-label="{% trans 'Select image' %} {{ image.title }}"
-                                                        />
-                                                    </div>
+                        <div class="row g-3 mb-4">
+                            {% for image in images %}
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                                    <div class="card h-100 image-card" data-image-id="{{ image.pk }}">
+                                        <div class="position-relative">
+                                            <img 
+                                                src="{{ image.image.url_100x100 }}" 
+                                                alt="{{ image.title }}"
+                                                loading="lazy"
+                                                class="card-img-top"
+                                                style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto; display: block; cursor: pointer;"
+                                                hx-get="{% url 'lfs_manage_images_preview' image.id %}"
+                                                hx-target="#modal-body-lg"
+                                                hx-trigger="click"
+                                                hx-swap="innerHTML"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#lfs-modal-lg"
+                                                title="{% trans 'Preview image' %}"
+                                            />
+                                            <div class="position-absolute top-0 start-0 p-2">
+                                                <div class="form-check">
+                                                    <input 
+                                                        id="image-toggle-{{ image.pk }}" 
+                                                        class="form-check-input toggle-images" 
+                                                        type="checkbox" 
+                                                        name="images" 
+                                                        value="{{ image.id }}"
+                                                        aria-label="{% trans 'Select image' %} {{ image.title }}"
+                                                        form="delete-images-form"
+                                                    />
                                                 </div>
-                                                <div class="position-absolute top-0 end-0 p-2">
-                                                    <button 
-                                                        type="button" 
-                                                        class="btn btn-sm btn-light preview-button"
-                                                        hx-get="{% url 'lfs_manage_images_preview' image.id %}"
-                                                        hx-target="#modal-body-lg"
-                                                        hx-trigger="click"
-                                                        hx-swap="innerHTML"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#lfs-modal-lg"
-                                                        title="{% trans 'Preview image' %}"
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="card-body p-2">
-                                                <h6 class="card-title mb-1 small" title="{{ image.title }}">
-                                                    {{ image.title|truncatechars:25 }}
-                                                </h6>
                                             </div>
                                         </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            
-                            <div class="row align-items-center mb-3">
-                                <div class="col-md-6">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <button 
-                                            type="button"
-                                            class="btn btn-outline-secondary btn-sm toggle-all"
-                                            data-target="images"
-                                        >
-                                            <i class="bi bi-check-square"></i>
-                                            {% trans "Toggle all" %}
-                                        </button>
-                                        <span class="text-muted small">
-                                            <span id="selected-count">0</span> {% trans "selected" %}
-                                        </span>
+                                        <div class="card-body p-2">
+                                            <h6 class="card-title mb-1 small" title="{{ image.title }}">
+                                                {{ image.title|truncatechars:25 }}
+                                            </h6>
+                                        </div>
                                     </div>
                                 </div>
-                                
-                                <div class="col-md-6 text-md-end">
-                                    <button 
-                                        type="submit" 
-                                        class="btn btn-danger btn-sm delete-button"
-                                        onclick="return confirm('{% trans "Are you sure you want to delete the selected images? This action cannot be undone." %}')"
-                                        disabled
-                                    >
-                                        <i class="bi bi-trash"></i>
-                                        {% trans 'Delete selected' %}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                        
-                        
+                            {% endfor %}
+                        </div>
                     {% else %}
                         <div class="text-center py-5">
                             <div class="mb-3">
@@ -164,35 +129,36 @@
                 </div>
             </div>
         </div>
+        {% if images %}
+        <div class="card-footer">
+            <form id="delete-images-form" action="{% url 'lfs_manage_images_delete' %}" method="POST" class="images-form">
+                {% csrf_token %}
+                <div class="d-flex align-items-center gap-3">
+                    <button 
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm toggle-all"
+                        data-target="images">
+                        <i class="bi bi-check-square"></i>
+                        {% trans "Toggle all" %}
+                    </button>
+                    <button 
+                        type="button" 
+                        class="btn btn-danger btn-sm delete-button"
+                        hx-get="{% url 'lfs_manage_images_delete_confirm' %}"
+                        hx-target="#modal-body-sm"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-include="[name='images']:checked"
+                        disabled>
+                        <i class="bi bi-trash"></i>
+                        {% trans 'Delete selected' %}
+                    </button>
+                    <span class="text-muted small">
+                        <span id="selected-count">0</span> {% trans "selected" %}
+                    </span>
+                </div>
+            </form>
+        </div>
+        {% endif %}
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkboxes = document.querySelectorAll('.toggle-images');
-        const toggleAllBtn = document.querySelector('.toggle-all');
-        const deleteBtn = document.querySelector('.delete-button');
-        const selectedCountEl = document.getElementById('selected-count');
-        
-        function updateSelectionCount() {
-            const selectedCount = document.querySelectorAll('.toggle-images:checked').length;
-            selectedCountEl.textContent = selectedCount;
-            deleteBtn.disabled = selectedCount === 0;
-        }
-        
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateSelectionCount);
-        });
-        
-        if (toggleAllBtn) {
-            toggleAllBtn.addEventListener('click', function() {
-                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                checkboxes.forEach(cb => cb.checked = !allChecked);
-                updateSelectionCount();
-            });
-        }
-        
-         // Preview functionality is handled by HTMX attributes
-        
-        updateSelectionCount();
-    });
-</script>

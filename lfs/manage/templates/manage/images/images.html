@@ -7,9 +7,7 @@
 {% block section %}manage-images{% endblock %}
 
 {% block javascript %}
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'lfs/js/lfs.manage.shop-images.js' %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static 'lfs/manage/js/images.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -18,18 +16,12 @@
             <main class="col-12 p-4 pt-3 scrollable-content">
                 <div class="padding-bottom-100">
                     <div class="d-flex justify-content-between fw-semibold">
-                        <nav aria-label="Breadcrumb" class="me-2">
+                        <nav aria-label="Breadcrumb" class="me-2 mb-4">
                             <ol class="breadcrumb mb-0 small">
                                 <li class="breadcrumb-item">Manage</li>
                                 <li class="breadcrumb-item active" aria-current="page">{% trans "Images" %}</li>
                             </ol>
                         </nav>
-                        <div class="site-actions mb-2" id="site-actions">
-                            <a href="{% url 'lfs_manage_images_upload' %}" class="btn btn-sm btn-outline-primary me-2">
-                                <i class="bi bi-upload"></i>
-                                {% trans 'Upload Images' %}
-                            </a>
-                        </div>
                     </div>
 
                     <ul class="nav nav-tabs" id="imagesTabs" role="tablist" hx-swap-oob="true">
@@ -59,4 +51,5 @@
     </div>
 
     {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}

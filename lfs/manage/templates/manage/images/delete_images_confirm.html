@@ -1,0 +1,39 @@
+{% load i18n %}
+
+<h5 id="modal-title-sm" class="modal-title" hx-swap-oob="true">
+    {% trans 'Delete Images' %}
+</h5>
+
+<div class="alert alert-warning">
+    <p>{% trans 'Are you sure you want to delete the selected images?' %}</p>
+    {% if selected_count %}
+        <p><strong>{{ selected_count }} {% trans 'image' %}{{ selected_count|pluralize }}</strong> {% trans 'will be permanently deleted.' %}</p>
+    {% else %}
+        <p class="text-muted">{% trans 'No images selected.' %}</p>
+    {% endif %}
+    <p class="small text-muted">{% trans 'This action cannot be undone.' %}</p>
+</div>
+
+{% if selected_count %}
+<form method="post" action="{% url 'lfs_manage_images_delete' %}">
+    {% csrf_token %}
+    {% for image_id in selected_image_ids %}
+        <input type="hidden" name="images" value="{{ image_id }}">
+    {% endfor %}
+    <div class="mt-3">
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+            {% trans 'Delete' %}
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {% trans 'Cancel' %}
+        </button>
+    </div>
+</form>
+{% else %}
+<div class="mt-3">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        {% trans 'Close' %}
+    </button>
+</div>
+{% endif %}

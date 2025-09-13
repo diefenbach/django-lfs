@@ -5,6 +5,7 @@ import logging
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
+from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -72,8 +73,8 @@ class ImagesListView(PermissionRequiredMixin, ImagesTabMixin, TemplateView):
         """Get filtered queryset based on search query."""
         query = self.request.GET.get("q", "")
         if query:
-            return Image.objects.filter(content_id=None, title__istartswith=query)
-        return Image.objects.filter(content_id=None)
+            return Image.objects.filter(content_id=None, title__istartswith=query).order_by("-id")
+        return Image.objects.filter(content_id=None).order_by("-id")
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Add pagination and images to context."""
@@ -113,6 +114,26 @@ class ImagesListView(PermissionRequiredMixin, ImagesTabMixin, TemplateView):
 
         return context
 
+    def render_to_response(self, context, **response_kwargs):
+        """Handle both regular requests and HTMX search requests."""
+        # Check if this is an HTMX request (for search functionality)
+        if self.request.headers.get("HX-Request"):
+            # Return just the files-list div content for HTMX
+            html = render_to_string("manage/images/tabs/_list.html", context, request=self.request)
+            # Extract just the files-list div content
+            from django.utils.html import strip_tags
+            import re
+
+            match = re.search(r'<div id="files-list".*?</div>(?=\s*</div>)', html, re.DOTALL)
+            if match:
+                return HttpResponse(match.group(0))
+            else:
+                # Fallback: return the entire _list.html content
+                return HttpResponse(html)
+        else:
+            # Regular request: return full page
+            return super().render_to_response(context, **response_kwargs)
+
 
 class ImagePreviewView(PermissionRequiredMixin, View):
     """HTMX view for image preview modal."""
@@ -142,28 +163,24 @@ class ImagePreviewView(PermissionRequiredMixin, View):
         return HttpResponse(f'<div id="modal-title-lg" hx-swap-oob="true">{modal_title}</div>' + html)
 
 
-class ImagesListAjaxView(ImagesListView):
-    """HTMX view for images list partial."""
+class DeleteImagesConfirmView(PermissionRequiredMixin, View):
+    """Show delete confirmation modal for selected images."""
 
-    template_name = "manage/images/tabs/_list.html"
+    permission_required = "core.manage_shop"
+    http_method_names = ["get"]
 
-    def render_to_response(self, context, **response_kwargs):
-        """Return HTML response for HTMX requests."""
-        # Check if this is an HTMX request
-        if self.request.headers.get("HX-Request"):
-            # Return just the HTML content for HTMX
-            html = render_to_string(self.template_name, context, request=self.request)
-            return HttpResponse(html)
-        else:
-            # Fallback for regular AJAX requests
-            html = render_to_string(self.template_name, context, request=self.request)
-            return JsonResponse(
-                {
-                    "html": html,
-                    "message": _("Images have been added."),
-                },
-                encoder=LazyEncoder,
-            )
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """Return delete confirmation modal content."""
+        selected_image_ids = request.GET.getlist("images")
+        selected_count = len(selected_image_ids)
+
+        context = {
+            "selected_image_ids": selected_image_ids,
+            "selected_count": selected_count,
+        }
+
+        html = render_to_string("manage/images/delete_images_confirm.html", context, request=request)
+        return HttpResponse(html)
 
 
 class DeleteImagesView(PermissionRequiredMixin, View):
@@ -175,7 +192,22 @@ class DeleteImagesView(PermissionRequiredMixin, View):
     def post(self, request: HttpRequest) -> HttpResponseRedirect:
         """Delete images specified in POST data."""
         image_ids = request.POST.getlist("images")
-        Image.objects.filter(pk__in=image_ids).delete()
+        deleted_count = len(image_ids)
+
+        if deleted_count > 0:
+            Image.objects.filter(pk__in=image_ids).delete()
+
+            # Add success message
+            message = ngettext(
+                "%(count)d image has been successfully deleted.",
+                "%(count)d images have been successfully deleted.",
+                deleted_count,
+            ) % {"count": deleted_count}
+
+            messages.success(request, message)
+        else:
+            messages.warning(request, _("No images were selected for deletion."))
+
         return HttpResponseRedirect(reverse("lfs_manage_images_list"))
 
 
