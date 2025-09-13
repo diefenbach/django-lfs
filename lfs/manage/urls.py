@@ -6,7 +6,6 @@ import lfs.manage.information.views
 import lfs.manage.products
 
 # Removed imports for non-existent product modules
-import lfs.manage.product_taxes.views
 import lfs.manage.views.criteria
 import lfs.manage.views.export
 import lfs.manage.views.utils
@@ -143,11 +142,7 @@ urlpatterns = [
     # Actions
     path("", include("lfs.manage.actions.urls")),
     # Product Taxes
-    re_path(r"^add-product-tax$", lfs.manage.product_taxes.views.add_tax, name="lfs_manage_add_tax"),
-    re_path(r"^delete-product-tax/(?P<id>\d*)$", lfs.manage.product_taxes.views.delete_tax, name="lfs_delete_tax"),
-    re_path(r"^product-taxes$", lfs.manage.product_taxes.views.manage_taxes, name="lfs_manage_taxes"),
-    re_path(r"^product-tax/(?P<id>\d*)$", lfs.manage.product_taxes.views.manage_tax, name="lfs_manage_tax"),
-    re_path(r"^no-product-taxes$", lfs.manage.product_taxes.views.no_taxes, name="lfs_manage_no_taxes"),
+    path("", include("lfs.manage.product_taxes.urls")),
     # Customer tax
     re_path(r"^add-customer-tax$", lfs.manage.customer_tax.views.add_customer_tax, name="lfs_add_customer_tax"),
     re_path(

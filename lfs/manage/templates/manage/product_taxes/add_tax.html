@@ -1,36 +1,24 @@
-{% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
-{% block title %}{% trans "Add Product Tax" %}{% endblock %}
-{% block section %}add-product-tax{% endblock %}
-{% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
+    {% trans 'Add Tax' %}
+</h5>
 
-{% block content %}
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Product Tax' %}</a></li>
-        </ul>
-        <div id="data">
-            <h2>{% trans "Data" %}</h2>
-            <form method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-                <div class="buttons">
-                    <input type="submit"
-                           class="button"
-                           value="{% trans 'Add Tax' %}">
-
-                    <input type="button"
-                           class="button"
-                           onclick="window.location='{{ next }}'"
-                           value="{% trans 'Cancel' %}" />
-
-                    <input type="hidden"
-                           name="next"
-                           value="{{ next }}" />
-                </div>
-            </form>
-        </div>
+<div class="row">
+    <div class="col-12">
+        <form method="post" action="{% url 'lfs_manage_add_tax' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    {% trans "Add Tax" %}
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i>
+                    {% trans "Cancel" %}
+                </button>
+            </div>        
+        </form>
     </div>
-{% endblock %}
+</div>

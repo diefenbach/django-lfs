@@ -1,107 +1,148 @@
-# django imports
-from django.contrib.auth.decorators import permission_required
-from django.urls import reverse
+from django.db.models import Q
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView
 
-# lfs imports
-import lfs.core.utils
 from lfs.catalog.models import Product
 from lfs.tax.models import Tax
-from lfs.manage.product_taxes.forms import TaxAddForm
-from lfs.manage.product_taxes.forms import TaxForm
+from lfs.manage.mixins import DirectDeleteMixin
 
 
-@permission_required("core.manage_shop")
-def manage_taxes(request):
-    """Dispatches to the first tax or to the add tax form."""
-    try:
-        tax = Tax.objects.all()[0]
-        url = reverse("lfs_manage_tax", kwargs={"id": tax.id})
-    except IndexError:
-        url = reverse("lfs_manage_no_taxes")
-
-    return HttpResponseRedirect(url)
+from django.views.generic.base import RedirectView
 
 
-@permission_required("core.manage_shop")
-def manage_tax(request, id, template_name="manage/product_taxes/tax.html"):
-    """Displays the main form to manage taxes."""
-    tax = get_object_or_404(Tax, pk=id)
-    if request.method == "POST":
-        form = TaxForm(instance=tax, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_tax", kwargs={"id": tax.id}),
-                msg=_("Tax has been saved."),
-            )
-    else:
-        form = TaxForm(instance=tax)
+class ManageTaxesView(PermissionRequiredMixin, RedirectView):
+    """Redirects to the first tax or to the form to add a tax
+    (if there is no tax yet).
+    """
 
-    return render(
-        request,
-        template_name,
-        {
-            "tax": tax,
-            "taxes": Tax.objects.all(),
-            "form": form,
-            "current_id": int(id),
-        },
-    )
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            tax = Tax.objects.all()[0]
+            return reverse("lfs_manage_tax", kwargs={"pk": tax.id})
+        except IndexError:
+            return reverse("lfs_no_taxes")
 
 
-@permission_required("core.manage_shop")
-def no_taxes(request, template_name="manage/product_taxes/no_taxes.html"):
-    """Displays that there are no taxes."""
-    return render(request, template_name, {})
+class TaxUpdateView(PermissionRequiredMixin, UpdateView):
+    model = Tax
+    fields = ("rate", "description")
+    template_name = "manage/product_taxes/tax.html"
+    permission_required = "core.manage_shop"
+    context_object_name = "tax"
+
+    def get_success_url(self):
+        search_query = self.request.POST.get("q", "")
+        url = reverse_lazy("lfs_manage_tax", kwargs={"pk": self.object.id})
+        if search_query:
+            url = f"{url}?q={search_query}"
+        return url
+
+    def get_taxes_queryset(self):
+        """Returns filtered Taxes based on search parameter."""
+        search_query = self.request.GET.get("q", "").strip()
+
+        if search_query:
+            # Filter taxes based on rate and description
+            queryset = Tax.objects.filter(Q(rate__icontains=search_query) | Q(description__icontains=search_query))
+            return queryset.order_by("rate")
+        else:
+            # All taxes
+            return Tax.objects.all().order_by("rate")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["taxes"] = self.get_taxes_queryset()
+        context["search_query"] = self.request.GET.get("q", "")
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, _("Tax has been saved."))
+        return response
 
 
-@permission_required("core.manage_shop")
-def add_tax(request, template_name="manage/product_taxes/add_tax.html"):
-    """Provides a form to add a new tax."""
-    if request.method == "POST":
-        form = TaxAddForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            tax = form.save()
+class NoTaxesView(PermissionRequiredMixin, TemplateView):
+    """Displays a view when there are no taxes."""
 
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_tax", kwargs={"id": tax.id}),
-                msg=_("Tax has been added."),
-            )
-    else:
-        form = TaxAddForm()
-
-    return render(
-        request,
-        template_name,
-        {
-            "form": form,
-            "taxes": Tax.objects.all(),
-            "next": (request.POST if request.method == "POST" else request.GET).get(
-                "next", request.META.get("HTTP_REFERER")
-            ),
-        },
-    )
+    template_name = "manage/product_taxes/no_taxes.html"
+    permission_required = "core.manage_shop"
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def delete_tax(request, id):
-    """Deletes tax with passed id."""
-    tax = get_object_or_404(Tax, pk=id)
+class TaxCreateView(PermissionRequiredMixin, CreateView):
+    model = Tax
+    fields = ("rate", "description")
+    template_name = "manage/product_taxes/add_tax.html"
+    permission_required = "core.manage_shop"
 
-    # First remove the tax from all products.
-    for product in Product.objects.filter(tax=id):
-        product.tax = None
-        product.save()
+    def get_success_url(self):
+        search_query = self.request.POST.get("q", "")
+        url = reverse_lazy("lfs_manage_tax", kwargs={"pk": self.object.id})
+        if search_query:
+            url = f"{url}?q={search_query}"
+        return url
 
-    tax.delete()
+    def get_form_kwargs(self):
+        # Add prefix to form fields to avoid conflicts with existing fields, as this view is used within a modal
+        kwargs = super().get_form_kwargs()
+        kwargs["prefix"] = "create"
+        return kwargs
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_taxes"),
-        msg=_("Tax has been deleted."),
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["came_from"] = self.request.POST.get("came_from", reverse("lfs_manage_taxes"))
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, _("Tax has been added."))
+        # Always redirect to the created tax to avoid blank HTMX renders
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class TaxDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a tax."""
+
+    template_name = "manage/product_taxes/delete_tax.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tax"] = get_object_or_404(Tax, pk=self.kwargs["pk"])
+        return context
+
+
+class TaxDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
+    """Deletes the tax with passed id."""
+
+    model = Tax
+    permission_required = "core.manage_shop"
+    success_message = _("Tax has been deleted.")
+
+    def get_success_url(self):
+        """Return the URL to redirect to after successful deletion."""
+        # Find next tax to redirect to
+        first_tax = Tax.objects.exclude(pk=self.object.pk).first()
+        if first_tax:
+            return reverse("lfs_manage_tax", kwargs={"pk": first_tax.id})
+        else:
+            return reverse("lfs_no_taxes")
+
+    def delete(self, request, *args, **kwargs):
+        """Override delete to clean up references before deletion."""
+        tax = self.get_object()
+
+        # Remove the tax from all products
+        for product in Product.objects.filter(tax=tax):
+            product.tax = None
+            product.save()
+
+        return super().delete(request, *args, **kwargs)

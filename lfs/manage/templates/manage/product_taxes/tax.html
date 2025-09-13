@@ -1,51 +1,105 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
-
-{% block title %}{% trans "Product Tax" %}{% endblock %}
-{% block section %}product-tax{% endblock %}
-{% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
-
-{% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Product Taxes" %}
-    </h2>
-    <div class="navigation-body">
-        {% for tax in taxes %}
-            <div>
-                <a href="{% url 'lfs_manage_tax' tax.id %}"
-                   class="selectable {% if tax.id == current_id %}selected{% endif %}">
-                   {{ tax.rate }}%
-                </a>
-            </div>
-        {% endfor %}
-    </div>
-{% endblock %}
+{% load i18n static crispy_forms_tags %}
 
 {% block content %}
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_manage_add_tax' %}?came_from={% url 'lfs_manage_tax' tax.id %}">{% trans 'Add Product Tax' %}</a>
+    <div class="lfs-taxes">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Product Taxes" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search"
+                            class="form-control"
+                            placeholder="{% trans 'Search taxes...' %}"
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#taxes-list"
+                            hx-select="#taxes-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search taxes' %}">
+                    </div>
+                    <div id="taxes-list" class="list-group">
+                        {% for t in taxes %}
+                            <a class="list-group-item list-group-item-action {% if t.id == tax.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_tax' t.id %}?q={{ search_query }}">
+                                {{ t.rate }}%
+                                {% if t.description %}
+                                    <small class="text-muted d-block">{{ t.description|truncatechars:30 }}</small>
+                                {% endif %}
+                            </a>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No taxes found." %}</div>
+                        {% endfor %}
+                    </div>
+                </div>                            
+            </aside>
 
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this tax?' %}"
-           href="{% url 'lfs_delete_tax' tax.id %}">{% trans 'Delete Product Tax' %}</a>
-    </div>
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Product Tax' %}</a></li>
-        </ul>
-        <div id="data">
-            <h2>{% trans 'Data' %}</h2>
-            <form action="{% url 'lfs_manage_tax' tax.id %}"
-                  method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-                <div class="buttons">
-                    <input type="submit"
-                           class="button"
-                           value="{% trans 'Save Tax' %}">
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Product Taxes</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ tax.rate }}%</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <a class="btn btn-sm btn-outline-primary me-2"
+                               hx-get="{% url 'lfs_manage_add_tax' %}"
+                               hx-target="#modal-body-lg"
+                               hx-trigger="click"
+                               hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Tax' %}
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger me-2"
+                               hx-get="{% url 'lfs_manage_delete_tax_confirm' tax.id %}"
+                               hx-target="#modal-body-sm"
+                               hx-trigger="click"
+                               hx-swap="innerHTML"
+                               href="#">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Tax' %}
+                            </a>
+                            <a class="btn btn-sm btn-outline-secondary"
+                               href="{% url 'lfs_shop_view' %}">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                                {% trans 'View Shop' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="taxesTabs" role="tablist" hx-swap-oob="true">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">{% trans "Data" %}</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content border border-top-0 bg-white p-4">
+                        <div class="tab-pane show active">
+                            <form action="{% url 'lfs_manage_tax' tax.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="q" value="{{ search_query }}" id="search-query">
+                                {{ form|crispy }}
+                                <div class="buttons">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="bi bi-save me-1"></i>
+                                        {% trans 'Save' %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </main>
         </div>
     </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}

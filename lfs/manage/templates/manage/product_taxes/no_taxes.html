@@ -1,23 +1,28 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "No Product Taxes" %}{% endblock %}
-{% block section %}no-product-taxes{% endblock %}
-{% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
+{% block help_link %}user/management/shop/product_taxes.html{% endblock %}
+{% block section %}no-taxes{% endblock %}
 
 {% block content %}
-    <h2>
-        {% trans "Product Taxes" %}
-    </h2>
-    <div class="no-content">
-        {% trans "There are no product taxes yet." %}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-percent display-1 text-muted"></i>
+            </div>
+            <h2 class="h4 mb-3">{% trans "No Product Taxes" %}</h2>
+            <p class="text-muted mb-4">
+                {% trans "You haven't created any product taxes yet. Product taxes define the tax rates applied to your products." %}
+            </p>
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_manage_add_tax' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Create Your First Tax" %}
+            </button>
+        </div>
     </div>
-    <div class="buttons">
-        <form action="{% url 'lfs_manage_add_tax' %}">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Add Product Tax' %}">
-        </form>
-    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}
