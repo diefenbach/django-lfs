@@ -355,13 +355,3 @@ class TestManufacturerTabMixin:
         from lfs.manage.manufacturers.views import ManufacturerTabMixin
 
         assert hasattr(ManufacturerTabMixin, "tab_name")
-
-
-class TestLegacyFunctionView:
-    """Test legacy function-based view."""
-
-    def test_manufacturer_dispatcher_function_exists(self):
-        """Should have manufacturer_dispatcher function."""
-        from lfs.manage.manufacturers.views import manufacturer_dispatcher
-
-        assert callable(manufacturer_dispatcher)
