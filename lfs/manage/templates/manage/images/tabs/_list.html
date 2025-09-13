@@ -1,0 +1,198 @@
+{% load i18n %}
+
+<div class="images-list-tab">
+    <!-- Filters Form -->
+    <div class="mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label for="search-input" class="form-label">{% trans "Search images" %}</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="search"
+                           id="search-input"
+                           class="form-control"
+                           placeholder="{% trans 'Search images...' %}"
+                           name="q"
+                           value="{{ query }}"
+                           hx-get="{% url 'lfs_manage_images_list_ajax' %}"
+                           hx-target="#files-list"
+                           hx-select="#files-list"
+                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                           hx-swap="outerHTML"
+                           hx-push-url="true"
+                           aria-label="{% trans 'Search images' %}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                {% if query %}
+                    <a href="{% url 'lfs_manage_images_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i>
+                        {% trans "Clear" %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Images Card -->
+    <div class="card mt-4 shadow" style="height: calc(100vh - 420px);">
+        <div class="card-header bg-primary-subtle">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h4 mb-0">
+                    <i class="bi bi-images me-2"></i>
+                    {% trans 'Global Images' %}
+                </h2>
+                <!-- Pagination in header -->
+                {% if pagination and pagination.has_other_pages %}
+                    {% include 'manage/snippets/pagination.html' with page_obj=pagination url_name='lfs_manage_images_list' page_info_position='beside' %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body overflow-y-auto">
+            <div id="files-list">
+                {% load i18n compress %}
+
+                <div class="images-list-container">
+                    {% if images %}
+                        <form action="{% url 'lfs_manage_images_delete' %}" method="POST" class="images-form">
+                            {% csrf_token %}
+                            
+                            <div class="row g-3 mb-4">
+                                {% for image in images %}
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                                        <div class="card h-100 image-card" data-image-id="{{ image.pk }}">
+                                            <div class="position-relative">
+                                                <img 
+                                                    src="{{ image.image.url_100x100 }}" 
+                                                    alt="{{ image.title }}"
+                                                    loading="lazy"
+                                                    class="card-img-top"
+                                                    style="width: 100px; height: 100px; object-fit: cover; margin: 0 auto; display: block;"
+                                                />
+                                                <div class="position-absolute top-0 start-0 p-2">
+                                                    <div class="form-check">
+                                                        <input 
+                                                            id="image-toggle-{{ image.pk }}" 
+                                                            class="form-check-input toggle-images" 
+                                                            type="checkbox" 
+                                                            name="images" 
+                                                            value="{{ image.id }}"
+                                                            aria-label="{% trans 'Select image' %} {{ image.title }}"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="position-absolute top-0 end-0 p-2">
+                                                    <button 
+                                                        type="button" 
+                                                        class="btn btn-sm btn-light preview-button"
+                                                        hx-get="{% url 'lfs_manage_images_preview' image.id %}"
+                                                        hx-target="#modal-body-lg"
+                                                        hx-trigger="click"
+                                                        hx-swap="innerHTML"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#lfs-modal-lg"
+                                                        title="{% trans 'Preview image' %}"
+                                                    >
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-2">
+                                                <h6 class="card-title mb-1 small" title="{{ image.title }}">
+                                                    {{ image.title|truncatechars:25 }}
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="row align-items-center mb-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <button 
+                                            type="button"
+                                            class="btn btn-outline-secondary btn-sm toggle-all"
+                                            data-target="images"
+                                        >
+                                            <i class="bi bi-check-square"></i>
+                                            {% trans "Toggle all" %}
+                                        </button>
+                                        <span class="text-muted small">
+                                            <span id="selected-count">0</span> {% trans "selected" %}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 text-md-end">
+                                    <button 
+                                        type="submit" 
+                                        class="btn btn-danger btn-sm delete-button"
+                                        onclick="return confirm('{% trans "Are you sure you want to delete the selected images? This action cannot be undone." %}')"
+                                        disabled
+                                    >
+                                        <i class="bi bi-trash"></i>
+                                        {% trans 'Delete selected' %}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="bi bi-images display-1 text-muted"></i>
+                            </div>
+                            <h4>{% trans "No images found" %}</h4>
+                            <p class="text-muted">
+                                {% if query %}
+                                    {% trans "No images match your search criteria." %}
+                                    <a href="{% url 'lfs_manage_images_list' %}" class="btn btn-outline-primary btn-sm ms-2">
+                                        {% trans "Show all images" %}
+                                    </a>
+                                {% else %}
+                                    {% trans "There are no images yet. Upload some images to get started." %}
+                                    <a href="{% url 'lfs_manage_images_upload' %}" class="btn btn-primary btn-sm ms-2">
+                                        <i class="bi bi-upload"></i>
+                                        {% trans "Upload Images" %}
+                                    </a>
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.toggle-images');
+        const toggleAllBtn = document.querySelector('.toggle-all');
+        const deleteBtn = document.querySelector('.delete-button');
+        const selectedCountEl = document.getElementById('selected-count');
+        
+        function updateSelectionCount() {
+            const selectedCount = document.querySelectorAll('.toggle-images:checked').length;
+            selectedCountEl.textContent = selectedCount;
+            deleteBtn.disabled = selectedCount === 0;
+        }
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectionCount);
+        });
+        
+        if (toggleAllBtn) {
+            toggleAllBtn.addEventListener('click', function() {
+                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                checkboxes.forEach(cb => cb.checked = !allChecked);
+                updateSelectionCount();
+            });
+        }
+        
+         // Preview functionality is handled by HTMX attributes
+        
+        updateSelectionCount();
+    });
+</script>

@@ -1,0 +1,29 @@
+{% load i18n %}
+
+{% if error %}
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ error }}
+    </div>
+{% else %}
+    <div class="text-center">
+        <img src="{{ image.image.url }}" 
+             alt="{{ image.title }}"
+             class="img-fluid rounded shadow"
+             style="max-height: 70vh; max-width: 100%;">
+        
+        <div class="mt-3">
+            <h6 class="mb-2">{{ image.title }}</h6>
+            <div class="row text-muted small">
+                <div class="col-md-6">
+                    <strong>{% trans "Dimensions:" %}</strong> 
+                    {{ image.image.width }}x{{ image.image.height }}px
+                </div>
+                <div class="col-md-6">
+                    <strong>{% trans "File size:" %}</strong> 
+                    {{ image.image.size|filesizeformat }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

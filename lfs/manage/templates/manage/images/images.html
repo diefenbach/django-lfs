@@ -1,5 +1,5 @@
 {% extends "manage/manage_base.html" %}
-{% load compress  i18n static %}
+{% load compress i18n static %}
 
 {% block help_link %}user/management/shop/images.html{% endblock %}
 
@@ -12,42 +12,51 @@
     {% endcompress %}
 {% endblock %}
 
-{% block left-slot-wrapper %}{% endblock %}
-
 {% block content %}
-    <div class="site-actions"></div>
+    <div class="lfs-images">
+        <div class="row">
+            <main class="col-12 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item active" aria-current="page">{% trans "Images" %}</li>
+                            </ol>
+                        </nav>
+                        <div class="site-actions mb-2" id="site-actions">
+                            <a href="{% url 'lfs_manage_images_upload' %}" class="btn btn-sm btn-outline-primary me-2">
+                                <i class="bi bi-upload"></i>
+                                {% trans 'Upload Images' %}
+                            </a>
+                        </div>
+                    </div>
 
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#images">{% trans 'Global images' %}</a></li>
-        </ul>
-
-        <div id="images">
-            <h2>{% trans "Global images" %}</h2>
-
-            {% include "lfs/catalog/categories/product/products_navigation.html" %}
-
-            <div class="filter-wrapper">
-                <form action="{% url 'lfs_manage_global_images' %}" method="get">
-                    {% csrf_token %}
-                    <input type="text" value="{{ query }}" name="q" /> <input class="filter-button" type="submit" value="{% trans "Filter" %}" />
-                    <input type="hidden" value="{{ pagination.current_page }}" name="start" />
-                </form>
-            </div>
-
-            <div id="files-list">
-                {% include "manage/images/images-list.html" %}
-            </div>
-
-            <h2 class="heading-middle">{% trans 'Add images' %}</h2>
-
-            <div id="content">
-                <form id="file_upload" action="{% url 'lfs_manage_add_global_image' %}" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input class="button" type="file" name="files[]" multiple>
-                </form>
-                <table id="files-uploads-table" data="{% url 'lfs_manage_global_images_list' %}" msg='{% trans "Uploading images:" %}'></table>
-            </div>
+                    <ul class="nav nav-tabs" id="imagesTabs" role="tablist" hx-swap-oob="true">
+                        {% for key, url in tabs %}
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                href="{{ url }}" 
+                                role="tab"
+                                aria-controls="{{ key }}-content"
+                                aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                    {% trans key|title %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4" id="imagesTabsContent">
+                        {% if active_tab == "list" %}
+                            {% include "manage/images/tabs/_list.html" %}
+                        {% elif active_tab == "upload" %}
+                            {% include "manage/images/tabs/_upload.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

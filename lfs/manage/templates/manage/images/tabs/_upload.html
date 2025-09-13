@@ -1,0 +1,158 @@
+{% load i18n %}
+
+<div class="images-upload-tab">
+    <header class="content-header mb-4">
+        <h3>{% trans "Upload images" %}</h3>
+        <p class="help-text text-muted">
+            {% trans "Select multiple image files to upload. Supported formats: JPEG, PNG, GIF, WebP." %}
+        </p>
+    </header>
+
+    <div class="upload-section">
+        <div class="card">
+            <div class="card-body">
+                <form 
+                    id="file_upload" 
+                    action="{% url 'lfs_manage_images_add' %}" 
+                    method="POST" 
+                    enctype="multipart/form-data"
+                    class="upload-form"
+                >
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="file-input" class="form-label">{% trans "Select Images" %}</label>
+                        <input 
+                            class="form-control" 
+                            type="file" 
+                            name="files[]" 
+                            multiple 
+                            accept="image/*"
+                            id="file-input"
+                        >
+                        <div class="form-text">
+                            {% trans "Maximum file size: 10MB per image. You can select multiple files at once." %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload"></i>
+                            {% trans "Upload Images" %}
+                        </button>
+                        <a href="{% url 'lfs_manage_images_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-list"></i>
+                            {% trans "View Images" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="upload-progress" class="mt-3" style="display: none;">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{% trans "Uploading..." %}</h5>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" 
+                             style="width: 0%" 
+                             aria-valuenow="0" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                        </div>
+                    </div>
+                    <p class="progress-text mt-2">{% trans "Please wait while your images are being uploaded..." %}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="upload-results" class="mt-3" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Upload Results" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div id="upload-results-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('file_upload');
+    const fileInput = document.getElementById('file-input');
+    const progressDiv = document.getElementById('upload-progress');
+    const resultsDiv = document.getElementById('upload-results');
+    const resultsContent = document.getElementById('upload-results-content');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const files = fileInput.files;
+        if (files.length === 0) {
+            alert('{% trans "Please select at least one image file." %}');
+            return;
+        }
+        
+        // Show progress
+        progressDiv.style.display = 'block';
+        resultsDiv.style.display = 'none';
+        
+        // Create FormData
+        const formData = new FormData(form);
+        
+        // Upload files
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide progress
+            progressDiv.style.display = 'none';
+            
+            // Show results
+            if (data.results) {
+                let html = '<div class="list-group">';
+                data.results.forEach(result => {
+                    if (result.success) {
+                        html += `<div class="list-group-item list-group-item-success">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <strong>${result.name}</strong> - {% trans "Uploaded successfully" %}
+                        </div>`;
+                    } else {
+                        html += `<div class="list-group-item list-group-item-danger">
+                            <i class="bi bi-x-circle-fill me-2"></i>
+                            <strong>${result.name}</strong> - ${result.error}
+                        </div>`;
+                    }
+                });
+                html += '</div>';
+                
+                html += `<div class="mt-3">
+                    <a href="{% url 'lfs_manage_images_list' %}" class="btn btn-primary">
+                        <i class="bi bi-list"></i>
+                        {% trans "View Uploaded Images" %}
+                    </a>
+                </div>`;
+                
+                resultsContent.innerHTML = html;
+                resultsDiv.style.display = 'block';
+                
+                // Reset form
+                form.reset();
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            progressDiv.style.display = 'none';
+            alert('{% trans "An error occurred during upload. Please try again." %}');
+        });
+    });
+});
+</script>

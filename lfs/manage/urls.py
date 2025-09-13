@@ -40,11 +40,7 @@ urlpatterns = [
     path("", include("lfs.manage.portlets.urls")),
     # Product
     # Product management URLs are now handled by modern class-based views in products/urls.py
-    re_path(r"^imagebrowser$", lfs.manage.images.views.imagebrowser, name="lfs_manage_imagebrowser"),
-    re_path(r"^global-images$", lfs.manage.images.views.images, name="lfs_manage_global_images"),
-    re_path(r"^global-images-list$", lfs.manage.images.views.images_list, name="lfs_manage_global_images_list"),
-    re_path(r"^delete-global-images$", lfs.manage.images.views.delete_images, name="lfs_manage_delete_images"),
-    re_path(r"^add-global-images$", lfs.manage.images.views.add_images, name="lfs_manage_add_global_image"),
+    path("", include("lfs.manage.images.urls")),
     # Property Groups
     path("", include("lfs.manage.property_groups.urls")),
     # Properties
