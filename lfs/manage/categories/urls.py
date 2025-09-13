@@ -63,7 +63,7 @@ urlpatterns = [
         name="lfs_manage_no_categories",
     ),
     path(
-        r"^sort-categories$",
+        "sort-categories",
         lfs.manage.categories.views.SortCategoriesView.as_view(),
         name="lfs_sort_categories",
     ),

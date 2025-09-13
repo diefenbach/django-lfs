@@ -134,4 +134,14 @@ urlpatterns = [
         ResetProductFiltersView.as_view(),
         name="lfs_reset_product_filters",
     ),
+    path(
+        "update-product-properties/<int:id>",
+        ProductPropertiesView.as_view(),
+        name="lfs_update_product_properties",
+    ),
+    path(
+        "update-product-property-groups/<int:id>",
+        ProductPropertiesView.as_view(),
+        name="lfs_update_product_property_groups",
+    ),
 ]
