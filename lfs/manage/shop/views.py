@@ -13,17 +13,7 @@ from lfs.core.models import Shop
 from lfs.core.signals import shop_changed
 from lfs.core.utils import import_symbol
 from lfs.manage.portlets.views import PortletsInlineView
-from lfs.manage.seo.views import SEOView
 from lfs.manage.shop.forms import ShopDataForm, ShopDefaultValuesForm
-
-
-class ShopSEOView(SEOView):
-    """SEO view for Shop with signal handling."""
-
-    def form_valid(self, form):
-        res = super().form_valid(form)
-        shop_changed.send(form.instance)
-        return res
 
 
 class ShopTabMixin:
