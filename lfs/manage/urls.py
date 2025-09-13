@@ -1,6 +1,5 @@
 from django.urls import path, re_path, include
 import lfs.manage
-import lfs.manage.customer_tax.views
 import lfs.manage.images.views
 import lfs.manage.information.views
 import lfs.manage.products
@@ -143,30 +142,8 @@ urlpatterns = [
     path("", include("lfs.manage.actions.urls")),
     # Product Taxes
     path("", include("lfs.manage.product_taxes.urls")),
-    # Customer tax
-    re_path(r"^add-customer-tax$", lfs.manage.customer_tax.views.add_customer_tax, name="lfs_add_customer_tax"),
-    re_path(
-        r"^delete-customer-tax/(?P<id>\d*)$",
-        lfs.manage.customer_tax.views.delete_customer_tax,
-        name="lfs_delete_customer_tax",
-    ),
-    re_path(r"^customer-taxes$", lfs.manage.customer_tax.views.manage_customer_taxes, name="lfs_manage_customer_taxes"),
-    re_path(
-        r"^customer-tax/(?P<id>\d*)$", lfs.manage.customer_tax.views.manage_customer_tax, name="lfs_manage_customer_tax"
-    ),
-    re_path(
-        r"^no-customer-taxes$", lfs.manage.customer_tax.views.no_customer_taxes, name="lfs_manage_no_customer_taxes"
-    ),
-    re_path(
-        r"^save-customer-tax-criteria/(?P<id>\d*)$",
-        lfs.manage.customer_tax.views.save_criteria,
-        name="lfs_manage_save_customer_tax_criteria",
-    ),
-    re_path(
-        r"^save-customer-tax-data/(?P<id>\d*)$",
-        lfs.manage.customer_tax.views.save_data,
-        name="lfs_manage_save_customer_tax_data",
-    ),
+    # Customer Taxes
+    path("", include("lfs.manage.customer_taxes.urls")),
     # Utils
     re_path(r"^utilities$", lfs.manage.views.utils.utilities, name="lfs_manage_utils"),
     re_path(r"^clear-cache$", lfs.manage.views.utils.clear_cache, name="lfs_clear_cache"),

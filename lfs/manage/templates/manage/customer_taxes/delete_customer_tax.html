@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<h5 id="modal-title-sm" class="modal-title" hx-swap-oob="true">
+    {% trans 'Delete Customer Tax' %}
+</h5>
+
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i>
+            {% blocktrans with rate=customer_tax.rate description=customer_tax.description %}
+                Are you sure you want to delete the customer tax "{{ rate }}% - {{ description }}"?
+            {% endblocktrans %}
+        </div>
+        
+        <div class="text-end">
+            <form method="post" action="{% url 'lfs_manage_delete_customer_tax' customer_tax.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    {% trans "Yes, Delete" %}
+                </button>
+            </form>
+            <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">
+                <i class="bi bi-x-circle"></i>
+                {% trans "Cancel" %}
+            </button>
+        </div>
+    </div>
+</div>

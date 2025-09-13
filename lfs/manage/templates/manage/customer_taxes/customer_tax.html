@@ -1,0 +1,98 @@
+{% extends "manage/manage_base.html" %}
+{% load compress i18n static crispy_forms_tags %}
+
+{% block help_link %}user/management/shop/customer_taxes.html{% endblock %}
+
+{% block content %}
+    <div class="lfs-customer-taxes">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Customer Taxes" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search"
+                            class="form-control"
+                            placeholder="{% trans 'Search customer taxes...' %}"
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#navigation"
+                            hx-select="#navigation"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search customer taxes' %}">
+                    </div>
+                    <div class="list-group" id="navigation">
+                        {% for ct in customer_taxes %}
+                            <a class="list-group-item list-group-item-action {% if customer_tax.id == ct.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_customer_tax' ct.id %}?q={{ search_query }}">
+                                {{ ct.rate }} %
+                            </a>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No customer taxes found." %}</div>
+                        {% endfor %}
+                    </div>
+                </div>                            
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Customer Taxes</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ customer_tax.rate }}%{% if customer_tax.description %} - {{ customer_tax.description }}{% endif %}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2"
+                                    hx-get="{% url 'lfs_manage_add_customer_tax' %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Customer Tax' %}
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger me-2"
+                               hx-get="{% url 'lfs_manage_delete_customer_tax_confirm' customer_tax.id %}"
+                               hx-target="#modal-body-sm"
+                               hx-trigger="click"
+                               hx-swap="innerHTML"
+                               href="#">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Customer Tax' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="customerTaxTabs" role="tablist" hx-swap-oob="true">
+                        {% for key, url in tabs %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                    href="{{ url }}">
+                                    {% if key == "data" %}{% trans "Data" %}{% elif key == "criteria" %}{% trans "Criteria" %}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4">
+                        <div class="tab-pane show active">
+                            {% if active_tab == "data" %}
+                                {% include "manage/customer_taxes/tabs/_data.html" %}
+                            {% elif active_tab == "criteria" %}
+                                {% include "manage/customer_taxes/tabs/_criteria.html" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
+{% endblock %}
