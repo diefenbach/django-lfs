@@ -21,7 +21,7 @@ class CartListView(PermissionRequiredMixin, TemplateView):
     """Shows a table view of all carts with filtering and pagination."""
 
     permission_required = "core.manage_shop"
-    template_name = "manage/cart/cart_list.html"
+    template_name = "manage/carts/cart_list.html"
 
     def get_context_data(self, **kwargs):
         """Extends context with carts and filter form."""
@@ -77,13 +77,13 @@ class NoCartsView(PermissionRequiredMixin, TemplateView):
     """Displays that no carts exist."""
 
     permission_required = "core.manage_shop"
-    template_name = "manage/cart/no_carts.html"
+    template_name = "manage/carts/no_carts.html"
 
 
 class CartDataView(PermissionRequiredMixin, TemplateView):
     """View for data tab of a Cart."""
 
-    template_name = "manage/cart/cart.html"
+    template_name = "manage/carts/cart.html"
     tab_name = "data"
     permission_required = "core.manage_shop"
 
@@ -153,7 +153,7 @@ class ApplyCartFiltersView(PermissionRequiredMixin, FormView):
 
     permission_required = "core.manage_shop"
     form_class = CartFilterForm
-    template_name = "manage/cart/cart_list.html"  # Fallback template for form errors
+    template_name = "manage/carts/cart_list.html"  # Fallback template for form errors
 
     def get_success_url(self) -> str:
         """Redirects back to the cart view or cart list."""
@@ -190,7 +190,7 @@ class ApplyCartFiltersView(PermissionRequiredMixin, FormView):
 class CartDeleteConfirmView(PermissionRequiredMixin, TemplateView):
     """Provides a modal form to confirm deletion of a cart."""
 
-    template_name = "manage/cart/delete_cart.html"
+    template_name = "manage/carts/delete_cart.html"
     permission_required = "core.manage_shop"
 
     def get_context_data(self, **kwargs):
