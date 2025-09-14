@@ -1,12 +1,10 @@
 from django.urls import path
-
-import lfs.manage.information.views
-
+from . import views
 
 urlpatterns = [
     path(
         "environment",
-        lfs.manage.information.views.environment,
+        views.EnvironmentView.as_view(),
         name="lfs_manage_environment",
     ),
 ]

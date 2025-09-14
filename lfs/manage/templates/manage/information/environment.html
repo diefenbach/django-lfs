@@ -1,42 +1,92 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
-{% block left-slot-wrapper %}{% endblock %}
+{% block help_link %}user/management/utils/miscellaneous.html{% endblock %}
+
 {% block content %}
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#versions">{% trans 'Versions' %}</a></li>
-        </ul>
-        <div id="versions">
-            <table class="lfs-manage-table">
-                <tr>
-                    <th class="middle">
-                        {% trans "Package" %}
-                    </th>
-                    <th>
-                        {% trans "Version" %}
-                    </th>
-                </tr>
-                <tr class="even">
-                    <td>
-                        LFS
-                    </td>
-                    <td>
-                        {{ lfs_version }}
-                    </td>
-                </tr>
-                {% for app in apps %}
-                    <tr class="{% cycle 'odd' 'even' %}">
-                        <td>
-                            {{ app.name }}
-                        </td>
-                        <td>
-                            {{ app.version }}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
+    <div class="lfs-environment">
+        <main class="col-12 p-4 pt-3 scrollable-content">
+            <div class="padding-bottom-100">
+                <div class="d-flex justify-content-end fw-semibold mb-3 text-end">
+                    <div class="site-actions mb-2" id="site-actions">
+                        <a class="btn btn-sm btn-outline-secondary"
+                            href="{% url 'lfs_shop_view' %}">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            {% trans 'View Shop' %}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-primary-subtle">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    {% trans "Environment Information" %}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-gear-fill text-primary fs-4 me-3"></i>
+                                            <div>
+                                                <h6 class="mb-1">{% trans "LFS Version" %}</h6>
+                                                <span class="badge bg-primary fs-6">{{ lfs_version }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-box text-success fs-4 me-3"></i>
+                                            <div>
+                                                <h6 class="mb-1">{% trans "Installed Packages" %}</h6>
+                                                <span class="badge bg-success fs-6">{{ apps|length }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="fw-semibold">{% trans "Package" %}</th>
+                                                <th class="fw-semibold">{% trans "Version" %}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="table-primary">
+                                                <td class="fw-semibold">
+                                                    <i class="bi bi-lightning-fill me-2"></i>
+                                                    LFS
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-primary">{{ lfs_version }}</span>
+                                                </td>
+                                            </tr>
+                                            {% for app in apps %}
+                                                <tr>
+                                                    <td class="text-muted">{{ app.name }}</td>
+                                                    <td>
+                                                        {% if app.version == "N/A" %}
+                                                            <span class="badge bg-secondary">{{ app.version }}</span>
+                                                        {% else %}
+                                                            <span class="badge bg-info">{{ app.version }}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 {% endblock %}
 
