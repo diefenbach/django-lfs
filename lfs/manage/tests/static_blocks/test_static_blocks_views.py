@@ -127,7 +127,7 @@ class TestNoStaticBlocksView:
         view.request = mock_request
         view.request.user = admin_user
 
-        assert view.template_name == "manage/static_block/no_static_blocks.html"
+        assert view.template_name == "manage/static_blocks/no_static_blocks.html"
 
     @pytest.mark.django_db
     def test_permission_required(self, mock_request, regular_user):
@@ -337,7 +337,7 @@ class TestStaticBlockFilesView:
     def test_template_name_is_correct(self, mock_request, admin_user):
         """Test that view uses correct template."""
         view = StaticBlockFilesView()
-        assert view.template_name == "manage/static_block/static_block.html"
+        assert view.template_name == "manage/static_blocks/static_block.html"
 
     @pytest.mark.django_db
     def test_form_class_is_file_upload_form(self, mock_request, admin_user):
@@ -506,7 +506,7 @@ class TestStaticBlockCreateView:
     def test_template_name_is_correct(self, mock_request, admin_user):
         """Test that view uses correct template."""
         view = StaticBlockCreateView()
-        assert view.template_name == "manage/static_block/add_static_block.html"
+        assert view.template_name == "manage/static_blocks/add_static_block.html"
 
     @pytest.mark.django_db
     def test_success_message_is_correct(self, mock_request, admin_user):
@@ -533,7 +533,7 @@ class TestStaticBlockDeleteConfirmView:
     def test_template_name_is_correct(self, mock_request, admin_user):
         """Test that view uses correct template."""
         view = StaticBlockDeleteConfirmView()
-        assert view.template_name == "manage/static_block/delete_static_block.html"
+        assert view.template_name == "manage/static_blocks/delete_static_block.html"
 
     @pytest.mark.django_db
     def test_get_context_data_includes_static_block(self, mock_request, admin_user, sample_static_block):
@@ -587,7 +587,7 @@ class TestStaticBlockPreviewView:
     def test_template_name_is_correct(self, mock_request, admin_user):
         """Test that view uses correct template."""
         view = StaticBlockPreviewView()
-        assert view.template_name == "manage/static_block/preview.html"
+        assert view.template_name == "manage/static_blocks/preview.html"
 
     @pytest.mark.django_db
     def test_get_context_data_includes_static_block(self, mock_request, admin_user, sample_static_block):

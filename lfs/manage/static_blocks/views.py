@@ -31,13 +31,13 @@ class NoStaticBlocksView(PermissionRequiredMixin, TemplateView):
     """Displays that no static blocks exist."""
 
     permission_required = "core.manage_shop"
-    template_name = "manage/static_block/no_static_blocks.html"
+    template_name = "manage/static_blocks/no_static_blocks.html"
 
 
 class StaticBlockTabMixin:
     """Mixin for tab navigation in StaticBlock views."""
 
-    template_name = "manage/static_block/static_block.html"
+    template_name = "manage/static_blocks/static_block.html"
     tab_name: Optional[str] = None
 
     def get_static_block(self) -> StaticBlock:
@@ -120,7 +120,7 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
     """View for files tab of a StaticBlock."""
 
     tab_name = "files"
-    template_name = "manage/static_block/static_block.html"
+    template_name = "manage/static_blocks/static_block.html"
     permission_required = "core.manage_shop"
     form_class = FileUploadForm
 
@@ -232,7 +232,7 @@ class StaticBlockCreateView(SuccessMessageMixin, PermissionRequiredMixin, Create
 
     model = StaticBlock
     fields = ["name"]
-    template_name = "manage/static_block/add_static_block.html"
+    template_name = "manage/static_blocks/add_static_block.html"
     permission_required = "core.manage_shop"
     success_message = _("Static block has been created.")
 
@@ -243,7 +243,7 @@ class StaticBlockCreateView(SuccessMessageMixin, PermissionRequiredMixin, Create
 class StaticBlockDeleteConfirmView(PermissionRequiredMixin, TemplateView):
     """Provides a modal form to confirm deletion of a static block."""
 
-    template_name = "manage/static_block/delete_static_block.html"
+    template_name = "manage/static_blocks/delete_static_block.html"
     permission_required = "core.manage_shop"
 
     def get_context_data(self, **kwargs):
@@ -268,7 +268,7 @@ class StaticBlockPreviewView(PermissionRequiredMixin, TemplateView):
     """Displays a preview of a static block"""
 
     permission_required = "core.manage_shop"
-    template_name = "manage/static_block/preview.html"
+    template_name = "manage/static_blocks/preview.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
