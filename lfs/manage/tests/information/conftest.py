@@ -1,8 +1,6 @@
 import pytest
 from lfs.core.models import Shop
 
-# Common fixtures are now imported from the main conftest.py
-
 
 @pytest.fixture(autouse=True)
 def setup_shop(db):

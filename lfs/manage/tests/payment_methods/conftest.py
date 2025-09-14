@@ -4,8 +4,9 @@ Pytest configuration for payment method tests.
 
 import pytest
 from decimal import Decimal
+from unittest.mock import Mock
 from django.contrib.auth import get_user_model
-from django.test import Client
+from django.test import RequestFactory, Client
 from lfs.core.models import Shop
 from lfs.payment.models import PaymentMethod, PaymentMethodPrice
 from lfs.tax.models import Tax
@@ -41,7 +42,18 @@ def test_shop(db):
     )
 
 
-# Common fixtures are now imported from the main conftest.py
+@pytest.fixture
+def admin_user(db):
+    """Admin user with proper permissions."""
+    return User.objects.create_user(
+        username="admin", email="admin@example.com", password="testpass123", is_staff=True, is_superuser=True
+    )
+
+
+@pytest.fixture
+def regular_user(db):
+    """Regular user without admin permissions."""
+    return User.objects.create_user(username="regular", email="regular@example.com", password="testpass123")
 
 
 @pytest.fixture
@@ -95,7 +107,20 @@ def client():
     return Client()
 
 
-# Common fixtures (request_factory, mock_request) are now imported from the main conftest.py
+@pytest.fixture
+def request_factory():
+    """Request factory for creating mock requests."""
+    return RequestFactory()
+
+
+@pytest.fixture
+def mock_request(request_factory):
+    """Mock request for testing."""
+    request = request_factory.get("/")
+    request.user = Mock()
+    request.user.has_perm = Mock(return_value=True)
+    request.session = {}
+    return request
 
 
 @pytest.fixture

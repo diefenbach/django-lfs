@@ -8,6 +8,7 @@ import pytest
 from unittest.mock import Mock
 
 from django.contrib.auth import get_user_model
+from django.test import RequestFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from lfs.core.models import Shop, Country
@@ -15,7 +16,24 @@ from lfs.core.models import Shop, Country
 User = get_user_model()
 
 
-# Common fixtures are now imported from the main conftest.py
+@pytest.fixture
+def request_factory():
+    """Request factory for creating mock requests."""
+    return RequestFactory()
+
+
+@pytest.fixture
+def admin_user(db):
+    """Admin user with proper permissions."""
+    return User.objects.create_user(
+        username="admin", email="admin@example.com", password="testpass123", is_staff=True, is_superuser=True
+    )
+
+
+@pytest.fixture
+def regular_user(db):
+    """Regular user without admin permissions."""
+    return User.objects.create_user(username="user", email="user@example.com", password="testpass123")
 
 
 @pytest.fixture
@@ -71,7 +89,13 @@ def minimal_shop(db):
     )
 
 
-# Common fixtures (mock_request) are now imported from the main conftest.py
+@pytest.fixture
+def mock_request(admin_user, request_factory):
+    """Mock request with admin user."""
+    request = request_factory.get("/")
+    request.user = admin_user
+    request.session = {}
+    return request
 
 
 @pytest.fixture
@@ -109,4 +133,7 @@ def mock_shop_changed_signal():
     return Mock()
 
 
-# Common fixtures (enable_db_access_for_all_tests) are now imported from the main conftest.py
+@pytest.fixture(autouse=True)
+def enable_db_access_for_all_tests(db, shop):
+    """Enable database access for all tests."""
+    pass

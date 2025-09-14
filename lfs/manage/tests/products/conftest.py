@@ -22,7 +22,17 @@ from lfs.catalog.settings import VARIANT as PRODUCT_VARIANT
 User = get_user_model()
 
 
-# Common fixtures are now imported from the main conftest.py
+@pytest.fixture
+def admin_user(db):
+    """Create an admin user with manage_shop permission."""
+    user = User.objects.create_user(username="admin", email="admin@example.com", password="testpass123")
+    # Add core.manage_shop permission
+    from django.contrib.auth.models import Permission
+
+    permission = Permission.objects.get(codename="manage_shop")
+    user.user_permissions.add(permission)
+    user.save()
+    return user
 
 
 @pytest.fixture

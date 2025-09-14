@@ -241,11 +241,8 @@ class TestShopOrderNumbersView:
         assert callable(getattr(ShopOrderNumbersView, "post"))
 
     @patch("lfs.manage.shop.views.import_symbol")
-    @patch("lfs.manage.shop.views.lfs.core.utils.get_default_shop")
-    def test_get_context_data_includes_order_numbers_form(self, mock_get_default_shop, mock_import_symbol, shop):
+    def test_get_context_data_includes_order_numbers_form(self, mock_import_symbol, shop):
         """Should include order numbers form in context."""
-        mock_get_default_shop.return_value = shop
-
         mock_ong = Mock()
         mock_order_number = Mock()
         mock_order_number.id = "order_number"
@@ -364,11 +361,8 @@ class TestShopPortletsView:
         assert callable(getattr(ShopPortletsView, "get_context_data"))
 
     @patch("lfs.manage.shop.views.PortletsInlineView")
-    @patch("lfs.manage.shop.views.lfs.core.utils.get_default_shop")
-    def test_get_context_data_includes_portlets(self, mock_get_default_shop, mock_portlets_view, shop):
+    def test_get_context_data_includes_portlets(self, mock_portlets_view, shop):
         """Should include portlets in context."""
-        mock_get_default_shop.return_value = shop
-
         mock_instance = Mock()
         mock_instance.get.return_value = {"portlets": []}
         mock_portlets_view.return_value = mock_instance
@@ -407,11 +401,8 @@ class TestShopCarouselView:
         assert hasattr(ShopCarouselView, "get_context_data")
         assert callable(getattr(ShopCarouselView, "get_context_data"))
 
-    @patch("lfs.manage.shop.views.lfs.core.utils.get_default_shop")
-    def test_get_context_data_includes_shop(self, mock_get_default_shop, shop):
+    def test_get_context_data_includes_shop(self, shop):
         """Should include shop in context."""
-        mock_get_default_shop.return_value = shop
-
         view = ShopCarouselView()
         context = view.get_context_data()
 
