@@ -7,21 +7,6 @@
             <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
                 <div class="padding-bottom-100">
                     <div class="mb-3 fw-semibold">{% trans "Product Taxes" %}</div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                        <input type="search"
-                            class="form-control"
-                            placeholder="{% trans 'Search taxes...' %}"
-                            name="q"
-                            value="{{ search_query }}"
-                            hx-get="{{ request.path }}"
-                            hx-target="#taxes-list"
-                            hx-select="#taxes-list"
-                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
-                            hx-include="this"
-                            hx-push-url="true"
-                            aria-label="{% trans 'Search taxes' %}">
-                    </div>
                     <div id="taxes-list" class="list-group">
                         {% for t in taxes %}
                             <a class="list-group-item list-group-item-action {% if t.id == tax.id %}active{% endif %}"

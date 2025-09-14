@@ -10,7 +10,7 @@
                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                     <input type="search" 
                            class="form-control" 
-                           placeholder="Suchen …" 
+                           placeholder="{% trans 'Search' %}" 
                            name="q"
                            value="{{ search_query }}"
                            hx-get="{{ request.path }}"
