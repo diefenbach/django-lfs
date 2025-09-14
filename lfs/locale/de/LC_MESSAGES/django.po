@@ -4108,11 +4108,11 @@ msgstr "Filter wurde gespeichert."
 
 #: manage/views/orders.py:394
 msgid "Order has been sent."
-msgstr "Bestellung wurde gespeichert."
+msgstr "Bestellung wurde gesendet."
 
 #: manage/views/orders.py:427
 msgid "State has been changed"
-msgstr "Status wurden gespeichert."
+msgstr "Status wurden geändert."
 
 #: manage/views/payment.py:201
 msgid "Payment method has been added."

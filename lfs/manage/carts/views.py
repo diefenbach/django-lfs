@@ -39,7 +39,7 @@ class CartListView(PermissionRequiredMixin, TemplateView):
         filtered_carts = filter_service.filter_carts(queryset, cart_filters)
 
         # Paginate carts
-        paginator = Paginator(filtered_carts, 22)
+        paginator = Paginator(filtered_carts, 50)
         page_number = self.request.GET.get("page", 1)
         carts_page = paginator.get_page(page_number)
 

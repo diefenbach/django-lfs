@@ -4,17 +4,12 @@ import lfs.manage.orders.views
 urlpatterns = [
     path(
         "orders/",
-        lfs.manage.orders.views.orders_view,
+        lfs.manage.orders.views.OrderListView.as_view(),
         name="lfs_orders",
     ),
     path(
-        "orders/manage/",
-        lfs.manage.orders.views.manage_orders,
-        name="lfs_manage_orders",
-    ),
-    path(
         "order/<int:order_id>/",
-        lfs.manage.orders.views.order_view,
+        lfs.manage.orders.views.OrderDataView.as_view(),
         name="lfs_manage_order",
     ),
     path(

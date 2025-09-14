@@ -1,6 +1,5 @@
 from typing import Dict, Any
 from datetime import timedelta
-import json
 
 from django.conf import settings
 from django.core.cache import cache
@@ -10,7 +9,6 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
-from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -22,7 +20,6 @@ import lfs.core.utils
 import lfs.core.signals
 import lfs.order.settings
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.core.utils import LazyEncoder
 from lfs.mail import utils as mail_utils
 from lfs.order.models import Order
 from lfs.manage.mixins import DirectDeleteMixin
@@ -52,7 +49,7 @@ class OrderListView(PermissionRequiredMixin, TemplateView):
         filtered_orders = filter_service.filter_orders(queryset, order_filters)
 
         # Paginate orders
-        paginator = Paginator(filtered_orders, 20)
+        paginator = Paginator(filtered_orders, 50)
         page_number = self.request.GET.get("page", 1)
         orders_page = paginator.get_page(page_number)
 
@@ -319,54 +316,13 @@ class OrderDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequired
         return reverse("lfs_orders")
 
 
-# Legacy function-based views for backward compatibility
-@permission_required("core.manage_shop")
-def manage_orders(request, template_name="manage/orders/manage_orders.html"):
-    """Dispatches to the first order or the order overview."""
-    try:
-        order = Order.objects.all()[0]
-    except IndexError:
-        return HttpResponseRedirect(reverse("lfs_orders"))
-    else:
-        return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order.id}))
-
-
-@permission_required("core.manage_shop")
-def orders_view(request, template_name="manage/orders/orders.html"):
-    # Delegate to class-based list view for clean cut
-    return OrderListView.as_view()(request)
-
-
-@permission_required("core.manage_shop")
-def order_view(request, order_id, template_name="manage/orders/order.html"):
-    # Delegate to class-based order data view
-    return OrderDataView.as_view()(request, order_id=order_id)
-
-
-# Legacy inline parts removed by clean cut
-@permission_required("core.manage_shop")
-def set_selectable_orders_page(request):
-    # Deprecated endpoint; return no-op JSON for safety until all references removed
-    result = json.dumps({"html": ()}, cls=LazyEncoder)
-    return HttpResponse(result, content_type="application/json")
-
-
-@permission_required("core.manage_shop")
-def set_orders_page(request):
-    result = json.dumps({"html": ()}, cls=LazyEncoder)
-    return HttpResponse(result, content_type="application/json")
-
-
 @permission_required("core.manage_shop")
 def send_order(request, order_id):
     """Sends order with passed order id to the customer of this order."""
     order = lfs_get_object_or_404(Order, pk=order_id)
     mail_utils.send_order_received_mail(request, order)
-
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_order", kwargs={"order_id": order.id}),
-        msg=_("Order has been sent."),
-    )
+    messages.success(request, _("Order has been sent."))
+    return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order.id}))
 
 
 @permission_required("core.manage_shop")
@@ -397,9 +353,6 @@ def change_order_state(request):
         cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
         cache.delete(cache_key)
 
-        messages.success(request, _("Order state has been changed to %(state)s") % {"state": order.get_state_display()})
+        messages.success(request, _("Order state has been changed"))
 
     return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order_id}))
-
-
-# Legacy function removed - _get_filtered_orders is now handled by OrderFilterService
