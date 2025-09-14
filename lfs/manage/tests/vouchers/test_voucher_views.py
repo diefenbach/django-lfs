@@ -16,7 +16,7 @@ from decimal import Decimal
 
 from lfs.voucher.models import VoucherGroup, VoucherOptions, Voucher
 from lfs.tax.models import Tax
-from lfs.manage.voucher.views import (
+from lfs.manage.vouchers.views import (
     VoucherGroupDataView,
     VoucherGroupVouchersView,
     VoucherGroupOptionsView,
@@ -417,7 +417,7 @@ class TestVoucherGroupDeleteView:
         def mock_messages_success(request, message):
             pass  # Mock the messages.success call
 
-        monkeypatch.setattr("lfs.manage.voucher.views.messages.success", mock_messages_success)
+        monkeypatch.setattr("lfs.manage.vouchers.views.messages.success", mock_messages_success)
 
         response = view.post(request)
 

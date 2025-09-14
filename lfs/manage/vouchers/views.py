@@ -16,9 +16,9 @@ from lfs.tax.models import Tax
 from lfs.voucher.models import Voucher
 from lfs.voucher.models import VoucherGroup
 from lfs.voucher.models import VoucherOptions
-from lfs.manage.voucher.forms import VoucherForm
-from lfs.manage.voucher.forms import VoucherGroupAddForm
-from lfs.manage.voucher.forms import VoucherOptionsForm
+from lfs.manage.vouchers.forms import VoucherForm
+from lfs.manage.vouchers.forms import VoucherGroupAddForm
+from lfs.manage.vouchers.forms import VoucherOptionsForm
 
 
 class ManageVoucherGroupsView(PermissionRequiredMixin, RedirectView):
