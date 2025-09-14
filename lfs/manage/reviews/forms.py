@@ -16,8 +16,8 @@ class ReviewFilterForm(forms.Form):
         label=_("Active"),
         choices=[
             ("", _("All")),
-            ("1", _("Yes")),
-            ("0", _("No")),
+            ("1", _("Active")),
+            ("0", _("Inactive")),
         ],
         required=False,
         widget=forms.Select(attrs={"class": "form-select form-select-sm"}),
