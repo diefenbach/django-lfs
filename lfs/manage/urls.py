@@ -13,7 +13,7 @@ urlpatterns = [
     path("", include("lfs.manage.dashboard.urls")),
     path("", include("lfs.manage.delivery_times.urls")),
     path("", include("lfs.manage.discounts.urls")),
-    path("", include("lfs.manage.exports.urls")),
+    # path("", include("lfs.manage.exports.urls")),
     path("", include("lfs.manage.featured.urls")),
     path("", include("lfs.manage.images.urls")),
     path("", include("lfs.manage.information.urls")),

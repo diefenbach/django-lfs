@@ -2,8 +2,16 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("export-dispatcher", views.export_dispatcher, name="lfs_export_dispatcher"),
-    path("export/<int:export_id>", views.manage_export, name="lfs_export"),
+    path(
+        "export-dispatcher",
+        views.export_dispatcher,
+        name="lfs_export_dispatcher",
+    ),
+    path(
+        "export/<int:export_id>",
+        views.manage_export,
+        name="lfs_export",
+    ),
     path(
         "export-inline/<int:export_id>/<int:category_id>",
         views.export_inline,
@@ -29,9 +37,21 @@ urlpatterns = [
         views.update_data,
         name="lfs_export_update_export_data",
     ),
-    path("add-export", views.add_export, name="lfs_export_add_export"),
-    path("delete-export/<int:export_id>", views.delete_export, name="lfs_export_delete_export"),
-    path("export-export/<slug>", views.export, name="lfs_export_export"),
+    path(
+        "add-export",
+        views.add_export,
+        name="lfs_export_add_export",
+    ),
+    path(
+        "delete-export/<int:export_id>",
+        views.delete_export,
+        name="lfs_export_delete_export",
+    ),
+    path(
+        "export-export/<slug>",
+        views.export,
+        name="lfs_export_export",
+    ),
     path(
         "update-category-variants-option/<int:export_id>/<int:category_id>",
         views.update_category_variants_option,

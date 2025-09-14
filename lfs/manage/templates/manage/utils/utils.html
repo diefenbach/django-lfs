@@ -1,0 +1,61 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n static %}
+
+{% block help_link %}user/management/utils/miscellaneous.html{% endblock %}
+
+{% block content %}
+    <div class="lfs-utilities">
+        <main class="col-12 p-4 pt-3 scrollable-content">
+            <div class="padding-bottom-100">
+                <div class="d-flex justify-content-between fw-semibold mb-3">
+                    <nav aria-label="Breadcrumb" class="me-2">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item active" aria-current="page">{% trans "Utilities" %}</li>
+                        </ol>
+                    </nav>                                
+                    <div class="site-actions mb-2" id="site-actions">
+                        <a class="btn btn-sm btn-outline-secondary"
+                            href="{% url 'lfs_shop_view' %}">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            {% trans 'View Shop' %}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row g-4">
+                            {% for utility in utilities %}
+                                <div class="col-md-6 col-lg-2">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="me-3">
+                                                    <i class="{{ utility.icon }} fs-2 text-primary"></i>
+                                                </div>
+                                                <div>
+                                                    <h5 class="card-title mb-1">{{ utility.name }}</h5>
+                                                </div>
+                                            </div>
+                                            <p class="card-text text-muted flex-grow-1">{{ utility.description }}</p>
+                                            <div class="mt-auto">
+                                                <form method="post" action="{{ utility.url }}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                        <i class="bi bi-play-circle me-1"></i>
+                                                        {% trans "Execute" %}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}
