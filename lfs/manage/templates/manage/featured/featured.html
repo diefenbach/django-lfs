@@ -16,13 +16,12 @@
                     <div class="col-md-6">
                         <!-- Search Filter -->
                         <div class="mb-3">
-                            <label for="product-search" class="form-label">{% trans 'Search Products' %}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                                 <input type="search"
                                        id="product-search"
                                        class="form-control"
-                                       placeholder="{% trans 'Search' %}"
+                                       placeholder="{% trans 'Search Products' %}"
                                        name="filter"
                                        value="{{ filter }}"
                                        hx-get="{{ request.path }}"
@@ -40,7 +39,6 @@
                     <div class="col-md-6">
                         <!-- Category Filter -->
                         <div class="mb-3">
-                            <label for="category-filter" class="form-label">{% trans 'Category' %}</label>
                             <select id="category-filter"
                                     class="form-select"
                                     name="featured_category_filter"
