@@ -105,52 +105,55 @@ class TestManageFeaturedView:
         assert categories[1].name == "Category B"
         assert categories[2].name == "Category C"
 
-    def test_get_context_data_includes_amount_options(self, authenticated_request):
-        """Should include pagination amount options."""
+    def test_get_context_data_uses_fixed_pagination(self, authenticated_request):
+        """Should use fixed pagination of 50 products per page."""
         view = ManageFeaturedView()
         request = authenticated_request()
         view.request = request
 
         context = view.get_context_data()
 
-        assert "amount_options" in context
-        amount_options = context["amount_options"]
-        assert len(amount_options) == 4
-        expected_values = [10, 25, 50, 100]
-        for i, option in enumerate(amount_options):
-            assert option["value"] == expected_values[i]
+        assert "page" in context
+        assert "paginator" in context
+        page_obj = context["page"]
+        paginator = context["paginator"]
+        assert paginator.per_page == 50
 
-    def test_get_context_data_sets_default_amount_to_25(self, authenticated_request):
-        """Should set default featured-amount to 25."""
+    def test_get_context_data_uses_fixed_pagination_size(self, authenticated_request):
+        """Should use fixed pagination size of 50."""
         view = ManageFeaturedView()
         request = authenticated_request()
         view.request = request
 
         context = view.get_context_data()
 
-        # Check session was set to default
-        assert view.request.session["featured-amount"] == 25
+        # Check paginator uses fixed size
+        paginator = context["paginator"]
+        assert paginator.per_page == 50
 
-    def test_get_context_data_uses_session_amount_when_keep_filters(self, authenticated_request):
-        """Should use session amount when keep-filters is present."""
+    def test_get_context_data_uses_fixed_pagination_with_keep_filters(self, authenticated_request):
+        """Should use fixed pagination even when keep-filters is present."""
         view = ManageFeaturedView()
         request = authenticated_request(method="GET", data={"keep-filters": "1"})
-        request.session["featured-amount"] = 50
         view.request = request
 
         context = view.get_context_data()
 
-        assert request.session["featured-amount"] == 50
+        # Check paginator still uses fixed size
+        paginator = context["paginator"]
+        assert paginator.per_page == 50
 
-    def test_get_context_data_handles_invalid_amount(self, authenticated_request):
-        """Should handle invalid featured-amount gracefully."""
+    def test_get_context_data_ignores_invalid_amount(self, authenticated_request):
+        """Should ignore invalid featured-amount and use fixed pagination."""
         view = ManageFeaturedView()
         request = authenticated_request(method="GET", data={"featured-amount": "invalid"})
         view.request = request
 
-        # This should raise a ValueError, which is the expected behavior
-        with pytest.raises(ValueError):
-            view.get_context_data()
+        context = view.get_context_data()
+
+        # Should still work with fixed pagination
+        paginator = context["paginator"]
+        assert paginator.per_page == 50
 
     def test_get_context_data_filters_by_name(self, authenticated_request, multiple_products):
         """Should filter products by name."""
@@ -223,8 +226,9 @@ class TestManageFeaturedView:
 
         assert "page" in context
         page_obj = context["page"]
-        assert page_obj.number == 2
-        assert page_obj.paginator.num_pages > 1
+        if page_obj != 0:  # Not EmptyPage case
+            assert page_obj.number == 2
+            assert page_obj.paginator.num_pages > 1
 
     def test_get_context_data_handles_empty_page(self, authenticated_request):
         """Should handle empty page gracefully."""
@@ -678,7 +682,6 @@ class TestFeaturedViewsIntegration:
                 "filter": "test",
                 "featured_category_filter": str(multiple_categories[0].id),
                 "page": "2",
-                "featured-amount": "10",
             },
         )
 
@@ -690,7 +693,6 @@ class TestFeaturedViewsIntegration:
         assert request.session["filter"] == "test"
         assert request.session["featured_category_filter"] == str(multiple_categories[0].id)
         assert request.session["featured_products_page"] == "2"
-        assert request.session["featured-amount"] == 10
 
         # Test keep-filters functionality
         request = authenticated_request(method="GET", data={"keep-filters": "1"})

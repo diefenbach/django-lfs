@@ -47,11 +47,6 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
         s["filter"] = filter_
         s["featured_category_filter"] = category_filter
 
-        try:
-            s["featured-amount"] = int(r.get("featured-amount", s.get("featured-amount")))
-        except TypeError:
-            s["featured-amount"] = 25
-
         # Build filters
         filters = Q()
         if filter_:
@@ -73,7 +68,7 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
 
         # Get products (excluding already featured ones)
         products = Product.objects.filter(filters).exclude(pk__in=featured_ids)
-        paginator = Paginator(products, s["featured-amount"])
+        paginator = Paginator(products, 50)  # Fixed 50 products per page
 
         total = products.count()
         try:
@@ -81,11 +76,6 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
         except EmptyPage:
             # If the page is out of range, return 0
             page_obj = 0
-
-        # Amount options for pagination
-        amount_options = []
-        for value in (10, 25, 50, 100):
-            amount_options.append({"value": value, "selected": value == s.get("featured-amount")})
 
         # Get all categories for filter dropdown in hierarchical structure
         categories = self._build_hierarchical_categories()
@@ -98,7 +88,6 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
                 "paginator": paginator,
                 "filter": filter_ or "",
                 "category_filter": category_filter,
-                "amount_options": amount_options,
                 "categories": categories,
             }
         )
