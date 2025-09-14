@@ -1,5 +1,5 @@
 from django.urls import path
-from lfs.manage.topseller import views as topseller_views
+from lfs.manage.topsellers import views as topseller_views
 
 urlpatterns = [
     path(

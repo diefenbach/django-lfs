@@ -26,7 +26,7 @@ from django.db.models import Q
 
 from lfs.catalog.models import Product
 from lfs.marketing.models import Topseller
-from lfs.manage.topseller.views import (
+from lfs.manage.topsellers.views import (
     _update_positions,
 )
 
@@ -249,7 +249,7 @@ class TestTopsellerDataService:
     @pytest.mark.django_db
     def test_get_hierarchical_categories(self, sample_categories):
         """Test getting hierarchical categories."""
-        from lfs.manage.topseller.views import ManageTopsellerView
+        from lfs.manage.topsellers.views import ManageTopsellerView
 
         view = ManageTopsellerView()
         categories = view._build_hierarchical_categories()
@@ -278,7 +278,7 @@ class TestTopsellerAjaxService:
     @pytest.mark.django_db
     def test_sort_topseller_view_exists_and_has_post_method(self):
         """Test that SortTopsellerView exists and has the expected post method."""
-        from lfs.manage.topseller.views import SortTopsellerView
+        from lfs.manage.topsellers.views import SortTopsellerView
 
         # Verify the view class exists and has the post method
         assert hasattr(SortTopsellerView, "post")
@@ -288,7 +288,7 @@ class TestTopsellerAjaxService:
     def test_sort_topseller_view_handles_json_parsing(self):
         """Test that SortTopsellerView can handle JSON parsing without errors."""
         import json
-        from lfs.manage.topseller.views import SortTopsellerView
+        from lfs.manage.topsellers.views import SortTopsellerView
         from django.test import RequestFactory
 
         # Create a request with valid JSON
@@ -308,7 +308,7 @@ class TestTopsellerAjaxService:
     def test_sort_topseller_view_handles_empty_json(self):
         """Test that SortTopsellerView can handle empty JSON without errors."""
         import json
-        from lfs.manage.topseller.views import SortTopsellerView
+        from lfs.manage.topsellers.views import SortTopsellerView
         from django.test import RequestFactory
 
         # Create a request with empty JSON
@@ -327,7 +327,7 @@ class TestTopsellerAjaxService:
     @pytest.mark.django_db
     def test_sort_topseller_view_handles_invalid_json_gracefully(self):
         """Test that SortTopsellerView can handle invalid JSON without crashing."""
-        from lfs.manage.topseller.views import SortTopsellerView
+        from lfs.manage.topsellers.views import SortTopsellerView
         from django.test import RequestFactory
 
         # Create a request with invalid JSON
@@ -346,7 +346,7 @@ class TestTopsellerAjaxService:
     def test_sort_topseller_view_handles_nonexistent_ids(self):
         """Test that SortTopsellerView can handle nonexistent IDs in JSON."""
         import json
-        from lfs.manage.topseller.views import SortTopsellerView
+        from lfs.manage.topsellers.views import SortTopsellerView
         from django.test import RequestFactory
 
         # Create a request with nonexistent IDs
@@ -369,7 +369,7 @@ class TestTopsellerSessionService:
     @pytest.mark.django_db
     def test_session_filter_persistence(self, mock_request, admin_user, sample_categories):
         """Test that filters are persisted in session."""
-        from lfs.manage.topseller.views import ManageTopsellerView
+        from lfs.manage.topsellers.views import ManageTopsellerView
 
         category_id = str(sample_categories[0].id)
         view = ManageTopsellerView()
@@ -386,7 +386,7 @@ class TestTopsellerSessionService:
     @pytest.mark.django_db
     def test_session_filter_retrieval(self, mock_request, admin_user, sample_categories):
         """Test that filters are retrieved from session."""
-        from lfs.manage.topseller.views import ManageTopsellerView
+        from lfs.manage.topsellers.views import ManageTopsellerView
 
         category_id = str(sample_categories[0].id)
         # Set session data
@@ -409,7 +409,7 @@ class TestTopsellerSessionService:
     @pytest.mark.django_db
     def test_session_amount_handling(self, mock_request, admin_user):
         """Test that amount is handled in session."""
-        from lfs.manage.topseller.views import ManageTopsellerView
+        from lfs.manage.topsellers.views import ManageTopsellerView
 
         view = ManageTopsellerView()
         view.request = mock_request
@@ -423,7 +423,7 @@ class TestTopsellerSessionService:
     @pytest.mark.django_db
     def test_session_amount_default(self, mock_request, admin_user):
         """Test that amount defaults to 25 when not provided."""
-        from lfs.manage.topseller.views import ManageTopsellerView
+        from lfs.manage.topsellers.views import ManageTopsellerView
 
         view = ManageTopsellerView()
         view.request = mock_request
@@ -436,7 +436,7 @@ class TestTopsellerSessionService:
     @pytest.mark.django_db
     def test_session_amount_invalid_type(self, mock_request, admin_user):
         """Test that invalid amount type raises ValueError."""
-        from lfs.manage.topseller.views import ManageTopsellerView
+        from lfs.manage.topsellers.views import ManageTopsellerView
 
         view = ManageTopsellerView()
         view.request = mock_request

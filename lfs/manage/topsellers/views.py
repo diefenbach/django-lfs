@@ -18,7 +18,7 @@ from lfs.marketing.models import Topseller
 class ManageTopsellerView(PermissionRequiredMixin, TemplateView):
     """Main view for managing topseller products with two-column layout."""
 
-    template_name = "manage/topseller/topseller.html"
+    template_name = "manage/topsellers/topseller.html"
     permission_required = "core.manage_shop"
 
     def get_context_data(self, **kwargs):

@@ -26,7 +26,7 @@ from django.http import HttpResponse
 from django.test import RequestFactory
 
 from lfs.marketing.models import Topseller
-from lfs.manage.topseller.views import (
+from lfs.manage.topsellers.views import (
     ManageTopsellerView,
     AddTopsellerView,
     RemoveTopsellerView,
@@ -106,7 +106,7 @@ class TestManageTopsellerView:
         # Ensure session has topseller-amount
         view.request.session["topseller-amount"] = 25
 
-        with patch("lfs.manage.topseller.views.Paginator") as mock_paginator:
+        with patch("lfs.manage.topsellers.views.Paginator") as mock_paginator:
             mock_page = MagicMock()
             mock_page.object_list = []
             mock_paginator.return_value.page.return_value = mock_page
@@ -136,7 +136,7 @@ class TestManageTopsellerView:
         # Ensure session has topseller-amount
         view.request.session["topseller-amount"] = 25
 
-        with patch("lfs.manage.topseller.views.Paginator") as mock_paginator:
+        with patch("lfs.manage.topsellers.views.Paginator") as mock_paginator:
             mock_page = MagicMock()
             mock_page.object_list = []
             mock_paginator.return_value.page.return_value = mock_page
@@ -158,7 +158,7 @@ class TestManageTopsellerView:
         # Ensure session has topseller-amount
         view.request.session["topseller-amount"] = 25
 
-        with patch("lfs.manage.topseller.views.Paginator") as mock_paginator:
+        with patch("lfs.manage.topsellers.views.Paginator") as mock_paginator:
             mock_page = MagicMock()
             mock_page.object_list = []
             mock_paginator.return_value.page.return_value = mock_page
@@ -179,7 +179,7 @@ class TestManageTopsellerView:
         # Ensure session has topseller-amount
         view.request.session["topseller-amount"] = 25
 
-        with patch("lfs.manage.topseller.views.Paginator") as mock_paginator:
+        with patch("lfs.manage.topsellers.views.Paginator") as mock_paginator:
             mock_page = MagicMock()
             mock_page.object_list = []
             mock_paginator.return_value.page.return_value = mock_page
@@ -205,7 +205,7 @@ class TestManageTopsellerView:
         # Ensure session has topseller-amount
         view.request.session["topseller-amount"] = 25
 
-        with patch("lfs.manage.topseller.views.Paginator") as mock_paginator:
+        with patch("lfs.manage.topsellers.views.Paginator") as mock_paginator:
             mock_page = MagicMock()
             mock_page.object_list = []
             mock_paginator.return_value.page.return_value = mock_page
@@ -228,7 +228,7 @@ class TestManageTopsellerView:
         # Ensure session has topseller-amount
         view.request.session["topseller-amount"] = 25
 
-        with patch("lfs.manage.topseller.views.Paginator") as mock_paginator:
+        with patch("lfs.manage.topsellers.views.Paginator") as mock_paginator:
             mock_page = MagicMock()
             mock_page.object_list = []
             mock_paginator.return_value.page.return_value = mock_page
@@ -251,7 +251,7 @@ class TestManageTopsellerView:
         # Ensure session has topseller-amount
         view.request.session["topseller-amount"] = 25
 
-        with patch("lfs.manage.topseller.views.Paginator") as mock_paginator:
+        with patch("lfs.manage.topsellers.views.Paginator") as mock_paginator:
             mock_page = MagicMock()
             mock_page.object_list = []
             mock_paginator.return_value.page.return_value = mock_page
@@ -348,7 +348,7 @@ class TestManageTopsellerView:
         view = ManageTopsellerView()
         view.request = mock_request
 
-        with patch("lfs.manage.topseller.views.ManageTopsellerView.get_context_data") as mock_get_context:
+        with patch("lfs.manage.topsellers.views.ManageTopsellerView.get_context_data") as mock_get_context:
             mock_get_context.return_value = {"topseller": sample_topsellers}
             with patch("django.template.loader.render_to_string", return_value="rendered template"):
                 response = view.get(mock_request)
@@ -364,7 +364,7 @@ class TestManageTopsellerView:
         mock_request.session = {"topseller-amount": 25}
 
         view = ManageTopsellerView()
-        assert view.template_name == "manage/topseller/topseller.html"
+        assert view.template_name == "manage/topsellers/topseller.html"
 
 
 class TestManageTopsellerInlineView:
@@ -375,7 +375,7 @@ class TestManageTopsellerInlineView:
         """Test that inline functionality is not currently implemented."""
         # Note: The inline functionality appears to have been removed in the class-based refactor
         # This test documents that the inline view is not available
-        from lfs.manage.topseller.views import ManageTopsellerView
+        from lfs.manage.topsellers.views import ManageTopsellerView
 
         view = ManageTopsellerView()
         # The view only supports full page rendering, not inline partials
