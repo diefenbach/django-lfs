@@ -34,7 +34,7 @@ class OrderListView(PermissionRequiredMixin, TemplateView):
     """Shows a table view of all orders with filtering and pagination."""
 
     permission_required = "core.manage_shop"
-    template_name = "manage/order/orders.html"
+    template_name = "manage/orders/orders.html"
 
     def get_context_data(self, **kwargs):
         """Extends context with orders and filter form."""
@@ -105,7 +105,7 @@ class OrderListView(PermissionRequiredMixin, TemplateView):
 class OrderDataView(PermissionRequiredMixin, TemplateView):
     """View for data tab of an Order."""
 
-    template_name = "manage/order/order.html"
+    template_name = "manage/orders/order.html"
     tab_name = "data"
     permission_required = "core.manage_shop"
 
@@ -321,7 +321,7 @@ class OrderDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequired
 
 # Legacy function-based views for backward compatibility
 @permission_required("core.manage_shop")
-def manage_orders(request, template_name="manage/order/manage_orders.html"):
+def manage_orders(request, template_name="manage/orders/manage_orders.html"):
     """Dispatches to the first order or the order overview."""
     try:
         order = Order.objects.all()[0]
@@ -332,13 +332,13 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
 
 
 @permission_required("core.manage_shop")
-def orders_view(request, template_name="manage/order/orders.html"):
+def orders_view(request, template_name="manage/orders/orders.html"):
     # Delegate to class-based list view for clean cut
     return OrderListView.as_view()(request)
 
 
 @permission_required("core.manage_shop")
-def order_view(request, order_id, template_name="manage/order/order.html"):
+def order_view(request, order_id, template_name="manage/orders/order.html"):
     # Delegate to class-based order data view
     return OrderDataView.as_view()(request, order_id=order_id)
 
