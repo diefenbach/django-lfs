@@ -68,26 +68,7 @@ def order_item(db, order, product):
     )
 
 
-@pytest.fixture
-def admin_user(db):
-    """Admin user with proper permissions."""
-    return User.objects.create_user(
-        username="admin", email="admin@example.com", password="testpass123", is_staff=True, is_superuser=True
-    )
-
-
-@pytest.fixture
-def manage_user(db):
-    """Create a user with manage permissions."""
-    return User.objects.create_user(
-        username="manage_user", email="manage@example.com", password="testpass123", is_staff=True, is_superuser=True
-    )
-
-
-@pytest.fixture
-def regular_user(db):
-    """Regular user without special permissions."""
-    return User.objects.create_user(username="regular", email="regular@example.com", password="testpass123")
+# Common fixtures are now imported from the main conftest.py
 
 
 # Order-specific fixtures that don't conflict with main conftest.py

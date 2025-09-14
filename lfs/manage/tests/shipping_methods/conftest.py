@@ -7,42 +7,17 @@ Provides comprehensive test data and utilities for shipping method management te
 import pytest
 
 from django.contrib.auth import get_user_model
-from django.test import RequestFactory
 
 from lfs.shipping.models import ShippingMethod, ShippingMethodPrice
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.tax.models import Tax
-from lfs.core.models import Shop
 from lfs.customer.models import Customer
 
 User = get_user_model()
 
 
-@pytest.fixture
-def request_factory():
-    """Request factory for creating mock requests."""
-    return RequestFactory()
-
-
-@pytest.fixture
-def admin_user(db):
-    """Admin user with proper permissions."""
-    return User.objects.create_user(
-        username="admin", email="admin@example.com", password="testpass123", is_staff=True, is_superuser=True
-    )
-
-
-@pytest.fixture
-def regular_user(db):
-    """Regular user without admin permissions."""
-    return User.objects.create_user(username="user", email="user@example.com", password="testpass123")
-
-
-@pytest.fixture
-def shop(db):
-    """Shop instance for testing."""
-    return Shop.objects.create(name="Test Shop", shop_owner="Test Owner", from_email="test@example.com")
+# Common fixtures are now imported from the main conftest.py
 
 
 @pytest.fixture
@@ -128,32 +103,5 @@ def customer_with_shipping_method(db, shipping_method):
     return Customer.objects.create(selected_shipping_method=shipping_method, session_id="test_session_123")
 
 
-@pytest.fixture
-def mock_session():
-    """Mock session for testing."""
-    return {}
-
-
-@pytest.fixture
-def mock_request(admin_user, request_factory):
-    """Mock request with admin user."""
-    request = request_factory.get("/")
-    request.user = admin_user
-    request.session = {}
-    return request
-
-
-@pytest.fixture
-def mock_htmx_request(admin_user, request_factory):
-    """Mock HTMX request with admin user."""
-    request = request_factory.post("/", data={})
-    request.user = admin_user
-    request.session = {}
-    request.META["HTTP_HX_REQUEST"] = "true"
-    return request
-
-
-@pytest.fixture(autouse=True)
-def enable_db_access_for_all_tests(db, shop):
-    """Enable database access for all tests."""
-    pass
+# Common fixtures (mock_session, mock_request, mock_htmx_request, enable_db_access_for_all_tests)
+# are now imported from the main conftest.py

@@ -40,6 +40,20 @@ from portlets.example.models import TextPortlet
 User = get_user_model()
 
 
+class MockSession(dict):
+    """Mock session with session_key attribute and proper dict-like behavior."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.session_key = "test_session_key"
+
+    def get(self, key, default=None):
+        """Override get to handle session_key specially."""
+        if key == "session_key":
+            return self.session_key
+        return super().get(key, default)
+
+
 @pytest.fixture
 def request_factory():
     """Django RequestFactory for creating test requests."""
@@ -56,6 +70,14 @@ def manage_user(db):
     user.is_staff = True
     user.save()
     return user
+
+
+@pytest.fixture
+def admin_user(db):
+    """Admin user with proper permissions."""
+    return User.objects.create_user(
+        username="admin", email="admin@example.com", password="testpass123", is_staff=True, is_superuser=True
+    )
 
 
 @pytest.fixture
@@ -113,6 +135,33 @@ def authenticated_request(request_factory, manage_user):
         return request
 
     return _make_request
+
+
+@pytest.fixture
+def mock_session():
+    """Create a mock session object."""
+    return MockSession()
+
+
+@pytest.fixture
+def mock_request(admin_user, mock_session):
+    """Create a mock request with user and session."""
+    factory = RequestFactory()
+    request = factory.get("/")
+    request.user = admin_user
+    request.session = mock_session
+    return request
+
+
+@pytest.fixture
+def htmx_request(admin_user, mock_session):
+    """Create a mock HTMX request."""
+    factory = RequestFactory()
+    request = factory.get("/")
+    request.user = admin_user
+    request.session = mock_session
+    request.META["HTTP_HX_REQUEST"] = "true"
+    return request
 
 
 @pytest.fixture
@@ -322,10 +371,7 @@ def shop(db, default_country, delivery_time):
     return shop
 
 
-@pytest.fixture
-def admin_user(db):
-    """Create an admin user for testing."""
-    return User.objects.create_user(username="admin", password="testpass123", is_staff=True, is_superuser=True)
+# admin_user fixture is already defined above
 
 
 @pytest.fixture
@@ -850,13 +896,7 @@ def hierarchical_categories(db):
 # Customer-related fixtures for edge case testing
 
 
-@pytest.fixture
-def mock_request():
-    """Mock request object for testing."""
-    factory = RequestFactory()
-    request = factory.get("/")
-    request.session = {}
-    return request
+# mock_request fixture is already defined above with user and session
 
 
 @pytest.fixture
@@ -936,3 +976,9 @@ def category(db):
         slug="test-category",
         position=10,
     )
+
+
+@pytest.fixture(autouse=True)
+def enable_db_access_for_all_tests(db, shop):
+    """Enable database access for all tests."""
+    pass

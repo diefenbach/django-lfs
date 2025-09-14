@@ -6,41 +6,16 @@ Provides comprehensive test data and utilities for image management tests.
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.test import RequestFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image as PILImage
 import io
 
 from lfs.catalog.models import Image
-from lfs.core.models import Shop
 
 User = get_user_model()
 
 
-@pytest.fixture
-def request_factory():
-    """Request factory for creating mock requests."""
-    return RequestFactory()
-
-
-@pytest.fixture
-def admin_user(db):
-    """Admin user with proper permissions."""
-    return User.objects.create_user(
-        username="admin", email="admin@example.com", password="testpass123", is_staff=True, is_superuser=True
-    )
-
-
-@pytest.fixture
-def regular_user(db):
-    """Regular user without admin permissions."""
-    return User.objects.create_user(username="user", email="user@example.com", password="testpass123")
-
-
-@pytest.fixture
-def shop(db):
-    """Shop instance for testing."""
-    return Shop.objects.create(name="Test Shop", shop_owner="Test Owner", from_email="test@example.com")
+# Common fixtures are now imported from the main conftest.py
 
 
 @pytest.fixture
@@ -112,43 +87,5 @@ def multiple_images(db, test_image_file, test_png_file):
     return images
 
 
-class MockSession(dict):
-    """Mock session with session_key attribute and proper dict-like behavior."""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.session_key = "test_session_key"
-
-    def get(self, key, default=None):
-        return super().get(key, default)
-
-
-@pytest.fixture
-def mock_session():
-    """Mock session for testing."""
-    return MockSession()
-
-
-@pytest.fixture
-def mock_request(admin_user, request_factory):
-    """Mock request with admin user."""
-    request = request_factory.get("/")
-    request.user = admin_user
-    request.session = MockSession()
-    return request
-
-
-@pytest.fixture
-def htmx_request(admin_user, request_factory):
-    """Mock HTMX request with admin user."""
-    request = request_factory.get("/")
-    request.user = admin_user
-    request.session = MockSession()
-    request.META["HTTP_HX_REQUEST"] = "true"
-    return request
-
-
-@pytest.fixture(autouse=True)
-def enable_db_access_for_all_tests(db, shop):
-    """Enable database access for all tests."""
-    pass
+# Common fixtures (MockSession, mock_session, mock_request, htmx_request, enable_db_access_for_all_tests)
+# are now imported from the main conftest.py
