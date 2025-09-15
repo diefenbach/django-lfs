@@ -3,9 +3,9 @@ from . import views
 
 urlpatterns = [
     path(
-        "utilities",
-        views.UtilitiesView.as_view(),
-        name="lfs_manage_utils",
+        "tools",
+        views.ToolsView.as_view(),
+        name="lfs_manage_tools",
     ),
     path(
         "clear-cache",

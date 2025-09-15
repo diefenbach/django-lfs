@@ -12,10 +12,10 @@ import lfs.catalog.models
 import lfs.marketing.utils
 
 
-class UtilitiesView(PermissionRequiredMixin, TemplateView):
-    """Main utilities view displaying available utility functions."""
+class ToolsView(PermissionRequiredMixin, TemplateView):
+    """Main tools view displaying available utility functions."""
 
-    template_name = "manage/utils/utils.html"
+    template_name = "manage/tools/tools.html"
     permission_required = "core.manage_shop"
 
     def get_context_data(self, **kwargs):
@@ -54,7 +54,7 @@ def reindex_topseller(request):
     """Clears and reindexes the topsellers."""
     lfs.marketing.utils.calculate_product_sales()
     messages.success(request, _("Topseller have been reindexed."))
-    return HttpResponseRedirect(reverse("lfs_manage_utils"))
+    return HttpResponseRedirect(reverse("lfs_manage_tools"))
 
 
 @permission_required("core.manage_shop")
@@ -62,7 +62,7 @@ def clear_cache(request):
     """Clears the whole cache."""
     lfs.caching.utils.clear_cache()
     messages.success(request, _("Cache has been cleared."))
-    return HttpResponseRedirect(reverse("lfs_manage_utils"))
+    return HttpResponseRedirect(reverse("lfs_manage_tools"))
 
 
 @permission_required("core.manage_shop")
@@ -70,7 +70,7 @@ def set_category_levels(request):
     """Sets the category levels based on the position in category hierarchy."""
     lfs.core.utils.set_category_levels()
     messages.success(request, _("Category levels have been created."))
-    return HttpResponseRedirect(reverse("lfs_manage_utils"))
+    return HttpResponseRedirect(reverse("lfs_manage_tools"))
 
 
 @permission_required("core.manage_shop")
@@ -80,4 +80,4 @@ def update_effective_price(request):
         product.save()
 
     messages.success(request, _("Effective prices have been set."))
-    return HttpResponseRedirect(reverse("lfs_manage_utils"))
+    return HttpResponseRedirect(reverse("lfs_manage_tools"))

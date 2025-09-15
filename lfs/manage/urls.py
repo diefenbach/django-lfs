@@ -32,6 +32,6 @@ urlpatterns = [
     path("", include("lfs.manage.shop.urls")),
     path("", include("lfs.manage.static_blocks.urls")),
     path("", include("lfs.manage.topsellers.urls")),
-    path("", include("lfs.manage.utils.urls")),
+    path("", include("lfs.manage.tools.urls")),
     path("", include("lfs.manage.vouchers.urls")),
 ]
