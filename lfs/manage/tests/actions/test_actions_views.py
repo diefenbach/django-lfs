@@ -58,7 +58,7 @@ class TestManageActionsDispatcher:
         Action.objects.all().delete()
 
         def mock_reverse(view_name, kwargs=None):
-            if view_name == "lfs_no_actions":
+            if view_name == "lfs_manage_no_actions":
                 return "/manage/no-actions/"
             return f"/mock-url/{view_name}/"
 

@@ -50,7 +50,7 @@
                     </nav>                                
                     <div class="site-actions mb-2" id="site-actions">
                         <button class="btn btn-sm btn-outline-primary me-2" 
-                            hx-get="{% url 'lfs_add_action' %}" 
+                            hx-get="{% url 'lfs_manage_add_action' %}" 
                             hx-target="#modal-body-lg" 
                             hx-trigger="click" 
                             hx-swap="innerHTML" 
@@ -107,7 +107,7 @@
     {% include 'manage/snippets/modals/modal-sm.html' %}
 
     <script>
-        window.LFS_SORT_ACTIONS_URL = '{% url "lfs_sort_actions" %}';
+        window.LFS_SORT_ACTIONS_URL = '{% url "lfs_manage_sort_actions" %}';
     </script>
     <script src="{% static 'lfs/manage/js/action.js' %}"></script>
 {% endblock %}

@@ -26,7 +26,7 @@ def manage_actions(request):
         action = Action.objects.all()[0]
         url = reverse("lfs_manage_action", kwargs={"pk": action.id})
     except IndexError:
-        url = reverse("lfs_no_actions")
+        url = reverse("lfs_manage_no_actions")
 
     return HttpResponseRedirect(url)
 
@@ -149,7 +149,7 @@ class ActionDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequire
         if first_action:
             return reverse("lfs_manage_action", kwargs={"pk": first_action.id})
         else:
-            return reverse("lfs_no_actions")
+            return reverse("lfs_manage_no_actions")
 
 
 @permission_required("core.manage_shop")

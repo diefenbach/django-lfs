@@ -11,7 +11,7 @@
     
     <div class="mt-4">
         <form method="post" 
-              action="{% url 'lfs_delete_action' action.pk %}" 
+              action="{% url 'lfs_manage_delete_action' action.pk %}" 
               class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger me-2">

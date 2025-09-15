@@ -15,7 +15,7 @@ urlpatterns = [
     path(
         "action/add",
         lfs.manage.actions.views.ActionCreateView.as_view(),
-        name="lfs_add_action",
+        name="lfs_manage_add_action",
     ),
     path(
         "action/<int:pk>/delete-confirm",
@@ -25,16 +25,16 @@ urlpatterns = [
     path(
         "action/<int:pk>/delete",
         lfs.manage.actions.views.ActionDeleteView.as_view(),
-        name="lfs_delete_action",
+        name="lfs_manage_delete_action",
     ),
     path(
         "actions/no",
         lfs.manage.actions.views.NoActionsView.as_view(),
-        name="lfs_no_actions",
+        name="lfs_manage_no_actions",
     ),
     path(
         "actions/sort",
         lfs.manage.actions.views.sort_actions,
-        name="lfs_sort_actions",
+        name="lfs_manage_sort_actions",
     ),
 ]

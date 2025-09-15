@@ -15,7 +15,7 @@
                 {% trans "You haven't created any actions yet. Actions allow you to define custom behaviors and workflows for your store." %}
             </p>
             <button type="button" class="btn btn-primary" 
-                hx-get="{% url 'lfs_add_action' %}"
+                hx-get="{% url 'lfs_manage_add_action' %}"
                 hx-target="#modal-body-lg"
                 hx-trigger="click" 
                 hx-swap="innerHTML">

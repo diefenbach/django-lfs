@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-12">
-        <form method="post" action="{% url 'lfs_add_action' %}">
+        <form method="post" action="{% url 'lfs_manage_add_action' %}">
             {% csrf_token %}
             {{ form|crispy }}
             <div class="mt-3">
