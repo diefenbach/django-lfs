@@ -3,7 +3,7 @@
 <div class="hierarchical-categories-sidebar">
     <div id="categories-list" hx-swap-oob="true">
         <ul id="level-1" class="level-1"
-            data-sort-url="{% url 'lfs_sort_categories' %}"
+            data-sort-url="{% url 'lfs_manage_sort_categories' %}"
             data-csrf-token="{{ csrf_token }}">
             {% for cat in hierarchical_categories %}
                 {% include "manage/categories/sidebar/category_item.html" with category=cat current_category_id=current_category_id search_query=search_query css_level=1 %}

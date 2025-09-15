@@ -72,7 +72,7 @@
                         </button>
 
                         <button class="btn btn-sm btn-outline-danger me-2"
-                            hx-get="{% url 'lfs_delete_category_confirm' category.id %}"
+                            hx-get="{% url 'lfs_manage_delete_category_confirm' category.id %}"
                             hx-target="#modal-body-lg"
                             hx-trigger="click"
                             hx-swap="innerHTML">
@@ -81,7 +81,7 @@
                         </button>
 
                         <a class="btn btn-sm btn-outline-secondary"
-                            href="{% url 'lfs_category_by_id' category.id %}">
+                            href="{% url 'lfs_manage_category_by_id' category.id %}">
                             <i class="bi bi-box-arrow-up-right"></i>
                             {% trans 'View Category' %}
                         </a>

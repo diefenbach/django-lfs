@@ -35,7 +35,7 @@ urlpatterns = [
     path(
         "category/<int:id>/view-by-id/",
         lfs.manage.categories.views.CategoryViewByIDView.as_view(),
-        name="lfs_category_by_id",
+        name="lfs_manage_category_by_id",
     ),
     path(
         "category/add/",
@@ -50,12 +50,12 @@ urlpatterns = [
     path(
         "category/<int:id>/delete/",
         lfs.manage.categories.views.CategoryDeleteView.as_view(),
-        name="lfs_delete_category",
+        name="lfs_manage_delete_category",
     ),
     path(
         "category/<int:id>/delete/confirm/",
         lfs.manage.categories.views.CategoryDeleteConfirmView.as_view(),
-        name="lfs_delete_category_confirm",
+        name="lfs_manage_delete_category_confirm",
     ),
     path(
         "categories/no",
@@ -65,6 +65,6 @@ urlpatterns = [
     path(
         "sort-categories",
         lfs.manage.categories.views.SortCategoriesView.as_view(),
-        name="lfs_sort_categories",
+        name="lfs_manage_sort_categories",
     ),
 ]

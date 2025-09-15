@@ -32,7 +32,7 @@
 </div>
 
 <div class="modal-footer">
-    <form method="post" action="{% url 'lfs_delete_category' category.id %}">
+    <form method="post" action="{% url 'lfs_manage_delete_category' category.id %}">
         {% csrf_token %}
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             <i class="bi bi-x-circle"></i>
