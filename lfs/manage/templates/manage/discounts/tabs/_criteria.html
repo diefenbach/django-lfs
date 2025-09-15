@@ -10,7 +10,7 @@
         <div class="d-flex justify-content-start align-items-center mb-4">
             <button type="button" 
                     class="btn btn-success btn-sm d-flex align-items-center gap-2 shadow-sm"
-                    hx-get="{% url 'lfs_add_criterion' %}"
+                    hx-get="{% url 'lfs_manage_add_criterion' %}"
                     hx-target="tbody.criteria"
                     hx-swap="afterbegin"
                     hx-on::after-request="document.querySelector('.no-criteria-row')?.remove()"

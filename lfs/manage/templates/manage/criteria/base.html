@@ -11,7 +11,7 @@
         {% block criteria %}
             <select class="form-select form-select-sm criterion-type" 
                     name="type-{{ id }}"
-                    hx-post="{% url 'lfs_change_criterion_form' %}"
+                    hx-post="{% url 'lfs_manage_change_criterion_form' %}"
                     hx-target="closest tr"
                     hx-swap="outerHTML"
                     hx-trigger="change"
@@ -65,14 +65,14 @@
         <div class="btn-group" role="group">
             <button type="button" 
                     class="btn btn-sm btn-outline-success criterion-add-button"
-                    hx-get="{% url 'lfs_add_criterion' %}"
+                    hx-get="{% url 'lfs_manage_add_criterion' %}"
                     hx-target="closest tr"
                     hx-swap="afterend">
                 <i class="bi bi-plus"></i>
             </button>
             <button type="button" 
                     class="btn btn-sm btn-outline-danger criterion-delete-button"
-                    hx-delete="{% url 'lfs_delete_criterion' %}"
+                    hx-delete="{% url 'lfs_manage_delete_criterion' %}"
                     hx-target="closest tr"
                     hx-swap="outerHTML">
                 <i class="bi bi-trash"></i>
