@@ -19,22 +19,22 @@
                     <div class="card-body py-2">
                         <div class="mb-3">
                             <div class="btn-group w-100">
-                                <a href="{% url 'lfs_manage_apply_predefined_customer_filter' customer.id 'today' %}" 
+                                <a href="{% url 'lfs_apply_predefined_customer_filter' customer.id 'today' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-day me-1"></i>{% trans "Today" %}
                                 </a>
-                                <a href="{% url 'lfs_manage_apply_predefined_customer_filter' customer.id 'week' %}" 
+                                <a href="{% url 'lfs_apply_predefined_customer_filter' customer.id 'week' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-week me-1"></i>{% trans "Week" %}
                                 </a>
-                                <a href="{% url 'lfs_manage_apply_predefined_customer_filter' customer.id 'month' %}" 
+                                <a href="{% url 'lfs_apply_predefined_customer_filter' customer.id 'month' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-month me-1"></i>{% trans "Month" %}
                                 </a>
                             </div>
                         </div>
                         
-                        <form method="post" action="{% url 'lfs_manage_apply_customer_filters' %}">
+                        <form method="post" action="{% url 'lfs_apply_customer_filters' %}">
                             {% csrf_token %}
                             <input type="hidden" name="customer_id" value="{{ customer.id }}">
                             <div class="mb-2">
@@ -65,7 +65,7 @@
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}
                                 </button>
-                                <a href="{% url 'lfs_manage_reset_customer_filters' %}?customer_id={{ customer.id }}" class="btn btn-outline-secondary btn-sm">
+                                <a href="{% url 'lfs_reset_customer_filters' %}?customer_id={{ customer.id }}" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset" %}
                                 </a>
                             </div>
