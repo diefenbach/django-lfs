@@ -132,14 +132,14 @@ class TestApplyCustomerFiltersView:
 
     def test_should_require_permission(self, client, shop):
         """Test that view requires proper permission."""
-        response = client.post(reverse("lfs_apply_customer_filters"))
+        response = client.post(reverse("lfs_manage_apply_customer_filters"))
         assert response.status_code == 302  # Redirect to login
 
     def test_should_apply_name_filter_when_valid(self, client, admin_user, customer, shop):
         """Test that name filter is applied when valid data is submitted."""
         client.force_login(admin_user)
         data = {"name": "test"}
-        response = client.post(reverse("lfs_apply_customer_filters"), data)
+        response = client.post(reverse("lfs_manage_apply_customer_filters"), data)
         assert response.status_code == 302  # Redirect after success
         assert "customer-filters" in client.session
         assert client.session["customer-filters"]["name"] == "test"
@@ -152,7 +152,7 @@ class TestApplyCustomerFiltersView:
         client.session.save()
 
         data = {"name": ""}
-        response = client.post(reverse("lfs_apply_customer_filters"), data)
+        response = client.post(reverse("lfs_manage_apply_customer_filters"), data)
         assert response.status_code == 302
         assert "name" not in client.session["customer-filters"]
 
@@ -160,7 +160,7 @@ class TestApplyCustomerFiltersView:
         """Test that redirects to specific customer when customer_id is provided."""
         client.force_login(admin_user)
         data = {"customer_id": customer.id}
-        response = client.post(reverse("lfs_apply_customer_filters"), data)
+        response = client.post(reverse("lfs_manage_apply_customer_filters"), data)
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_customer", kwargs={"customer_id": customer.id})
 
@@ -168,7 +168,7 @@ class TestApplyCustomerFiltersView:
         """Test that redirects to customer list when no customer_id is provided."""
         client.force_login(admin_user)
         data = {}
-        response = client.post(reverse("lfs_apply_customer_filters"), data)
+        response = client.post(reverse("lfs_manage_apply_customer_filters"), data)
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_customers")
 
@@ -178,7 +178,7 @@ class TestResetCustomerFiltersView:
 
     def test_should_require_permission(self, client, shop):
         """Test that view requires proper permission."""
-        response = client.get(reverse("lfs_reset_customer_filters"))
+        response = client.get(reverse("lfs_manage_reset_customer_filters"))
         assert response.status_code == 302  # Redirect to login
 
     def test_should_clear_filters_when_authenticated(self, client, admin_user, shop):
@@ -188,21 +188,21 @@ class TestResetCustomerFiltersView:
         client.session["customer-filters"] = {"name": "test"}
         client.session.save()
 
-        response = client.get(reverse("lfs_reset_customer_filters"))
+        response = client.get(reverse("lfs_manage_reset_customer_filters"))
         assert response.status_code == 302
         assert "customer-filters" not in client.session
 
     def test_should_redirect_to_customer_when_customer_id_provided(self, client, admin_user, customer, shop):
         """Test that redirects to specific customer when customer_id is provided."""
         client.force_login(admin_user)
-        response = client.get(reverse("lfs_reset_customer_filters") + f"?customer_id={customer.id}")
+        response = client.get(reverse("lfs_manage_reset_customer_filters") + f"?customer_id={customer.id}")
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_customer", kwargs={"customer_id": customer.id})
 
     def test_should_redirect_to_customer_list_when_no_customer_id(self, client, admin_user, shop):
         """Test that redirects to customer list when no customer_id is provided."""
         client.force_login(admin_user)
-        response = client.get(reverse("lfs_reset_customer_filters"))
+        response = client.get(reverse("lfs_manage_reset_customer_filters"))
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_customers")
 
@@ -212,13 +212,13 @@ class TestSetCustomerOrderingView:
 
     def test_should_require_permission(self, client, shop):
         """Test that view requires proper permission."""
-        response = client.get(reverse("lfs_set_customer_ordering", kwargs={"ordering": "id"}))
+        response = client.get(reverse("lfs_manage_set_customer_ordering", kwargs={"ordering": "id"}))
         assert response.status_code == 302  # Redirect to login
 
     def test_should_set_ordering_when_authenticated(self, client, admin_user, shop):
         """Test that ordering is set when authenticated."""
         client.force_login(admin_user)
-        response = client.get(reverse("lfs_set_customer_ordering", kwargs={"ordering": "lastname"}))
+        response = client.get(reverse("lfs_manage_set_customer_ordering", kwargs={"ordering": "lastname"}))
         assert response.status_code == 302
         assert client.session["customer-ordering"] == "lastname"
 
@@ -227,13 +227,13 @@ class TestSetCustomerOrderingView:
         client.force_login(admin_user)
 
         # First request
-        response = client.get(reverse("lfs_set_customer_ordering", kwargs={"ordering": "id"}))
+        response = client.get(reverse("lfs_manage_set_customer_ordering", kwargs={"ordering": "id"}))
         assert response.status_code == 302
         assert client.session["customer-ordering"] == "id"
         assert client.session["customer-ordering-order"] == ""
 
         # Second request - should toggle direction
-        response = client.get(reverse("lfs_set_customer_ordering", kwargs={"ordering": "id"}))
+        response = client.get(reverse("lfs_manage_set_customer_ordering", kwargs={"ordering": "id"}))
         assert response.status_code == 302
         assert client.session["customer-ordering"] == "id"
         assert client.session["customer-ordering-order"] == "-"
@@ -242,7 +242,7 @@ class TestSetCustomerOrderingView:
         """Test that redirects to specific customer when customer_id is provided."""
         client.force_login(admin_user)
         response = client.get(
-            reverse("lfs_set_customer_ordering", kwargs={"ordering": "id"}) + f"?customer_id={customer.id}"
+            reverse("lfs_manage_set_customer_ordering", kwargs={"ordering": "id"}) + f"?customer_id={customer.id}"
         )
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_customer", kwargs={"customer_id": customer.id})
@@ -250,7 +250,7 @@ class TestSetCustomerOrderingView:
     def test_should_redirect_to_customer_list_when_no_customer_id(self, client, admin_user, shop):
         """Test that redirects to customer list when no customer_id is provided."""
         client.force_login(admin_user)
-        response = client.get(reverse("lfs_set_customer_ordering", kwargs={"ordering": "id"}))
+        response = client.get(reverse("lfs_manage_set_customer_ordering", kwargs={"ordering": "id"}))
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_customers")
 
