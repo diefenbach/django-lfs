@@ -10,21 +10,21 @@ urlpatterns = [
     path(
         "clear-cache",
         views.clear_cache,
-        name="lfs_clear_cache",
+        name="lfs_manage_clear_cache",
     ),
     path(
         "set-category-levels",
         views.set_category_levels,
-        name="lfs_set_category_levels",
+        name="lfs_manage_set_category_levels",
     ),
     path(
         "update-effective-price",
         views.update_effective_price,
-        name="lfs_update_effective_price",
+        name="lfs_manage_update_effective_price",
     ),
     path(
         "reindex-topseller",
         views.reindex_topseller,
-        name="lfs_reindex_topseller",
+        name="lfs_manage_reindex_topseller",
     ),
 ]

@@ -24,25 +24,25 @@ class ToolsView(PermissionRequiredMixin, TemplateView):
             {
                 "name": _("Clear Cache"),
                 "description": _("Clears the whole cache"),
-                "url": reverse("lfs_clear_cache"),
+                "url": reverse("lfs_manage_clear_cache"),
                 "icon": "bi-arrow-clockwise",
             },
             {
                 "name": _("Set Category Levels"),
                 "description": _("Sets the category levels based on the position in category hierarchy"),
-                "url": reverse("lfs_set_category_levels"),
+                "url": reverse("lfs_manage_set_category_levels"),
                 "icon": "bi-diagram-3",
             },
             {
                 "name": _("Reindex Topseller"),
                 "description": _("Clears and reindexes the topsellers"),
-                "url": reverse("lfs_reindex_topseller"),
+                "url": reverse("lfs_manage_reindex_topseller"),
                 "icon": "bi-star",
             },
             {
                 "name": _("Update Effective Prices"),
                 "description": _("Saves the price or sale price to effective price"),
-                "url": reverse("lfs_update_effective_price"),
+                "url": reverse("lfs_manage_update_effective_price"),
                 "icon": "bi-currency-dollar",
             },
         ]
