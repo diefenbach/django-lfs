@@ -5,7 +5,7 @@ urlpatterns = [
     path(
         "orders/",
         lfs.manage.orders.views.OrderListView.as_view(),
-        name="lfs_orders",
+        name="lfs_manage_orders",
     ),
     path(
         "order/<int:order_id>/",
@@ -15,31 +15,31 @@ urlpatterns = [
     path(
         "order/<int:order_id>/delete/",
         lfs.manage.orders.views.OrderDeleteView.as_view(),
-        name="lfs_delete_order",
+        name="lfs_manage_delete_order",
     ),
     path(
         "order/<int:order_id>/send/",
         lfs.manage.orders.views.send_order,
-        name="lfs_send_order",
+        name="lfs_manage_send_order",
     ),
     path(
         "orders/set-filter/",
         lfs.manage.orders.views.ApplyOrderFiltersView.as_view(),
-        name="lfs_set_order_filter",
+        name="lfs_manage_set_order_filter",
     ),
     path(
         "orders/set-filter-date/<str:filter_type>/",
         lfs.manage.orders.views.ApplyPredefinedOrderFilterView.as_view(),
-        name="lfs_apply_predefined_order_filter",
+        name="lfs_manage_apply_predefined_order_filter",
     ),
     path(
         "orders/reset-filter/",
         lfs.manage.orders.views.ResetOrderFiltersView.as_view(),
-        name="lfs_reset_order_filters",
+        name="lfs_manage_reset_order_filters",
     ),
     path(
         "orders/change-state/",
         lfs.manage.orders.views.change_order_state,
-        name="lfs_change_order_state",
+        name="lfs_manage_change_order_state",
     ),
 ]

@@ -14,7 +14,7 @@ class TestOrderListView:
 
     def test_order_list_view_get(self, authenticated_client, multiple_orders):
         """Test GET request to order list view."""
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
         assert response.status_code == 200
@@ -25,7 +25,7 @@ class TestOrderListView:
     def test_order_list_view_with_filters(self, authenticated_client, multiple_orders):
         """Test order list view with filters applied."""
         # First apply filters using the ApplyOrderFiltersView
-        filter_url = reverse("lfs_set_order_filter")
+        filter_url = reverse("lfs_manage_set_order_filter")
         filter_data = {
             "name": "Customer1",
             "state": "1",
@@ -33,7 +33,7 @@ class TestOrderListView:
         authenticated_client.post(filter_url, filter_data)
 
         # Now check that the order list view shows the filters
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
         assert response.status_code == 200
@@ -43,7 +43,7 @@ class TestOrderListView:
 
     def test_order_list_view_pagination(self, authenticated_client, multiple_orders):
         """Test order list view pagination."""
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url, {"page": 1})
 
         assert response.status_code == 200
@@ -52,7 +52,7 @@ class TestOrderListView:
 
     def test_order_list_view_permission_required(self, client, multiple_orders):
         """Test that order list view requires proper permissions."""
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = client.get(url)
 
         # Should redirect to login or return 403
@@ -107,7 +107,7 @@ class TestApplyOrderFiltersView:
 
     def test_apply_order_filters_post(self, authenticated_client, order):
         """Test POST request to apply order filters."""
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "name": "John",
             "state": "1",
@@ -123,7 +123,7 @@ class TestApplyOrderFiltersView:
 
     def test_apply_order_filters_redirects_to_orders_list(self, authenticated_client):
         """Test that applying filters without order-id redirects to orders list."""
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "name": "John",
             "state": "1",
@@ -132,11 +132,11 @@ class TestApplyOrderFiltersView:
         response = authenticated_client.post(url, data)
 
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
     def test_apply_order_filters_saves_to_session(self, authenticated_client, order):
         """Test that filters are saved to session."""
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "name": "John",
             "state": "1",
@@ -160,7 +160,7 @@ class TestApplyOrderFiltersView:
         }
         authenticated_client.session.save()
 
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "name": "",  # Empty name should clear it
             "state": "1",
@@ -187,7 +187,7 @@ class TestResetOrderFiltersView:
         }
         authenticated_client.session.save()
 
-        url = reverse("lfs_reset_order_filters")
+        url = reverse("lfs_manage_reset_order_filters")
         response = authenticated_client.get(url, {"order_id": order.id})
 
         assert response.status_code == 302
@@ -198,11 +198,11 @@ class TestResetOrderFiltersView:
 
     def test_reset_order_filters_redirects_to_orders_list(self, authenticated_client):
         """Test that resetting filters without order_id redirects to orders list."""
-        url = reverse("lfs_reset_order_filters")
+        url = reverse("lfs_manage_reset_order_filters")
         response = authenticated_client.get(url)
 
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
 
 class TestApplyPredefinedOrderFilterView:
@@ -210,11 +210,11 @@ class TestApplyPredefinedOrderFilterView:
 
     def test_apply_today_filter(self, authenticated_client, order):
         """Test applying today filter."""
-        url = reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "today"})
+        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "today"})
         response = authenticated_client.get(url)
 
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
         # Check that start date is set
         session_filters = authenticated_client.session.get("order-filters", {})
@@ -222,27 +222,27 @@ class TestApplyPredefinedOrderFilterView:
 
     def test_apply_week_filter(self, authenticated_client, order):
         """Test applying week filter."""
-        url = reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "week"})
+        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "week"})
         response = authenticated_client.get(url)
 
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
     def test_apply_month_filter(self, authenticated_client, order):
         """Test applying month filter."""
-        url = reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "month"})
+        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "month"})
         response = authenticated_client.get(url)
 
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
     def test_apply_invalid_filter(self, authenticated_client, order):
         """Test applying invalid filter type."""
-        url = reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "invalid"})
+        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "invalid"})
         response = authenticated_client.get(url)
 
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
 
 class TestOrderDeleteView:
@@ -250,27 +250,27 @@ class TestOrderDeleteView:
 
     def test_order_delete_view_get(self, authenticated_client, order):
         """Test GET request to order delete view."""
-        url = reverse("lfs_delete_order", kwargs={"order_id": order.id})
+        url = reverse("lfs_manage_delete_order", kwargs={"order_id": order.id})
         response = authenticated_client.get(url)
 
         # DirectDeleteMixin deletes immediately on GET, so we expect a redirect
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
     def test_order_delete_view_post(self, authenticated_client, order):
         """Test POST request to delete order."""
-        url = reverse("lfs_delete_order", kwargs={"order_id": order.id})
+        url = reverse("lfs_manage_delete_order", kwargs={"order_id": order.id})
         response = authenticated_client.post(url)
 
         assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.url == reverse("lfs_manage_orders")
 
         # Check that order is deleted
         assert not Order.objects.filter(id=order.id).exists()
 
     def test_order_delete_view_permission_required(self, client, order):
         """Test that order delete view requires proper permissions."""
-        url = reverse("lfs_delete_order", kwargs={"order_id": order.id})
+        url = reverse("lfs_manage_delete_order", kwargs={"order_id": order.id})
         response = client.post(url)
 
         # Should redirect to login or return 403
@@ -282,7 +282,7 @@ class TestChangeOrderState:
 
     def test_change_order_state_success(self, authenticated_client, order):
         """Test successful order state change."""
-        url = reverse("lfs_change_order_state")
+        url = reverse("lfs_manage_change_order_state")
         data = {
             "order-id": str(order.id),
             "new-state": "2",  # Change to different state
@@ -299,7 +299,7 @@ class TestChangeOrderState:
 
     def test_change_order_state_invalid_state(self, authenticated_client, order):
         """Test order state change with invalid state."""
-        url = reverse("lfs_change_order_state")
+        url = reverse("lfs_manage_change_order_state")
         data = {
             "order-id": str(order.id),
             "new-state": "invalid",
@@ -314,7 +314,7 @@ class TestChangeOrderState:
 
     def test_change_order_state_nonexistent_order(self, authenticated_client):
         """Test order state change with non-existent order."""
-        url = reverse("lfs_change_order_state")
+        url = reverse("lfs_manage_change_order_state")
         data = {
             "order-id": "99999",
             "new-state": "2",
@@ -328,7 +328,7 @@ class TestChangeOrderState:
         """Test that order state change updates state_modified timestamp."""
         original_timestamp = order.state_modified
 
-        url = reverse("lfs_change_order_state")
+        url = reverse("lfs_manage_change_order_state")
         data = {
             "order-id": str(order.id),
             "new-state": "2",
@@ -341,7 +341,7 @@ class TestChangeOrderState:
 
     def test_change_order_state_permission_required(self, client, order):
         """Test that order state change requires proper permissions."""
-        url = reverse("lfs_change_order_state")
+        url = reverse("lfs_manage_change_order_state")
         data = {
             "order-id": str(order.id),
             "new-state": "2",
@@ -376,7 +376,7 @@ class TestChangeOrderState:
         monkeypatch.setattr("lfs.core.signals.order_paid.send", mock_paid)
         monkeypatch.setattr("lfs.core.signals.order_state_changed.send", mock_state_changed)
 
-        url = reverse("lfs_change_order_state")
+        url = reverse("lfs_manage_change_order_state")
         data = {
             "order-id": str(order.id),
             "new-state": str(lfs.order.settings.SENT),
@@ -404,7 +404,7 @@ class TestSendOrder:
         # Use monkeypatch to replace the mail function
         monkeypatch.setattr("lfs.mail.utils.send_order_received_mail", mock_send_mail)
 
-        url = reverse("lfs_send_order", kwargs={"order_id": order.id})
+        url = reverse("lfs_manage_send_order", kwargs={"order_id": order.id})
         response = authenticated_client.get(url)
 
         assert response.status_code == 302
@@ -415,14 +415,14 @@ class TestSendOrder:
 
     def test_send_order_nonexistent_order(self, authenticated_client):
         """Test sending non-existent order."""
-        url = reverse("lfs_send_order", kwargs={"order_id": 99999})
+        url = reverse("lfs_manage_send_order", kwargs={"order_id": 99999})
         response = authenticated_client.get(url)
 
         assert response.status_code == 404
 
     def test_send_order_permission_required(self, client, order):
         """Test that send order requires proper permissions."""
-        url = reverse("lfs_send_order", kwargs={"order_id": order.id})
+        url = reverse("lfs_manage_send_order", kwargs={"order_id": order.id})
         response = client.get(url)
 
         # Should redirect to login or return 403
@@ -433,24 +433,24 @@ class TestLegacyViews:
     """Test legacy function-based views."""
 
     def test_manage_orders_with_orders(self, authenticated_client, order):
-        """Test manage_orders redirects to first order when orders exist."""
+        """Test manage_orders shows order list when orders exist."""
         url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_order", kwargs={"order_id": order.id})
+        assert response.status_code == 200
+        assert "manage/orders/order_list.html" in [template.name for template in response.templates]
 
     def test_manage_orders_without_orders(self, authenticated_client):
-        """Test manage_orders redirects to orders list when no orders exist."""
+        """Test manage_orders shows empty order list when no orders exist."""
         url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_orders")
+        assert response.status_code == 200
+        assert "manage/orders/order_list.html" in [template.name for template in response.templates]
 
     def test_orders_view_delegates_to_class_view(self, authenticated_client, multiple_orders):
         """Test that orders_view delegates to OrderListView."""
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
         assert response.status_code == 200
@@ -472,14 +472,14 @@ class TestOrderFiltering:
     def test_filter_by_customer_name(self, authenticated_client, multiple_orders):
         """Test filtering orders by customer name."""
         # Apply filter
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "name": "Customer1",
         }
         authenticated_client.post(url, data)
 
         # Check filtered results
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
         assert response.status_code == 200
@@ -488,14 +488,14 @@ class TestOrderFiltering:
     def test_filter_by_state(self, authenticated_client, multiple_orders):
         """Test filtering orders by state."""
         # Apply filter
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "state": "1",
         }
         authenticated_client.post(url, data)
 
         # Check filtered results
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
         assert response.status_code == 200
@@ -504,7 +504,7 @@ class TestOrderFiltering:
     def test_filter_by_date_range(self, authenticated_client, multiple_orders):
         """Test filtering orders by date range."""
         # Apply filter
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "start": "2024-01-01",
             "end": "2024-12-31",
@@ -512,7 +512,7 @@ class TestOrderFiltering:
         authenticated_client.post(url, data)
 
         # Check filtered results
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
         assert response.status_code == 200
@@ -522,7 +522,7 @@ class TestOrderFiltering:
     def test_combined_filters(self, authenticated_client, multiple_orders):
         """Test combining multiple filters."""
         # Apply combined filters
-        url = reverse("lfs_set_order_filter")
+        url = reverse("lfs_manage_set_order_filter")
         data = {
             "name": "Customer1",
             "state": "1",
@@ -531,7 +531,7 @@ class TestOrderFiltering:
         authenticated_client.post(url, data)
 
         # Check filtered results
-        url = reverse("lfs_orders")
+        url = reverse("lfs_manage_orders")
         response = authenticated_client.get(url)
 
         assert response.status_code == 200

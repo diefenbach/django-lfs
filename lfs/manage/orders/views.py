@@ -31,7 +31,7 @@ class OrderListView(PermissionRequiredMixin, TemplateView):
     """Shows a table view of all orders with filtering and pagination."""
 
     permission_required = "core.manage_shop"
-    template_name = "manage/orders/orders.html"
+    template_name = "manage/orders/order_list.html"
 
     def get_context_data(self, **kwargs):
         """Extends context with orders and filter form."""
@@ -199,7 +199,7 @@ class ApplyOrderFiltersView(PermissionRequiredMixin, FormView):
         order_id = self.kwargs.get("order_id") or self.request.POST.get("order-id")
         if order_id:
             return reverse("lfs_manage_order", kwargs={"order_id": order_id})
-        return reverse("lfs_orders")
+        return reverse("lfs_manage_orders")
 
     def post(self, request, *args, **kwargs):
         """Saves filter data to session."""
@@ -256,7 +256,7 @@ class ResetOrderFiltersView(PermissionRequiredMixin, RedirectView):
         if order_id:
             return reverse("lfs_manage_order", kwargs={"order_id": order_id})
         else:
-            return reverse("lfs_orders")
+            return reverse("lfs_manage_orders")
 
 
 class ApplyPredefinedOrderFilterView(PermissionRequiredMixin, RedirectView):
@@ -285,7 +285,9 @@ class ApplyPredefinedOrderFilterView(PermissionRequiredMixin, RedirectView):
             filter_name = _("This Month")
         else:
             messages.error(self.request, _("Invalid filter type."))
-            return reverse("lfs_manage_order", kwargs={"order_id": order_id}) if order_id else reverse("lfs_orders")
+            return (
+                reverse("lfs_manage_order", kwargs={"order_id": order_id}) if order_id else reverse("lfs_manage_orders")
+            )
 
         # Save only start to session (service uses half-open interval and handles missing end)
         order_filters = self.request.session.get("order-filters", {})
@@ -301,7 +303,7 @@ class ApplyPredefinedOrderFilterView(PermissionRequiredMixin, RedirectView):
         if order_id:
             return reverse("lfs_manage_order", kwargs={"order_id": order_id})
         else:
-            return reverse("lfs_orders")
+            return reverse("lfs_manage_orders")
 
 
 class OrderDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
@@ -313,7 +315,7 @@ class OrderDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequired
     success_message = _("Order has been deleted.")
 
     def get_success_url(self):
-        return reverse("lfs_orders")
+        return reverse("lfs_manage_orders")
 
 
 @permission_required("core.manage_shop")

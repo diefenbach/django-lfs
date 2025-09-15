@@ -20,22 +20,22 @@
                     <div class="card-body py-2">
                         <div class="mb-3">
                             <div class="btn-group w-100">
-                                <a href="{% url 'lfs_apply_predefined_order_filter' 'today' %}" 
+                                <a href="{% url 'lfs_manage_apply_predefined_order_filter' 'today' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-day me-1"></i>{% trans "Today" %}
                                 </a>
-                                <a href="{% url 'lfs_apply_predefined_order_filter' 'week' %}" 
+                                <a href="{% url 'lfs_manage_apply_predefined_order_filter' 'week' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-week me-1"></i>{% trans "Week" %}
                                 </a>
-                                <a href="{% url 'lfs_apply_predefined_order_filter' 'month' %}" 
+                                <a href="{% url 'lfs_manage_apply_predefined_order_filter' 'month' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-month me-1"></i>{% trans "Month" %}
                                 </a>
                             </div>
                         </div>
                         
-                        <form method="post" action="{% url 'lfs_set_order_filter' %}">
+                        <form method="post" action="{% url 'lfs_manage_set_order_filter' %}">
                             {% csrf_token %}
                             <input type="hidden" name="came-from" value="order" />
                             <input type="hidden" name="order-id" value="{{ current_order.id }}" />
@@ -75,7 +75,7 @@
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}
                                 </button>
-                                <a href="{% url 'lfs_reset_order_filters' %}?came-from=order;order-id={{ current_order.id }}" class="btn btn-outline-secondary btn-sm">
+                                <a href="{% url 'lfs_manage_reset_order_filters' %}?came-from=order;order-id={{ current_order.id }}" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset" %}
                                 </a>
                             </div>
@@ -122,17 +122,17 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h1 class="h3 mb-0">{% trans "Order" %} #{{ current_order.id }}</h1>
                         <div class="d-flex gap-2">
-                            <a href="{% url 'lfs_orders' %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'lfs_manage_orders' %}" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-list"></i> {% trans "All Orders" %}
                             </a>
                             <a class="btn btn-outline-primary btn-sm" 
                             dialog_message="{% trans 'Do you really want to resend this order?' %}" 
-                            href="{% url 'lfs_send_order' current_order.id %}">
+                            href="{% url 'lfs_manage_send_order' current_order.id %}">
                                 <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
                             </a>
                             <a class="btn btn-outline-danger btn-sm delete-link" 
                             dialog_message="{% trans 'Do you really want to delete this order?' %}" 
-                            href="{% url 'lfs_delete_order' current_order.id %}">
+                            href="{% url 'lfs_manage_delete_order' current_order.id %}">
                                 <i class="bi bi-trash"></i> {% trans "Delete Order" %}
                             </a>
                         </div>
@@ -141,7 +141,7 @@
                     <!-- Order State Change -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
-                            <form action="{% url 'lfs_change_order_state' %}" method="post" class="d-flex align-items-center gap-2">
+                            <form action="{% url 'lfs_manage_change_order_state' %}" method="post" class="d-flex align-items-center gap-2">
                                 {% csrf_token %}
                                 <label class="form-label mb-0">{% trans "State" %}:</label>
                                 <select id="states-filter" name="new-state" class="form-select form-select-sm" style="width: auto;">
