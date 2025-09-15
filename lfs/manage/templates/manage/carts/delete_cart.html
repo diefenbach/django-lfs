@@ -13,18 +13,17 @@
     {% trans "This action cannot be undone. All cart items will be permanently deleted." %}
 </p>
 
-<div class="d-flex justify-content-end gap-2">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-        {% trans 'Cancel' %}
-    </button>
+<div class="d-flex justify-content-start gap-2">
     <form method="post" 
-          action="{% url 'lfs_delete_cart' cart.id %}" 
-          class="d-inline"
-          hx-post="{% url 'lfs_delete_cart' cart.id %}"
-          hx-confirm="{% trans 'Are you sure?' %}">
+          action="{% url 'lfs_manage_delete_cart' cart.id %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">
-            <i class="bi bi-trash me-1"></i>{% trans 'Delete Cart' %}
-        </button>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash me-1"></i>{% trans 'Delete Cart' %}
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {% trans 'Cancel' %}
+            </button>
+        </div>
     </form>
 </div>

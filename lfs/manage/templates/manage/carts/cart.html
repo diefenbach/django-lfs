@@ -19,22 +19,22 @@
                     <div class="card-body py-2">
                         <div class="mb-3">
                             <div class="btn-group w-100">
-                                <a href="{% url 'lfs_apply_predefined_cart_filter' cart.id 'today' %}" 
+                                <a href="{% url 'lfs_manage_apply_predefined_cart_filter' cart.id 'today' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-day me-1"></i>{% trans "Today" %}
                                 </a>
-                                <a href="{% url 'lfs_apply_predefined_cart_filter' cart.id 'week' %}" 
+                                <a href="{% url 'lfs_manage_apply_predefined_cart_filter' cart.id 'week' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-week me-1"></i>{% trans "Week" %}
                                 </a>
-                                <a href="{% url 'lfs_apply_predefined_cart_filter' cart.id 'month' %}" 
+                                <a href="{% url 'lfs_manage_apply_predefined_cart_filter' cart.id 'month' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-month me-1"></i>{% trans "Month" %}
                                 </a>
                             </div>
                         </div>
                         
-                        <form method="post" action="{% url 'lfs_apply_cart_filters' cart.id %}">
+                        <form method="post" action="{% url 'lfs_manage_apply_cart_filters' cart.id %}">
                             {% csrf_token %}
                             <div class="mb-2">
                                 {{ filter_form.start }}
@@ -56,7 +56,7 @@
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}
                                 </button>
-                                <a href="{% url 'lfs_reset_cart_filters' %}?cart_id={{ cart.id }}" class="btn btn-outline-secondary btn-sm">
+                                <a href="{% url 'lfs_manage_reset_cart_filters' %}?cart_id={{ cart.id }}" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset" %}
                                 </a>
                             </div>
