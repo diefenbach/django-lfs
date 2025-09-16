@@ -1,15 +1,14 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
+from django.views.generic import RedirectView
+from django.views.generic import View
 
 
 from lfs.core.models import Action
@@ -17,18 +16,19 @@ from lfs.core.models import ActionGroup
 from lfs.manage.mixins import DirectDeleteMixin
 
 
-@permission_required("core.manage_shop")
-def manage_actions(request):
+class ManageActionsView(PermissionRequiredMixin, RedirectView):
     """Dispatches to the first action or to the form to add a action (if there
     is no action yet).
     """
-    try:
-        action = Action.objects.all()[0]
-        url = reverse("lfs_manage_action", kwargs={"pk": action.id})
-    except IndexError:
-        url = reverse("lfs_manage_no_actions")
 
-    return HttpResponseRedirect(url)
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            action = Action.objects.all()[0]
+            return reverse("lfs_manage_action", kwargs={"pk": action.id})
+        except IndexError:
+            return reverse("lfs_manage_no_actions")
 
 
 class ActionUpdateView(PermissionRequiredMixin, UpdateView):
@@ -152,41 +152,44 @@ class ActionDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequire
             return reverse("lfs_manage_no_actions")
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def sort_actions(request):
+class SortActionsView(PermissionRequiredMixin, View):
     """Sorts actions after drag 'n drop."""
-    item_id = int(request.POST.get("item_id", ""))
-    to_list = int(request.POST.get("to_list", ""))
-    new_index = int(request.POST.get("new_index", ""))
 
-    # action which has been dragged and dropped
-    dnd_action = Action.objects.get(pk=item_id)
+    permission_required = "core.manage_shop"
+    http_method_names = ["post"]
 
-    # Update the group if it changed
-    if dnd_action.group_id != to_list:
-        dnd_action.group_id = to_list
+    def post(self, request, *args, **kwargs):
+        item_id = int(request.POST.get("item_id", ""))
+        to_list = int(request.POST.get("to_list", ""))
+        new_index = int(request.POST.get("new_index", ""))
+
+        # action which has been dragged and dropped
+        dnd_action = Action.objects.get(pk=item_id)
+
+        # Update the group if it changed
+        if dnd_action.group_id != to_list:
+            dnd_action.group_id = to_list
+            dnd_action.save()
+
+        # Get all actions in the target group ordered by position
+        actions_in_group = list(Action.objects.filter(group_id=to_list).exclude(pk=item_id).order_by("position"))
+
+        if new_index < len(actions_in_group):
+            new_position = actions_in_group[new_index].position
+            for action in actions_in_group[new_index:]:
+                action.position += 10
+                action.save()
+        else:
+            new_position = (actions_in_group[-1].position + 10) if actions_in_group else 10
+
+        # Set the new position for the sorted action
+        dnd_action.position = new_position
         dnd_action.save()
 
-    # Get all actions in the target group ordered by position
-    actions_in_group = list(Action.objects.filter(group_id=to_list).exclude(pk=item_id).order_by("position"))
+        # Update all positions to ensure consistency
+        _update_positions()
 
-    if new_index < len(actions_in_group):
-        new_position = actions_in_group[new_index].position
-        for action in actions_in_group[new_index:]:
-            action.position += 10
-            action.save()
-    else:
-        new_position = (actions_in_group[-1].position + 10) if actions_in_group else 10
-
-    # Set the new position for the sorted action
-    dnd_action.position = new_position
-    dnd_action.save()
-
-    # Update all positions to ensure consistency
-    _update_positions()
-
-    return HttpResponse()
+        return HttpResponse()
 
 
 def _update_positions():

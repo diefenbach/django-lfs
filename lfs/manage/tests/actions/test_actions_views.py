@@ -1,22 +1,22 @@
-from django.http import HttpResponseRedirect
+import pytest
 from django.urls import reverse
 
 from lfs.core.models import Action, ActionGroup
 from lfs.manage.actions.views import (
-    manage_actions,
+    ManageActionsView,
     ActionUpdateView,
     ActionCreateView,
     ActionDeleteConfirmView,
     ActionDeleteView,
-    sort_actions,
+    SortActionsView,
     _update_positions,
 )
 
 # No direct need for get_user_model in these tests
 
 
-class TestManageActionsDispatcher:
-    """Test the manage_actions dispatcher function."""
+class TestManageActionsView:
+    """Test the ManageActionsView redirect view."""
 
     def test_redirects_to_first_action_when_actions_exist(self, mock_request, action, monkeypatch):
         """Should redirect to first action when actions exist."""
@@ -28,10 +28,11 @@ class TestManageActionsDispatcher:
 
         monkeypatch.setattr("lfs.manage.actions.views.reverse", mock_reverse)
 
-        response = manage_actions(mock_request)
+        view = ManageActionsView()
+        view.request = mock_request
+        url = view.get_redirect_url()
 
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/manage/action/{action.id}/" in response.url
+        assert f"/manage/action/{action.id}/" in url
 
     def test_redirects_to_no_actions_when_none_exist(self, mock_request, monkeypatch):
         """Should redirect to no actions view when no actions exist."""
@@ -45,10 +46,11 @@ class TestManageActionsDispatcher:
 
         monkeypatch.setattr("lfs.manage.actions.views.reverse", mock_reverse)
 
-        response = manage_actions(mock_request)
+        view = ManageActionsView()
+        view.request = mock_request
+        url = view.get_redirect_url()
 
-        assert isinstance(response, HttpResponseRedirect)
-        assert response.url == "/manage/no-actions/"
+        assert url == "/manage/no-actions/"
 
 
 class TestActionUpdateView:
@@ -367,8 +369,8 @@ class TestActionDeleteConfirmView:
         assert context["action"] == action
 
 
-class TestSortActions:
-    """Test the sort_actions drag and drop functionality."""
+class TestSortActionsView:
+    """Test the SortActionsView drag and drop functionality."""
 
     def test_sort_actions_moves_action_to_new_position(self, request_factory, manage_user, action_group):
         """Should move action to new position within same group."""
@@ -388,7 +390,9 @@ class TestSortActions:
         request.user = manage_user
 
         # Act
-        response = sort_actions(request)
+        view = SortActionsView()
+        view.request = request
+        response = view.post(request)
 
         # Assert
         assert response.status_code == 200
@@ -413,7 +417,9 @@ class TestSortActions:
         request.user = manage_user
 
         # Act
-        response = sort_actions(request)
+        view = SortActionsView()
+        view.request = request
+        response = view.post(request)
 
         # Assert
         assert response.status_code == 200
@@ -441,7 +447,9 @@ class TestSortActions:
         request.user = manage_user
 
         # Act
-        response = sort_actions(request)
+        view = SortActionsView()
+        view.request = request
+        response = view.post(request)
 
         # Assert
         assert response.status_code == 200
@@ -463,7 +471,9 @@ class TestSortActions:
         request.user = manage_user
 
         # Act
-        response = sort_actions(request)
+        view = SortActionsView()
+        view.request = request
+        response = view.post(request)
 
         # Assert
         assert response.status_code == 200
@@ -526,7 +536,7 @@ class TestActionsPermissionsIntegration:
         assert resp.status_code in (302, 403)
 
     def test_requires_authentication_sort_get(self, client):
-        # sort_actions requires POST; GET should be 405 or auth redirect
+        # SortActionsView requires POST; GET should be 405 or auth redirect
         resp = client.get(reverse("lfs_manage_sort_actions"))
         assert resp.status_code in (302, 403, 405)
 
@@ -555,7 +565,7 @@ class TestActionsPermissionsIntegration:
         )
         assert resp.status_code == 403
 
-    def test_sort_actions_allows_post_for_admin(self, client, admin_user, action):
+    def test_sort_actions_view_allows_post_for_admin(self, client, admin_user, action):
         client.force_login(admin_user)
         resp = client.post(
             reverse("lfs_manage_sort_actions"),

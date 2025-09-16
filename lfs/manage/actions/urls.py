@@ -4,7 +4,7 @@ import lfs.manage.actions.views
 urlpatterns = [
     path(
         "actions/",
-        lfs.manage.actions.views.manage_actions,
+        lfs.manage.actions.views.ManageActionsView.as_view(),
         name="lfs_manage_actions",
     ),
     path(
@@ -34,7 +34,7 @@ urlpatterns = [
     ),
     path(
         "actions/sort",
-        lfs.manage.actions.views.sort_actions,
+        lfs.manage.actions.views.SortActionsView.as_view(),
         name="lfs_manage_sort_actions",
     ),
 ]
