@@ -1,24 +1,5 @@
-"""
-Comprehensive unit tests for cart views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- View method logic and context data
-- Form handling and validation
-- Permission checks
-- Error handling
-- Edge cases and boundary conditions
-"""
-
 import pytest
 from datetime import datetime, date
-from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.http import Http404
@@ -108,19 +89,25 @@ class TestCartListViewUnit:
         assert hasattr(context["carts_page"], "object_list")
 
     @pytest.mark.django_db
-    def test_get_context_data_applies_filters_from_session(self, mock_request, admin_user):
+    def test_get_context_data_applies_filters_from_session(self, mock_request, admin_user, monkeypatch):
         """Test that get_context_data applies filters from session."""
         view = CartListView()
         view.request = mock_request
         view.request.user = admin_user
         view.request.session = {"cart-filters": {"start": "2024-01-01", "end": "2024-12-31"}}
 
-        with patch("lfs.manage.carts.services.CartFilterService.filter_carts") as mock_filter:
-            mock_filter.return_value = Cart.objects.none()
+        mock_filter_called = False
 
-            view.get_context_data()
+        def mock_filter_carts(*args, **kwargs):
+            nonlocal mock_filter_called
+            mock_filter_called = True
+            return Cart.objects.none()
 
-            mock_filter.assert_called_once()
+        monkeypatch.setattr("lfs.manage.carts.services.CartFilterService.filter_carts", mock_filter_carts)
+
+        view.get_context_data()
+
+        assert mock_filter_called
 
     @pytest.mark.django_db
     def test_get_context_data_handles_empty_session(self, mock_request, admin_user):
@@ -190,7 +177,7 @@ class TestCartDataViewUnit:
         assert "filter_form" in context
 
     @pytest.mark.django_db
-    def test_get_context_data_calculates_cart_total(self, mock_request, admin_user):
+    def test_get_context_data_calculates_cart_total(self, mock_request, admin_user, monkeypatch):
         """Test that get_context_data calculates cart total correctly."""
         cart = Cart.objects.create(session="test_session")
         product = Product.objects.create(name="Test Product", slug="test-product", price=10.99, active=True)
@@ -201,14 +188,14 @@ class TestCartDataViewUnit:
         view.request.user = admin_user
         view.kwargs = {"id": cart.id}
 
-        with patch.object(view, "get_cart", return_value=cart):
-            context = view.get_context_data()
+        monkeypatch.setattr(view, "get_cart", lambda: cart)
+        context = view.get_context_data()
 
-            assert "cart_total" in context
-            assert context["cart_total"] > 0
+        assert "cart_total" in context
+        assert context["cart_total"] > 0
 
     @pytest.mark.django_db
-    def test_get_context_data_handles_empty_cart(self, mock_request, admin_user):
+    def test_get_context_data_handles_empty_cart(self, mock_request, admin_user, monkeypatch):
         """Test that get_context_data handles empty cart."""
         cart = Cart.objects.create(session="test_session")
 
@@ -217,11 +204,11 @@ class TestCartDataViewUnit:
         view.request.user = admin_user
         view.kwargs = {"id": cart.id}
 
-        with patch.object(view, "get_cart", return_value=cart):
-            context = view.get_context_data()
+        monkeypatch.setattr(view, "get_cart", lambda: cart)
+        context = view.get_context_data()
 
-            assert "cart_total" in context
-            assert context["cart_total"] == 0
+        assert "cart_total" in context
+        assert context["cart_total"] == 0
 
 
 class TestApplyCartFiltersViewUnit:
@@ -355,7 +342,7 @@ class TestApplyPredefinedCartFilterViewUnit:
     """Unit tests for ApplyPredefinedCartFilterView."""
 
     @pytest.mark.django_db
-    def test_get_applies_week_filter(self, mock_request, admin_user):
+    def test_get_applies_week_filter(self, mock_request, admin_user, monkeypatch):
         """Test that GET applies week filter."""
         cart = Cart.objects.create(session="test_session")
         view = ApplyPredefinedCartFilterView()
@@ -364,14 +351,14 @@ class TestApplyPredefinedCartFilterViewUnit:
         view.request.session = {}
         view.kwargs = {"id": cart.id, "filter_type": "week"}
 
-        with patch("django.contrib.messages.success") as mock_success:
-            view.get(mock_request)
+        monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
+        view.get(mock_request)
 
-            assert "cart-filters" in view.request.session
-            assert "start" in view.request.session["cart-filters"]
+        assert "cart-filters" in view.request.session
+        assert "start" in view.request.session["cart-filters"]
 
     @pytest.mark.django_db
-    def test_get_applies_month_filter(self, mock_request, admin_user):
+    def test_get_applies_month_filter(self, mock_request, admin_user, monkeypatch):
         """Test that GET applies month filter."""
         cart = Cart.objects.create(session="test_session")
         view = ApplyPredefinedCartFilterView()
@@ -380,14 +367,14 @@ class TestApplyPredefinedCartFilterViewUnit:
         view.request.session = {}
         view.kwargs = {"id": cart.id, "filter_type": "month"}
 
-        with patch("django.contrib.messages.success") as mock_success:
-            view.get(mock_request)
+        monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
+        view.get(mock_request)
 
-            assert "cart-filters" in view.request.session
-            assert "start" in view.request.session["cart-filters"]
+        assert "cart-filters" in view.request.session
+        assert "start" in view.request.session["cart-filters"]
 
     @pytest.mark.django_db
-    def test_get_applies_today_filter(self, mock_request, admin_user):
+    def test_get_applies_today_filter(self, mock_request, admin_user, monkeypatch):
         """Test that GET applies today filter."""
         cart = Cart.objects.create(session="test_session")
         view = ApplyPredefinedCartFilterView()
@@ -396,14 +383,14 @@ class TestApplyPredefinedCartFilterViewUnit:
         view.request.session = {}
         view.kwargs = {"id": cart.id, "filter_type": "today"}
 
-        with patch("django.contrib.messages.success") as mock_success:
-            view.get(mock_request)
+        monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
+        view.get(mock_request)
 
-            assert "cart-filters" in view.request.session
-            assert "start" in view.request.session["cart-filters"]
+        assert "cart-filters" in view.request.session
+        assert "start" in view.request.session["cart-filters"]
 
     @pytest.mark.django_db
-    def test_get_handles_invalid_filter_type(self, mock_request, admin_user):
+    def test_get_handles_invalid_filter_type(self, mock_request, admin_user, monkeypatch):
         """Test that GET handles invalid filter type."""
         cart = Cart.objects.create(session="test_session")
         view = ApplyPredefinedCartFilterView()
@@ -412,10 +399,10 @@ class TestApplyPredefinedCartFilterViewUnit:
         view.request.session = {}
         view.kwargs = {"id": cart.id, "filter_type": "invalid"}
 
-        with patch("django.contrib.messages.error") as mock_error:
-            view.get(mock_request)
+        monkeypatch.setattr("django.contrib.messages.error", lambda request, message: None)
+        view.get(mock_request)
 
-            # Should not crash, but may not set filters
+        # Should not crash, but may not set filters
 
     @pytest.mark.django_db
     def test_get_redirect_url_redirects_to_cart_view(self, mock_request, admin_user):
@@ -464,7 +451,7 @@ class TestCartDeleteViewsUnit:
         assert context["cart"] == cart
 
     @pytest.mark.django_db
-    def test_cart_delete_view_post_deletes_cart(self, mock_request, admin_user):
+    def test_cart_delete_view_post_deletes_cart(self, mock_request, admin_user, monkeypatch):
         """Test that CartDeleteView POST deletes the cart."""
         cart = Cart.objects.create(session="test_session")
         cart_id = cart.id
@@ -473,11 +460,11 @@ class TestCartDeleteViewsUnit:
         view.request.user = admin_user
         view.kwargs = {"id": cart_id}
 
-        with patch.object(view, "get_success_url", return_value="/success/"):
-            # Call the delete method directly instead of post
-            view.delete(mock_request)
+        monkeypatch.setattr(view, "get_success_url", lambda: "/success/")
+        # Call the delete method directly instead of post
+        view.delete(mock_request)
 
-            assert not Cart.objects.filter(id=cart_id).exists()
+        assert not Cart.objects.filter(id=cart_id).exists()
 
     @pytest.mark.django_db
     def test_cart_delete_view_get_success_url_redirects_to_carts_list(self, mock_request, admin_user):

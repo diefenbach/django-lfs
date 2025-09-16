@@ -1,22 +1,3 @@
-"""
-Comprehensive unit tests for cart services.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- CartFilterService.filter_carts() with various filter combinations
-- CartFilterService.parse_iso_date() with valid/invalid inputs
-- CartFilterService.format_iso_date() with various date objects
-- CartDataService.get_cart_summary() with different cart configurations
-- CartDataService.get_carts_with_data() with batched customer lookup
-- Edge cases and error conditions
-"""
-
 import pytest
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
