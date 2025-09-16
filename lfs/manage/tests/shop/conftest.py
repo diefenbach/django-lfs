@@ -1,9 +1,3 @@
-"""
-Pytest fixtures for Shop testing.
-
-Provides comprehensive test data and utilities for shop management tests.
-"""
-
 import pytest
 from unittest.mock import Mock
 

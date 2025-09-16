@@ -1,21 +1,3 @@
-"""
-Comprehensive unit tests for property_groups views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- View method logic and context data
-- Form handling and validation
-- Permission checks
-- Error handling
-- Edge cases and boundary conditions
-"""
-
 import pytest
 from unittest.mock import patch
 

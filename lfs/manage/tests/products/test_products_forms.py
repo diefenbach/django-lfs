@@ -1,10 +1,3 @@
-"""
-Form tests for Product management.
-
-Tests form validation, saving behavior, and error handling.
-Product views use Django's automatic ModelForm generation based on fields attribute.
-"""
-
 import pytest
 
 from lfs.manage.products.forms import (

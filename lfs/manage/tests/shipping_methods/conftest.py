@@ -1,9 +1,3 @@
-"""
-Pytest fixtures for ShippingMethod and ShippingMethodPrice testing.
-
-Provides comprehensive test data and utilities for shipping method management tests.
-"""
-
 import pytest
 
 from django.contrib.auth import get_user_model

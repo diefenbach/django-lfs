@@ -1,10 +1,3 @@
-"""
-Form tests for Shop management.
-
-Tests form validation, saving behavior, and error handling.
-Tests both ShopDataForm and ShopDefaultValuesForm.
-"""
-
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import ClearableFileInput
 

@@ -1,9 +1,3 @@
-"""
-Pytest fixtures for Tools testing.
-
-Provides test data and utilities for tools management tests.
-"""
-
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory

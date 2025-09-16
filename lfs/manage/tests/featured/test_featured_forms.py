@@ -1,24 +1,3 @@
-"""
-Comprehensive unit tests for featured forms.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- Form validation and field handling
-- Form submission and processing
-- Error handling and edge cases
-- Form integration with views
-
-NOTE: Currently, the featured module does not have any dedicated forms.
-This file serves as a template for when forms are added to the featured module.
-"""
-
-
 class TestFeaturedFormsStructure:
     """Test the structure and availability of featured forms."""
 

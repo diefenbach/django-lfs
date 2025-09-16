@@ -1,24 +1,3 @@
-"""
-Comprehensive unit tests for topseller services and business logic.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- Topseller business logic functions
-- Position management and updates
-- Filtering and querying logic
-- Data transformation and processing
-- Edge cases and error conditions
-
-Note: The topseller module currently doesn't have dedicated services,
-but this test file covers the business logic functions.
-"""
-
 import pytest
 
 from django.test import RequestFactory

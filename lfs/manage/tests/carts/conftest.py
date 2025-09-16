@@ -1,7 +1,3 @@
-"""
-Pytest configuration for cart tests.
-"""
-
 import pytest
 from lfs.core.models import Shop
 

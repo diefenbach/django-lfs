@@ -1,20 +1,3 @@
-"""
-Comprehensive unit tests for static_blocks forms.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- FileUploadForm field validation
-- Form rendering and widget attributes
-- Form cleaning and data handling
-- Edge cases and error conditions
-"""
-
 import pytest
 from django import forms
 from django.test import RequestFactory

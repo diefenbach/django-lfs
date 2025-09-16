@@ -1,9 +1,3 @@
-"""
-Pytest fixtures for Action and ActionGroup testing.
-
-Provides comprehensive test data and utilities for action management tests.
-"""
-
 import pytest
 
 from django.contrib.auth import get_user_model

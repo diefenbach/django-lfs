@@ -1,7 +1,3 @@
-"""
-Pytest configuration for payment method tests.
-"""
-
 import pytest
 from decimal import Decimal
 from unittest.mock import Mock

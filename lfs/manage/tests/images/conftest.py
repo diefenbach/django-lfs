@@ -1,9 +1,3 @@
-"""
-Pytest fixtures for Image testing.
-
-Provides comprehensive test data and utilities for image management tests.
-"""
-
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory

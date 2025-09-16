@@ -1,23 +1,3 @@
-"""
-Comprehensive unit tests for topseller forms.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- Form validation and field handling
-- Form rendering and widget attributes
-- Form cleaning and data handling
-- Edge cases and error conditions
-
-Note: The topseller module currently does not have dedicated forms,
-but this test file is prepared for future form additions.
-"""
-
 import pytest
 from django.test import RequestFactory
 from django.utils.translation import gettext_lazy as _

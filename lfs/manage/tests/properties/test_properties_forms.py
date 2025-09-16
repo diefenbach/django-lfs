@@ -1,21 +1,3 @@
-"""
-Comprehensive unit tests for property forms.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- PropertyAddForm field validation
-- PropertyDataForm field validation and handling
-- Form rendering and widget attributes
-- Form cleaning and data handling
-- Edge cases and error conditions
-"""
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 

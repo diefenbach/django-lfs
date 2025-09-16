@@ -1,22 +1,3 @@
-"""
-Comprehensive unit tests for order services.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- OrderFilterService.filter_orders() with various filter combinations
-- OrderFilterService.parse_iso_date() with valid/invalid inputs
-- OrderFilterService.format_iso_date() with various date objects
-- OrderDataService.get_order_summary() with different order configurations
-- OrderDataService.get_orders_with_data() with batched order lookup
-- Edge cases and error conditions
-"""
-
 import pytest
 from datetime import datetime, date, timedelta
 from decimal import Decimal

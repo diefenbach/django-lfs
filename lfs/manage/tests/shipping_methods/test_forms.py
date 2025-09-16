@@ -1,10 +1,3 @@
-"""
-Form tests for ShippingMethod management.
-
-Tests form validation, saving behavior, and error handling.
-Shipping method views use custom forms for editing and adding shipping methods.
-"""
-
 from django.forms import ModelForm
 
 from lfs.shipping.models import ShippingMethod

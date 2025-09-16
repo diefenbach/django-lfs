@@ -1,20 +1,3 @@
-"""
-Comprehensive unit tests for property service-like functionality.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- Property creation and management logic
-- Property position updating
-- Property type change handling
-- Business logic validation
-"""
-
 import pytest
 from unittest.mock import patch
 

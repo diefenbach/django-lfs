@@ -1,10 +1,3 @@
-"""
-Form tests for CustomerTax management.
-
-Tests form validation, saving behavior, and error handling.
-CustomerTax views use Django's automatic ModelForm generation based on form_class.
-"""
-
 from django.forms import ModelForm
 
 from lfs.customer_tax.models import CustomerTax

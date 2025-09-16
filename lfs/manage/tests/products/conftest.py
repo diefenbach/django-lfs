@@ -1,12 +1,3 @@
-"""
-Shared fixtures for Product management tests.
-
-Following TDD principles:
-- Use pytest fixtures for test initialization
-- Prefer real objects over mocks when possible
-- Keep fixtures minimal and focused
-"""
-
 import pytest
 from django.contrib.auth import get_user_model
 

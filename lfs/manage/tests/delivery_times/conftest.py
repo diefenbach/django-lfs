@@ -1,7 +1,3 @@
-"""
-Pytest configuration and shared fixtures for delivery times tests.
-"""
-
 import pytest
 from lfs.core.models import Shop
 from lfs.catalog.models import DeliveryTime, DELIVERY_TIME_UNIT_DAYS

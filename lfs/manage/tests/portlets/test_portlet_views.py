@@ -1,13 +1,3 @@
-"""
-Comprehensive tests for Portlet CBVs in the manage package.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-"""
-
 import json
 import pytest
 from django.urls import reverse

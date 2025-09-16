@@ -1,22 +1,3 @@
-"""
-Comprehensive tests for discount forms.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- Form validation and field handling
-- Required field validation
-- Field length and format validation
-- Custom validation logic
-- Form initialization
-- Form saving behavior
-"""
-
 from decimal import Decimal
 
 from lfs.discounts.settings import DISCOUNT_TYPE_ABSOLUTE, DISCOUNT_TYPE_PERCENTAGE

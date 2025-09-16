@@ -1,14 +1,3 @@
-"""
-Unit tests for criteria management views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-"""
-
 import pytest
 from unittest.mock import Mock, patch
 from django.http import HttpResponse

@@ -1,20 +1,3 @@
-"""
-Comprehensive unit tests for property_groups forms.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- PropertyGroupForm field validation
-- Form rendering and widget attributes
-- Form cleaning and data handling
-- Edge cases and error conditions
-"""
-
 import pytest
 
 from django import forms

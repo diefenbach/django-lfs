@@ -1,10 +1,3 @@
-"""
-Unit tests for Property management views.
-
-Modeled after carts tests: focus on view behavior, permissions,
-context data, redirects, and edge cases.
-"""
-
 import pytest
 from unittest.mock import patch
 

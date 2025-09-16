@@ -1,7 +1,3 @@
-"""
-Pytest configuration for static_blocks tests.
-"""
-
 import pytest
 from lfs.catalog.models import StaticBlock, File
 from lfs.core.models import Shop

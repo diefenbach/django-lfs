@@ -1,22 +1,3 @@
-"""
-Comprehensive tests for payment method service layer and utilities.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- Payment method utility functions from lfs.payment.utils
-- Payment method model methods that act as services
-- Integration between payment methods and customer management
-- Business logic validation and processing
-- Error handling in service methods
-- Performance of service operations
-"""
-
 import pytest
 from decimal import Decimal
 from unittest.mock import patch, Mock

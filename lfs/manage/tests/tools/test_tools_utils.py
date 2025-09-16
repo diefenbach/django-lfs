@@ -1,14 +1,3 @@
-"""
-Unit tests for Tools utility functions.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Mock external dependencies
-"""
-
 import pytest
 from django.contrib import messages
 from django.contrib.auth import get_user_model

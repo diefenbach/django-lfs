@@ -1,7 +1,3 @@
-"""
-Pytest configuration and fixtures for criteria tests.
-"""
-
 import pytest
 from unittest.mock import Mock
 from django.test import RequestFactory

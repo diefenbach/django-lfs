@@ -1,13 +1,3 @@
-"""
-Comprehensive unit tests for Featured views in the manage package.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-"""
-
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory

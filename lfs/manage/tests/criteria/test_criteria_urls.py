@@ -1,12 +1,3 @@
-"""
-Unit tests for criteria management URLs.
-
-Ziele:
-- Sicherstellen, dass URLs korrekt definiert, aufgelöst und reversibel sind.
-- HTTP-Methoden werden unterstützt/rejectet wie erwartet.
-- URL-Namen folgen der Projektkonvention (lfs_manage_*).
-"""
-
 from django.urls import reverse, resolve
 from django.http import HttpResponse
 

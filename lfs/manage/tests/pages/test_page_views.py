@@ -1,13 +1,3 @@
-"""
-Comprehensive tests for Page views in the manage package.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-"""
-
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model

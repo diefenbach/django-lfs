@@ -1,26 +1,3 @@
-"""
-Comprehensive unit and integration tests for LFS review management views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Parametrization for variations
-
-Tests cover:
-- ReviewListView (list view with filtering and pagination)
-- NoReviewsView (empty state view)
-- ReviewDataView (data tab view)
-- ApplyReviewFiltersView (filter form handling)
-- ResetReviewFiltersView (filter reset)
-- SetReviewOrderingView (ordering management)
-- ReviewDeleteConfirmView (deletion confirmation)
-- ReviewDeleteView (review deletion)
-- SetReviewStateView (state management)
-- Integration tests for complete workflows
-"""
-
 import pytest
 from decimal import Decimal
 from django.contrib.auth import get_user_model

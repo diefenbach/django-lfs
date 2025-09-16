@@ -1,9 +1,3 @@
-"""
-Pytest fixtures for CustomerTax testing.
-
-Provides comprehensive test data and utilities for customer tax management tests.
-"""
-
 import pytest
 
 from django.contrib.auth import get_user_model

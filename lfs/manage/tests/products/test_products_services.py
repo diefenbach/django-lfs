@@ -1,19 +1,3 @@
-"""
-Comprehensive unit tests for products services.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Parametrization for variations
-
-Tests cover:
-- ProductFilterService (filtering logic with various criteria)
-- ProductDataService (data calculation and enrichment)
-- Edge cases and error conditions
-"""
-
 import pytest
 from datetime import datetime, date
 from decimal import Decimal

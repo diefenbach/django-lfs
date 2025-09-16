@@ -1,9 +1,3 @@
-"""
-Pytest fixtures for Discount testing.
-
-Provides comprehensive test data and utilities for discount management tests.
-"""
-
 import pytest
 from decimal import Decimal
 

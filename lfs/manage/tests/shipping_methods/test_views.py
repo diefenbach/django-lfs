@@ -1,14 +1,3 @@
-"""
-Unit tests for ShippingMethod views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Parametrization for variations
-"""
-
 from django.http import HttpResponseRedirect
 
 from lfs.shipping.models import ShippingMethod, ShippingMethodPrice

@@ -1,7 +1,3 @@
-"""
-Pytest configuration and shared fixtures for order tests.
-"""
-
 import pytest
 from decimal import Decimal
 

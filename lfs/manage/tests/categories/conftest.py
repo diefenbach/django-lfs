@@ -1,13 +1,3 @@
-"""
-Test fixtures and configuration for category tests.
-
-Following TDD principles:
-- Shared fixtures for all category tests
-- Clean setup and teardown
-- Minimal mocking with real objects when possible
-- Fast test execution
-"""
-
 import pytest
 from unittest.mock import MagicMock
 

@@ -1,21 +1,3 @@
-"""
-Comprehensive unit tests for property_groups services.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- Property group data services
-- Property group filtering services
-- Property group search services
-- Property group validation services
-- Property group utility services
-"""
-
 import pytest
 from decimal import Decimal
 

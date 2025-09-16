@@ -1,7 +1,3 @@
-"""
-Pytest configuration and fixtures for LFS manage package tests.
-"""
-
 import os
 import django
 from django.conf import settings

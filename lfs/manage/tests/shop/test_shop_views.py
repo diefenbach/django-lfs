@@ -1,14 +1,3 @@
-"""
-Unit tests for Shop views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Parametrization for variations
-"""
-
 from unittest.mock import Mock, patch
 
 from django.contrib.auth import get_user_model

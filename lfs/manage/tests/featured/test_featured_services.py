@@ -1,20 +1,3 @@
-"""
-Comprehensive unit tests for featured services and utility functions.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Fast tests with minimal mocking
-
-Tests cover:
-- _update_positions() function with various scenarios
-- FeaturedProduct model operations
-- Position management and ordering
-- Edge cases and error conditions
-"""
-
 import pytest
 
 from lfs.marketing.models import FeaturedProduct

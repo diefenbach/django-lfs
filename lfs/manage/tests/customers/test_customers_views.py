@@ -1,23 +1,3 @@
-"""
-Comprehensive unit and integration tests for LFS customer management views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Parametrization for variations
-
-Tests cover:
-- CustomerListView (list view with filtering and pagination)
-- NoCustomersView (empty state view)
-- CustomerDataView (data tab view)
-- ApplyCustomerFiltersView (filter form handling)
-- ResetCustomerFiltersView (filter reset)
-- SetCustomerOrderingView (ordering management)
-- Integration tests for complete workflows
-"""
-
 import pytest
 from decimal import Decimal
 from django.contrib.auth import get_user_model

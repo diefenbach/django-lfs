@@ -1,7 +1,3 @@
-"""
-Unit tests for order management views.
-"""
-
 from django.urls import reverse
 
 

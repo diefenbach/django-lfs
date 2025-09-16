@@ -1,10 +1,3 @@
-"""
-Form tests for Action management.
-
-Tests form validation, saving behavior, and error handling.
-Action views use Django's automatic ModelForm generation based on fields attribute.
-"""
-
 from django.forms import ModelForm
 
 from lfs.core.models import Action

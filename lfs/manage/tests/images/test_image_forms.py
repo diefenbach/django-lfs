@@ -1,10 +1,3 @@
-"""
-Form tests for Image management.
-
-Tests form validation, saving behavior, and error handling.
-Image forms handle file uploads, filtering, and deletion operations.
-"""
-
 import pytest
 from django.core.exceptions import ValidationError
 
