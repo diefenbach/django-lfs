@@ -32,7 +32,9 @@ class TestAddCriterion:
 
     def test_add_criterion_requires_permission(self):
         """Should require core.manage_shop permission."""
-        assert hasattr(add_criterion, "__wrapped__")
+        from lfs.manage.criteria.views import AddCriterionView
+
+        assert AddCriterionView.permission_required == "core.manage_shop"
 
     @patch(
         "lfs.manage.criteria.views.settings.LFS_CRITERIA",
@@ -114,7 +116,9 @@ class TestChangeCriterionForm:
 
     def test_change_criterion_form_requires_permission(self):
         """Should require core.manage_shop permission."""
-        assert hasattr(change_criterion_form, "__wrapped__")
+        from lfs.manage.criteria.views import ChangeCriterionFormView
+
+        assert ChangeCriterionFormView.permission_required == "core.manage_shop"
 
     @patch("lfs.manage.criteria.views.import_symbol")
     def test_change_criterion_form_returns_criterion_html(self, mock_import_symbol, request_factory, manage_user):
@@ -202,11 +206,17 @@ class TestDeleteCriterion:
 
     def test_delete_criterion_requires_permission(self):
         """Should require core.manage_shop permission."""
-        assert hasattr(delete_criterion, "__wrapped__")
+        from lfs.manage.criteria.views import DeleteCriterionView
+
+        assert DeleteCriterionView.permission_required == "core.manage_shop"
 
     def test_delete_criterion_requires_delete_method(self):
         """Should only accept DELETE HTTP method."""
-        assert hasattr(delete_criterion, "__wrapped__")
+        from lfs.manage.criteria.views import DeleteCriterionView
+
+        assert hasattr(DeleteCriterionView, "delete")
+        assert not hasattr(DeleteCriterionView, "get")  # Should not have GET method
+        assert not hasattr(DeleteCriterionView, "post")  # Should not have POST method
 
     def test_delete_criterion_returns_empty_response(self, request_factory, manage_user):
         """Should return empty HttpResponse for HTMX delete requests."""
@@ -353,7 +363,7 @@ class TestCriteriaViewsErrorHandling:
     def test_change_criterion_form_handles_missing_post_data(self, request_factory, manage_user):
         """Should handle missing POST data gracefully."""
         # Arrange
-        request = request_factory.get("/")  # GET request without POST data
+        request = request_factory.post("/")  # POST request without POST data
         request.user = manage_user
 
         with patch("lfs.manage.criteria.views.import_symbol") as mock_import_symbol:

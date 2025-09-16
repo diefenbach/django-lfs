@@ -1,41 +1,22 @@
-"""
-Unit tests for Action views.
-
-Following TDD principles:
-- Test behavior, not implementation
-- Clear test names describing expected behavior
-- Arrange-Act-Assert structure
-- One assertion per test (when practical)
-- Parametrization for variations
-"""
-
-from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from lfs.core.models import Action, ActionGroup
 from lfs.manage.actions.views import (
     manage_actions,
     ActionUpdateView,
-    NoActionsView,
     ActionCreateView,
+    ActionDeleteConfirmView,
     ActionDeleteView,
     sort_actions,
     _update_positions,
 )
 
-User = get_user_model()
+# No direct need for get_user_model in these tests
 
 
 class TestManageActionsDispatcher:
     """Test the manage_actions dispatcher function."""
-
-    def test_dispatcher_exists(self):
-        """Should have manage_actions dispatcher function."""
-        assert callable(manage_actions)
-
-    def test_permission_required_attribute(self):
-        """Should require core.manage_shop permission."""
-        assert hasattr(manage_actions, "__wrapped__")
 
     def test_redirects_to_first_action_when_actions_exist(self, mock_request, action, monkeypatch):
         """Should redirect to first action when actions exist."""
@@ -73,136 +54,422 @@ class TestManageActionsDispatcher:
 class TestActionUpdateView:
     """Test the ActionUpdateView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from Django UpdateView."""
-        from django.views.generic.edit import UpdateView
+    def test_get_success_url_without_search_query(self, request_factory, manage_user, action):
+        """Should return URL without query parameter when no search query."""
+        # Arrange
+        request = request_factory.post("/", {})
+        request.user = manage_user
+        view = ActionUpdateView()
+        view.request = request
+        view.object = action
 
-        assert issubclass(ActionUpdateView, UpdateView)
+        # Act
+        url = view.get_success_url()
 
-    def test_model_attribute(self):
-        """Should use Action model."""
-        assert ActionUpdateView.model == Action
+        # Assert
+        assert f"/manage/action/{action.id}/" in url
+        assert "?q=" not in url
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ActionUpdateView.permission_required == "core.manage_shop"
+    def test_get_success_url_with_search_query(self, request_factory, manage_user, action):
+        """Should return URL with query parameter when search query provided."""
+        # Arrange
+        request = request_factory.post("/", {"q": "test search"})
+        request.user = manage_user
+        view = ActionUpdateView()
+        view.request = request
+        view.object = action
 
-    def test_fields_attribute(self):
-        """Should define correct fields."""
-        assert ActionUpdateView.fields == ("active", "title", "link")
+        # Act
+        url = view.get_success_url()
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ActionUpdateView.template_name == "manage/actions/action.html"
+        # Assert
+        assert f"/manage/action/{action.id}/" in url
+        assert "?q=test search" in url  # Django doesn't URL encode in reverse_lazy
 
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ActionUpdateView, "get_success_url")
-        assert callable(getattr(ActionUpdateView, "get_success_url"))
+    def test_get_action_groups_queryset_without_search(self, request_factory, manage_user, action_group, action):
+        """Should return all groups with all actions when no search query."""
+        # Arrange
+        request = request_factory.get("/")
+        request.user = manage_user
+        view = ActionUpdateView()
+        view.request = request
 
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ActionUpdateView, "get_context_data")
-        assert callable(getattr(ActionUpdateView, "get_context_data"))
+        # Act
+        groups = view.get_action_groups_queryset()
 
-    def test_form_valid_method_exists(self):
-        """Should have form_valid method."""
-        assert hasattr(ActionUpdateView, "form_valid")
-        assert callable(getattr(ActionUpdateView, "form_valid"))
+        # Assert
+        assert len(groups) == 1
+        assert groups[0] == action_group
+        assert hasattr(groups[0], "filtered_actions")
+        assert action in groups[0].filtered_actions
+
+    def test_get_action_groups_queryset_with_search(self, request_factory, manage_user, action_group, action):
+        """Should return filtered actions when search query provided."""
+        # Arrange
+        request = request_factory.get("/?q=nonexistent")
+        request.user = manage_user
+        view = ActionUpdateView()
+        view.request = request
+
+        # Act
+        groups = view.get_action_groups_queryset()
+
+        # Assert
+        assert len(groups) == 1
+        assert groups[0] == action_group
+        assert hasattr(groups[0], "filtered_actions")
+        # Should be empty since action title doesn't contain "nonexistent"
+        assert len(groups[0].filtered_actions) == 0
+
+    def test_get_context_data_includes_groups_and_search(self, request_factory, manage_user, action_group, action):
+        """Should include groups and search query in context."""
+        # Arrange
+        request = request_factory.get("/?q=test")
+        request.user = manage_user
+        view = ActionUpdateView()
+        view.request = request
+        view.object = action  # Set object for UpdateView
+
+        # Act
+        context = view.get_context_data()
+
+        # Assert
+        assert "groups" in context
+        assert "search_query" in context
+        assert context["search_query"] == "test"
+        assert len(context["groups"]) == 1
+
+    def test_form_valid_updates_positions_and_shows_message(self, request_factory, manage_user, action, monkeypatch):
+        """Should update positions and show success message on form valid."""
+        # Arrange
+        request = request_factory.post("/", {"active": "on", "title": "Updated Action"})
+        request.user = manage_user
+        view = ActionUpdateView()
+        view.request = request
+        view.object = action
+
+        # Mock the form
+        mock_form = type("MockForm", (), {"save": lambda commit=True: action, "is_valid": lambda: True})()
+
+        # Track if _update_positions was called
+        update_positions_called = False
+
+        def mock_update_positions():
+            nonlocal update_positions_called
+            update_positions_called = True
+
+        monkeypatch.setattr("lfs.manage.actions.views._update_positions", mock_update_positions)
+
+        # Mock messages.success to avoid middleware requirement
+        messages_called = False
+
+        def mock_messages_success(request, message):
+            nonlocal messages_called
+            messages_called = True
+            assert "Action has been saved" in message
+
+        monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
+
+        # Act
+        response = view.form_valid(mock_form)
+
+        # Assert
+        assert update_positions_called
+        assert messages_called
 
 
 class TestNoActionsView:
     """Test the NoActionsView template view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(NoActionsView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert NoActionsView.permission_required == "core.manage_shop"
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert NoActionsView.template_name == "manage/actions/no_actions.html"
-
 
 class TestActionCreateView:
     """Test the ActionCreateView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from Django CreateView."""
-        from django.views.generic.edit import CreateView
+    def test_get_success_url_without_search_query(self, request_factory, manage_user, action):
+        """Should return URL without query parameter when no search query."""
+        # Arrange
+        request = request_factory.post("/", {})
+        request.user = manage_user
+        view = ActionCreateView()
+        view.request = request
+        view.object = action
 
-        assert issubclass(ActionCreateView, CreateView)
+        # Act
+        url = view.get_success_url()
 
-    def test_model_attribute(self):
-        """Should use Action model."""
-        assert ActionCreateView.model == Action
+        # Assert
+        assert f"/manage/action/{action.id}/" in url
+        assert "?q=" not in url
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ActionCreateView.permission_required == "core.manage_shop"
+    def test_get_success_url_with_search_query(self, request_factory, manage_user, action):
+        """Should return URL with query parameter when search query provided."""
+        # Arrange
+        request = request_factory.post("/", {"q": "test search"})
+        request.user = manage_user
+        view = ActionCreateView()
+        view.request = request
+        view.object = action
 
-    def test_fields_attribute(self):
-        """Should define correct fields."""
-        assert ActionCreateView.fields == ("active", "title", "link", "group")
+        # Act
+        url = view.get_success_url()
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ActionCreateView.template_name == "manage/actions/add_action.html"
+        # Assert
+        assert f"/manage/action/{action.id}/" in url
+        assert "?q=test search" in url  # Django doesn't URL encode in reverse_lazy
 
-    def test_get_form_kwargs_method_exists(self):
-        """Should have get_form_kwargs method."""
-        assert hasattr(ActionCreateView, "get_form_kwargs")
-        assert callable(getattr(ActionCreateView, "get_form_kwargs"))
+    def test_get_form_kwargs_adds_prefix(self, request_factory, manage_user):
+        """Should add 'create' prefix to form kwargs."""
+        # Arrange
+        request = request_factory.get("/")
+        request.user = manage_user
+        view = ActionCreateView()
+        view.request = request
 
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ActionCreateView, "get_context_data")
-        assert callable(getattr(ActionCreateView, "get_context_data"))
+        # Act
+        kwargs = view.get_form_kwargs()
 
-    def test_form_valid_method_exists(self):
-        """Should have form_valid method."""
-        assert hasattr(ActionCreateView, "form_valid")
-        assert callable(getattr(ActionCreateView, "form_valid"))
+        # Assert
+        assert "prefix" in kwargs
+        assert kwargs["prefix"] == "create"
+
+    def test_get_context_data_includes_groups_and_came_from(self, request_factory, manage_user, action_group):
+        """Should include groups and came_from in context."""
+        # Arrange
+        request = request_factory.post("/", {"came_from": "/custom/path/"})
+        request.user = manage_user
+        view = ActionCreateView()
+        view.request = request
+        view.object = None  # CreateView doesn't need object
+
+        # Act
+        context = view.get_context_data()
+
+        # Assert
+        assert "groups" in context
+        assert "came_from" in context
+        assert context["groups"].count() == 1
+        assert context["came_from"] == "/custom/path/"
+
+    def test_get_context_data_uses_default_came_from(self, request_factory, manage_user, action_group):
+        """Should use default came_from when not provided in POST."""
+        # Arrange
+        request = request_factory.post("/", {})
+        request.user = manage_user
+        view = ActionCreateView()
+        view.request = request
+        view.object = None  # CreateView doesn't need object
+
+        # Act
+        context = view.get_context_data()
+
+        # Assert
+        assert "came_from" in context
+        assert context["came_from"] == "/manage/actions/"
+
+    def test_form_valid_updates_positions_and_shows_message(
+        self, request_factory, manage_user, action_group, monkeypatch
+    ):
+        """Should update positions and show success message on form valid."""
+        # Arrange
+        request = request_factory.post("/", {"active": "on", "title": "New Action", "group": action_group.id})
+        request.user = manage_user
+        view = ActionCreateView()
+        view.request = request
+
+        # Create a new action for the object
+        new_action = Action.objects.create(title="New Action", group=action_group)
+        view.object = new_action
+
+        # Track if _update_positions was called
+        update_positions_called = False
+
+        def mock_update_positions():
+            nonlocal update_positions_called
+            update_positions_called = True
+
+        monkeypatch.setattr("lfs.manage.actions.views._update_positions", mock_update_positions)
+
+        # Mock messages.success to avoid middleware requirement
+        messages_called = False
+
+        def mock_messages_success(request, message):
+            nonlocal messages_called
+            messages_called = True
+            assert "Action has been added" in message
+
+        monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
+
+        # Mock the form
+        mock_form = type("MockForm", (), {"save": lambda commit=True: new_action, "is_valid": lambda: True})()
+
+        # Act
+        response = view.form_valid(mock_form)
+
+        # Assert
+        assert update_positions_called
+        assert messages_called
 
 
 class TestActionDeleteView:
     """Test the ActionDeleteView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from Django DeleteView."""
-        from django.views.generic.edit import DeleteView
+    def test_get_success_url_with_remaining_actions(self, request_factory, manage_user, action_group):
+        """Should redirect to first remaining action when other actions exist."""
+        # Arrange
+        action1 = Action.objects.create(title="Action 1", group=action_group)
+        action2 = Action.objects.create(title="Action 2", group=action_group)
+        request = request_factory.delete("/")
+        request.user = manage_user
+        view = ActionDeleteView()
+        view.request = request
+        view.object = action1  # Deleting action1
 
-        assert issubclass(ActionDeleteView, DeleteView)
+        # Act
+        url = view.get_success_url()
 
-    def test_model_attribute(self):
-        """Should use Action model."""
-        assert ActionDeleteView.model == Action
+        # Assert
+        assert f"/manage/action/{action2.id}/" in url
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ActionDeleteView.permission_required == "core.manage_shop"
+    def test_get_success_url_with_no_remaining_actions(self, request_factory, manage_user, action_group):
+        """Should redirect to no actions view when no other actions exist."""
+        # Arrange
+        action = Action.objects.create(title="Only Action", group=action_group)
+        request = request_factory.delete("/")
+        request.user = manage_user
+        view = ActionDeleteView()
+        view.request = request
+        view.object = action  # Deleting the only action
 
-    def test_delete_method_exists(self):
-        """Should have delete method."""
-        assert hasattr(ActionDeleteView, "delete")
-        assert callable(getattr(ActionDeleteView, "delete"))
+        # Act
+        url = view.get_success_url()
+
+        # Assert
+        assert "/manage/actions/no" in url
+
+
+class TestActionDeleteConfirmView:
+    """Test the ActionDeleteConfirmView template view."""
+
+    def test_get_context_data_includes_action(self, request_factory, manage_user, action):
+        """Should include action in context."""
+        # Arrange
+        request = request_factory.get(f"/delete/{action.id}/")
+        request.user = manage_user
+        view = ActionDeleteConfirmView()
+        view.request = request
+        view.kwargs = {"pk": action.id}
+
+        # Act
+        context = view.get_context_data()
+
+        # Assert
+        assert "action" in context
+        assert context["action"] == action
 
 
 class TestSortActions:
     """Test the sort_actions drag and drop functionality."""
 
-    def test_sort_actions_function_exists(self):
-        """Should have sort_actions function."""
-        assert callable(sort_actions)
+    def test_sort_actions_moves_action_to_new_position(self, request_factory, manage_user, action_group):
+        """Should move action to new position within same group."""
+        # Arrange
+        action1 = Action.objects.create(title="Action 1", group=action_group, position=10)
+        action2 = Action.objects.create(title="Action 2", group=action_group, position=20)
+        action3 = Action.objects.create(title="Action 3", group=action_group, position=30)
 
-    def test_sort_actions_requires_permission(self):
-        """Should require manage_shop permission."""
-        assert hasattr(sort_actions, "__wrapped__")
+        request = request_factory.post(
+            "/",
+            {
+                "item_id": str(action1.id),
+                "to_list": str(action_group.id),
+                "new_index": "1",  # Move to position 1 (between action2 and action3)
+            },
+        )
+        request.user = manage_user
+
+        # Act
+        response = sort_actions(request)
+
+        # Assert
+        assert response.status_code == 200
+        action1.refresh_from_db()
+        action2.refresh_from_db()
+        action3.refresh_from_db()
+
+        # Action1 should be between action2 and action3
+        assert action2.position < action1.position < action3.position
+
+    def test_sort_actions_moves_action_to_different_group(self, request_factory, manage_user, action_group):
+        """Should move action to different group."""
+        # Arrange
+        group1 = ActionGroup.objects.create(name="Group 1")
+        group2 = ActionGroup.objects.create(name="Group 2")
+        action1 = Action.objects.create(title="Action 1", group=group1, position=10)
+        action2 = Action.objects.create(title="Action 2", group=group2, position=20)
+
+        request = request_factory.post(
+            "/", {"item_id": str(action1.id), "to_list": str(group2.id), "new_index": "1"}  # Move to end of group2
+        )
+        request.user = manage_user
+
+        # Act
+        response = sort_actions(request)
+
+        # Assert
+        assert response.status_code == 200
+        action1.refresh_from_db()
+        action2.refresh_from_db()
+        assert action1.group == group2
+        # After _update_positions(), positions are reset to 10, 20, 30...
+        assert action1.position == 20  # Second position in group2
+        assert action2.position == 10  # First position in group2
+
+    def test_sort_actions_moves_action_to_end_of_group(self, request_factory, manage_user, action_group):
+        """Should move action to end of group when new_index is beyond group size."""
+        # Arrange
+        action1 = Action.objects.create(title="Action 1", group=action_group, position=10)
+        action2 = Action.objects.create(title="Action 2", group=action_group, position=20)
+
+        request = request_factory.post(
+            "/",
+            {
+                "item_id": str(action1.id),
+                "to_list": str(action_group.id),
+                "new_index": "5",  # Beyond group size, should go to end
+            },
+        )
+        request.user = manage_user
+
+        # Act
+        response = sort_actions(request)
+
+        # Assert
+        assert response.status_code == 200
+        action1.refresh_from_db()
+        action2.refresh_from_db()
+        # After _update_positions(), action1 should be at the end (position 20)
+        assert action1.position == 20  # Last position
+        assert action2.position == 10  # First position
+
+    def test_sort_actions_handles_empty_group(self, request_factory, manage_user, action_group):
+        """Should handle moving action to empty group."""
+        # Arrange
+        empty_group = ActionGroup.objects.create(name="Empty Group")
+        action = Action.objects.create(title="Action", group=action_group, position=10)
+
+        request = request_factory.post(
+            "/", {"item_id": str(action.id), "to_list": str(empty_group.id), "new_index": "0"}
+        )
+        request.user = manage_user
+
+        # Act
+        response = sort_actions(request)
+
+        # Assert
+        assert response.status_code == 200
+        action.refresh_from_db()
+        assert action.group == empty_group
+        assert action.position == 10  # Should get default position
 
 
 class TestUpdatePositionsHelper:
@@ -236,3 +503,78 @@ class TestUpdatePositionsHelper:
 
         # No actions should exist in the empty group
         assert Action.objects.filter(group=empty_group).count() == 0
+
+
+class TestActionsPermissionsIntegration:
+    """Integration-style tests for authentication and permissions on actions routes."""
+
+    @pytest.mark.parametrize(
+        "route, needs_pk",
+        [
+            ("lfs_manage_actions", False),
+            ("lfs_manage_action", True),
+            ("lfs_manage_add_action", False),
+            ("lfs_manage_delete_action_confirm", True),
+            ("lfs_manage_no_actions", False),
+        ],
+    )
+    def test_requires_authentication_get_routes(self, client, action, route, needs_pk):
+        # Unauthenticated requests should redirect to login or return 403 depending on setup
+        kwargs = {"pk": action.id} if needs_pk else {}
+        url = reverse(route, kwargs=kwargs)
+        resp = client.get(url)
+        assert resp.status_code in (302, 403)
+
+    def test_requires_authentication_sort_get(self, client):
+        # sort_actions requires POST; GET should be 405 or auth redirect
+        resp = client.get(reverse("lfs_manage_sort_actions"))
+        assert resp.status_code in (302, 403, 405)
+
+    @pytest.mark.parametrize(
+        "route, needs_pk",
+        [
+            ("lfs_manage_actions", False),
+            ("lfs_manage_action", True),
+            ("lfs_manage_add_action", False),
+            ("lfs_manage_delete_action_confirm", True),
+            ("lfs_manage_no_actions", False),
+        ],
+    )
+    def test_requires_manage_shop_permission_get_routes(self, client, regular_user, action, route, needs_pk):
+        client.force_login(regular_user)
+        kwargs = {"pk": action.id} if needs_pk else {}
+        url = reverse(route, kwargs=kwargs)
+        resp = client.get(url)
+        assert resp.status_code == 403
+
+    def test_requires_manage_shop_permission_sort_post(self, client, regular_user, action):
+        client.force_login(regular_user)
+        resp = client.post(
+            reverse("lfs_manage_sort_actions"),
+            {"item_id": str(action.id), "to_list": str(action.group.id), "new_index": "0"},
+        )
+        assert resp.status_code == 403
+
+    def test_sort_actions_allows_post_for_admin(self, client, admin_user, action):
+        client.force_login(admin_user)
+        resp = client.post(
+            reverse("lfs_manage_sort_actions"),
+            {"item_id": str(action.id), "to_list": str(action.group.id), "new_index": "0"},
+        )
+        assert resp.status_code == 200
+
+
+class TestActionsTemplatesIntegration:
+    """Lightweight rendering checks for key templates via the client."""
+
+    def test_no_actions_renders_template(self, client, admin_user):
+        client.force_login(admin_user)
+        resp = client.get(reverse("lfs_manage_no_actions"))
+        assert resp.status_code == 200
+        assert "manage/actions/no_actions.html" in [t.name for t in resp.templates]
+
+    def test_delete_confirm_renders_template(self, client, admin_user, action):
+        client.force_login(admin_user)
+        resp = client.get(reverse("lfs_manage_delete_action_confirm", kwargs={"pk": action.id}))
+        assert resp.status_code == 200
+        assert action.title.encode("utf-8") in resp.content

@@ -12,9 +12,9 @@ from django.http import HttpResponse
 
 from lfs.manage.criteria import urls
 from lfs.manage.criteria.views import (
-    add_criterion,
-    change_criterion_form,
-    delete_criterion,
+    AddCriterionView,
+    ChangeCriterionFormView,
+    DeleteCriterionView,
 )
 
 
@@ -25,19 +25,19 @@ class TestCriteriaURLResolution:
         url = reverse("lfs_manage_add_criterion")
         assert url == "/manage/add-criterion"
         resolved = resolve(url)
-        assert resolved.func == add_criterion
+        assert resolved.func.view_class == AddCriterionView
 
     def test_change_resolves_and_reverses(self):
         url = reverse("lfs_manage_change_criterion_form")
         assert url == "/manage/change-criterion"
         resolved = resolve(url)
-        assert resolved.func == change_criterion_form
+        assert resolved.func.view_class == ChangeCriterionFormView
 
     def test_delete_resolves_and_reverses(self):
         url = reverse("lfs_manage_delete_criterion")
         assert url == "/manage/delete-criterion"
         resolved = resolve(url)
-        assert resolved.func == delete_criterion
+        assert resolved.func.view_class == DeleteCriterionView
 
 
 class TestCriteriaURLIntegration:
@@ -59,7 +59,8 @@ class TestCriteriaURLIntegration:
             lambda path: DummyCriterion,
         )
 
-        response = add_criterion(request)
+        view = AddCriterionView.as_view()
+        response = view(request)
         assert isinstance(response, HttpResponse)
         assert response.status_code == 200
 
@@ -82,20 +83,24 @@ class TestCriteriaURLIntegration:
             lambda path: DummyCriterion,
         )
 
-        response = change_criterion_form(request)
+        view = ChangeCriterionFormView.as_view()
+        response = view(request)
         assert isinstance(response, HttpResponse)
         assert response.status_code == 200
 
     def test_delete_accepts_delete_and_rejects_others(self, request_factory, manage_user):
+        view = DeleteCriterionView.as_view()
+
         request = request_factory.delete("/delete-criterion")
         request.user = manage_user
-        response = delete_criterion(request)
+        response = view(request)
         assert response.status_code == 200
 
         # reject GET
         request = request_factory.get("/delete-criterion")
         request.user = manage_user
-        assert delete_criterion(request).status_code == 405
+        response = view(request)
+        assert response.status_code == 405
 
 
 class TestCriteriaURLNaming:
