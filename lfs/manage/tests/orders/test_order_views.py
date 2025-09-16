@@ -245,6 +245,34 @@ class TestApplyPredefinedOrderFilterView:
         assert response.url == reverse("lfs_manage_orders")
 
 
+class TestOrderDeleteConfirmView:
+    """Test OrderDeleteConfirmView functionality."""
+
+    def test_order_delete_confirm_view_get(self, authenticated_client, order):
+        """Test GET request to order delete confirm view."""
+        url = reverse("lfs_manage_delete_order_confirm", kwargs={"order_id": order.id})
+        response = authenticated_client.get(url)
+
+        assert response.status_code == 200
+        assert "manage/orders/delete_order.html" in [template.name for template in response.templates]
+        assert response.context["order"] == order
+
+    def test_order_delete_confirm_view_permission_required(self, client, order):
+        """Test that order delete confirm view requires proper permissions."""
+        url = reverse("lfs_manage_delete_order_confirm", kwargs={"order_id": order.id})
+        response = client.get(url)
+
+        # Should redirect to login or return 403
+        assert response.status_code in [302, 403]
+
+    def test_order_delete_confirm_view_nonexistent_order(self, authenticated_client):
+        """Test order delete confirm view with nonexistent order."""
+        url = reverse("lfs_manage_delete_order_confirm", kwargs={"order_id": 99999})
+        response = authenticated_client.get(url)
+
+        assert response.status_code == 404
+
+
 class TestOrderDeleteView:
     """Test OrderDeleteView functionality."""
 

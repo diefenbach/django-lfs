@@ -306,6 +306,18 @@ class ApplyPredefinedOrderFilterView(PermissionRequiredMixin, RedirectView):
             return reverse("lfs_manage_orders")
 
 
+class OrderDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of an order."""
+
+    template_name = "manage/orders/delete_order.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["order"] = get_object_or_404(Order, pk=self.kwargs["order_id"])
+        return context
+
+
 class OrderDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """Deletes order with passed id."""
 

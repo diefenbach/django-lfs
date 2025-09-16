@@ -130,11 +130,13 @@
                             href="{% url 'lfs_manage_send_order' current_order.id %}">
                                 <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
                             </a>
-                            <a class="btn btn-outline-danger btn-sm delete-link" 
-                            dialog_message="{% trans 'Do you really want to delete this order?' %}" 
-                            href="{% url 'lfs_manage_delete_order' current_order.id %}">
+                            <button class="btn btn-outline-danger btn-sm"
+                                hx-get="{% url 'lfs_manage_delete_order_confirm' current_order.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
                                 <i class="bi bi-trash"></i> {% trans "Delete Order" %}
-                            </a>
+                            </button>
                         </div>
                     </div>
 
@@ -423,4 +425,7 @@
             </main>
         </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}
