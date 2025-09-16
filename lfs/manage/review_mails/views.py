@@ -12,7 +12,7 @@ from .services import RatingMailService
 class RatingMailManageView(PermissionRequiredMixin, TemplateView):
     """Displays the manage view for rating mails."""
 
-    template_name = "manage/review_mails/rating_mails.html"
+    template_name = "manage/review_mails/review_mails.html"
     permission_required = "core.manage_shop"
 
     def get_context_data(self, **kwargs):
@@ -25,7 +25,7 @@ class RatingMailManageView(PermissionRequiredMixin, TemplateView):
 class RatingMailSendView(PermissionRequiredMixin, SuccessMessageMixin, TemplateView):
     """Handles sending rating mails."""
 
-    template_name = "manage/review_mails/rating_mails.html"
+    template_name = "manage/review_mails/review_mails.html"
     permission_required = "core.manage_shop"
     success_message = _("Rating mails have been sent successfully.")
 

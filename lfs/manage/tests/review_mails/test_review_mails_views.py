@@ -41,7 +41,7 @@ class TestRatingMailManageView:
 
     def test_should_use_correct_template(self):
         """Test that view uses correct template."""
-        assert RatingMailManageView.template_name == "manage/review_mails/rating_mails.html"
+        assert RatingMailManageView.template_name == "manage/review_mails/review_mails.html"
 
     @pytest.mark.django_db
     def test_should_get_eligible_orders_in_context(self, mock_request, monkeypatch):
@@ -76,7 +76,7 @@ class TestRatingMailSendView:
 
     def test_should_use_correct_template(self):
         """Test that view uses correct template."""
-        assert RatingMailSendView.template_name == "manage/review_mails/rating_mails.html"
+        assert RatingMailSendView.template_name == "manage/review_mails/review_mails.html"
 
     def test_should_have_success_message(self):
         """Test that view has correct success message."""
