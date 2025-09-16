@@ -47,11 +47,6 @@ class ManageTopsellerView(PermissionRequiredMixin, TemplateView):
         s["filter"] = filter_
         s["topseller_category_filter"] = category_filter
 
-        try:
-            s["topseller-amount"] = int(r.get("topseller-amount", s.get("topseller-amount")))
-        except TypeError:
-            s["topseller-amount"] = 25
-
         # Build filters
         filters = Q()
         if filter_:
@@ -73,7 +68,7 @@ class ManageTopsellerView(PermissionRequiredMixin, TemplateView):
 
         # Get products (excluding already topseller ones)
         products = Product.objects.filter(filters).exclude(pk__in=topseller_ids)
-        paginator = Paginator(products, s["topseller-amount"])
+        paginator = Paginator(products, 50)
 
         total = products.count()
         try:
@@ -81,11 +76,6 @@ class ManageTopsellerView(PermissionRequiredMixin, TemplateView):
         except EmptyPage:
             # If the page is out of range, return 0
             page_obj = 0
-
-        # Amount options for pagination
-        amount_options = []
-        for value in (10, 25, 50, 100):
-            amount_options.append({"value": value, "selected": value == s.get("topseller-amount")})
 
         # Get all categories for filter dropdown in hierarchical structure
         categories = self._build_hierarchical_categories()
@@ -98,7 +88,6 @@ class ManageTopsellerView(PermissionRequiredMixin, TemplateView):
                 "paginator": paginator,
                 "filter": filter_ or "",
                 "category_filter": category_filter,
-                "amount_options": amount_options,
                 "categories": categories,
             }
         )

@@ -3,22 +3,22 @@ from lfs.manage.topsellers import views as topseller_views
 
 urlpatterns = [
     path(
-        "topseller",
+        "topsellers",
         topseller_views.ManageTopsellerView.as_view(),
         name="lfs_manage_topseller",
     ),
     path(
-        "topseller/add",
+        "topsellers/add",
         topseller_views.AddTopsellerView.as_view(),
         name="lfs_manage_add_topseller",
     ),
     path(
-        "topseller/update",
+        "topsellers/update",
         topseller_views.RemoveTopsellerView.as_view(),
         name="lfs_manage_delete_topseller",
     ),
     path(
-        "topseller/sort",
+        "topsellers/sort",
         topseller_views.SortTopsellerView.as_view(),
         name="lfs_manage_sort_topseller",
     ),
