@@ -58,7 +58,7 @@
                             </button>
                             <a class="btn btn-sm btn-outline-danger me-2"
                                hx-get="{% url 'lfs_manage_delete_voucher_group_confirm' voucher_group.id %}"
-                               hx-target="#modal-body-sm"
+                               hx-target="#modal-body-lg"
                                hx-trigger="click"
                                hx-swap="innerHTML"
                                href="#">
@@ -96,7 +96,6 @@
     </div>
 
     {% include 'manage/snippets/modals/modal-lg.html' %}
-    {% include 'manage/snippets/modals/modal-sm.html' %}
 
     <script src="{% static 'lfs/js/management/vouchers.js' %}"></script>
 {% endblock %}

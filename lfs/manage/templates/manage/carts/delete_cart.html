@@ -4,26 +4,58 @@
     {% trans 'Delete Cart' %}
 </h5>
 
-<div class="alert alert-warning">
+<div class="alert alert-danger">
     <i class="bi bi-exclamation-triangle me-2"></i>
-    {% trans "Are you sure you want to delete this cart?" %}
+    {% trans 'Are you sure you want to delete this cart?' %}
 </div>
 
-<p class="text-muted small">
+<div class="card mb-3">
+    <div class="card-body">
+        <h6 class="card-title">{% trans "Cart Details" %}</h6>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">{% trans "ID" %}:</dt>
+            <dd class="col-sm-8">#{{ cart.id }}</dd>
+            
+            <dt class="col-sm-4">{% trans "User" %}:</dt>
+            <dd class="col-sm-8">
+                {% if cart.user %}
+                    {{ cart.user.get_full_name|default:cart.user.username }}
+                {% else %}
+                    {% trans "Anonymous" %}
+                {% endif %}
+            </dd>
+            
+            <dt class="col-sm-4">{% trans "Items" %}:</dt>
+            <dd class="col-sm-8">{{ cart.items.count }}</dd>
+            
+            <dt class="col-sm-4">{% trans "Total" %}:</dt>
+            <dd class="col-sm-8">
+                {% if cart.price %}
+                    {{ cart.price|floatformat:2 }} {{ cart.currency }}
+                {% else %}
+                    -
+                {% endif %}
+            </dd>
+            
+            <dt class="col-sm-4">{% trans "Created" %}:</dt>
+            <dd class="col-sm-8">{{ cart.creation_date|date:"M d, Y H:i" }}</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="alert alert-warning">
+    <i class="bi bi-info-circle me-2"></i>
     {% trans "This action cannot be undone. All cart items will be permanently deleted." %}
-</p>
+</div>
 
 <div class="d-flex justify-content-start gap-2">
-    <form method="post" 
-          action="{% url 'lfs_manage_delete_cart' cart.id %}">
+    <form method="post" action="{% url 'lfs_manage_delete_cart' cart.id %}" class="d-inline">
         {% csrf_token %}
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-danger">
-                <i class="bi bi-trash me-1"></i>{% trans 'Delete Cart' %}
-            </button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                {% trans 'Cancel' %}
-            </button>
-        </div>
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-1"></i>{% trans 'Delete Cart' %}
+        </button>
     </form>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        {% trans 'Cancel' %}
+    </button>
 </div>

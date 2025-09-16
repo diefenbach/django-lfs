@@ -13,6 +13,11 @@ urlpatterns = [
         name="lfs_manage_order",
     ),
     path(
+        "order/<int:order_id>/delete-confirm/",
+        lfs.manage.orders.views.OrderDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_order_confirm",
+    ),
+    path(
         "order/<int:order_id>/delete/",
         lfs.manage.orders.views.OrderDeleteView.as_view(),
         name="lfs_manage_delete_order",

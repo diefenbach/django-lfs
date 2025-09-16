@@ -1,26 +1,47 @@
 {% load i18n %}
 
-<h5 id="modal-title-sm" class="modal-title" hx-swap-oob="true">{% trans 'Delete Action' %}</h5>
-<div class="text-center">
-    <p class="mb-3">
-        {% blocktrans with title=action.title %}
-            Are you sure you want to delete the action "<strong>{{ title }}</strong>"?
-        {% endblocktrans %}
-    </p>
-    <p class="text-muted small">{% trans 'This action cannot be undone.' %}</p>
-    
-    <div class="mt-4">
-        <form method="post" 
-              action="{% url 'lfs_manage_delete_action' action.pk %}" 
-              class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger me-2">
-                <i class="bi bi-trash me-1"></i>
-                {% trans 'Delete' %}
-            </button>
-        </form>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            {% trans 'Cancel' %}
-        </button>
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
+    {% trans 'Delete Action' %}
+</h5>
+
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {% trans 'Are you sure you want to delete this action?' %}
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h6 class="card-title">{% trans "Action Details" %}</h6>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">{% trans "ID" %}:</dt>
+            <dd class="col-sm-8">#{{ action.pk }}</dd>
+            
+            <dt class="col-sm-4">{% trans "Title" %}:</dt>
+            <dd class="col-sm-8">{{ action.title }}</dd>
+            
+            <dt class="col-sm-4">{% trans "Type" %}:</dt>
+            <dd class="col-sm-8">{{ action.type }}</dd>
+            
+            <dt class="col-sm-4">{% trans "Active" %}:</dt>
+            <dd class="col-sm-8">
+                {% if action.active %}
+                    <span class="badge bg-success">{% trans "Yes" %}</span>
+                {% else %}
+                    <span class="badge bg-secondary">{% trans "No" %}</span>
+                {% endif %}
+            </dd>
+        </dl>
     </div>
+</div>
+
+<div class="d-flex justify-content-start gap-2">
+    <form method="post" action="{% url 'lfs_manage_delete_action' action.pk %}" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-1"></i>{% trans 'Delete Action' %}
+        </button>
+    </form>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        {% trans 'Cancel' %}
+    </button>
 </div>

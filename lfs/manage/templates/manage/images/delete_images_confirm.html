@@ -1,37 +1,52 @@
 {% load i18n %}
 
-<h5 id="modal-title-sm" class="modal-title" hx-swap-oob="true">
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
     {% trans 'Delete Images' %}
 </h5>
 
-<div class="alert alert-warning">
-    <p>{% trans 'Are you sure you want to delete the selected images?' %}</p>
-    {% if selected_count %}
-        <p><strong>{{ selected_count }} {% trans 'image' %}{{ selected_count|pluralize }}</strong> {% trans 'will be permanently deleted.' %}</p>
-    {% else %}
-        <p class="text-muted">{% trans 'No images selected.' %}</p>
-    {% endif %}
-    <p class="small text-muted">{% trans 'This action cannot be undone.' %}</p>
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {% trans 'Are you sure you want to delete the selected images?' %}
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h6 class="card-title">{% trans "Image Details" %}</h6>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">{% trans "Selected Images" %}:</dt>
+            <dd class="col-sm-8">
+                {% if selected_count %}
+                    <span class="badge bg-primary">{{ selected_count }} {% trans 'image' %}{{ selected_count|pluralize }}</span>
+                {% else %}
+                    <span class="text-muted">{% trans 'No images selected' %}</span>
+                {% endif %}
+            </dd>
+        </dl>
+    </div>
 </div>
 
 {% if selected_count %}
-<form method="post" action="{% url 'lfs_manage_images_delete' %}">
-    {% csrf_token %}
-    {% for image_id in selected_image_ids %}
-        <input type="hidden" name="images" value="{{ image_id }}">
-    {% endfor %}
-    <div class="mt-3">
+<div class="alert alert-warning">
+    <i class="bi bi-info-circle me-2"></i>
+    {% trans 'This action cannot be undone. All selected images will be permanently deleted.' %}
+</div>
+
+<div class="d-flex justify-content-start gap-2">
+    <form method="post" action="{% url 'lfs_manage_images_delete' %}" class="d-inline">
+        {% csrf_token %}
+        {% for image_id in selected_image_ids %}
+            <input type="hidden" name="images" value="{{ image_id }}">
+        {% endfor %}
         <button type="submit" class="btn btn-danger">
-            <i class="bi bi-trash"></i>
-            {% trans 'Delete' %}
+            <i class="bi bi-trash me-1"></i>{% trans 'Delete Images' %}
         </button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            {% trans 'Cancel' %}
-        </button>
-    </div>
-</form>
+    </form>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        {% trans 'Cancel' %}
+    </button>
+</div>
 {% else %}
-<div class="mt-3">
+<div class="d-flex justify-content-start gap-2">
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
         {% trans 'Close' %}
     </button>

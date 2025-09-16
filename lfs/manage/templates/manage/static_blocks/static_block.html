@@ -58,7 +58,7 @@
                             </a>
                             <a class="btn btn-sm btn-outline-danger me-2"
                                hx-get="{% url 'lfs_manage_delete_static_block_confirm' static_block.id %}"
-                               hx-target="#modal-body-sm"
+                               hx-target="#modal-body-lg"
                                hx-trigger="click"
                                hx-swap="innerHTML"
                                href="#">
@@ -102,8 +102,6 @@
     </div>
 
     {% include 'manage/snippets/modals/modal-lg.html' %}
-    {% include 'manage/snippets/modals/modal-xl.html' %}
-    {% include 'manage/snippets/modals/modal-sm.html' %}
 
     <script src="{% static 'lfs/manage/js/static-blocks.js' %}"></script>
 {% endblock %}
