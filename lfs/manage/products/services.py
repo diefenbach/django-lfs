@@ -1,6 +1,8 @@
 from datetime import datetime, date
 from typing import Dict, Any, Optional
 
+from django.db.models import Q
+
 
 class ProductFilterService:
     """Service for filtering products based on various criteria."""
@@ -29,7 +31,6 @@ class ProductFilterService:
         # Apply price_calculator filter
         price_calculator = filters.get("price_calculator", "").strip()
         if price_calculator:
-            from django.db.models import Q
             from lfs.core.utils import get_default_shop
 
             # Get the default shop's price calculator
@@ -81,6 +82,6 @@ class ProductDataService:
         return {
             "categories": ", ".join([cat.name for cat in product.categories.all()[:3]]),
             "price": product.get_price(None),
-            "stock": product.get_stock_amount(),
+            "stock": product.stock_amount if product.manage_stock_amount else None,
             "active": product.active,
         }
