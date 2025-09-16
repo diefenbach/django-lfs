@@ -2,72 +2,68 @@
 {% load i18n static crispy_forms_tags lfs_tags %}
 
 {% block content %}
-    <div class="lfs-featured">
-        <!-- Filters Card -->
-        <div class="card mt-4 shadow">
-            <div class="card-header bg-primary-subtle">
-                <h2 class="h4 mb-0">
-                    <i class="bi bi-funnel me-2"></i>
-                    {% trans 'Filters' %}
-                </h2>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <!-- Search Filter -->
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                                <input type="search"
-                                       id="product-search"
-                                       class="form-control"
-                                       placeholder="{% trans 'Search Products' %}"
-                                       name="filter"
-                                       value="{{ filter }}"
-                                       hx-get="{{ request.path }}"
-                                       hx-target="#products-list"
-                                       hx-select="#products-list"
-                                       hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
-                                       hx-swap="outerHTML"
-                                       hx-include="this"
-                                       hx-push-url="true"
-                                       aria-label="{% trans 'Search products' %}">
-                            </div>
+    <div class="lfs-featured" data-sort-url="{% url 'lfs_manage_sort_featured' %}">        
+
+        <nav aria-label="Breadcrumb" class="mt-3 mb-3">
+            <ol class="breadcrumb mb-0 small fw-semibold">
+                <li class="breadcrumb-item">Manage</li>
+                <li class="breadcrumb-item active">Featured</li>
+            </ol>
+        </nav>                                
+
+        <!-- Filters -->
+        <div class="mb-2">
+            <div class="row">
+                <div class="col-md-3">
+                    <!-- Search Filter -->
+                    <div class="mb-0">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                            <input type="search"
+                                   id="product-search"
+                                   class="form-control"
+                                   placeholder="{% trans 'Search Products' %}"
+                                   name="filter"
+                                   value="{{ filter }}"
+                                   hx-get="{{ request.path }}"
+                                   hx-target="#products-list"
+                                   hx-select="#products-list"
+                                   hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                                   hx-swap="outerHTML"
+                                   hx-include="this"
+                                   hx-push-url="true"
+                                   aria-label="{% trans 'Search products' %}">
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <!-- Category Filter -->
-                        <div class="mb-3">
-                            <select id="category-filter"
-                                    class="form-select"
-                                    name="featured_category_filter"
-                                    hx-get="{{ request.path }}"
-                                    hx-target="#products-list"
-                                    hx-select="#products-list"
-                                    hx-swap="outerHTML"
-                                    hx-trigger="change"
-                                    hx-include="this">
-                                <option value="All" {% if not category_filter or category_filter == "All" %}selected{% endif %}>
-                                    {% trans "All Categories" %}
+                </div>
+                
+                <div class="col-md-3">
+                    <!-- Category Filter -->
+                    <div class="mb-0">
+                        <select id="category-filter"
+                                class="form-select"
+                                name="featured_category_filter"
+                                hx-get="{{ request.path }}"
+                                hx-target="#products-list"
+                                hx-select="#products-list"
+                                hx-swap="outerHTML"
+                                hx-trigger="change"
+                                hx-include="this">
+                            <option value="All">{% trans "All Categories" %}</option>
+                            <option value="None" {% if category_filter == "None" %}selected{% endif %}>{% trans "No Category" %}</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ category.name|safe }}
                                 </option>
-                                <option value="None" {% if category_filter == "None" %}selected{% endif %}>
-                                    {% trans "No Category" %}
-                                </option>
-                                {% for category in categories %}
-                                    <option value="{{ category.id }}">
-                                        {{ category.name|safe }}
-                                    </option>
-                                {% endfor %}                            
-                            </select>
-                        </div>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Products Lists -->
-        <div class="row mt-4 flex-grow-1">
+        <div class="row">
             <div class="col-6">
                 {% include "manage/featured/_products_list.html" %}
             </div>
