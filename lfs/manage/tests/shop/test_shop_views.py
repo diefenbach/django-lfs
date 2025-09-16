@@ -89,7 +89,7 @@ class TestShopTabMixin:
         assert "shop" in context
         assert "active_tab" in context
         assert "tabs" in context
-        assert context["shop"] == shop
+        assert context["shop"].id == shop.id
         assert context["active_tab"] == "data"
         assert isinstance(context["tabs"], list)
 
@@ -255,7 +255,7 @@ class TestShopOrderNumbersView:
 
         assert "order_numbers_form" in context
         assert "shop" in context
-        assert context["shop"] == shop
+        assert context["shop"].id == shop.id
 
     @patch("lfs.manage.shop.views.import_symbol")
     def test_get_context_data_creates_order_number_if_not_exists(self, mock_import_symbol, shop):
@@ -373,7 +373,7 @@ class TestShopPortletsView:
 
         assert "portlets" in context
         assert "shop" in context
-        assert context["shop"] == shop
+        assert context["shop"].id == shop.id
 
 
 class TestShopCarouselView:
@@ -407,7 +407,7 @@ class TestShopCarouselView:
         context = view.get_context_data()
 
         assert "shop" in context
-        assert context["shop"] == shop
+        assert context["shop"].id == shop.id
 
 
 class TestShopViewIntegration:
