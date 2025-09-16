@@ -150,10 +150,8 @@
                     }, 2000);
                 </script>
             {% endfor %}
-            <div class="flex-grow-1">
-                <div class="container-fluid">
-                    {% block content %}{% endblock %}
-                </div>
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
             </div>
         {% endblock %}
 

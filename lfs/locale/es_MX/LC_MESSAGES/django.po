@@ -198,7 +198,7 @@ msgstr "Mostrar todos los productos"
 
 #: catalog/models.py:164 catalog/models.py:1883 catalog/models.py:1982
 #: catalog/settings.py:70 export/models.py:18
-#: templates/manage/manage_base.html:89
+#: templates/manage/base.html:89
 #: templates/manage/cart/carts_inline.html:25
 #: templates/manage/category/manage_category.html:44
 #: templates/manage/export/export.html:36
@@ -361,7 +361,7 @@ msgstr "Unidad de precio"
 msgid "Quanity field unit"
 msgstr "Unidad de cantidad"
 
-#: catalog/models.py:596 templates/manage/manage_base.html:82
+#: catalog/models.py:596 templates/manage/base.html:82
 #: templates/manage/product/images.html:3
 #: templates/manage/product/product.html:99
 msgid "Images"
@@ -674,8 +674,8 @@ msgstr ""
 msgid "Step type"
 msgstr "Tipo de paso"
 
-#: catalog/models.py:2009 templates/manage/manage_base.html:93
-#: templates/manage/manage_base.html:95
+#: catalog/models.py:2009 templates/manage/base.html:93
+#: templates/manage/base.html:95
 #: templates/manage/product/product.html:111
 #: templates/manage/properties/no_properties.html:11
 #: templates/manage/properties/property.html:7
@@ -705,7 +705,7 @@ msgstr "Content id"
 msgid "Display files"
 msgstr "Mostrar archivos"
 
-#: catalog/models.py:2330 templates/manage/manage_base.html:100
+#: catalog/models.py:2330 templates/manage/base.html:100
 msgid "HTML"
 msgstr "HTML"
 
@@ -733,7 +733,7 @@ msgstr ""
 msgid "Standard"
 msgstr "Estándard"
 
-#: catalog/settings.py:19 templates/manage/manage_base.html:179
+#: catalog/settings.py:19 templates/manage/base.html:179
 #: templates/manage/customer/customer_inline.html:30
 #: templates/manage/order/orders_inline.html:50
 #: templates/manage/product/data.html:227
@@ -751,7 +751,7 @@ msgstr "Estándard"
 msgid "Yes"
 msgstr "Sí"
 
-#: catalog/settings.py:20 templates/manage/manage_base.html:180
+#: catalog/settings.py:20 templates/manage/base.html:180
 #: templates/manage/customer/customer_inline.html:32
 #: templates/manage/order/orders_inline.html:52
 #: templates/manage/product/data.html:229
@@ -813,7 +813,7 @@ msgid "Select"
 msgstr "Seleccionar"
 
 #: catalog/settings.py:71 portlet/templatetags/lfs_portlets_tags.py:107
-#: templates/manage/manage_base.html:88
+#: templates/manage/base.html:88
 #: templates/manage/category/manage_categories_portlet.html:2
 #: templates/manage/category/no_categories.html:11
 #: templates/manage/product/categories.html:3
@@ -1122,7 +1122,7 @@ msgid "Supplier"
 msgstr "Proveedor"
 
 #: core/templatetags/lfs_tags.py:157 core/templatetags/lfs_tags.py:190
-#: templates/manage/manage_base.html:76
+#: templates/manage/base.html:76
 #: templates/manage/manufacturers/manufacturer.html:9
 #: templates/manage/manufacturers/no_manufacturers.html:10
 msgid "Manufacturers"
@@ -1398,7 +1398,7 @@ msgstr "Variantes"
 msgid "Category"
 msgstr "Categoria"
 
-#: export/models.py:71 templates/manage/manage_base.html:125
+#: export/models.py:71 templates/manage/base.html:125
 msgid "Export"
 msgstr "Exportar"
 
@@ -2353,7 +2353,7 @@ msgid "Related Products"
 msgstr "Productos relacionados"
 
 #: portlet/templatetags/lfs_portlets_tags.py:167
-#: templates/manage/manage_base.html:117
+#: templates/manage/base.html:117
 #: templates/manage/marketing/marketing.html:16
 #: templates/manage/marketing/topseller_inline.html:90
 msgid "Topseller"
@@ -2375,67 +2375,67 @@ msgstr "Método de envío"
 msgid "Dashboard"
 msgstr "Centro de control"
 
-#: templates/manage/manage_base.html:59
+#: templates/manage/base.html:59
 msgid "Logout"
 msgstr "Salir"
 
-#: templates/manage/manage_base.html:61
+#: templates/manage/base.html:61
 msgid "Login"
 msgstr "Entrar"
 
-#: templates/manage/manage_base.html:72 templates/manage/shop/shop.html:10
+#: templates/manage/base.html:72 templates/manage/shop/shop.html:10
 msgid "Shop"
 msgstr "Tienda"
 
-#: templates/manage/manage_base.html:74 templates/manage/actions/action.html:9
+#: templates/manage/base.html:74 templates/manage/actions/action.html:9
 #: templates/manage/actions/no_actions.html:10
 msgid "Actions"
 msgstr "Acciones"
 
-#: templates/manage/manage_base.html:75
+#: templates/manage/base.html:75
 msgid "Delivery Times"
 msgstr "Tiempos de entrega"
 
-#: templates/manage/manage_base.html:77
+#: templates/manage/base.html:77
 msgid "Payment Methods"
 msgstr "Métodos de pago"
 
-#: templates/manage/manage_base.html:78
+#: templates/manage/base.html:78
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: templates/manage/manage_base.html:79
+#: templates/manage/base.html:79
 #: templates/manage/shipping_methods/no_shipping_methods.html:11
 msgid "Shipping Methods"
 msgstr "Método de envío"
 
-#: templates/manage/manage_base.html:80
+#: templates/manage/base.html:80
 #: templates/manage/product_taxes/no_taxes.html:11
 #: templates/manage/product_taxes/tax.html:10
 msgid "Product Taxes"
 msgstr "Impuestos del producto"
 
-#: templates/manage/manage_base.html:81
+#: templates/manage/base.html:81
 #: templates/manage/customer_tax/customer_tax.html:8
 msgid "Customer Taxes"
 msgstr "Impuestos del cliente"
 
-#: templates/manage/manage_base.html:86
+#: templates/manage/base.html:86
 msgid "Catalog"
 msgstr "Catálogo"
 
-#: templates/manage/manage_base.html:90
+#: templates/manage/base.html:90
 msgid "Products Overview"
 msgstr "Resúmen de productos"
 
-#: templates/manage/manage_base.html:96
+#: templates/manage/base.html:96
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
 #: templates/manage/property_groups/no_property_groups.html:11
 msgid "Property Groups"
 msgstr "Grupos de propiedades"
 
-#: templates/manage/manage_base.html:102
+#: templates/manage/base.html:102
 #: templates/manage/cart/carts_filters_inline.html:9
 #: templates/manage/cart/selectable_carts_inline.html:2
 #: templates/manage/customer/customers_filters_inline.html:9
@@ -2449,23 +2449,23 @@ msgstr "Grupos de propiedades"
 msgid "Pages"
 msgstr "Páginas"
 
-#: templates/manage/manage_base.html:103
+#: templates/manage/base.html:103
 #: templates/manage/static_block/static_block.html:7
 msgid "Static blocks"
 msgstr "Bloques estáticos"
 
-#: templates/manage/manage_base.html:106 templates/manage/manage_base.html:109
+#: templates/manage/base.html:106 templates/manage/base.html:109
 #: templates/manage/customer/customers.html:16
 #: templates/manage/customer/customers_inline.html:4
 msgid "Customers"
 msgstr "Clientes"
 
-#: templates/manage/manage_base.html:108 templates/manage/cart/carts.html:17
+#: templates/manage/base.html:108 templates/manage/cart/carts.html:17
 #: templates/manage/cart/carts.html:20
 msgid "Carts"
 msgstr "Carritos de compra"
 
-#: templates/manage/manage_base.html:110
+#: templates/manage/base.html:110
 #: templates/manage/customer/customer_inline.html:117
 #: templates/manage/customer/customers_inline.html:32
 #: templates/manage/order/orders.html:15
@@ -2473,79 +2473,79 @@ msgstr "Carritos de compra"
 msgid "Orders"
 msgstr "Pedidos"
 
-#: templates/manage/manage_base.html:111
+#: templates/manage/base.html:111
 #: templates/manage/reviews/reviews.html:14
 #: templates/manage/reviews/reviews.html:17
 msgid "Reviews"
 msgstr "Revisiones"
 
-#: templates/manage/manage_base.html:114
+#: templates/manage/base.html:114
 msgid "Marketing"
 msgstr "Mercadotecnia"
 
-#: templates/manage/manage_base.html:116
+#: templates/manage/base.html:116
 msgid "Featured"
 msgstr "Destacados"
 
-#: templates/manage/manage_base.html:118
+#: templates/manage/base.html:118
 #: templates/manage/voucher/no_vouchers.html:11
 #: templates/manage/voucher/voucher_group.html:27
 #: templates/manage/voucher/vouchers.html:3
 msgid "Vouchers"
 msgstr "Cupones"
 
-#: templates/manage/manage_base.html:119
+#: templates/manage/base.html:119
 #: templates/manage/discounts/discount.html:9
 #: templates/manage/discounts/no_discounts.html:10
 msgid "Discounts"
 msgstr "Descuentos"
 
-#: templates/manage/manage_base.html:120
+#: templates/manage/base.html:120
 #: templates/manage/marketing/rating_mails.html:13
 msgid "Rating Mails"
 msgstr "Correos de valoración"
 
-#: templates/manage/manage_base.html:123
+#: templates/manage/base.html:123
 msgid "Utils"
 msgstr "Herramientas"
 
-#: templates/manage/manage_base.html:126
+#: templates/manage/base.html:126
 msgid "Miscellaneous"
 msgstr "Miseláneos"
 
-#: templates/manage/manage_base.html:127
+#: templates/manage/base.html:127
 msgid "Environment"
 msgstr "Entorno"
 
-#: templates/manage/manage_base.html:133
+#: templates/manage/base.html:133
 msgid "Help"
 msgstr "Ayuda"
 
-#: templates/manage/manage_base.html:160
+#: templates/manage/base.html:160
 msgid "Powered by"
 msgstr "Funciona con"
 
-#: templates/manage/manage_base.html:162
+#: templates/manage/base.html:162
 msgid "by"
 msgstr "por"
 
-#: templates/manage/manage_base.html:162
+#: templates/manage/base.html:162
 msgid "All rights reserved"
 msgstr "Todos los derechos reservados"
 
-#: templates/manage/manage_base.html:164
+#: templates/manage/base.html:164
 msgid "Distributed under the"
 msgstr "Distribuido bajo"
 
-#: templates/manage/manage_base.html:164
+#: templates/manage/base.html:164
 msgid "BSD-License"
 msgstr "BSD-License"
 
-#: templates/manage/manage_base.html:172
+#: templates/manage/base.html:172
 msgid "Please Confirm"
 msgstr "Por favor, confirma"
 
-#: templates/manage/manage_base.html:174
+#: templates/manage/base.html:174
 msgid "Do you really want to delete this object?"
 msgstr "¿Quieres borrar este objeto?"
 

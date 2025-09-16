@@ -326,7 +326,7 @@ msgstr "Zobrazit všechny produkty"
 #: catalog/models.py:2136
 #: catalog/settings.py:70
 #: export/models.py:18
-#: templates/manage/manage_base.html:90
+#: templates/manage/base.html:90
 #: templates/manage/cart/carts_inline.html:25
 #: templates/manage/category/manage_category.html:44
 #: templates/manage/export/export.html:36
@@ -479,7 +479,7 @@ msgstr "Kategorie"
 #: catalog/models.py:191
 #: catalog/settings.py:71
 #: portlet/templatetags/lfs_portlets_tags.py:108
-#: templates/manage/manage_base.html:89
+#: templates/manage/base.html:89
 #: templates/manage/category/manage_categories_portlet.html:2
 #: templates/manage/category/no_categories.html:11
 #: templates/manage/product/categories.html:3
@@ -557,7 +557,7 @@ msgid "Quantity field unit"
 msgstr "Jednotka množství"
 
 #: catalog/models.py:601
-#: templates/manage/manage_base.html:83
+#: templates/manage/base.html:83
 #: templates/manage/product/images.html:3
 #: templates/manage/product/product.html:98
 msgid "Images"
@@ -910,8 +910,8 @@ msgid "Step type"
 msgstr "Typ kroku"
 
 #: catalog/models.py:2163
-#: templates/manage/manage_base.html:94
-#: templates/manage/manage_base.html:96
+#: templates/manage/base.html:94
+#: templates/manage/base.html:96
 #: templates/manage/product/product.html:110
 #: templates/manage/properties/no_properties.html:11
 #: templates/manage/property_groups/properties_inline.html:6
@@ -947,7 +947,7 @@ msgid "Display files"
 msgstr "Zobrazit soubory"
 
 #: catalog/models.py:2484
-#: templates/manage/manage_base.html:101
+#: templates/manage/base.html:101
 msgid "HTML"
 msgstr "HTML"
 
@@ -979,7 +979,7 @@ msgid "Standard"
 msgstr "Výchozí"
 
 #: catalog/settings.py:19
-#: templates/manage/manage_base.html:181
+#: templates/manage/base.html:181
 #: templates/manage/customer/customer_inline.html:30
 #: templates/manage/order/orders_inline.html:50
 #: templates/manage/product/data.html:227
@@ -998,7 +998,7 @@ msgid "Yes"
 msgstr "Ano"
 
 #: catalog/settings.py:20
-#: templates/manage/manage_base.html:182
+#: templates/manage/base.html:182
 #: templates/manage/customer/customer_inline.html:32
 #: templates/manage/order/orders_inline.html:52
 #: templates/manage/product/data.html:229
@@ -1296,7 +1296,7 @@ msgstr "Dodavatel"
 
 #: core/templatetags/lfs_tags.py:164
 #: core/templatetags/lfs_tags.py:197
-#: templates/manage/manage_base.html:77
+#: templates/manage/base.html:77
 #: templates/manage/manufacturers/manufacturer.html:9
 #: templates/manage/manufacturers/no_manufacturers.html:10
 msgid "Manufacturers"
@@ -1571,7 +1571,7 @@ msgid "Variants"
 msgstr "Kombinace"
 
 #: export/models.py:71
-#: templates/manage/manage_base.html:126
+#: templates/manage/base.html:126
 msgid "Export"
 msgstr "Export"
 
@@ -2513,7 +2513,7 @@ msgid "Related Products"
 msgstr "Podobné produkty"
 
 #: portlet/templatetags/lfs_portlets_tags.py:170
-#: templates/manage/manage_base.html:118
+#: templates/manage/base.html:118
 #: templates/manage/marketing/marketing.html:16
 #: templates/manage/marketing/topseller_inline.html:90
 msgid "Topseller"
@@ -2536,69 +2536,69 @@ msgstr "Způsob dodání"
 msgid "Dashboard"
 msgstr "Přehledová stránka"
 
-#: templates/manage/manage_base.html:60
+#: templates/manage/base.html:60
 msgid "Logout"
 msgstr "Odhlášení"
 
-#: templates/manage/manage_base.html:62
+#: templates/manage/base.html:62
 msgid "Login"
 msgstr "Přihlášení"
 
-#: templates/manage/manage_base.html:73
+#: templates/manage/base.html:73
 #: templates/manage/shop/shop.html:10
 msgid "Shop"
 msgstr "Obchod"
 
-#: templates/manage/manage_base.html:75
+#: templates/manage/base.html:75
 #: templates/manage/actions/action.html:9
 #: templates/manage/actions/no_actions.html:10
 msgid "Actions"
 msgstr "Akce (záložky)"
 
-#: templates/manage/manage_base.html:76
+#: templates/manage/base.html:76
 msgid "Delivery Times"
 msgstr "Dodací lhůty"
 
-#: templates/manage/manage_base.html:78
+#: templates/manage/base.html:78
 msgid "Payment Methods"
 msgstr "Způsoby platby"
 
-#: templates/manage/manage_base.html:79
+#: templates/manage/base.html:79
 msgid "Preferences"
 msgstr "Předvolby"
 
-#: templates/manage/manage_base.html:80
+#: templates/manage/base.html:80
 #: templates/manage/shipping_methods/no_shipping_methods.html:11
 msgid "Shipping Methods"
 msgstr "Způsoby dodání"
 
-#: templates/manage/manage_base.html:81
+#: templates/manage/base.html:81
 #: templates/manage/product_taxes/no_taxes.html:11
 #: templates/manage/product_taxes/tax.html:10
 msgid "Product Taxes"
 msgstr "Daňové skupiny"
 
-#: templates/manage/manage_base.html:82
+#: templates/manage/base.html:82
 #: templates/manage/customer_tax/customer_tax.html:8
 msgid "Customer Taxes"
 msgstr "Daně podle zákazníků"
 
-#: templates/manage/manage_base.html:87
+#: templates/manage/base.html:87
 msgid "Catalog"
 msgstr "Katalog"
 
-#: templates/manage/manage_base.html:91
+#: templates/manage/base.html:91
 msgid "Products Overview"
 msgstr "Přehled produktů"
 
-#: templates/manage/manage_base.html:97
+#: templates/manage/base.html:97
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
 #: templates/manage/property_groups/no_property_groups.html:11
 msgid "Property Groups"
 msgstr "Skupiny vlastností"
 
-#: templates/manage/manage_base.html:103
+#: templates/manage/base.html:103
 #: templates/manage/cart/carts_filters_inline.html:9
 #: templates/manage/cart/selectable_carts_inline.html:2
 #: templates/manage/customer/customers_filters_inline.html:9
@@ -2612,25 +2612,25 @@ msgstr "Skupiny vlastností"
 msgid "Pages"
 msgstr "Stránky"
 
-#: templates/manage/manage_base.html:104
+#: templates/manage/base.html:104
 #: templates/manage/static_block/static_block.html:7
 msgid "Static blocks"
 msgstr "Statické bloky"
 
-#: templates/manage/manage_base.html:107
-#: templates/manage/manage_base.html:110
+#: templates/manage/base.html:107
+#: templates/manage/base.html:110
 #: templates/manage/customer/customers.html:16
 #: templates/manage/customer/customers_inline.html:4
 msgid "Customers"
 msgstr "Zákazníci"
 
-#: templates/manage/manage_base.html:109
+#: templates/manage/base.html:109
 #: templates/manage/cart/carts.html:17
 #: templates/manage/cart/carts.html:20
 msgid "Carts"
 msgstr "Košíky"
 
-#: templates/manage/manage_base.html:111
+#: templates/manage/base.html:111
 #: templates/manage/customer/customer_inline.html:67
 #: templates/manage/customer/customers_inline.html:32
 #: templates/manage/order/orders.html:15
@@ -2638,87 +2638,87 @@ msgstr "Košíky"
 msgid "Orders"
 msgstr "Objednávky"
 
-#: templates/manage/manage_base.html:112
+#: templates/manage/base.html:112
 #: templates/manage/reviews/reviews.html:14
 #: templates/manage/reviews/reviews.html:17
 msgid "Reviews"
 msgstr "Hodnocení"
 
-#: templates/manage/manage_base.html:115
+#: templates/manage/base.html:115
 msgid "Marketing"
 msgstr "Marketing"
 
-#: templates/manage/manage_base.html:117
+#: templates/manage/base.html:117
 msgid "Featured"
 msgstr "Oblíbené"
 
-#: templates/manage/manage_base.html:119
+#: templates/manage/base.html:119
 #: templates/manage/voucher/no_vouchers.html:11
 #: templates/manage/voucher/voucher_group.html:27
 #: templates/manage/voucher/vouchers.html:3
 msgid "Vouchers"
 msgstr "Kupóny"
 
-#: templates/manage/manage_base.html:120
+#: templates/manage/base.html:120
 #: templates/manage/discounts/discount.html:9
 #: templates/manage/discounts/no_discounts.html:10
 msgid "Discounts"
 msgstr "Slevy"
 
-#: templates/manage/manage_base.html:121
+#: templates/manage/base.html:121
 #: templates/manage/marketing/rating_mails.html:13
 msgid "Rating Mails"
 msgstr "Vyžádání hodnocení emailem"
 
-#: templates/manage/manage_base.html:124
+#: templates/manage/base.html:124
 msgid "Utils"
 msgstr "Nástroje"
 
-#: templates/manage/manage_base.html:127
+#: templates/manage/base.html:127
 msgid "Miscellaneous"
 msgstr "Různé"
 
-#: templates/manage/manage_base.html:128
+#: templates/manage/base.html:128
 msgid "Environment"
 msgstr "Prostředí a verze"
 
-#: templates/manage/manage_base.html:134
+#: templates/manage/base.html:134
 msgid "Help"
 msgstr "Nápověda"
 
-#: templates/manage/manage_base.html:161
+#: templates/manage/base.html:161
 msgid "Powered by"
 msgstr "Založeno na"
 
-#: templates/manage/manage_base.html:163
+#: templates/manage/base.html:163
 msgid "by"
 msgstr "-"
 
-#: templates/manage/manage_base.html:163
+#: templates/manage/base.html:163
 msgid "All rights reserved"
 msgstr "Všechna práva vyhrazena"
 
-#: templates/manage/manage_base.html:165
+#: templates/manage/base.html:165
 msgid "Distributed under the"
 msgstr "Distribuováno pod licencí"
 
-#: templates/manage/manage_base.html:165
+#: templates/manage/base.html:165
 msgid "BSD-License"
 msgstr "BSD"
 
-#: templates/manage/manage_base.html:169
+#: templates/manage/base.html:169
 msgid "LFS Dialog"
 msgstr "LFS dialog"
 
-#: templates/manage/manage_base.html:170
+#: templates/manage/base.html:170
 msgid "Portlets dialog"
 msgstr "Portlety"
 
-#: templates/manage/manage_base.html:174
+#: templates/manage/base.html:174
 msgid "Please Confirm"
 msgstr "Prosím potvrďte"
 
-#: templates/manage/manage_base.html:176
+#: templates/manage/base.html:176
 msgid "Do you really want to delete this object?"
 msgstr "Opravdu chcete smazat tento objekt?"
 

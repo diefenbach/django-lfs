@@ -145,7 +145,7 @@ msgstr "Показать все товары"
 
 #: catalog/models.py:121 catalog/models.py:1153 catalog/models.py:1190
 #: catalog/settings.py:45 export/models.py:17
-#: templates/manage/manage_base.html:91
+#: templates/manage/base.html:91
 #: templates/manage/cart/carts_inline.html:122
 #: templates/manage/category/manage_category.html:40
 #: templates/manage/category/products.html:4
@@ -583,8 +583,8 @@ msgstr "Тип шага"
 msgid "Step"
 msgstr "Шаг"
 
-#: catalog/models.py:1205 templates/manage/manage_base.html:96
-#: templates/manage/manage_base.html:98
+#: catalog/models.py:1205 templates/manage/base.html:96
+#: templates/manage/base.html:98
 #: templates/manage/product/product.html:90
 #: templates/manage/properties/properties_inline.html:5
 #: templates/manage/properties/property_group.html:28
@@ -616,7 +616,7 @@ msgid "Content id"
 msgstr "Код наполнения"
 
 #: catalog/models.py:1424 catalog/migrations/0001_initial.py:25
-#: templates/manage/manage_base.html:103
+#: templates/manage/base.html:103
 msgid "HTML"
 msgstr "HTML"
 
@@ -682,7 +682,7 @@ msgid "Select"
 msgstr "Выбор"
 
 #: catalog/settings.py:46 portlet/templatetags/lfs_portlets_tags.py:93
-#: templates/manage/manage_base.html:93
+#: templates/manage/base.html:93
 #: templates/manage/product/categories.html:3
 #: templates/manage/product/product.html:74
 msgid "Categories"
@@ -1236,7 +1236,7 @@ msgstr "Варианты"
 msgid "Category"
 msgstr "Категория"
 
-#: export/models.py:68 templates/manage/manage_base.html:127
+#: export/models.py:68 templates/manage/base.html:127
 #: templates/manage/export/export.html:17
 msgid "Export"
 msgstr "Выгрузка"
@@ -1926,7 +1926,7 @@ msgid "Related Products"
 msgstr "Сопутствующие товары"
 
 #: portlet/templatetags/lfs_portlets_tags.py:149
-#: templates/manage/manage_base.html:119
+#: templates/manage/base.html:119
 #: templates/manage/marketing/marketing.html:13
 #: templates/manage/marketing/marketing.html:18
 #: templates/manage/marketing/topseller_inline.html:107
@@ -1950,58 +1950,58 @@ msgstr "Ставка"
 msgid "Dashboard"
 msgstr "Инфопанель"
 
-#: templates/manage/manage_base.html:65
+#: templates/manage/base.html:65
 msgid "Logout"
 msgstr "Выйти"
 
-#: templates/manage/manage_base.html:67
+#: templates/manage/base.html:67
 msgid "Login"
 msgstr "Войти"
 
-#: templates/manage/manage_base.html:78 templates/manage/shop/shop.html:15
+#: templates/manage/base.html:78 templates/manage/shop/shop.html:15
 #: templates/manage/shop/shop.html.py:21
 msgid "Shop"
 msgstr "Магазин"
 
-#: templates/manage/manage_base.html:80
+#: templates/manage/base.html:80
 msgid "Preferences"
 msgstr "Настройки"
 
-#: templates/manage/manage_base.html:81
+#: templates/manage/base.html:81
 msgid "Actions"
 msgstr "Действия"
 
-#: templates/manage/manage_base.html:82
+#: templates/manage/base.html:82
 msgid "Shipping Methods"
 msgstr "Способы доставки"
 
-#: templates/manage/manage_base.html:83
+#: templates/manage/base.html:83
 msgid "Delivery Times"
 msgstr "Сроки поставки"
 
-#: templates/manage/manage_base.html:84
+#: templates/manage/base.html:84
 msgid "Payment Methods"
 msgstr "Способы оплаты"
 
-#: templates/manage/manage_base.html:85
+#: templates/manage/base.html:85
 msgid "Taxes"
 msgstr "Налоги"
 
-#: templates/manage/manage_base.html:89
+#: templates/manage/base.html:89
 msgid "Catalog"
 msgstr "Каталог"
 
-#: templates/manage/manage_base.html:92
+#: templates/manage/base.html:92
 msgid "Product Overview"
 msgstr "Обзор товара"
 
-#: templates/manage/manage_base.html:99
+#: templates/manage/base.html:99
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
 msgid "Property Groups"
 msgstr "Группы по свойствам"
 
-#: templates/manage/manage_base.html:105
+#: templates/manage/base.html:105
 #: templates/manage/cart/carts_inline.html:9
 #: templates/manage/customer/customers_inline.html:9
 #: templates/manage/order/orders_inline.html:7
@@ -2009,70 +2009,70 @@ msgstr "Группы по свойствам"
 msgid "Pages"
 msgstr "Страницы"
 
-#: templates/manage/manage_base.html:106
+#: templates/manage/base.html:106
 msgid "Static blocks"
 msgstr "Статичные блоки"
 
-#: templates/manage/manage_base.html:109 templates/manage/manage_base.html:111
+#: templates/manage/base.html:109 templates/manage/base.html:111
 msgid "Customers"
 msgstr "Клиенты"
 
-#: templates/manage/manage_base.html:112
+#: templates/manage/base.html:112
 #: templates/manage/customer/customer_inline.html:122
 #: templates/manage/customer/customers_inline.html:110
 msgid "Orders"
 msgstr "Заказы"
 
-#: templates/manage/manage_base.html:113
+#: templates/manage/base.html:113
 msgid "Carts"
 msgstr "Корзины"
 
-#: templates/manage/manage_base.html:114
+#: templates/manage/base.html:114
 msgid "Reviews"
 msgstr "Мнения"
 
-#: templates/manage/manage_base.html:117
+#: templates/manage/base.html:117
 msgid "Marketing"
 msgstr "Маркетинг"
 
-#: templates/manage/manage_base.html:120
+#: templates/manage/base.html:120
 msgid "Rating Mails"
 msgstr "Письма оценки"
 
-#: templates/manage/manage_base.html:121
+#: templates/manage/base.html:121
 #: templates/manage/voucher/voucher_group.html:29
 msgid "Vouchers"
 msgstr "Сертификаты"
 
-#: templates/manage/manage_base.html:124
+#: templates/manage/base.html:124
 msgid "Utils"
 msgstr "Инструменты"
 
-#: templates/manage/manage_base.html:126
+#: templates/manage/base.html:126
 msgid "Miscellaneous"
 msgstr "Разное"
 
-#: templates/manage/manage_base.html:151
+#: templates/manage/base.html:151
 msgid "Powered by"
 msgstr "Работает на "
 
-#: templates/manage/manage_base.html:153
+#: templates/manage/base.html:153
 msgid "is a product of"
 msgstr "создан"
 
-#: templates/manage/manage_base.html:154
+#: templates/manage/base.html:154
 msgid "by"
 msgstr "-"
 
-#: templates/manage/manage_base.html:154
+#: templates/manage/base.html:154
 msgid "All rights reserved"
 msgstr "Все права защищены"
 
-#: templates/manage/manage_base.html:156
+#: templates/manage/base.html:156
 msgid "Distributed under the"
 msgstr "Распространяется под"
 
-#: templates/manage/manage_base.html:156
+#: templates/manage/base.html:156
 msgid "BSD-License"
 msgstr "лицензией BSD"
 

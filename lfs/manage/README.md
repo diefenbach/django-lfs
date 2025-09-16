@@ -308,7 +308,7 @@ document.addEventListener('htmx:afterSwap', evt => {
 **Including modals in templates:**
 
 ```django
-{% extends "manage/manage_base.html" %}
+{% extends "manage/base.html" %}
 
 {% block content %}
     <!-- Your page content -->

@@ -17,7 +17,7 @@ This is not full reference of changes but at least some of them are described:
   div.colophon-inner and div.footer-inner html elements were added, both with padding: 10px set in main.css.
   padding: 10px was removed from '#footer .container' and '#colophon .container' in main.css
 * update_editor method in lfs_tinymce.js has been modified and requires tinymce 3.5.8 which is now being used.
-  References to tinymce were changed in manage_base.html and lfs_tinymce.js
+  References to tinymce were changed in base.html and lfs_tinymce.js
 * filter portlet has been updated to allow for manufacturer filtering and because of that its template:
   lfs_theme/templates/lfs/portlets/filter.html was modified - manufacturer filtering section has been added
 * Small change at lfs/templates/manage/product/product.html - removed onkeypress from filter input element in favour
@@ -33,7 +33,7 @@ This is not full reference of changes but at least some of them are described:
 * refactored lfs.manage.js - do not use ``live`` anymore. Updated manage/export/export.html, manage/export/export_inline.html,
   manage/manufactuers/manufacturer.html and manage/manufacturers/manufacturer_inline.html to use data-url instead of just 'data'
   and use elem.data('something') in JavaScript
-* added <div id="portlets-dialog" title="{% trans "Portlets dialog" %}"></div> to manage_base.html to handle properly inerting images to TinyMCE within portlets dialog
+* added <div id="portlets-dialog" title="{% trans "Portlets dialog" %}"></div> to base.html to handle properly inerting images to TinyMCE within portlets dialog
   (changes to lfs.manage.js with portlets dialog)
 * added some SEO related attributes to templates and canonical tags for variants
 * modified catalog/views.py -> category_products and catalog/views.py -> category_categories return value, so that it now contains

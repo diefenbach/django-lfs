@@ -24,14 +24,14 @@ Steps
    Go to folder where you've just extracted main package of TinyMCE, e.g.: ``theme/static/manage/tiny_mce_x_x/``
    and extract language files into proper directories.
 
-#. Copy ``manage_base.html`` to your theme
+#. Copy ``base.html`` to your theme
 
-   Copy ``lfs/templates/manage/manage_base.html`` to your theme: ``mytheme/templates/manage/manage_base.html``
+   Copy ``lfs/templates/manage/base.html`` to your theme: ``mytheme/templates/manage/base.html``
 
 #. Copy ``lfs_tinymce.js`` to your theme
 
    Copy ``lfs/static/js/lfs_tinymce.js`` to your theme: ``mytheme/static/js/lfs_tinymce.js``
-   (if you use different path then you have to update it at manage_base.html in step 7)
+   (if you use different path then you have to update it at base.html in step 7)
 
 #. Modify ``lfs_tinymce.js`` (copy located at your theme)
 
@@ -70,7 +70,7 @@ Steps
          }
      });
 
-#. Customize ``manage_base.html`` at your theme
+#. Customize ``base.html`` at your theme
 
    Replace:
 

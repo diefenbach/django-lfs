@@ -152,7 +152,7 @@ msgstr "Mostrar todos los productos"
 
 #: catalog/models.py:127 catalog/models.py:1383 catalog/models.py:1478
 #: catalog/settings.py:49 export/models.py:17
-#: templates/manage/manage_base.html:92
+#: templates/manage/base.html:92
 #: templates/manage/cart/carts_inline.html:122
 #: templates/manage/category/manage_category.html:41
 #: templates/manage/category/products.html:4
@@ -599,8 +599,8 @@ msgstr ""
 msgid "Step type"
 msgstr "Tipo de paso"
 
-#: catalog/models.py:1505 templates/manage/manage_base.html:98
-#: templates/manage/manage_base.html:100
+#: catalog/models.py:1505 templates/manage/base.html:98
+#: templates/manage/base.html:100
 #: templates/manage/product/product.html:91
 #: templates/manage/properties/add_property.html:6
 #: templates/manage/properties/properties_inline.html:5
@@ -634,7 +634,7 @@ msgstr "Content id"
 msgid "Display files"
 msgstr "Mostrar tipo"
 
-#: catalog/models.py:1786 templates/manage/manage_base.html:105
+#: catalog/models.py:1786 templates/manage/base.html:105
 msgid "HTML"
 msgstr "HTML"
 
@@ -702,7 +702,7 @@ msgid "Select"
 msgstr "Seleccionar"
 
 #: catalog/settings.py:50 portlet/templatetags/lfs_portlets_tags.py:100
-#: templates/manage/manage_base.html:94
+#: templates/manage/base.html:94
 #: templates/manage/product/categories.html:3
 #: templates/manage/product/product.html:75
 msgid "Categories"
@@ -1253,7 +1253,7 @@ msgstr "Variantes"
 msgid "Category"
 msgstr "Categoria"
 
-#: export/models.py:68 templates/manage/manage_base.html:129
+#: export/models.py:68 templates/manage/base.html:129
 #: templates/manage/export/export.html:17
 msgid "Export"
 msgstr "Exportar"
@@ -2023,7 +2023,7 @@ msgid "Related Products"
 msgstr "Productos relacionados"
 
 #: portlet/templatetags/lfs_portlets_tags.py:156
-#: templates/manage/manage_base.html:121
+#: templates/manage/base.html:121
 #: templates/manage/marketing/marketing.html:13
 #: templates/manage/marketing/marketing.html:18
 #: templates/manage/marketing/topseller_inline.html:107
@@ -2046,60 +2046,60 @@ msgstr "Tasa"
 msgid "Dashboard"
 msgstr "Centro de control"
 
-#: templates/manage/manage_base.html:65
+#: templates/manage/base.html:65
 msgid "Logout"
 msgstr "Salir"
 
-#: templates/manage/manage_base.html:67
+#: templates/manage/base.html:67
 msgid "Login"
 msgstr "Entrar"
 
-#: templates/manage/manage_base.html:78 templates/manage/shop/shop.html:15
+#: templates/manage/base.html:78 templates/manage/shop/shop.html:15
 #: templates/manage/shop/shop.html.py:21
 msgid "Shop"
 msgstr "Tienda"
 
-#: templates/manage/manage_base.html:80
+#: templates/manage/base.html:80
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: templates/manage/manage_base.html:81 templates/manage/shop/action.html:6
+#: templates/manage/base.html:81 templates/manage/shop/action.html:6
 #: templates/manage/shop/add_action.html:18
 msgid "Actions"
 msgstr "Acciones"
 
-#: templates/manage/manage_base.html:82
+#: templates/manage/base.html:82
 msgid "Shipping Methods"
 msgstr "Método de envío"
 
-#: templates/manage/manage_base.html:83
+#: templates/manage/base.html:83
 msgid "Delivery Times"
 msgstr "Tiempos de entrega"
 
-#: templates/manage/manage_base.html:84
+#: templates/manage/base.html:84
 msgid "Payment Methods"
 msgstr "Métodos de pago"
 
-#: templates/manage/manage_base.html:85 templates/manage/tax/add_tax.html:6
+#: templates/manage/base.html:85 templates/manage/tax/add_tax.html:6
 #: templates/manage/tax/tax.html:6
 msgid "Taxes"
 msgstr "Impuestos"
 
-#: templates/manage/manage_base.html:86
+#: templates/manage/base.html:86
 #: templates/manage/discounts/add_discount.html:6
 #: templates/manage/discounts/discount.html:6
 msgid "Discounts"
 msgstr ""
 
-#: templates/manage/manage_base.html:90
+#: templates/manage/base.html:90
 msgid "Catalog"
 msgstr "Catálogo"
 
-#: templates/manage/manage_base.html:93
+#: templates/manage/base.html:93
 msgid "Product Overview"
 msgstr "Visión general de producto"
 
-#: templates/manage/manage_base.html:95
+#: templates/manage/base.html:95
 #: templates/manage/manufacturer/add_manufacturer.html:18
 #: templates/manage/manufacturer/add_manufacturer.html:29
 #: templates/manage/manufacturer/manufacturer.html:8
@@ -2107,13 +2107,13 @@ msgstr "Visión general de producto"
 msgid "Manufacturer"
 msgstr ""
 
-#: templates/manage/manage_base.html:101
+#: templates/manage/base.html:101
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
 msgid "Property Groups"
 msgstr "Grupos de propiedades"
 
-#: templates/manage/manage_base.html:107
+#: templates/manage/base.html:107
 #: templates/manage/cart/carts_inline.html:9
 #: templates/manage/customer/customers_inline.html:9
 #: templates/manage/order/orders_inline.html:7
@@ -2122,71 +2122,71 @@ msgstr "Grupos de propiedades"
 msgid "Pages"
 msgstr "Páginas"
 
-#: templates/manage/manage_base.html:108
+#: templates/manage/base.html:108
 #: templates/manage/static_block/static_block.html:6
 msgid "Static blocks"
 msgstr "Bloques estáticos"
 
-#: templates/manage/manage_base.html:111 templates/manage/manage_base.html:113
+#: templates/manage/base.html:111 templates/manage/base.html:113
 msgid "Customers"
 msgstr "Clientes"
 
-#: templates/manage/manage_base.html:114
+#: templates/manage/base.html:114
 #: templates/manage/customer/customer_inline.html:122
 #: templates/manage/customer/customers_inline.html:110
 msgid "Orders"
 msgstr "Pedidos"
 
-#: templates/manage/manage_base.html:115
+#: templates/manage/base.html:115
 msgid "Carts"
 msgstr "Cestas"
 
-#: templates/manage/manage_base.html:116
+#: templates/manage/base.html:116
 msgid "Reviews"
 msgstr "Revisiones"
 
-#: templates/manage/manage_base.html:119
+#: templates/manage/base.html:119
 msgid "Marketing"
 msgstr "Marketing"
 
-#: templates/manage/manage_base.html:122
+#: templates/manage/base.html:122
 msgid "Rating Mails"
 msgstr "Rating Mails"
 
-#: templates/manage/manage_base.html:123
+#: templates/manage/base.html:123
 #: templates/manage/voucher/voucher_group.html:32
 msgid "Vouchers"
 msgstr "Vales-decuento"
 
-#: templates/manage/manage_base.html:126
+#: templates/manage/base.html:126
 msgid "Utils"
 msgstr "Utilidades"
 
-#: templates/manage/manage_base.html:128
+#: templates/manage/base.html:128
 msgid "Miscellaneous"
 msgstr "Miscellaneous"
 
-#: templates/manage/manage_base.html:153
+#: templates/manage/base.html:153
 msgid "Powered by"
 msgstr "Powered by"
 
-#: templates/manage/manage_base.html:155
+#: templates/manage/base.html:155
 msgid "is a product of"
 msgstr "producto de"
 
-#: templates/manage/manage_base.html:156
+#: templates/manage/base.html:156
 msgid "by"
 msgstr "por"
 
-#: templates/manage/manage_base.html:156
+#: templates/manage/base.html:156
 msgid "All rights reserved"
 msgstr "Todos los derechos reservados"
 
-#: templates/manage/manage_base.html:158
+#: templates/manage/base.html:158
 msgid "Distributed under the"
 msgstr "Distributos bajo"
 
-#: templates/manage/manage_base.html:158
+#: templates/manage/base.html:158
 msgid "BSD-License"
 msgstr "BSD-License"
 
