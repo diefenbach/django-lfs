@@ -13,38 +13,36 @@
 {% block content %}
     <div class="lfs-images">
         <div class="row">
-            <main class="col-12 p-4 pt-3 scrollable-content">
-                <div class="padding-bottom-100">
-                    <div class="d-flex justify-content-between fw-semibold">
-                        <nav aria-label="Breadcrumb" class="me-2 mb-4">
-                            <ol class="breadcrumb mb-0 small">
-                                <li class="breadcrumb-item">Manage</li>
-                                <li class="breadcrumb-item active" aria-current="page">{% trans "Images" %}</li>
-                            </ol>
-                        </nav>
-                    </div>
+            <main class="col-12 p-4 pt-3">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <nav aria-label="Breadcrumb" class="me-2 mb-3">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item active" aria-current="page">{% trans "Images" %}</li>
+                        </ol>
+                    </nav>
+                </div>
 
-                    <ul class="nav nav-tabs" id="imagesTabs" role="tablist" hx-swap-oob="true">
-                        {% for key, url in tabs %}
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
-                                href="{{ url }}" 
-                                role="tab"
-                                aria-controls="{{ key }}-content"
-                                aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
-                                    {% trans key|title %}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    
-                    <div class="tab-content border border-top-0 bg-white p-4" id="imagesTabsContent">
-                        {% if active_tab == "list" %}
-                            {% include "manage/images/tabs/_list.html" %}
-                        {% elif active_tab == "upload" %}
-                            {% include "manage/images/tabs/_upload.html" %}
-                        {% endif %}
-                    </div>
+                <ul class="nav nav-tabs" id="imagesTabs" role="tablist" hx-swap-oob="true">
+                    {% for key, url in tabs %}
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                            href="{{ url }}" 
+                            role="tab"
+                            aria-controls="{{ key }}-content"
+                            aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                {% trans key|title %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                <div class="tab-content border border-top-0 bg-white p-4" id="imagesTabsContent">
+                    {% if active_tab == "list" %}
+                        {% include "manage/images/tabs/_list.html" %}
+                    {% elif active_tab == "upload" %}
+                        {% include "manage/images/tabs/_upload.html" %}
+                    {% endif %}
                 </div>
             </main>
         </div>
