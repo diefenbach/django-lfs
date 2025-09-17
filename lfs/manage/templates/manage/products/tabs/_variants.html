@@ -106,21 +106,35 @@
     <form method="post" class="mb-4">
         {% csrf_token %}
         <input type="hidden" name="action" value="update">
-        <div class="table-responsive border rounded p-3">
+        <div class="form-group">
+            <div class="table-responsive border rounded p-3">
             <table class="table table-sm align-middle">
                 <thead>
                     <tr>
-                        <th style="width:2rem;"></th>
+                        <th style="width:2rem;">
+                            <input type="checkbox" class="form-check-input select-all-variants" />
+                        </th>
                         <th style="width:6rem;">{% trans "Position" %}</th>
-                        <th style="width:5rem;">{% trans "Active" %}</th>
+                        <th style="width:5rem;">
+                            <input type="checkbox" class="form-check-input select-all-active" />
+                            {% trans "Active" %}
+                        </th>
                         <th style="width:10rem;">Slug</th>
-                        <th style="width:14rem;">SKU</th>
-                        <th>{% trans "Name" %}</th>
+                        <th style="width:14rem;">
+                            <input type="checkbox" class="form-check-input select-all-sku" />
+                            SKU
+                        </th>
+                        <th>
+                            <input type="checkbox" class="form-check-input select-all-name" />
+                            {% trans "Name" %}
+                        </th>
                         {% for prop_dict in all_properties %}
                             <th>{% if prop_dict.property_group %}[{{ prop_dict.property_group.name }}]{% endif %} {{ prop_dict.property.name }}</th>
                         {% endfor %}
-                        <th style="width:5rem;">{% trans "Active price" %}</th>
-                        <th style="width:8rem;">{% trans "Price" %}</th>
+                        <th style="width:8rem;">
+                            <input type="checkbox" class="form-check-input select-all-price" />
+                            {% trans "Price" %}
+                        </th>
                         <th style="width:6rem;">{% trans "Default" %}</th>
                     </tr>
                 </thead>
@@ -129,20 +143,20 @@
                         <tr>
                             <td>
                                 <input type="hidden" name="variant-{{ v.id }}" value="1">
-                                <input type="checkbox" class="form-check-input" name="delete-{{ v.id }}" form="variants-delete-form">
+                                <input type="checkbox" class="form-check-input select-variant" name="delete-{{ v.id }}" form="variants-delete-form">
                             </td>
                             <td><input type="number" class="form-control form-control-sm" name="position-{{ v.id }}" value="{{ v.position }}"></td>
-                            <td><input type="checkbox" class="form-check-input" name="active-{{ v.id }}" {% if v.active %}checked{% endif %}></td>
+                            <td><input type="checkbox" class="form-check-input select-active" name="active-{{ v.id }}" {% if v.active %}checked{% endif %}></td>
                             <td><input type="text" class="form-control form-control-sm" name="slug-{{ v.id }}" value="{{ v.slug }}"></td>
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <div class="input-group-text"><input class="form-check-input mt-0" type="checkbox" name="active_sku-{{ v.id }}" {% if v.active_sku %}checked{% endif %}></div>
+                                    <div class="input-group-text"><input class="form-check-input mt-0 select-sku" type="checkbox" name="active_sku-{{ v.id }}" {% if v.active_sku %}checked{% endif %}></div>
                                     <input type="text" class="form-control" name="sku-{{ v.id }}" value="{{ v.sku }}">
                                 </div>
                             </td>
                             <td>
                                 <div class="input-group input-group-sm">
-                                    <div class="input-group-text"><input class="form-check-input mt-0" type="checkbox" name="active_name-{{ v.id }}" {% if v.active_name %}checked{% endif %}></div>
+                                    <div class="input-group-text"><input class="form-check-input mt-0 select-name" type="checkbox" name="active_name-{{ v.id }}" {% if v.active_name %}checked{% endif %}></div>
                                     <input type="text" class="form-control" name="name-{{ v.id }}" value="{{ v.name }}">
                                 </div>
                             </td>
@@ -156,8 +170,14 @@
                                     </select>
                                 </td>
                             {% endfor %}
-                            <td class="text-center"><input type="checkbox" class="form-check-input" name="active_price-{{ v.id }}" {% if v.active_price %}checked{% endif %}></td>
-                            <td><input type="text" class="form-control form-control-sm" name="price-{{ v.id }}" value="{{ v.price }}"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-text"><input class="form-check-input mt-0 select-price" type="checkbox" name="active_price-{{ v.id }}" {% if v.active_price %}checked{% endif %}></div>
+                                    <input type="text" class="form-control" name="price-{{ v.id }}" value="{{ v.price }}">
+                                </div>
+                            </td>
+
+
                             <td class="text-center"><input type="radio" class="form-check-input" name="default_variant" value="{{ v.id }}" {% if default_variant_form.instance.default_variant.id == v.id %}checked{% endif %}></td>
                         </tr>
                     {% empty %}

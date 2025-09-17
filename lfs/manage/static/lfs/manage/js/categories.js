@@ -302,3 +302,13 @@ if (document.readyState === 'loading') {
     // DOM is already ready
     initializeOnce();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    new CheckboxSelectAllManager('.select-all-available', '.select-available');
+    new CheckboxSelectAllManager('.select-all-assigned', '.select-assigned');
+});
+
+document.addEventListener('htmx:afterSwap', () => {
+    new CheckboxSelectAllManager('.select-all-available', '.select-available');
+    new CheckboxSelectAllManager('.select-all-assigned', '.select-assigned');
+});

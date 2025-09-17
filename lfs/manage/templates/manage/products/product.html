@@ -152,33 +152,9 @@
             </main>
         </div>
     </div>
-
     {% include 'manage/snippets/modals/modal-lg.html' %}
+{% endblock %}
 
-    <script>
-        // Handle chevron rotation for collapsible variants
-        document.addEventListener('DOMContentLoaded', function() {
-            const collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
-            
-            collapseElements.forEach(function(element) {
-                element.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const target = document.querySelector(this.getAttribute('data-bs-target'));
-                    const chevron = this.querySelector('.bi-chevron-down, .bi-chevron-up');
-                    
-                    if (target) {
-                        if (target.classList.contains('show')) {
-                            chevron.classList.remove('bi-chevron-up');
-                            chevron.classList.add('bi-chevron-down');
-                        } else {
-                            chevron.classList.remove('bi-chevron-down');
-                            chevron.classList.add('bi-chevron-up');
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+{% block javascript %}
+    <script src="{% static 'lfs/manage/js/products.js' %}"></script>
 {% endblock %}

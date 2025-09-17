@@ -1,10 +1,5 @@
 // Voucher Groups Management JavaScript
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize voucher management functionality
-    initVoucherManagement();
-});
-
 function initVoucherManagement() {
     // Select all checkbox functionality for vouchers
     const selectAllCheckbox = document.getElementById('select-all-vouchers');
@@ -52,3 +47,12 @@ function updateFilterState() {
         // This function can be extended for additional filter logic if needed
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    new CheckboxSelectAllManager('.select-all-vouchers', '.voucher-checkbox');
+});
+
+
+document.addEventListener('htmx:afterSwap', () => {
+    new CheckboxSelectAllManager('.select-all-vouchers', '.voucher-checkbox');
+});

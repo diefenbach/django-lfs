@@ -1,13 +1,9 @@
 class PropertyGroupsManager {
     constructor() {
-        this.initializeSelectAll();
-        this.initializePopovers();
         this.initializeSortable();
     }
 
     initializeSelectAll() {
-        console.log('PropertyGroupsManager: Initializing select all functionality');
-        
         // Select all functionality for assigned properties
         const selectAllAssigned = document.querySelector('.select-all-assigned');
         const assignedCheckboxes = document.querySelectorAll('.select-assigned');
@@ -27,8 +23,6 @@ class PropertyGroupsManager {
         const selectAllProperties = document.querySelector('.select-all-properties');
         const propertyCheckboxes = document.querySelectorAll('.select-property');
         
-        console.log('Available properties:', { selectAllProperties, propertyCount: propertyCheckboxes.length });
-        
         if (selectAllProperties) {
             selectAllProperties.addEventListener('change', function() {
                 console.log('Select all properties changed:', this.checked);
@@ -42,8 +36,6 @@ class PropertyGroupsManager {
         const selectAllProducts = document.querySelector('.select-all-products');
         const productCheckboxes = document.querySelectorAll('.select-product');
         
-        console.log('Available products:', { selectAllProducts, productCount: productCheckboxes.length });
-        
         if (selectAllProducts) {
             selectAllProducts.addEventListener('change', function() {
                 console.log('Select all products changed:', this.checked);
@@ -54,17 +46,7 @@ class PropertyGroupsManager {
         }
     }
 
-    initializePopovers() {
-        // Initialize Bootstrap popovers
-        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-        popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl);
-        });
-    }
-
     initializeSortable() {
-        console.log('PropertyGroupsManager: Initializing sortable functionality');
-        
         // Initialize sortable for assigned properties table
         const propertiesTable = document.getElementById("sortable-properties-table");
         if (propertiesTable && typeof Sortable !== 'undefined') {
@@ -72,7 +54,6 @@ class PropertyGroupsManager {
                 animation: 150,
                 handle: ".handle",
                 onEnd: (evt) => {
-                    console.log('PropertyGroupsManager: Properties sort ended');
                     // Get the new order of property items
                     const rows = propertiesTable.querySelectorAll('tr[data-id]');
                     const propertyIds = Array.from(rows).map(row => row.getAttribute('data-id'));
@@ -105,15 +86,20 @@ class PropertyGroupsManager {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('PropertyGroupsManager: DOMContentLoaded - initializing');
-    new PropertyGroupsManager();
+document.addEventListener('htmx:afterSwap', (event) => {
+    if (event.target.id === 'products-tables' || event.target.id === 'properties-content' || event.target.id === 'products-content' || event.target.id === 'assigned-properties-list') {
+        new PropertyGroupsManager();
+        new PopupManager();
+        new CheckboxSelectAllManager('.select-all-assigned', '.select-assigned');
+        new CheckboxSelectAllManager('.select-all-products', '.select-product');
+        new CheckboxSelectAllManager('.select-all-properties', '.select-property');
+    }
 });
 
-document.addEventListener('htmx:afterSwap', (event) => {
-    console.log('PropertyGroupsManager: HTMX afterSwap', event.target.id);
-    if (event.target.id === 'products-tables' || event.target.id === 'properties-content' || event.target.id === 'products-content' || event.target.id === 'assigned-properties-list') {
-        console.log('PropertyGroupsManager: Reinitializing after HTMX swap');
-        new PropertyGroupsManager();
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    new PropertyGroupsManager();
+    new PopupManager();
+    new CheckboxSelectAllManager('.select-all-assigned', '.select-assigned');
+    new CheckboxSelectAllManager('.select-all-products', '.select-product');
+    new CheckboxSelectAllManager('.select-all-properties', '.select-property');
 });

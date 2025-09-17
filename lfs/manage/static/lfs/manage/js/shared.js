@@ -71,3 +71,81 @@ document.addEventListener('DOMContentLoaded', function() {
         plugins: 'link image code',
     });
 });
+
+class PopupManager {
+    constructor() {
+        this.initializePopovers();
+    }
+
+    initializePopovers() {
+        document.querySelectorAll('[data-bs-toggle="popover"]')
+            .forEach(el => new bootstrap.Popover(el));
+    }
+}
+
+
+/**
+ * CheckboxSelectAllManager class for managing select all checkbox functionality
+ */
+class CheckboxSelectAllManager {
+    /**
+     * Create a SelectAll instance
+     * @param {string} selectAllSelector - CSS selector for the "select all" checkbox
+     * @param {string} itemCheckboxSelector - CSS selector for the individual checkboxes
+     * @param {HTMLElement} [container=document] - Container element to search within
+     */
+    constructor(selectAllSelector, itemCheckboxSelector, container = document) {
+        this.container = container;
+        this.selectAllSelector = selectAllSelector;
+        this.itemCheckboxSelector = itemCheckboxSelector;
+        
+        this.selectAllCheckbox = this.container.querySelector(selectAllSelector);
+        this.itemCheckboxes = this.container.querySelectorAll(itemCheckboxSelector);
+        
+        if (!this.selectAllCheckbox || this.itemCheckboxes.length === 0) {
+            return;
+        }
+        
+        this.bindEvents();
+        this.updateSelectAllState();
+    }
+    
+    bindEvents() {
+        // Handle select all checkbox change
+        this.selectAllCheckbox.addEventListener('change', () => {
+            this.handleSelectAllChange();
+        });
+        
+        // Handle individual checkbox changes
+        this.itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                this.updateSelectAllState();
+            });
+        });
+    }
+    
+    handleSelectAllChange() {
+        const isChecked = this.selectAllCheckbox.checked;
+        this.itemCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    }
+    
+    updateSelectAllState() {
+        const checkedCount = this.container.querySelectorAll(this.itemCheckboxSelector + ':checked').length;
+        const totalCount = this.itemCheckboxes.length;
+        
+        this.selectAllCheckbox.checked = checkedCount === totalCount;
+        this.selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+    }
+    
+    checkAll() {
+        this.selectAllCheckbox.checked = true;
+        this.handleSelectAllChange();
+    }
+    
+    uncheckAll() {
+        this.selectAllCheckbox.checked = false;
+        this.handleSelectAllChange();
+    }
+}

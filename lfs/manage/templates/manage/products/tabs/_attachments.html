@@ -11,8 +11,7 @@
                             <th scope="col" width="40">
                                 <div class="form-check">
                                     <input type="checkbox"
-                                        class="form-check-input select-all"
-                                        id="select-all-attachments"
+                                        class="form-check-input select-all-attachments"
                                         value="delete-attachments" />
                                     <label class="form-check-label visually-hidden" for="select-all-attachments">{% trans 'Select all' %}</label>
                                 </div>
@@ -29,7 +28,7 @@
                                 <td>
                                     <div class="form-check">
                                         <input type="checkbox"
-                                            class="form-check-input select-delete-attachments"
+                                            class="form-check-input select-attachment"
                                             id="delete-attachment-{{ attachment.id }}"
                                             name="delete-{{ attachment.id }}" />
                                         <label class="form-check-label visually-hidden" for="delete-attachment-{{ attachment.id }}">{% trans 'Select attachment' %}</label>
