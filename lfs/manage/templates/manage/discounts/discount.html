@@ -37,60 +37,59 @@
                 </div>                            
             </aside>
 
-            <main class="col-9 p-4 pt-3 scrollable-content">
-                <div class="padding-bottom-100">
-                    <div class="d-flex justify-content-between fw-semibold">
-                        <nav aria-label="Breadcrumb" class="me-2">
-                            <ol class="breadcrumb mb-0 small">
-                                <li class="breadcrumb-item">Manage</li>
-                                <li class="breadcrumb-item">Discounts</li>
-                                <li class="breadcrumb-item active" aria-current="page">{{ discount.name }}</li>
-                            </ol>
-                        </nav>                                
-                        <div class="site-actions mb-2" id="site-actions">
-                            <button class="btn btn-sm btn-outline-primary me-2"
-                                    hx-get="{% url 'lfs_manage_add_discount' %}"
-                                    hx-target="#modal-body-lg"
-                                    hx-trigger="click"
-                                    hx-swap="innerHTML">
-                                <i class="bi bi-plus-circle-fill"></i>
-                                {% trans 'Add Discount' %}
-                            </button>
-                            <a class="btn btn-sm btn-outline-danger me-2"
-                               hx-get="{% url 'lfs_manage_delete_discount_confirm' discount.id %}"
-                               hx-target="#modal-body-lg"
-                               hx-trigger="click"
-                               hx-swap="innerHTML"
-                               href="#">
-                                <i class="bi bi-trash"></i>
-                                {% trans 'Delete Discount' %}
-                            </a>
-                        </div>
-                    </div>
-
-                    <ul class="nav nav-tabs" id="discountTabs" role="tablist" hx-swap-oob="true">
-                        {% for key, url in tabs %}
-                            <li class="nav-item">
-                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
-                                    href="{{ url }}">
-                                    {% if key == "data" %}{% trans "Data" %}{% elif key == "criteria" %}{% trans "Criteria" %}{% elif key == "products" %}{% trans "Products" %}{% endif %}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    
-                    <div class="tab-content border border-top-0 bg-white p-4">
-                        <div class="tab-pane show active">
-                            {% if active_tab == "data" %}
-                                {% include "manage/discounts/tabs/_data.html" %}
-                            {% elif active_tab == "criteria" %}
-                                {% include "manage/discounts/tabs/_criteria.html" %}
-                            {% elif active_tab == "products" %}
-                                {% include "manage/discounts/tabs/_products.html" %}
-                            {% endif %}
-                        </div>
+            <main class="col-9 p-4 pt-3">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <nav aria-label="Breadcrumb" class="me-2">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item">Discounts</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ discount.name }}</li>
+                        </ol>
+                    </nav>                                
+                    <div class="site-actions mb-2" id="site-actions">
+                        <button class="btn btn-sm btn-outline-primary me-2"
+                                hx-get="{% url 'lfs_manage_add_discount' %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            {% trans 'Add Discount' %}
+                        </button>
+                        <a class="btn btn-sm btn-outline-danger me-2"
+                            hx-get="{% url 'lfs_manage_delete_discount_confirm' discount.id %}"
+                            hx-target="#modal-body-lg"
+                            hx-trigger="click"
+                            hx-swap="innerHTML"
+                            href="#">
+                            <i class="bi bi-trash"></i>
+                            {% trans 'Delete Discount' %}
+                        </a>
                     </div>
                 </div>
+
+                <ul class="nav nav-tabs" id="discountTabs" role="tablist" hx-swap-oob="true">
+                    {% for key, url in tabs %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                href="{{ url }}">
+                                {% if key == "data" %}{% trans "Data" %}{% elif key == "criteria" %}{% trans "Criteria" %}{% elif key == "products" %}{% trans "Products" %}{% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                <div class="tab-content border border-top-0 bg-white p-4">
+                    <div class="tab-pane show active">
+                        {% if active_tab == "data" %}
+                            {% include "manage/discounts/tabs/_data.html" %}
+                        {% elif active_tab == "criteria" %}
+                            {% include "manage/discounts/tabs/_criteria.html" %}
+                        {% elif active_tab == "products" %}
+                            {% include "manage/discounts/tabs/_products.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+                
             </main>
         </div>
     </div>

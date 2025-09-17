@@ -1,90 +1,81 @@
 {% load i18n lfs_manage_tags crispy_forms_tags static %}
 
-{# Products-Tab für Discount #}
-<div class="mb-4">
-    {# Search and filter for products #}
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <div class="mb-3">
-                <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input type="search" 
-                           id="product-search"
-                           class="form-control" 
-                           placeholder="{% trans 'Search products...' %}" 
-                           name="filter"
-                           value="{{ filter }}"
-                           hx-get="{{ request.path }}"
-                           hx-swap="outerHTML"
-                           hx-target="#add-products-form"
-                           hx-select="#add-products-form"
-                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
-                           hx-include="[name='products_category_filter'], [name='products_manufacturer_filter']"
-                           hx-push-url="true"
-                           aria-label="{% trans 'Search products' %}">
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="mb-3">
-                <select id="category-filter"
-                        class="form-select"
-                        name="products_category_filter"
-                        hx-get="{{ request.path }}"
-                        hx-target="#add-products-form"
-                        hx-select="#add-products-form"
-                        hx-swap="outerHTML"
-                        hx-trigger="change"
-                        hx-include="[name='filter'], [name='products_manufacturer_filter']">
-                    <option value="All" {% if not category_filter or category_filter == "All" %}selected{% endif %}>
-                        {% trans "All Categories" %}
-                    </option>
-                    <option value="None" {% if category_filter == "None" %}selected{% endif %}>
-                        {% trans "No Category" %}
-                    </option>
-                    {% for category in categories %}
-                        <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
-                            {{ category.name|safe }}
-                        </option>
-                    {% endfor %}                            
-                </select>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="mb-3">
-                <select id="manufacturer-filter"
-                        class="form-select"
-                        name="products_manufacturer_filter"
-                        hx-get="{{ request.path }}"
-                        hx-target="#add-products-form"
-                        hx-select="#add-products-form"
-                        hx-swap="outerHTML"
-                        hx-trigger="change"
-                        hx-include="[name='filter'], [name='products_category_filter']">
-                    <option value="All" {% if not manufacturer_filter or manufacturer_filter == "All" %}selected{% endif %}>
-                        {% trans "All Manufacturers" %}
-                    </option>
-                    <option value="None" {% if manufacturer_filter == "None" %}selected{% endif %}>
-                        {% trans "No Manufacturer" %}
-                    </option>
-                    {% for manufacturer in manufacturers %}
-                        <option value="{{ manufacturer.id }}" {% if manufacturer_filter == manufacturer.id|stringformat:"s" %}selected{% endif %}>
-                            {{ manufacturer.name }}
-                        </option>
-                    {% endfor %}                            
-                </select>
-            </div>
+<div class="row mb-2">
+    <div class="col-2">
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="search" 
+                    id="product-search"
+                    class="form-control" 
+                    placeholder="{% trans 'Search products...' %}" 
+                    name="filter"
+                    value="{{ filter }}"
+                    hx-get="{{ request.path }}"
+                    hx-swap="outerHTML"
+                    hx-target="#add-products-form"
+                    hx-select="#add-products-form"
+                    hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                    hx-include="[name='products_category_filter'], [name='products_manufacturer_filter']"
+                    hx-push-url="true"
+                    aria-label="{% trans 'Search products' %}">
         </div>
     </div>
-
-    <div class="row" id="products-tables">
-        <div class="col-md-6">
-            {% include "manage/discounts/tabs/_available_products.html" %}
-        </div>
-        <div class="col-md-6">
-            {% include "manage/discounts/tabs/_assigned_products.html" %}
-        </div>
+    <div class="col-2">
+        <select id="category-filter"
+                class="form-select"
+                name="products_category_filter"
+                hx-get="{{ request.path }}"
+                hx-target="#add-products-form"
+                hx-select="#add-products-form"
+                hx-swap="outerHTML"
+                hx-trigger="change"
+                hx-include="[name='filter'], [name='products_manufacturer_filter']">
+            <option value="All" {% if not category_filter or category_filter == "All" %}selected{% endif %}>
+                {% trans "All Categories" %}
+            </option>
+            <option value="None" {% if category_filter == "None" %}selected{% endif %}>
+                {% trans "No Category" %}
+            </option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name|safe }}
+                </option>
+            {% endfor %}                            
+        </select>
+    </div>
+    <div class="col-2">
+        <select id="manufacturer-filter"
+                class="form-select"
+                name="products_manufacturer_filter"
+                hx-get="{{ request.path }}"
+                hx-target="#add-products-form"
+                hx-select="#add-products-form"
+                hx-swap="outerHTML"
+                hx-trigger="change"
+                hx-include="[name='filter'], [name='products_category_filter']">
+            <option value="All" {% if not manufacturer_filter or manufacturer_filter == "All" %}selected{% endif %}>
+                {% trans "All Manufacturers" %}
+            </option>
+            <option value="None" {% if manufacturer_filter == "None" %}selected{% endif %}>
+                {% trans "No Manufacturer" %}
+            </option>
+            {% for manufacturer in manufacturers %}
+                <option value="{{ manufacturer.id }}" {% if manufacturer_filter == manufacturer.id|stringformat:"s" %}selected{% endif %}>
+                    {{ manufacturer.name }}
+                </option>
+            {% endfor %}                            
+        </select>
     </div>
 </div>
+
+<div class="row" id="products-tables">
+    <div class="col-md-6">
+        {% include "manage/discounts/tabs/_available_products.html" %}
+    </div>
+    <div class="col-md-6">
+        {% include "manage/discounts/tabs/_assigned_products.html" %}
+    </div>
+</div>
+
 
 <script src="{% static 'lfs/manage/js/discounts.js' %}"></script>
