@@ -69,6 +69,20 @@ document.addEventListener('DOMContentLoaded', function() {
         menubar: false,
         toolbar: 'undo redo bold italic blocks alignleft aligncenter alignright link image code forecolor backcolor removeformat',
         plugins: 'link image code',
+        file_picker_types: 'image',
+        file_picker_callback: function(callback, value, meta) {
+            if (meta.filetype === 'image') {
+                // Store callback for modal to use
+                window.tinymceImageCallback = callback;
+                
+                // Show Bootstrap modal
+                const modal = new bootstrap.Modal(document.getElementById('imageBrowserModal'));
+                modal.show();
+            }
+        },
+        image_advtab: true,
+        image_description: true,
+        image_title: true
     });
 });
 

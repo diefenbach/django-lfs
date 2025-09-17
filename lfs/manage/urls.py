@@ -16,6 +16,7 @@ urlpatterns = [
     # path("", include("lfs.manage.exports.urls")),
     path("", include("lfs.manage.featured.urls")),
     path("", include("lfs.manage.images.urls")),
+    path("", include("lfs.manage.image_browser.urls")),
     path("", include("lfs.manage.information.urls")),
     path("", include("lfs.manage.manufacturers.urls")),
     path("", include("lfs.manage.orders.urls")),
