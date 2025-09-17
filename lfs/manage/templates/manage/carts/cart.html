@@ -6,8 +6,8 @@
 {% block content %}
     <div class="lfs-carts">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end p-4">
-                <h2 class="mb-3">{% trans "Warenkörbe" %}</h2>
+            <aside class="col-3 bg-white border-end p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Carts" %}</div>
                 
                 <!-- Filter Form in Sidebar -->
                 <div class="card shadow mb-3">
@@ -100,10 +100,16 @@
                 </div>
             </aside>
 
-            <main class="col-9 p-4 scrollable-content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 mb-0">{% trans "Cart" %} #{{ cart.id }}</h1>
-                    <div class="d-flex gap-2">
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <nav aria-label="Breadcrumb" class="me-2">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item">Carts</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ cart.id }}</li>
+                        </ol>
+                    </nav>                                                
+                    <div class="d-flex gap-2 mb-2">
                         <a href="{% url 'lfs_manage_carts' %}" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-list"></i> {% trans "All Carts" %}
                         </a>
@@ -117,84 +123,72 @@
                 </div>
 
                 <!-- Cart Information -->
-                <div class="row">
-                    <div class="col">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary-subtle">
-                                <h5 class="card-title mb-0">
-                                    <i class="bi bi-info-circle me-2"></i>{% trans "Cart Information" %}
-                                </h5>
-                            </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
                             <div class="card-body">
-                                <dl class="row">
-                                    <dt class="col-sm-4">{% trans "Cart ID" %}:</dt>
-                                    <dd class="col-sm-8">{{ cart.id }}</dd>
-                                    
-                                    <dt class="col-sm-4">{% trans "Session" %}:</dt>
-                                    <dd class="col-sm-8">{{ cart.session|default:"-" }}</dd>
-                                    
-                                    <dt class="col-sm-4">{% trans "User" %}:</dt>
-                                    <dd class="col-sm-8">{{ cart.user|default:"-" }}</dd>
-                                    
-                                    <dt class="col-sm-4">{% trans "Customer" %}:</dt>
-                                    <dd class="col-sm-8">
+                                <h6 class="card-title">{% trans "Cart Details" %}</h6>
+                                <div class="row g-2">
+                                    <div class="col-6"><small class="text-muted">{% trans "ID" %}:</small><br>{{ cart.id }}</div>
+                                    <div class="col-6"><small class="text-muted">{% trans "Items" %}:</small><br>{{ cart.get_amount_of_items }}</div>
+                                    <div class="col-6"><small class="text-muted">{% trans "Total" %}:</small><br>{{ cart_total|currency:request }}</div>
+                                    <div class="col-6"><small class="text-muted">{% trans "Modified" %}:</small><br>{{ cart.modification_date|date:"SHORT_DATETIME_FORMAT" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">{% trans "Customer" %}</h6>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <small class="text-muted">{% trans "User" %}:</small><br>
                                         {% if customer %}
                                             {{ customer }}
                                         {% else %}
-                                            -
+                                            <span class="text-muted">{% trans "Anonymous" %}</span>
                                         {% endif %}
-                                    </dd>
-                                    
-                                    <dt class="col-sm-4">{% trans "Creation Date" %}:</dt>
-                                    <dd class="col-sm-8">{{ cart.creation_date|date:"DATETIME_FORMAT" }}</dd>
-                                    
-                                    <dt class="col-sm-4">{% trans "Modification Date" %}:</dt>
-                                    <dd class="col-sm-8">{{ cart.modification_date|date:"DATETIME_FORMAT" }}</dd>
-                                    
-                                    <dt class="col-sm-4">{% trans "Total Amount" %}:</dt>
-                                    <dd class="col-sm-8">{{ cart_total|currency:request }}</dd>
-                                    
-                                    <dt class="col-sm-4">{% trans "Items Count" %}:</dt>
-                                    <dd class="col-sm-8">{{ cart.get_amount_of_items }}</dd>
-                                </dl>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted">{% trans "Session" %}:</small><br>
+                                        <code class="small">{{ cart.session|default:"-" }}</code>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>    
+                    </div>
                 </div>
 
                 {% if cart_items %}
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary-subtle">
-                                <h5 class="card-title mb-0">
-                                    <i class="bi bi-list-ul me-2"></i>{% trans "Cart Items" %}
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>{% trans "Product" %}</th>
-                                                <th class="text-end">{% trans "Quantity" %}</th>
-                                                <th class="text-end">{% trans "Price" %}</th>
-                                                <th class="text-end">{% trans "Total" %}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for item in cart_items %}
-                                            <tr>
-                                                <td><a href="{% url 'lfs_manage_product_data' item.product.id %}">{{ item.product.get_name }}</a></td>
-                                                <td class="text-end">{{ item.amount }}</td>
-                                                <td class="text-end">{{ item.product|get_price_gross:request|currency:request }}</td>
-                                                <td class="text-end">{{ item|get_price_gross:request|currency:request }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-list-ul me-2"></i>{% trans "Cart Items" %}
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>{% trans "Product" %}</th>
+                                        <th class="text-end">{% trans "Quantity" %}</th>
+                                        <th class="text-end">{% trans "Price" %}</th>
+                                        <th class="text-end">{% trans "Total" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in cart_items %}
+                                    <tr>
+                                        <td><a href="{% url 'lfs_manage_product_data' item.product.id %}">{{ item.product.get_name }}</a></td>
+                                        <td class="text-end">{{ item.amount }}</td>
+                                        <td class="text-end">{{ item.product|get_price_gross:request|currency:request }}</td>
+                                        <td class="text-end">{{ item|get_price_gross:request|currency:request }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

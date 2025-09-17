@@ -7,8 +7,8 @@
 {% block content %}
     <div class="lfs-orders">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end p-4">
-                <h2 class="h4 mb-3">{% trans "Bestellungen" %}</h2>
+            <aside class="scrollable-content col-3 bg-white border-end p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Orders" %}</div>
                 
                 <!-- Filter Form in Sidebar -->
                 <div class="card shadow mb-3">
@@ -117,29 +117,35 @@
                 </div>
             </aside>
 
-            <main class="col-9 p-4 scrollable-content">
-                <div class="padding-bottom-100">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="h3 mb-0">{% trans "Order" %} #{{ current_order.id }}</h1>
-                        <div class="d-flex gap-2">
-                            <a href="{% url 'lfs_manage_orders' %}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-list"></i> {% trans "All Orders" %}
-                            </a>
-                            <a class="btn btn-outline-primary btn-sm" 
-                            dialog_message="{% trans 'Do you really want to resend this order?' %}" 
-                            href="{% url 'lfs_manage_send_order' current_order.id %}">
-                                <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
-                            </a>
-                            <button class="btn btn-outline-danger btn-sm"
-                                hx-get="{% url 'lfs_manage_delete_order_confirm' current_order.id %}"
-                                hx-target="#modal-body-lg"
-                                hx-trigger="click"
-                                hx-swap="innerHTML">
-                                <i class="bi bi-trash"></i> {% trans "Delete Order" %}
-                            </button>
-                        </div>
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <nav aria-label="Breadcrumb" class="me-2">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item">Orders</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ current_order.id }}</li>
+                        </ol>
+                    </nav>
+                    <div class="d-flex gap-2 mb-2">
+                        <a href="{% url 'lfs_manage_orders' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-list"></i> {% trans "All Orders" %}
+                        </a>
+                        <a class="btn btn-outline-primary btn-sm" 
+                        dialog_message="{% trans 'Do you really want to resend this order?' %}" 
+                        href="{% url 'lfs_manage_send_order' current_order.id %}">
+                            <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm"
+                            hx-get="{% url 'lfs_manage_delete_order_confirm' current_order.id %}"
+                            hx-target="#modal-body-lg"
+                            hx-trigger="click"
+                            hx-swap="innerHTML">
+                            <i class="bi bi-trash"></i> {% trans "Delete Order" %}
+                        </button>
                     </div>
+                </div>
 
+                <div class="padding-bottom-100">
                     <!-- Order State Change -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
@@ -421,6 +427,7 @@
                         </div>
                     </div>
                     {% endif %}
+                </div>
                 </div>
             </main>
         </div>

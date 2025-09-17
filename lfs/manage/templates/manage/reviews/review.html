@@ -6,8 +6,8 @@
 {% block content %}
     <div class="lfs-reviews">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end p-4">
-                <h2 class="mb-3">{% trans "Reviews" %}</h2>
+            <aside class="scrollable-content col-3 bg-white border-end p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Reviews" %}</div>
                 
                 <!-- Filter Form in Sidebar -->
                 <div class="card shadow mb-3">
@@ -87,10 +87,16 @@
                 </div>
             </aside>
 
-            <main class="col-9 p-4 scrollable-content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 mb-0">{% trans "Review" %} #{{ review.id }}</h1>
-                    <div class="d-flex gap-2">
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <nav aria-label="Breadcrumb" class="me-2">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item">Reviews</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ review.id }}</li>
+                        </ol>
+                    </nav>                                                
+                    <div class="d-flex gap-2 mb-2">
                         <a href="{% url 'lfs_manage_reviews' %}" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-list"></i> {% trans "All Reviews" %}
                         </a>
