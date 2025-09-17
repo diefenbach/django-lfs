@@ -3,11 +3,6 @@ import lfs.manage.shop.views
 
 urlpatterns = [
     path(
-        "shop/",
-        lfs.manage.shop.views.ShopDataView.as_view(),
-        name="lfs_manage_shop",
-    ),
-    path(
         "shop/data/",
         lfs.manage.shop.views.ShopDataView.as_view(),
         name="lfs_manage_shop_data",

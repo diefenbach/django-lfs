@@ -21,7 +21,7 @@
                         {% for key, url in tabs %}
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link {% if active_tab == key %}active{% endif %}" 
-                                href="{{ url }}" 
+                                href="{{ url }}"
                                 role="tab"
                                 aria-controls="{{ key }}-content"
                                 aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
