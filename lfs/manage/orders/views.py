@@ -5,7 +5,6 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
@@ -13,8 +12,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView, FormView, RedirectView, DeleteView
+from django.views.generic import TemplateView, FormView, RedirectView, DeleteView, View
 
 import lfs.core.utils
 import lfs.core.signals
@@ -330,43 +328,52 @@ class OrderDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequired
         return reverse("lfs_manage_orders")
 
 
-@permission_required("core.manage_shop")
-def send_order(request, order_id):
+class SendOrderView(PermissionRequiredMixin, View):
     """Sends order with passed order id to the customer of this order."""
-    order = lfs_get_object_or_404(Order, pk=order_id)
-    mail_utils.send_order_received_mail(request, order)
-    messages.success(request, _("Order has been sent."))
-    return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order.id}))
+
+    permission_required = "core.manage_shop"
+
+    def get(self, request, *args, **kwargs):
+        """Send order email and redirect to order detail."""
+        order_id = kwargs.get("order_id")
+        order = lfs_get_object_or_404(Order, pk=order_id)
+        mail_utils.send_order_received_mail(request, order)
+        messages.success(request, _("Order has been sent."))
+        return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order.id}))
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def change_order_state(request):
+class ChangeOrderStateView(PermissionRequiredMixin, View):
     """Changes the state of an order, given by request post variables."""
-    order_id = request.POST.get("order-id")
-    state_id = request.POST.get("new-state")
-    order = get_object_or_404(Order, pk=order_id)
 
-    old_state = order.state
+    permission_required = "core.manage_shop"
+    http_method_names = ["post"]
 
-    try:
-        order.state = int(state_id)
-    except ValueError:
-        messages.error(request, _("Invalid state selected."))
-    else:
-        order.state_modified = timezone.now()
-        order.save()
+    def post(self, request, *args, **kwargs):
+        """Change order state and redirect to order detail."""
+        order_id = request.POST.get("order-id")
+        state_id = request.POST.get("new-state")
+        order = get_object_or_404(Order, pk=order_id)
 
-        if order.state == lfs.order.settings.SENT:
-            lfs.core.signals.order_sent.send(sender=order, request=request)
-        if order.state == lfs.order.settings.PAID:
-            lfs.core.signals.order_paid.send(sender=order, request=request)
+        old_state = order.state
 
-        lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
+        try:
+            order.state = int(state_id)
+        except ValueError:
+            messages.error(request, _("Invalid state selected."))
+        else:
+            order.state_modified = timezone.now()
+            order.save()
 
-        cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
-        cache.delete(cache_key)
+            if order.state == lfs.order.settings.SENT:
+                lfs.core.signals.order_sent.send(sender=order, request=request)
+            if order.state == lfs.order.settings.PAID:
+                lfs.core.signals.order_paid.send(sender=order, request=request)
 
-        messages.success(request, _("Order state has been changed"))
+            lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
 
-    return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order_id}))
+            cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
+            cache.delete(cache_key)
+
+            messages.success(request, _("Order state has been changed"))
+
+        return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order_id}))

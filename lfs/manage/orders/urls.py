@@ -24,7 +24,7 @@ urlpatterns = [
     ),
     path(
         "order/<int:order_id>/send/",
-        lfs.manage.orders.views.send_order,
+        lfs.manage.orders.views.SendOrderView.as_view(),
         name="lfs_manage_send_order",
     ),
     path(
@@ -44,7 +44,7 @@ urlpatterns = [
     ),
     path(
         "orders/change-state/",
-        lfs.manage.orders.views.change_order_state,
+        lfs.manage.orders.views.ChangeOrderStateView.as_view(),
         name="lfs_manage_change_order_state",
     ),
 ]
