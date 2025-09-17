@@ -87,7 +87,7 @@ class TinyMCEImageBrowserModalView(PermissionRequiredMixin, View):
     """Modal view for TinyMCE image browser."""
 
     permission_required = "core.manage_shop"
-    template_name = "manage/snippets/modals/image_browser_modal.html"
+    template_name = "manage/image_browser/image_browser_modal.html"
 
     def get(self, request):
         """Display the image browser modal."""

@@ -1,0 +1,54 @@
+{% load i18n static %}
+
+<div class="modal fade" id="imageBrowserModal" tabindex="-1" aria-labelledby="imageBrowserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageBrowserModalLabel">{% trans "Select Image" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body">
+                <div class="search-container mb-3">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" id="searchInput" class="form-control" placeholder="{% trans 'Search images...' %}">
+                                <button class="btn btn-outline-secondary" type="button" id="searchBtn">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex gap-2">
+                                <select id="sizeSelect" class="form-select">
+                                    <option value="">{% trans "Original" %}</option>
+                                </select>
+                                <button class="btn btn-primary" id="insertBtn" disabled>
+                                    <i class="bi bi-check-circle"></i> {% trans "Insert" %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="imageContainer" class="image-grid">
+                    <div class="loading text-center py-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">{% trans "Loading..." %}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pagination" class="d-flex justify-content-center mt-3">
+                    <!-- Pagination will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    window.TINYMCE_IMAGE_BROWSER_API_URL = '{% url "tinymce_image_browser_api" %}';
+</script>
+<script src="{% static 'lfs/manage/js/tinymce_browser.js' %}"></script>

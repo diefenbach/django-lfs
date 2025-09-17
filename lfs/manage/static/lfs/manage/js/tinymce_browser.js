@@ -1,108 +1,3 @@
-{% load i18n static %}
-
-<div class="modal fade" id="imageBrowserModal" tabindex="-1" aria-labelledby="imageBrowserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageBrowserModalLabel">{% trans "Select Image" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-            </div>
-            <div class="modal-body">
-                <div class="search-container mb-3">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="text" id="searchInput" class="form-control" placeholder="{% trans 'Search images...' %}">
-                                <button class="btn btn-outline-secondary" type="button" id="searchBtn">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-flex gap-2">
-                                <select id="sizeSelect" class="form-select">
-                                    <option value="">{% trans "Original" %}</option>
-                                </select>
-                                <button class="btn btn-primary" id="insertBtn" disabled>
-                                    <i class="bi bi-check-circle"></i> {% trans "Insert" %}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="imageContainer" class="image-grid">
-                    <div class="loading text-center py-5">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">{% trans "Loading..." %}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="pagination" class="d-flex justify-content-center mt-3">
-                    <!-- Pagination will be inserted here -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-/* Ensure modal appears above TinyMCE */
-#imageBrowserModal {
-    z-index: 9999 !important;
-}
-
-#imageBrowserModal .modal-backdrop {
-    z-index: 9998 !important;
-}
-
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-.image-card {
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 2px solid transparent;
-}
-.image-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.image-card.selected {
-    border-color: #0d6efd;
-    background-color: #e7f1ff;
-}
-.image-thumb {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 0.375rem 0.375rem 0 0;
-}
-.search-container {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 10;
-    padding: 1rem 0;
-    border-bottom: 1px solid #dee2e6;
-}
-.loading {
-    text-align: center;
-    padding: 2rem;
-}
-.no-images {
-    text-align: center;
-    padding: 3rem;
-    color: #6c757d;
-}
-</style>
-
-<script>
 class TinyMCEImageBrowserModal {
     constructor() {
         this.currentPage = 1;
@@ -144,7 +39,7 @@ class TinyMCEImageBrowserModal {
     async loadImages(page = 1) {
         this.currentPage = page;
         const container = document.getElementById('imageContainer');
-        container.innerHTML = '<div class="loading"><div class="spinner-border" role="status"><span class="visually-hidden">{% trans "Loading..." %}</span></div></div>';
+        container.innerHTML = '<div class="loading"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
         
         try {
             const params = new URLSearchParams({
@@ -152,7 +47,7 @@ class TinyMCEImageBrowserModal {
                 q: this.searchQuery
             });
             
-            const response = await fetch(`{% url 'tinymce_image_browser_api' %}?${params}`);
+            const response = await fetch(`${window.TINYMCE_IMAGE_BROWSER_API_URL}?${params}`);
             const data = await response.json();
             
             this.renderImages(data.images);
@@ -160,7 +55,7 @@ class TinyMCEImageBrowserModal {
             this.updateSizeOptions(data.images);
         } catch (error) {
             console.error('Error loading images:', error);
-            container.innerHTML = '<div class="no-images"><i class="bi bi-exclamation-triangle"></i><br>{% trans "Error loading images" %}</div>';
+            container.innerHTML = '<div class="no-images"><i class="bi bi-exclamation-triangle"></i><br>Error loading images</div>';
         }
     }
     
@@ -168,7 +63,7 @@ class TinyMCEImageBrowserModal {
         const container = document.getElementById('imageContainer');
         
         if (images.length === 0) {
-            container.innerHTML = '<div class="no-images"><i class="bi bi-images"></i><br>{% trans "No images found" %}</div>';
+            container.innerHTML = '<div class="no-images"><i class="bi bi-images"></i><br>No images found</div>';
             return;
         }
         
@@ -200,7 +95,7 @@ class TinyMCEImageBrowserModal {
         
         // Previous button
         if (pagination.has_previous) {
-            html += `<li class="page-item"><a class="page-link" href="#" data-page="${pagination.current_page - 1}">{% trans "Previous" %}</a></li>`;
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="${pagination.current_page - 1}">Previous</a></li>`;
         }
         
         // Page numbers
@@ -214,7 +109,7 @@ class TinyMCEImageBrowserModal {
         
         // Next button
         if (pagination.has_next) {
-            html += `<li class="page-item"><a class="page-link" href="#" data-page="${pagination.current_page + 1}">{% trans "Next" %}</a></li>`;
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="${pagination.current_page + 1}">Next</a></li>`;
         }
         
         html += '</ul></nav>';
@@ -296,4 +191,3 @@ class TinyMCEImageBrowserModal {
 document.addEventListener('DOMContentLoaded', () => {
     new TinyMCEImageBrowserModal();
 });
-</script>
