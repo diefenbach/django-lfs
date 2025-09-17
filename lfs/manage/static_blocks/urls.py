@@ -28,7 +28,7 @@ urlpatterns = [
         name="lfs_manage_static_blocks",
     ),
     path(
-        "static-block/<int:id>/",
+        "static-block/<int:id>/data",
         lfs.manage.static_blocks.views.StaticBlockDataView.as_view(),
         name="lfs_manage_static_block",
     ),

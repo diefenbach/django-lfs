@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_categories",
     ),
     path(
-        "category/<int:id>/",
+        "category/<int:id>/data",
         lfs.manage.categories.views.CategoryDataView.as_view(),
         name="lfs_manage_category",
     ),

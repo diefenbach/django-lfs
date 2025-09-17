@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_customer_taxes",
     ),
     path(
-        "customer-tax/<int:id>/",
+        "customer-tax/<int:id>/data",
         lfs.manage.customer_taxes.views.CustomerTaxDataView.as_view(),
         name="lfs_manage_customer_tax",
     ),

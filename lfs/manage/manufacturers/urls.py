@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_manufacturers",
     ),
     path(
-        "manufacturer/<int:id>/",
+        "manufacturer/<int:id>/data",
         lfs.manage.manufacturers.views.ManufacturerDataView.as_view(),
         name="lfs_manage_manufacturer",
     ),

@@ -14,7 +14,7 @@ urlpatterns = [
         name="lfs_manage_shipping",
     ),
     path(
-        "shipping-method/<int:id>/",
+        "shipping-method/<int:id>/data",
         lfs.manage.shipping_methods.views.ShippingMethodDataView.as_view(),
         name="lfs_manage_shipping_method",
     ),

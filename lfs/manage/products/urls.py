@@ -30,7 +30,7 @@ urlpatterns = [
         name="lfs_manage_products",
     ),
     path(
-        "products/list/",
+        "products/",
         ProductListView.as_view(),
         name="lfs_manage_products_list",
     ),

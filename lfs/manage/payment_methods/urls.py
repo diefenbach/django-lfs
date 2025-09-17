@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_payment_methods",
     ),
     path(
-        "payment-method/<int:id>/",
+        "payment-method/<int:id>/data",
         lfs.manage.payment_methods.views.PaymentMethodDataView.as_view(),
         name="lfs_manage_payment_method",
     ),

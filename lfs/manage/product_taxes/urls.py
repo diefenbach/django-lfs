@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_taxes",
     ),
     path(
-        "tax/<int:pk>",
+        "tax/<int:pk>/data",
         product_taxes_views.TaxUpdateView.as_view(),
         name="lfs_manage_tax",
     ),

@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_actions",
     ),
     path(
-        "action/<int:pk>/",
+        "action/<int:pk>/data",
         lfs.manage.actions.views.ActionUpdateView.as_view(),
         name="lfs_manage_action",
     ),

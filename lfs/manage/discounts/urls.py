@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_discounts",
     ),
     path(
-        "discount/<int:id>/",
+        "discount/<int:id>/data",
         lfs.manage.discounts.views.DiscountDataView.as_view(),
         name="lfs_manage_discount",
     ),

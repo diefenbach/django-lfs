@@ -8,7 +8,7 @@ urlpatterns = [
         name="lfs_manage_delivery_times",
     ),
     path(
-        "delivery-time/<int:pk>",
+        "delivery-time/<int:pk>/data",
         delivery_times_views.DeliveryTimeUpdateView.as_view(),
         name="lfs_manage_delivery_time",
     ),

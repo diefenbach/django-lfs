@@ -38,7 +38,7 @@ urlpatterns = [
         name="lfs_manage_property_group_properties",
     ),
     path(
-        "property-group/<int:id>/",
+        "property-group/<int:id>/data",
         views.PropertyGroupDataView.as_view(),
         name="lfs_manage_property_group",
     ),

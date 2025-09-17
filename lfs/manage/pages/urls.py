@@ -24,7 +24,7 @@ urlpatterns = [
         name="lfs_manage_pages",
     ),
     path(
-        "page/<int:id>",
+        "page/<int:id>/data",
         lfs.manage.pages.views.PageDataView.as_view(),
         name="lfs_manage_page",
     ),

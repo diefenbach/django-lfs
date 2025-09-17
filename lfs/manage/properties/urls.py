@@ -23,7 +23,7 @@ urlpatterns = [
         name="lfs_manage_properties",
     ),
     path(
-        "property/<int:id>",
+        "property/<int:id>/data",
         lfs.manage.properties.views.PropertyDataView.as_view(),
         name="lfs_manage_property",
     ),
