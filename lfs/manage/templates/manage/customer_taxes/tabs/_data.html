@@ -1,9 +1,5 @@
 {% load i18n crispy_forms_tags %}
 
-<h5 class="mb-3">
-    <i class="bi bi-info-circle"></i>
-    {% trans "Customer Tax Data" %}
-</h5>
 <form method="post" action="{{ request.path }}">
     {% csrf_token %}
     {{ form|crispy }}
