@@ -422,15 +422,12 @@ def add_property_option(request, product_id):
     """
     property_option_form = PropertyOptionForm(data=request.POST)
     if property_option_form.is_valid():
-        names = request.POST.get("name").split(",")
+        name = request.POST.get("name")
         position = 999
-        property_id = request.POST.get("property_id")
-        for name in names:
-            property_option = PropertyOption(name=name)
-            property_option.property_id = property_id
-            property_option.position = position
-            property_option.save()
-            position += 1
+        property_option = PropertyOption(name=name)
+        property_option.property_id = request.POST.get("property_id")
+        property_option.position = position
+        property_option.save()
 
         # Refresh positions
         for i, option in enumerate(PropertyOption.objects.filter(property=property_id)):
