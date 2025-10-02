@@ -6,6 +6,8 @@ from django.forms.utils import ErrorList
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from captcha.fields import CaptchaField
+
 import lfs.payment.settings
 from lfs.customer.models import BankAccount
 from lfs.customer.models import CreditCard
@@ -102,6 +104,7 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(label=_("E-mail"), max_length=75)
     password_1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput(), max_length=20)
     password_2 = forms.CharField(label=_("Confirm password"), widget=forms.PasswordInput(), max_length=20)
+    captcha = CaptchaField()
 
     def clean_password_2(self):
         """Validates that password 1 and password 2 are the same."""
