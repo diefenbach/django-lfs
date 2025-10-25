@@ -29,7 +29,7 @@ from lfs.manufacturer.models import Manufacturer
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)    
 register = template.Library()
 
 
