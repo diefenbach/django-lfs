@@ -1,0 +1,80 @@
+{% load i18n %}
+
+<div class="image-grid">
+    {% if images %}
+        <div class="row g-3">
+            {% for image in images %}
+                <div class="col-md-3 col-sm-4 col-6">
+                    <div class="card image-card h-100" 
+                         data-image-url="{{ image.url }}" 
+                         data-image-title="{{ image.title }}"
+                         data-image-id="{{ image.id }}"
+                         style="cursor: pointer;">
+                        <img src="{{ image.thumb }}" 
+                             alt="{{ image.alt }}" 
+                             class="card-img-top image-thumb"
+                             style="height: 150px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <h6 class="card-title small mb-0" 
+                                title="{{ image.title }}"
+                                style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ image.title }}
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if pagination.total_pages > 1 %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" 
+                               href="#" 
+                               hx-get="{% url 'tinymce_image_browser' %}?page={{ pagination.current_page|add:'-1' }}{% if query %}&q={{ query }}{% endif %}"
+                               hx-target="#imageContainer">
+                                {% trans "Previous" %}
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for page_num in pagination.page_range %}
+                        <li class="page-item {% if page_num == pagination.current_page %}active{% endif %}">
+                            <a class="page-link" 
+                               href="#" 
+                               hx-get="{% url 'tinymce_image_browser' %}?page={{ page_num }}{% if query %}&q={{ query }}{% endif %}"
+                               hx-target="#imageContainer">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if pagination.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" 
+                               href="#" 
+                               hx-get="{% url 'tinymce_image_browser' %}?page={{ pagination.current_page|add:1 }}{% if query %}&q={{ query }}{% endif %}"
+                               hx-target="#imageContainer">
+                                {% trans "Next" %}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-images fs-1 text-muted"></i>
+            <p class="text-muted mt-2">
+                {% if query %}
+                    {% trans "No images found matching your search." %}
+                {% else %}
+                    {% trans "No images available." %}
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>

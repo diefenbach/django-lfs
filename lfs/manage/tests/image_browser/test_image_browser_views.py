@@ -63,7 +63,7 @@ class TestTinyMCEImageBrowserView:
 class TestTinyMCEImageBrowserModalView:
     """Test the TinyMCE image browser modal view."""
 
-    def test_modal_view_success(self, client, admin_user):
+    def test_modal_view_success(self, client, admin_user, shop):
         """Test successful modal view rendering."""
         client.force_login(admin_user)
         response = client.get(reverse("tinymce_image_browser_modal"))
@@ -75,4 +75,42 @@ class TestTinyMCEImageBrowserModalView:
     def test_modal_view_requires_permission(self, client):
         """Test that modal view requires proper permissions."""
         response = client.get(reverse("tinymce_image_browser_modal"))
+        assert response.status_code == 302  # Redirect to login
+
+
+@pytest.mark.django_db
+class TestTinyMCEImageBrowserHTMXView:
+    """Test the HTMX TinyMCE image browser view."""
+
+    def test_htmx_view_success(self, client, admin_user, shop):
+        """Test successful HTMX view rendering."""
+        # Create test images
+        Image.objects.create(title="Test Image 1", alt="Alt text 1", image="test1.jpg")
+        Image.objects.create(title="Test Image 2", alt="Alt text 2", image="test2.jpg")
+
+        client.force_login(admin_user)
+        response = client.get(reverse("tinymce_image_browser"))
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Test Image 1" in content
+        assert "Test Image 2" in content
+        assert "image-card" in content
+
+    def test_htmx_view_with_search(self, client, admin_user, shop):
+        """Test HTMX view with search functionality."""
+        Image.objects.create(title="Red Car", alt="A red car", image="red_car.jpg")
+        Image.objects.create(title="Blue House", alt="A blue house", image="blue_house.jpg")
+
+        client.force_login(admin_user)
+        response = client.get(reverse("tinymce_image_browser"), {"q": "red"})
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Red Car" in content
+        assert "Blue House" not in content
+
+    def test_htmx_view_requires_permission(self, client):
+        """Test that HTMX view requires proper permissions."""
+        response = client.get(reverse("tinymce_image_browser"))
         assert response.status_code == 302  # Redirect to login

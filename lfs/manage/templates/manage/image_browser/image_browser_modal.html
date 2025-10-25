@@ -1,5 +1,7 @@
 {% load i18n static %}
 
+<link rel="stylesheet" href="{% static 'lfs/manage/css/image_browser.css' %}">
+
 <div class="modal fade" id="imageBrowserModal" tabindex="-1" aria-labelledby="imageBrowserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -11,12 +13,21 @@
                 <div class="search-container mb-3">
                     <div class="row">
                         <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="text" id="searchInput" class="form-control" placeholder="{% trans 'Search images...' %}">
-                                <button class="btn btn-outline-secondary" type="button" id="searchBtn">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
+                            <form hx-get="{% url 'tinymce_image_browser' %}" 
+                                  hx-target="#imageContainer" 
+                                  hx-trigger="keyup from:#searchInput delay:300ms, submit">
+                                <div class="input-group">
+                                    <input type="text" 
+                                           id="searchInput" 
+                                           name="q" 
+                                           class="form-control" 
+                                           placeholder="{% trans 'Search images...' %}"
+                                           value="{{ query|default:'' }}">
+                                    <button class="btn btn-outline-secondary" type="submit">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                         <div class="col-md-4">
                             <div class="d-flex gap-2">
@@ -31,24 +42,112 @@
                     </div>
                 </div>
 
-                <div id="imageContainer" class="image-grid">
-                    <div class="loading text-center py-5">
+                <div id="imageContainer" 
+                     hx-get="{% url 'tinymce_image_browser' %}" 
+                     hx-trigger="load"
+                     hx-indicator="#loadingIndicator">
+                    <div id="loadingIndicator" class="htmx-indicator text-center py-5">
                         <div class="spinner-border" role="status">
                             <span class="visually-hidden">{% trans "Loading..." %}</span>
                         </div>
                     </div>
-                </div>
-
-                <div id="pagination" class="d-flex justify-content-center mt-3">
-                    <!-- Pagination will be inserted here -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
 <script>
-    window.TINYMCE_IMAGE_BROWSER_API_URL = '{% url "tinymce_image_browser_api" %}';
+    // TinyMCE Image Browser with HTMX
+    class TinyMCEImageBrowserHTMX {
+        constructor() {
+            this.selectedImage = null;
+            this.init();
+        }
+        
+        init() {
+            this.bindEvents();
+        }
+        
+        bindEvents() {
+            // Handle image selection
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.image-card')) {
+                    this.selectImage(e.target.closest('.image-card'));
+                }
+            });
+            
+            // Handle size selection change
+            document.getElementById('sizeSelect').addEventListener('change', () => {
+                this.updateInsertButton();
+            });
+            
+            // Handle insert button
+            document.getElementById('insertBtn').addEventListener('click', () => {
+                this.insertImage();
+            });
+            
+            // Reset when modal is shown
+            document.getElementById('imageBrowserModal').addEventListener('show.bs.modal', () => {
+                this.reset();
+            });
+        }
+        
+        reset() {
+            this.selectedImage = null;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('insertBtn').disabled = true;
+            document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+        }
+        
+        selectImage(card) {
+            // Remove previous selection
+            document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+            
+            // Select current card
+            card.classList.add('selected');
+            this.selectedImage = {
+                url: card.dataset.imageUrl,
+                title: card.dataset.imageTitle
+            };
+            
+            this.updateInsertButton();
+        }
+        
+        updateInsertButton() {
+            const insertBtn = document.getElementById('insertBtn');
+            insertBtn.disabled = !this.selectedImage;
+        }
+        
+        insertImage() {
+            if (!this.selectedImage) return;
+            
+            const size = document.getElementById('sizeSelect').value;
+            let finalUrl = this.selectedImage.url;
+            
+            // Apply size if selected
+            if (size) {
+                const urlParts = finalUrl.split('.');
+                const extension = urlParts.pop();
+                finalUrl = urlParts.join('.') + '.' + size + '.' + extension;
+            }
+            
+            // Call TinyMCE callback
+            if (window.tinymceImageCallback) {
+                window.tinymceImageCallback(finalUrl, {
+                    title: this.selectedImage.title,
+                    alt: this.selectedImage.title
+                });
+            }
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('imageBrowserModal'));
+            modal.hide();
+        }
+    }
+    
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        new TinyMCEImageBrowserHTMX();
+    });
 </script>
-<script src="{% static 'lfs/manage/js/tinymce_browser.js' %}"></script>
