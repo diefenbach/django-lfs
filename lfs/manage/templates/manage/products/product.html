@@ -28,19 +28,26 @@
                     <div id="products-list" class="list-group" hx-swap-oob="true">
                         {% for p in products %}
                             <div class="list-group-item p-0">
-                                <a class="d-flex justify-content-between align-items-center p-3 text-decoration-none {% if p.id == product.id %}bg-primary text-white{% else %}text-dark{% endif %}"
-                                   href="{% url 'lfs_manage_product_data' p.id %}?q={{ search_query }}">
-                                    <div class="d-flex align-items-center">
+                                <div class="d-flex justify-content-between align-items-center p-3 {% if p.id == product.id %}bg-primary text-white{% endif %}">
+                                    <a class="d-flex align-items-center flex-grow-1 text-decoration-none {% if p.id == product.id %}text-white{% else %}text-dark{% endif %}"
+                                       href="{% url 'lfs_manage_product_data' p.id %}?q={{ search_query }}">
                                         <i class="bi {% if p.is_standard %}bi-box{% elif p.is_product_with_variants %}bi-collection{% elif p.sub_type == '3' %}bi-gear{% else %}bi-box{% endif %} me-2"></i>
                                         {{ p.get_name }}
-                                    </div>
+                                    </a>
                                     {% if p.is_product_with_variants and p.variants.count > 0 %}
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center ms-2">
                                             <span class="badge bg-secondary me-2">{{ p.variants.count }}</span>
-                                            <i class="bi bi-chevron-down" data-bs-toggle="collapse" data-bs-target="#variants-{{ p.id }}" aria-expanded="false" aria-controls="variants-{{ p.id }}"></i>
+                                            <button type="button"
+                                                    class="variant-toggle btn btn-sm p-0 border-0 bg-transparent {% if p.id == product.id %}text-white{% else %}text-dark{% endif %}"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#variants-{{ p.id }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="variants-{{ p.id }}">
+                                                <i class="bi bi-chevron-down"></i>
+                                            </button>
                                         </div>
                                     {% endif %}
-                                </a>
+                                </div>
                                 {% if p.is_product_with_variants and p.variants.count > 0 %}
                                     <div class="collapse{% for variant in p.variants.all %}{% if variant.id == product.id %} show{% endif %}{% endfor %}" id="variants-{{ p.id }}">
                                         {% for variant in p.variants.all %}
