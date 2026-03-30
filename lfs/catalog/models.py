@@ -1693,7 +1693,7 @@ class Product(models.Model):
         Returns the sku of the product. Takes care whether the product is a
         variant and sku is active or not.
         """
-        if self.is_variant() and not self.active_sku:
+        if self.is_variant() and not self.active_sku and self.parent:
             return self.parent.sku
         else:
             return self.sku
