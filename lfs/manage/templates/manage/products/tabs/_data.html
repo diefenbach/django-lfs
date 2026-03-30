@@ -233,6 +233,34 @@
             {% endif %}
         </fieldset>
 
+        {% if not product.is_variant %}
+            <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+                <legend>{% trans "Quantity field" %}</legend>
+                <div class="field mb-3">
+                    <label for="{{ form.unit.id_for_label }}" class="form-label">
+                        {{ form.unit.label }}
+                    </label>
+                    {{ form.unit }}
+                    {% if form.unit.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.unit.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="field mb-3">
+                    <label for="{{ form.type_of_quantity_field.id_for_label }}" class="form-label">
+                        {{ form.type_of_quantity_field.label }}
+                    </label>
+                    {{ form.type_of_quantity_field }}
+                    {% if form.type_of_quantity_field.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.type_of_quantity_field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </fieldset>
+        {% endif %}
+        
         <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
             <legend>{% trans "Base price" %}</legend>
             <div class="field mb-3">
