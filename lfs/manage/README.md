@@ -375,9 +375,11 @@ document.addEventListener('htmx:afterSwap', evt => {
 
 This approach scales well and provides a consistent, flicker-free modal experience throughout the management interface.
 
----
-
 ## Note
 
 When tabs **become more complex** (e.g. many dependent fields, dynamic file uploads etc.), you can later switch to `htmx` or real `FormView` subcomponents.  
 The structure shown here works well as a scalable foundation for future expansion.
+
+# Frontend Dependencies and Vendor Assets
+
+Frontend libraries are managed through `package.json`. Running `npm run setup` first executes `npm install` to install all dependencies into `node_modules`, and then runs `npm run vendor:update`. The vendor update step starts by cleaning `static/lfs/manage/vendor/*` and then copies the required third-party assets (JavaScript, CSS, and fonts) from `node_modules` into `static/lfs/manage/vendor/...`.
