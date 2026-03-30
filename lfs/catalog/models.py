@@ -1155,9 +1155,15 @@ class Product(models.Model):
         if self.is_variant():
             if self.active_name:
                 name = self.name
-                name = name.replace("%P", self.parent.name)
+                if self.parent:
+                    name = name.replace("%P", self.parent.name)
+                else:
+                    name = name
             else:
-                name = self.parent.name
+                if self.parent:
+                    name = self.parent.name
+                else:
+                    name = self.name
         else:
             name = self.name
 
