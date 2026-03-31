@@ -86,7 +86,7 @@ class OrderDataService:
     def get_order_summary(self, order):
         """Get summary data for an order including totals and products."""
         total = order.price
-        item_count = sum(item.amount for item in order.items.all())
+        item_count = sum(item.product_amount for item in order.items.all())
         products = [item.product.get_name() for item in order.items.all() if item.product]
 
         return {
