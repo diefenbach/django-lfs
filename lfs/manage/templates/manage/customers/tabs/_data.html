@@ -1,0 +1,160 @@
+{% load i18n lfs_tags %}
+
+<div class="row">
+    <div class="col">
+        <div class="card shadow">
+            <div class="card-header bg-primary-subtle">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle me-2"></i>{% trans "Customer Information" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">{% trans "Customer ID" %}:</dt>
+                    <dd class="col-sm-8">{{ customer.id }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "User" %}:</dt>
+                    <dd class="col-sm-8">
+                        {% if customer.user %}
+                            <a href="{% url 'admin:auth_user_change' customer.user.id %}">{{ customer.user.username }}</a>
+                            ({{ customer.user.email }})
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-4">{% trans "Session" %}:</dt>
+                    <dd class="col-sm-8">{{ customer.session|default:"-" }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Creation Date" %}:</dt>
+                    <dd class="col-sm-8">
+                        {% if customer.user %}
+                            {{ customer.user.date_joined|date:"DATETIME_FORMAT" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>    
+</div>
+
+<!-- Addresses -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary-subtle">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-truck me-2"></i>{% trans "Shipping Address" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if shipping_address %}
+                    {{ shipping_address|safe }}
+                {% else %}
+                    <p class="text-muted">{% trans "No shipping address set" %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary-subtle">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-receipt me-2"></i>{% trans "Invoice Address" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if invoice_address %}
+                    {{ invoice_address|safe }}
+                {% else %}
+                    <p class="text-muted">{% trans "No invoice address set" %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Information -->
+{% if cart %}
+<div class="row mt-4">
+    <div class="col">
+        <div class="card shadow">
+            <div class="card-header bg-primary-subtle">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-cart me-2"></i>{% trans "Current Cart" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">{% trans "Cart ID" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.id }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Items" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.get_amount_of_items }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Total Price" %}:</dt>
+                    <dd class="col-sm-8">
+                        {% if cart_price %}
+                            {{ cart_price|currency }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Orders -->
+{% if orders %}
+<div class="row mt-4">
+    <div class="col">
+        <div class="card shadow">
+            <div class="card-header bg-primary-subtle">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-list-ul me-2"></i>{% trans "Orders" %} ({{ orders|length }})
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Order Number" %}</th>
+                                <th>{% trans "Date" %}</th>
+                                <th>{% trans "State" %}</th>
+                                <th>{% trans "Price" %}</th>
+                                <th>{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'lfs_manage_order' order.id %}">#{{ order.number }}</a>
+                                </td>
+                                <td>{{ order.created|date:"SHORT_DATETIME_FORMAT" }}</td>
+                                <td>
+                                    {{ order.get_state_display }}
+                                </td>
+                                <td>{{ order.price|currency }}</td>
+                                <td>
+                                    <a href="{% url 'lfs_manage_order' order.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

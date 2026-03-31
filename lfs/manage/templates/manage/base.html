@@ -1,0 +1,171 @@
+{% load i18n sql static compress %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/ico" />
+
+        <script type="text/javascript">
+            var LFS_MANAGE_IMAGEBROWSER_URL = '{% url 'lfs_manage_imagebrowser' %}';
+            var STATIC_URL = '{% static '' %}';
+        </script>
+        
+        <link rel="stylesheet" href="{% static 'lfs/manage/vendor/bootstrap/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'lfs/manage/vendor/swiper/swiper-bundle.min.css' %}">
+        <link rel="stylesheet" href="{% static 'lfs/manage/vendor/flatpickr/flatpickr.min.css' %}">
+        <link rel="stylesheet" href="{% static 'lfs/manage/vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
+        <link rel="stylesheet" href="{% static 'lfs/manage/css/main.css' %}">
+
+        
+        <script src="{% static 'lfs/manage/vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'lfs/manage/vendor/swiper/swiper-bundle.min.js' %}"></script>
+        <script src="{% static 'lfs/manage/vendor/flatpickr/flatpickr.min.js' %}"></script>
+        <script src="{% static 'lfs/manage/vendor/flatpickr/l10n/de.js' %}"></script>
+        <script src="{% static 'lfs/manage/vendor/sortable/Sortable.min.js' %}"></script>
+        <script src="{% static 'lfs/manage/vendor/htmx/htmx.min.js' %}"></script>
+        <script src="{% static 'lfs/manage/vendor/tinymce/tinymce.min.js' %}"></script>      
+        <script src="{% static 'lfs/manage/js/utils.js' %}"></script>
+        <script src="{% static 'lfs/manage/js/shared.js' %}"></script>
+        
+        <!-- HTMX Configuration -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Disable HTMX history caching to prevent historyCacheError
+                htmx.config.historyCacheSize = 0;
+            });
+        </script>
+
+        {% block javascript %}{% endblock %}
+    </head>
+    <body class="d-flex flex-column min-vh-100 bg-white">
+        {# {% dbinfo %} #}
+
+        <nav class="navbar navbar-expand bg-light border-bottom">
+            <div class="container-fluid">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% trans 'Shop' %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="shopDropdown">
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_actions' %}">{% trans 'Actions' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_dashboard' %}">{% trans 'Dashboard' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_delivery_times' %}">{% trans 'Delivery Times' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_manufacturers' %}">{% trans 'Manufacturers' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_payment_methods' %}">{% trans 'Payment Methods' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_shop_data' %}">{% trans 'Preferences' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_shipping' %}">{% trans 'Shipping Methods' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_taxes' %}">{% trans 'Product Taxes' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_customer_taxes' %}">{% trans 'Customer Taxes' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_images_list' %}">{% trans 'Images' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% trans 'Catalog' %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="catalogDropdown">
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_categories' %}">{% trans 'Categories' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_products' %}">{% trans 'Products' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_products_list' %}">{% trans 'Products Overview' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="propertiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% trans 'Properties' %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="propertiesDropdown">
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_properties' %}">{% trans 'Properties' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_property_groups' %}">{% trans 'Property Groups' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="htmlDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% trans 'HTML' %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="htmlDropdown">
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_pages' %}">{% trans 'Pages' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_static_blocks' %}">{% trans 'Static blocks' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="customersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% trans 'Customers' %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="customersDropdown">
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_carts' %}">{% trans 'Carts' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_customers' %}">{% trans 'Customers' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_orders' %}">{% trans 'Orders' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_reviews' %}">{% trans 'Reviews' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="marketingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% trans 'Marketing' %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="marketingDropdown">
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_featured' %}">{% trans 'Featured' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_topseller' %}">{% trans 'Topseller' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_voucher_groups' %}">{% trans 'Vouchers' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_discounts' %}">{% trans 'Discounts' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_rating_mails' %}">{% trans 'Rating Mails' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="utilsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% trans 'Utils' %}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="utilsDropdown">
+                            {% comment %} <li><a class="dropdown-item" href="{% url 'lfs_export_dispatcher' %}">{% trans 'Export' %}</a></li> {% endcomment %}
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_tools' %}">{% trans 'Miscellaneous' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_environment' %}">{% trans 'Environment' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ LFS_DOCS }}{% block help_link %}{% endblock %}" target="_blank">
+                            {% trans "Help" %}
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lfs_manage_dashboard' %}">
+                            {% trans "Dashboard" %}
+                        </a>
+                    </li>
+                </ul>                
+            </div>
+        </nav>
+
+        {% block main %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} position-fixed top-0 end-0 m-3 fade show" style="z-index: 1050;" id="auto-dismiss-alert-{{ forloop.counter }}">{{ message }}</div>
+                <script>
+                    setTimeout(function() {
+                        var alert = document.getElementById('auto-dismiss-alert-{{ forloop.counter }}');
+                        if (alert) {
+                            alert.classList.remove('show');
+                        }
+                    }, 2000);
+                </script>
+            {% endfor %}
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        {% endblock %}
+
+        {% block footer %}
+            <footer class="footer bg-dark mt-auto fixed-bottom py-2" style="font-size: 12px">
+                <div class="container text-light align-items-center">
+                    <a target="_blank" class="text-light" href="http://www.getlfs.com">LFS</a> &mdash; Lightning Fast Shop 
+                    &copy; 2009 - {% now "Y" %} {% trans 'by' %} Kai Diefenbach and contributors &mdash; {% trans 'All rights reserved' %} &mdash;
+                    {% trans 'Distributed under the' %} <a target="_blank" class="text-light" href="http://www.opensource.org/licenses/bsd-license.php">{% trans 'BSD-License' %}</a>
+                </div>
+            </footer>
+        {% endblock %}
+
+        <!-- Image Browser Modal -->
+        {% include 'manage/image_browser/image_browser_modal.html' %}
+    </body>
+</html>

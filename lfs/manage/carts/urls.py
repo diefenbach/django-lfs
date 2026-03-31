@@ -1,0 +1,55 @@
+from django.urls import path
+import lfs.manage.carts.views
+
+urlpatterns = [
+    path(
+        "carts",
+        lfs.manage.carts.views.CartListView.as_view(),
+        name="lfs_manage_carts",
+    ),
+    path(
+        "cart/<int:id>/",
+        lfs.manage.carts.views.CartDataView.as_view(),
+        name="lfs_manage_cart",
+    ),
+    path(
+        "cart/<int:id>/apply-filters/",
+        lfs.manage.carts.views.ApplyCartFiltersView.as_view(),
+        name="lfs_manage_apply_cart_filters",
+    ),
+    path(
+        "cart/<int:id>/apply-predefined-filter/<str:filter_type>/",
+        lfs.manage.carts.views.ApplyPredefinedCartFilterView.as_view(),
+        name="lfs_manage_apply_predefined_cart_filter",
+    ),
+    path(
+        "carts/apply-filters/",
+        lfs.manage.carts.views.ApplyCartFiltersView.as_view(),
+        name="lfs_manage_apply_cart_filters_list",
+    ),
+    path(
+        "carts/apply-predefined-filter/<str:filter_type>/",
+        lfs.manage.carts.views.ApplyPredefinedCartFilterView.as_view(),
+        name="lfs_manage_apply_predefined_cart_filter_list",
+    ),
+    path(
+        "cart/<int:id>/delete-confirm",
+        lfs.manage.carts.views.CartDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_cart_confirm",
+    ),
+    path(
+        "cart/<int:id>/delete",
+        lfs.manage.carts.views.CartDeleteView.as_view(),
+        name="lfs_manage_delete_cart",
+    ),
+    path(
+        "carts/no",
+        lfs.manage.carts.views.NoCartsView.as_view(),
+        name="lfs_manage_no_carts",
+    ),
+    path(
+        "carts/reset-filters",
+        lfs.manage.carts.views.ResetCartFiltersView.as_view(),
+        name="lfs_manage_reset_cart_filters",
+    ),
+]

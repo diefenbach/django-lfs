@@ -1,0 +1,167 @@
+{% extends "manage/base.html" %}
+{% load i18n static crispy_forms_tags %}
+
+{% block help_link %}user/management/catalog/products.html{% endblock %}
+{% block section %}manage-product{% endblock %}
+
+{% block content %}
+    <div class="lfs-products">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Products" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search"
+                            class="form-control"
+                            placeholder="{% trans 'Search' %}"
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#products-list"
+                            hx-select="#products-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search products' %}">
+                    </div>
+                    <div id="products-list" class="list-group" hx-swap-oob="true">
+                        {% for p in products %}
+                            <div class="list-group-item p-0">
+                                <div class="d-flex justify-content-between align-items-center p-3 {% if p.id == product.id %}bg-primary text-white{% endif %}">
+                                    <a class="d-flex align-items-center flex-grow-1 text-decoration-none {% if p.id == product.id %}text-white{% else %}text-dark{% endif %}"
+                                       href="{% url 'lfs_manage_product_data' p.id %}?q={{ search_query }}">
+                                        <i class="bi {% if p.is_standard %}bi-box{% elif p.is_product_with_variants %}bi-collection{% elif p.sub_type == '3' %}bi-gear{% else %}bi-box{% endif %} me-2"></i>
+                                        {{ p.get_name }}
+                                    </a>
+                                    {% if p.is_product_with_variants and p.variants.count > 0 %}
+                                        <div class="d-flex align-items-center ms-2">
+                                            <span class="badge bg-secondary me-2">{{ p.variants.count }}</span>
+                                            <button type="button"
+                                                    class="variant-toggle btn btn-sm p-0 border-0 bg-transparent {% if p.id == product.id %}text-white{% else %}text-dark{% endif %}"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#variants-{{ p.id }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="variants-{{ p.id }}">
+                                                <i class="bi bi-chevron-down"></i>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% if p.is_product_with_variants and p.variants.count > 0 %}
+                                    <div class="collapse{% for variant in p.variants.all %}{% if variant.id == product.id %} show{% endif %}{% endfor %}" id="variants-{{ p.id }}">
+                                        {% for variant in p.variants.all %}
+                                            <a class="list-group-item list-group-item-action d-flex align-items-center ps-4 text-muted small border-0 {% if variant.id == product.id %}bg-primary text-white{% endif %}"
+                                               href="{% url 'lfs_manage_product_data' variant.id %}?q={{ search_query }}">
+                                                <i class="bi bi-box-seam me-2"></i>
+                                                {{ variant.get_name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No products found." %}</div>
+                        {% endfor %}
+                    </div>
+                </div>                            
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Products</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ product.get_name }}</li>
+                            </ol>
+                        </nav>
+                        <div class="site-actions mb-2">
+                            <button class="btn btn-sm btn-outline-primary me-2"
+                                    hx-get="{% url 'lfs_manage_add_product' %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Product' %}
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger me-2"
+                                    hx-get="{% url 'lfs_manage_delete_product_confirm' product.id %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Product' %}
+                            </button>
+                            <a class="btn btn-sm btn-outline-secondary"
+                               href="{% url 'lfs_manage_product_data' product.id %}?view=1">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                                {% trans 'View Product' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="productTabs" role="tablist" hx-swap-oob="true">
+                        {% for key, url in tabs %}
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}"
+                                   href="{{ url }}"
+                                   role="tab"
+                                   aria-controls="{{ key }}-content"
+                                   aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                    {% if key == 'data' %}{% trans 'Data' %}
+                                    {% elif key == 'categories' %}{% trans 'Categories' %}
+                                    {% elif key == 'images' %}{% trans 'Images' %}
+                                    {% elif key == 'attachments' %}{% trans 'Attachments' %}
+                                    {% elif key == 'variants' %}{% trans 'Variants' %}
+                                    {% elif key == 'bulk_prices' %}{% trans 'Bulk prices' %}
+                                    {% elif key == 'properties' %}{% trans 'Properties' %}
+                                    {% elif key == 'accessories' %}{% trans 'Accessories' %}
+                                    {% elif key == 'related' %}{% trans 'Related products' %}
+                                    {% elif key == 'stock' %}{% trans 'Stock' %}
+                                    {% elif key == 'seo' %}{% trans 'SEO' %}
+                                    {% elif key == 'portlets' %}{% trans 'Portlets' %}
+                                    {% else %}{{ key|title }}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="tab-content border border-top-0 bg-white p-4 lfs-form" id="productTabsContent">
+                        {% if active_tab == "data" %}
+                            {% include "manage/products/tabs/_data.html" %}
+                        {% elif active_tab == "categories" %}
+                            {% include "manage/products/tabs/_categories.html" %}
+                        {% elif active_tab == "images" %}
+                            {% include "manage/products/tabs/_images.html" %}
+                        {% elif active_tab == "attachments" %}
+                            {% include "manage/products/tabs/_attachments.html" %}
+                        {% elif active_tab == "variants" %}
+                            {% include "manage/products/tabs/_variants.html" %}
+                        {% elif active_tab == "bulk_prices" %}
+                            {% include "manage/products/tabs/_bulk_prices.html" %}
+                        {% elif active_tab == "properties" %}
+                            {% include "manage/products/tabs/_properties.html" %}
+                        {% elif active_tab == "accessories" %}
+                            {% include "manage/products/tabs/_accessories.html" %}
+                        {% elif active_tab == "related" %}
+                            {% include "manage/products/tabs/_related.html" %}
+                        {% elif active_tab == "stock" %}
+                            {% include "manage/products/tabs/_stock.html" %}
+                        {% elif active_tab == "seo" %}
+                            {% include "manage/products/tabs/_seo.html" %}
+                        {% elif active_tab == "portlets" %}
+                            {% include "manage/products/tabs/_portlets.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'lfs/manage/js/products.js' %}"></script>
+{% endblock %}

@@ -160,7 +160,7 @@ msgstr "Arată toate produsele"
 
 #: catalog/models.py:143 catalog/models.py:1429 catalog/models.py:1525
 #: catalog/settings.py:50 export/models.py:18
-#: templates/manage/manage_base.html:86
+#: templates/manage/base.html:86
 #: templates/manage/cart/carts_inline.html:25
 #: templates/manage/category/manage_category.html:40
 #: templates/manage/category/products.html:7
@@ -632,8 +632,8 @@ msgstr "Zecimale"
 msgid "Step type"
 msgstr "Tip pas"
 
-#: catalog/models.py:1552 templates/manage/manage_base.html:90
-#: templates/manage/manage_base.html:92
+#: catalog/models.py:1552 templates/manage/base.html:90
+#: templates/manage/base.html:92
 #: templates/manage/product/product.html:108
 #: templates/manage/properties/properties_inline.html:6
 #: templates/manage/properties/property.html:6
@@ -665,7 +665,7 @@ msgstr "Id conținut"
 msgid "Display files"
 msgstr "Afișează fișiere"
 
-#: catalog/models.py:1841 templates/manage/manage_base.html:97
+#: catalog/models.py:1841 templates/manage/base.html:97
 msgid "HTML"
 msgstr "HTML"
 
@@ -681,7 +681,7 @@ msgstr "Fișiere"
 msgid "Standard"
 msgstr "Standard"
 
-#: catalog/settings.py:9 templates/manage/manage_base.html:166
+#: catalog/settings.py:9 templates/manage/base.html:166
 #: templates/manage/customer/customer_inline.html:30
 #: templates/manage/product/data.html:216
 #: templates/manage/product/product_filters_inline.html:42
@@ -696,7 +696,7 @@ msgstr "Standard"
 msgid "Yes"
 msgstr "Da"
 
-#: catalog/settings.py:10 templates/manage/manage_base.html:167
+#: catalog/settings.py:10 templates/manage/base.html:167
 #: templates/manage/customer/customer_inline.html:32
 #: templates/manage/product/data.html:218
 #: templates/manage/product/product_filters_inline.html:43
@@ -738,7 +738,7 @@ msgid "Select"
 msgstr "Selectează"
 
 #: catalog/settings.py:51 portlet/templatetags/lfs_portlets_tags.py:104
-#: templates/manage/manage_base.html:85
+#: templates/manage/base.html:85
 #: templates/manage/category/manage_categories_portlet.html:2
 #: templates/manage/product/categories.html:3
 #: templates/manage/product/product.html:94
@@ -1362,7 +1362,7 @@ msgstr "Variante"
 msgid "Category"
 msgstr "Categorie"
 
-#: export/models.py:71 templates/manage/manage_base.html:121
+#: export/models.py:71 templates/manage/base.html:121
 msgid "Export"
 msgstr "Exportă"
 
@@ -2208,7 +2208,7 @@ msgid "Related Products"
 msgstr "Produse conexe"
 
 #: portlet/templatetags/lfs_portlets_tags.py:164
-#: templates/manage/manage_base.html:115
+#: templates/manage/base.html:115
 #: templates/manage/marketing/marketing.html:15
 #: templates/manage/marketing/topseller_inline.html:90
 msgid "Topseller"
@@ -2230,68 +2230,68 @@ msgstr "Rată"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: templates/manage/manage_base.html:57
+#: templates/manage/base.html:57
 msgid "Logout"
 msgstr "Ieșire"
 
-#: templates/manage/manage_base.html:59
+#: templates/manage/base.html:59
 msgid "Login"
 msgstr "Login"
 
-#: templates/manage/manage_base.html:70 templates/manage/shop/shop.html:9
+#: templates/manage/base.html:70 templates/manage/shop/shop.html:9
 msgid "Shop"
 msgstr "Magazin"
 
-#: templates/manage/manage_base.html:72 templates/manage/shop/action.html:7
+#: templates/manage/base.html:72 templates/manage/shop/action.html:7
 msgid "Actions"
 msgstr "Acțiuni"
 
-#: templates/manage/manage_base.html:73
+#: templates/manage/base.html:73
 msgid "Delivery Times"
 msgstr "Timp de Livrare"
 
-#: templates/manage/manage_base.html:74
+#: templates/manage/base.html:74
 #: templates/manage/discounts/discount.html:7
 msgid "Discounts"
 msgstr "Disconturi"
 
-#: templates/manage/manage_base.html:75
+#: templates/manage/base.html:75
 #: templates/manage/manufacturer/manufacturer.html:8
 msgid "Manufacturers"
 msgstr "Producători"
 
-#: templates/manage/manage_base.html:76
+#: templates/manage/base.html:76
 msgid "Payment Methods"
 msgstr "Metode de Plată"
 
-#: templates/manage/manage_base.html:77
+#: templates/manage/base.html:77
 msgid "Preferences"
 msgstr "Preferințe"
 
-#: templates/manage/manage_base.html:78
+#: templates/manage/base.html:78
 msgid "Shipping Methods"
 msgstr "Metode de Livrare"
 
-#: templates/manage/manage_base.html:79 templates/manage/tax/tax.html:6
+#: templates/manage/base.html:79 templates/manage/tax/tax.html:6
 msgid "Taxes"
 msgstr "Taxe"
 
-#: templates/manage/manage_base.html:83
+#: templates/manage/base.html:83
 msgid "Catalog"
 msgstr "Catalog"
 
-#: templates/manage/manage_base.html:87
+#: templates/manage/base.html:87
 msgid "Products Overview"
 msgstr "Sumar Produse"
 
-#: templates/manage/manage_base.html:93
+#: templates/manage/base.html:93
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
 #: templates/manage/properties/add_property_group.html:12
 msgid "Property Groups"
 msgstr "Grupuri de Proprietăți"
 
-#: templates/manage/manage_base.html:99
+#: templates/manage/base.html:99
 #: templates/manage/cart/carts_filters_inline.html:9
 #: templates/manage/cart/selectable_carts_inline.html:2
 #: templates/manage/customer/customers_filters_inline.html:9
@@ -2305,23 +2305,23 @@ msgstr "Grupuri de Proprietăți"
 msgid "Pages"
 msgstr "Pagini"
 
-#: templates/manage/manage_base.html:100
+#: templates/manage/base.html:100
 #: templates/manage/static_block/static_block.html:6
 msgid "Static blocks"
 msgstr "Blocuri statice"
 
-#: templates/manage/manage_base.html:103 templates/manage/manage_base.html:106
+#: templates/manage/base.html:103 templates/manage/base.html:106
 #: templates/manage/customer/customers.html:15
 #: templates/manage/customer/customers_inline.html:4
 msgid "Customers"
 msgstr "Clienți"
 
-#: templates/manage/manage_base.html:105 templates/manage/cart/carts.html:15
+#: templates/manage/base.html:105 templates/manage/cart/carts.html:15
 #: templates/manage/cart/carts.html:18
 msgid "Carts"
 msgstr "Coșuri"
 
-#: templates/manage/manage_base.html:107
+#: templates/manage/base.html:107
 #: templates/manage/customer/customer_inline.html:117
 #: templates/manage/customer/customers_inline.html:32
 #: templates/manage/order/orders.html:14
@@ -2329,68 +2329,68 @@ msgstr "Coșuri"
 msgid "Orders"
 msgstr "Comenzi"
 
-#: templates/manage/manage_base.html:108
+#: templates/manage/base.html:108
 #: templates/manage/reviews/reviews.html:13
 #: templates/manage/reviews/reviews.html:16
 msgid "Reviews"
 msgstr "Recenzii"
 
-#: templates/manage/manage_base.html:111
+#: templates/manage/base.html:111
 msgid "Marketing"
 msgstr "Marketing"
 
-#: templates/manage/manage_base.html:113
+#: templates/manage/base.html:113
 msgid "Featured"
 msgstr "Promovate"
 
-#: templates/manage/manage_base.html:114
+#: templates/manage/base.html:114
 #: templates/manage/marketing/rating_mails.html:13
 msgid "Rating Mails"
 msgstr "Mailuri evaluări"
 
-#: templates/manage/manage_base.html:116
+#: templates/manage/base.html:116
 #: templates/manage/voucher/voucher_group.html:26
 #: templates/manage/voucher/vouchers.html:3
 msgid "Vouchers"
 msgstr "Vouchere"
 
-#: templates/manage/manage_base.html:119
+#: templates/manage/base.html:119
 msgid "Utils"
 msgstr "Utile"
 
-#: templates/manage/manage_base.html:122
+#: templates/manage/base.html:122
 msgid "Miscellaneous"
 msgstr "Altele"
 
-#: templates/manage/manage_base.html:148
+#: templates/manage/base.html:148
 msgid "Powered by"
 msgstr "Rulează"
 
-#: templates/manage/manage_base.html:150
+#: templates/manage/base.html:150
 msgid "is a product of"
 msgstr "este un produs al"
 
-#: templates/manage/manage_base.html:151
+#: templates/manage/base.html:151
 msgid "by"
 msgstr "de"
 
-#: templates/manage/manage_base.html:151
+#: templates/manage/base.html:151
 msgid "All rights reserved"
 msgstr "Toate drepturile rezervate"
 
-#: templates/manage/manage_base.html:153
+#: templates/manage/base.html:153
 msgid "Distributed under the"
 msgstr "Distribuit sub"
 
-#: templates/manage/manage_base.html:153
+#: templates/manage/base.html:153
 msgid "BSD-License"
 msgstr "Licența BSD"
 
-#: templates/manage/manage_base.html:159
+#: templates/manage/base.html:159
 msgid "Please Confirm"
 msgstr "Te rugăm confirmă"
 
-#: templates/manage/manage_base.html:160
+#: templates/manage/base.html:160
 msgid "Do you really want to delete this object?"
 msgstr "Ești sigur că vrei să ștergi acest obiect?"
 

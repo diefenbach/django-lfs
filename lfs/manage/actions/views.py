@@ -1,189 +1,195 @@
-import json
-
-# django imports
-from django.contrib.auth.decorators import permission_required
-from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView
+from django.views.generic import RedirectView
+from django.views.generic import View
 
-# lfs imports
-import lfs.core.utils
+
 from lfs.core.models import Action
 from lfs.core.models import ActionGroup
-from lfs.core.utils import LazyEncoder
-from lfs.manage.actions.forms import ActionForm
-from lfs.manage.actions.forms import ActionAddForm
+from lfs.manage.mixins import DirectDeleteMixin
 
 
-# Views
-@permission_required("core.manage_shop")
-def manage_actions(request):
+class ManageActionsView(PermissionRequiredMixin, RedirectView):
     """Dispatches to the first action or to the form to add a action (if there
     is no action yet).
     """
-    try:
-        action = Action.objects.all()[0]
-        url = reverse("lfs_manage_action", kwargs={"id": action.id})
-    except IndexError:
-        url = reverse("lfs_no_actions")
 
-    return HttpResponseRedirect(url)
+    permission_required = "core.manage_shop"
 
-
-@permission_required("core.manage_shop")
-def manage_action(request, id, template_name="manage/actions/action.html"):
-    """Displays the manage view for the action with passed id."""
-    action = get_object_or_404(Action, pk=id)
-
-    return render(
-        request,
-        template_name,
-        {
-            "action": action,
-            "data": data(request, action),
-            "navigation": navigation(request, action),
-        },
-    )
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            action = Action.objects.all()[0]
+            return reverse("lfs_manage_action", kwargs={"pk": action.id})
+        except IndexError:
+            return reverse("lfs_manage_no_actions")
 
 
-@permission_required("core.manage_shop")
-def no_actions(request, template_name="manage/actions/no_actions.html"):
-    """Displays the a view when there are no actions."""
-    return render(request, template_name, {})
+class ActionUpdateView(PermissionRequiredMixin, UpdateView):
+    model = Action
+    fields = ("active", "title", "link")
+    template_name = "manage/actions/action.html"
+    permission_required = "core.manage_shop"
+    context_object_name = "action"
 
+    def get_success_url(self):
+        search_query = self.request.POST.get("q", "")
+        url = reverse_lazy("lfs_manage_action", kwargs={"pk": self.object.id})
+        if search_query:
+            url = f"{url}?q={search_query}"
+        return url
 
-# Parts
-def data(request, action, form=None, template_name="manage/actions/data_tab.html"):
-    """Provides a form to edit the action with the passed id."""
-    if form is None:
-        form = ActionForm(instance=action)
+    def get_action_groups_queryset(self):
+        """Liefert gefilterte ActionGroups mit Actions basierend auf Suchparameter."""
+        search_query = self.request.GET.get("q", "").strip()
 
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "action": action,
-            "groups": ActionGroup.objects.all(),
-            "form": form,
-            "current_id": action.id,
-        },
-    )
+        if search_query:
+            # Get all groups
+            groups = ActionGroup.objects.all()
 
+            # Filter actions based on title
+            filtered_actions = Action.objects.filter(title__icontains=search_query)
 
-def navigation(request, action, template_name="manage/actions/navigation.html"):
-    """ """
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "current_action": action,
-            "groups": ActionGroup.objects.all(),
-        },
-    )
+            # Add filtered actions to each group
+            for group in groups:
+                group.filtered_actions = filtered_actions.filter(group=group).order_by("position")
+        else:
+            # All groups with all actions
+            groups = ActionGroup.objects.all()
+            for group in groups:
+                group.filtered_actions = group.actions.all()
 
+        return groups
 
-# Actions
-@permission_required("core.manage_shop")
-@require_POST
-def save_action(request, id):
-    """Saves the actions with passed id."""
-    action = get_object_or_404(Action, pk=id)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["groups"] = self.get_action_groups_queryset()
+        context["search_query"] = self.request.GET.get("q", "")
+        return context
 
-    form = ActionForm(instance=action, data=request.POST)
-    if form.is_valid():
-        form.save()
+    def form_valid(self, form):
+        response = super().form_valid(form)
         _update_positions()
-        action = get_object_or_404(Action, pk=action.id)
-        form = None
-        message = _("The action has been saved.")
-    else:
-        message = _("Please correct the indicated errors.")
 
-    html = [
-        ["#data", data(request, action, form)],
-        ["#navigation", navigation(request, action)],
-    ]
+        messages.success(self.request, _("Action has been saved."))
 
-    result = json.dumps(
-        {
-            "html": html,
-            "message": message,
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
+        return response
 
 
-@permission_required("core.manage_shop")
-def add_action(request, template_name="manage/actions/add_action.html"):
-    """Provides a form to add a new action."""
-    if request.method == "POST":
-        form = ActionAddForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            action = form.save()
-            _update_positions()
+class NoActionsView(PermissionRequiredMixin, TemplateView):
+    """Displays a view when there are no actions."""
 
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_action", kwargs={"id": action.id}),
-                msg=_("Action has been added."),
-            )
-    else:
-        form = ActionAddForm()
-
-    return render(
-        request,
-        template_name,
-        {
-            "form": form,
-            "groups": ActionGroup.objects.all(),
-            "came_from": (request.POST if request.method == "POST" else request.GET).get(
-                "came_from", reverse("lfs_manage_actions")
-            ),
-        },
-    )
+    template_name = "manage/actions/no_actions.html"
+    permission_required = "core.manage_shop"
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def delete_action(request, id):
+class ActionCreateView(PermissionRequiredMixin, CreateView):
+    model = Action
+    fields = ("active", "title", "link", "group")
+    template_name = "manage/actions/add_action.html"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self):
+        search_query = self.request.POST.get("q", "")
+        url = reverse_lazy("lfs_manage_action", kwargs={"pk": self.object.id})
+        if search_query:
+            url = f"{url}?q={search_query}"
+        return url
+
+    def get_form_kwargs(self):
+        # Add prefix to form fields to avoid conflicts with existing fields, as this view is used within a modal
+        kwargs = super().get_form_kwargs()
+        kwargs["prefix"] = "create"
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["groups"] = ActionGroup.objects.all()
+        context["came_from"] = self.request.POST.get("came_from", reverse("lfs_manage_actions"))
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        _update_positions()
+
+        messages.success(self.request, _("Action has been added."))
+
+        return response
+
+
+class ActionDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of an action."""
+
+    template_name = "manage/actions/delete_action.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["action"] = get_object_or_404(Action, pk=self.kwargs["pk"])
+        return context
+
+
+class ActionDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """Deletes the action with passed id."""
-    action = get_object_or_404(Action, pk=id)
-    action.delete()
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_actions"),
-        msg=_("Action has been deleted."),
-    )
+    model = Action
+    permission_required = "core.manage_shop"
+    success_message = _("Action has been deleted.")
+
+    def get_success_url(self):
+        """Return the URL to redirect to after successful deletion."""
+        # Find next action to redirect to
+        first_action = Action.objects.exclude(pk=self.object.pk).first()
+        if first_action:
+            return reverse("lfs_manage_action", kwargs={"pk": first_action.id})
+        else:
+            return reverse("lfs_manage_no_actions")
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def sort_actions(request):
+class SortActionsView(PermissionRequiredMixin, View):
     """Sorts actions after drag 'n drop."""
-    action_list = request.POST.get("objs", "").split("&")
-    if len(action_list) > 0:
-        pos = 10
-        for action_str in action_list:
-            action_id = action_str.split("=")[1]
-            action_obj = Action.objects.get(pk=action_id)
-            action_obj.position = pos
-            action_obj.save()
-            pos = pos + 10
 
-        result = json.dumps(
-            {
-                "message": _("The actions have been sorted."),
-            },
-            cls=LazyEncoder,
-        )
+    permission_required = "core.manage_shop"
+    http_method_names = ["post"]
 
-        return HttpResponse(result, content_type="application/json")
+    def post(self, request, *args, **kwargs):
+        item_id = int(request.POST.get("item_id", ""))
+        to_list = int(request.POST.get("to_list", ""))
+        new_index = int(request.POST.get("new_index", ""))
+
+        # action which has been dragged and dropped
+        dnd_action = Action.objects.get(pk=item_id)
+
+        # Update the group if it changed
+        if dnd_action.group_id != to_list:
+            dnd_action.group_id = to_list
+            dnd_action.save()
+
+        # Get all actions in the target group ordered by position
+        actions_in_group = list(Action.objects.filter(group_id=to_list).exclude(pk=item_id).order_by("position"))
+
+        if new_index < len(actions_in_group):
+            new_position = actions_in_group[new_index].position
+            for action in actions_in_group[new_index:]:
+                action.position += 10
+                action.save()
+        else:
+            new_position = (actions_in_group[-1].position + 10) if actions_in_group else 10
+
+        # Set the new position for the sorted action
+        dnd_action.position = new_position
+        dnd_action.save()
+
+        # Update all positions to ensure consistency
+        _update_positions()
+
+        return HttpResponse()
 
 
 def _update_positions():

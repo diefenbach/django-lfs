@@ -1,261 +1,276 @@
-import json
+from typing import Dict, List, Tuple, Any, Optional
 
-# django imports
-from django.contrib.auth.decorators import permission_required
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
+from django.views.generic import UpdateView, FormView, CreateView, DeleteView, RedirectView, TemplateView
 
-# lfs imports
-import lfs.core.utils
-from lfs.core.utils import LazyEncoder
-from lfs.caching.utils import lfs_get_object_or_404
-from lfs.catalog.models import StaticBlock
-from lfs.catalog.models import File
-from lfs.manage.static_blocks.forms import StaticBlockForm
+from lfs.catalog.models import StaticBlock, File
+from lfs.manage.mixins import DirectDeleteMixin
+from lfs.manage.static_blocks.forms import FileUploadForm
 
 
-# views
-@permission_required("core.manage_shop")
-def manage_static_blocks(request):
+class ManageStaticBlocksView(PermissionRequiredMixin, RedirectView):
     """Dispatches to the first static block or to the add static block form."""
-    try:
-        sb = StaticBlock.objects.all()[0]
-        url = reverse("lfs_manage_static_block", kwargs={"id": sb.id})
-    except IndexError:
-        url = reverse("lfs_manage_no_static_blocks")
 
-    return HttpResponseRedirect(url)
+    permission_required = "core.manage_shop"
 
-
-@permission_required("core.manage_shop")
-def manage_static_block(request, id, template_name="manage/static_block/static_block.html"):
-    """Displays the main form to manage static blocks."""
-    sb = get_object_or_404(StaticBlock, pk=id)
-    if request.method == "POST":
-        form = StaticBlockForm(instance=sb, data=request.POST)
-        if form.is_valid():
-            form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_static_block", kwargs={"id": sb.id}),
-                msg=_("Static block has been saved."),
-            )
-    else:
-        form = StaticBlockForm(instance=sb)
-
-    return render(
-        request,
-        template_name,
-        {
-            "static_block": sb,
-            "static_blocks": StaticBlock.objects.all(),
-            "files": files(request, sb),
-            "form": form,
-            "current_id": int(id),
-        },
-    )
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            sb = StaticBlock.objects.all().order_by("name")[0]
+            return reverse("lfs_manage_static_block", kwargs={"id": sb.id})
+        except IndexError:
+            return reverse("lfs_manage_no_static_blocks")
 
 
-@permission_required("core.manage_shop")
-def no_static_blocks(request, template_name="manage/static_block/no_static_blocks.html"):
+class NoStaticBlocksView(PermissionRequiredMixin, TemplateView):
     """Displays that no static blocks exist."""
-    return render(request, template_name, {})
+
+    permission_required = "core.manage_shop"
+    template_name = "manage/static_blocks/no_static_blocks.html"
 
 
-# parts
-@permission_required("core.manage_shop")
-def files(request, sb, template_name="manage/static_block/files.html"):
-    """Displays the files tab of the passed static block."""
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "static_block": sb,
-        },
-    )
+class StaticBlockTabMixin:
+    """Mixin for tab navigation in StaticBlock views."""
+
+    template_name = "manage/static_blocks/static_block.html"
+    tab_name: Optional[str] = None
+
+    def get_static_block(self) -> StaticBlock:
+        """Gets the StaticBlock object."""
+        return get_object_or_404(StaticBlock, pk=self.kwargs["id"])
+
+    def get_static_blocks_queryset(self):
+        """Returns filtered StaticBlocks based on search parameter."""
+        queryset = StaticBlock.objects.all().order_by("name")
+        search_query = self.request.GET.get("q", "").strip()
+
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+
+        return queryset
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with tab navigation and StaticBlock."""
+        ctx = super().get_context_data(**kwargs)
+        static_block = getattr(self, "object", None) or self.get_static_block()
+
+        ctx.update(
+            {
+                "static_block": static_block,
+                "static_blocks": self.get_static_blocks_queryset(),
+                "search_query": self.request.GET.get("q", ""),
+                "active_tab": self.tab_name,
+                "tabs": self._get_tabs(static_block),
+            }
+        )
+        return ctx
+
+    def _get_tabs(self, static_block: StaticBlock) -> List[Tuple[str, str]]:
+        """Creates tab navigation URLs with search parameter."""
+        search_query = self.request.GET.get("q", "").strip()
+
+        data_url = reverse("lfs_manage_static_block", args=[static_block.pk])
+        files_url = reverse("lfs_manage_static_block_files", args=[static_block.pk])
+
+        # Add search parameter if present
+        if search_query:
+            from urllib.parse import urlencode
+
+            query_params = urlencode({"q": search_query})
+            data_url += "?" + query_params
+            files_url += "?" + query_params
+
+        return [
+            ("data", data_url),
+            ("files", files_url),
+        ]
 
 
-@permission_required("core.manage_shop")
-def list_files(request, sb, template_name="manage/static_block/files-list.html"):
-    """Displays the files tab of the passed static block."""
-    return files(request, sb, template_name=template_name)
+class StaticBlockDataView(PermissionRequiredMixin, StaticBlockTabMixin, UpdateView):
+    """View for data tab of a StaticBlock."""
+
+    model = StaticBlock
+    fields = ["name", "html"]
+    tab_name = "data"
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self) -> str:
+        """Stays on the data tab after successful save."""
+        return reverse("lfs_manage_static_block", kwargs={"id": self.object.pk})
+
+    def form_valid(self, form):
+        """Saves and shows success message."""
+        response = super().form_valid(form)
+        messages.success(self.request, _("Static block has been saved."))
+        return response
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context for data tab."""
+        ctx = super().get_context_data(**kwargs)
+        return ctx
 
 
-# actions
-@permission_required("core.manage_shop")
-def update_files(request, id):
-    """ """
-    static_block = lfs_get_object_or_404(StaticBlock, pk=id)
+class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormView):
+    """View for files tab of a StaticBlock."""
 
-    action = request.POST.get("action")
-    if action == "delete":
-        message = _("Files has been deleted.")
-        for key in request.POST.keys():
-            if key.startswith("delete-"):
-                try:
-                    id = key.split("-")[1]
-                    file = File.objects.get(pk=id).delete()
-                except (IndexError, ObjectDoesNotExist):
-                    pass
+    tab_name = "files"
+    template_name = "manage/static_blocks/static_block.html"
+    permission_required = "core.manage_shop"
+    form_class = FileUploadForm
 
-    elif action == "update":
-        message = _("Files has been updated.")
-        for key, value in request.POST.items():
-            if key.startswith("title-"):
-                id = key.split("-")[1]
-                try:
-                    file = File.objects.get(pk=id)
-                except File.ObjectDoesNotExist:
-                    pass
-                else:
-                    file.title = value
-                    file.save()
+    def get_static_block(self) -> StaticBlock:
+        """Overrides to use id from kwargs."""
+        return get_object_or_404(StaticBlock, pk=self.kwargs["id"])
 
-            elif key.startswith("position-"):
-                try:
-                    id = key.split("-")[1]
-                    file = File.objects.get(pk=id)
-                except (IndexError, ObjectDoesNotExist):
-                    pass
-                else:
-                    file.position = value
-                    file.save()
+    def get_success_url(self) -> str:
+        """Stays on the files tab."""
+        return reverse("lfs_manage_static_block_files", kwargs={"id": self.kwargs["id"]})
 
-    for i, file in enumerate(static_block.files.all()):
-        file.position = (i + 1) * 10
-        file.save()
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handles file uploads and updates."""
+        # Handle file operations (upload/update/delete)
+        if "files[]" in request.FILES:
+            return self._handle_file_upload(request)
+        elif "update" in request.POST:
+            return self._handle_file_update(request)
+        elif "delete" in request.POST:
+            return self._handle_file_delete(request)
 
-    html = (("#files-list", list_files(request, static_block)),)
+        return super().post(request, *args, **kwargs)
 
-    result = json.dumps(
-        {
-            "html": html,
-            "message": message,
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
-
-
-@permission_required("core.manage_shop")
-def reload_files(request, id):
-    """ """
-    static_block = lfs_get_object_or_404(StaticBlock, pk=id)
-    result = list_files(request, static_block)
-
-    result = json.dumps(
-        {
-            "html": result,
-            "message": _("Files has been added."),
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
-
-
-@permission_required("core.manage_shop")
-def add_files(request, id):
-    """Adds files to static block with passed id."""
-    static_block = lfs_get_object_or_404(StaticBlock, pk=id)
-    if request.method == "POST":
+    def _handle_file_upload(self, request: HttpRequest) -> HttpResponse:
+        """Handles file upload."""
+        static_block = self.get_static_block()
         for file_content in request.FILES.getlist("files[]"):
             file = File(content=static_block, title=file_content.name)
             file.file.save(file_content.name, file_content, save=True)
 
-    ctype = ContentType.objects.get_for_model(static_block)
+        self._refresh_file_positions()
 
-    # Refresh positions
-    for i, file in enumerate(File.objects.filter(content_type=ctype, content_id=static_block.id)):
-        file.position = (i + 1) * 10
-        file.save()
+        messages.success(self.request, _("Files have been uploaded successfully."))
+        return HttpResponseRedirect(self.get_success_url())
 
-    result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
-    return HttpResponse(result, content_type="application/json")
+    def _handle_file_update(self, request: HttpRequest) -> HttpResponse:
+        """Handles file update actions."""
+        self._update_files_by_keys(request)
+        messages.success(self.request, _("Files have been updated successfully."))
+        return HttpResponseRedirect(self.get_success_url())
 
+    def _handle_file_delete(self, request: HttpRequest) -> HttpResponse:
+        """Handles file delete actions."""
+        self._delete_files_by_keys(request)
+        self._refresh_file_positions()
+        messages.success(self.request, _("Files have been deleted successfully."))
+        return HttpResponseRedirect(self.get_success_url())
 
-@permission_required("core.manage_shop")
-def add_static_block(request, template_name="manage/static_block/add_static_block.html"):
-    """Provides a form to add a new static block."""
-    if request.method == "POST":
-        form = StaticBlockForm(data=request.POST)
-        if form.is_valid():
-            new_sb = form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_static_block", kwargs={"id": new_sb.id}),
-                msg=_("Static block has been added."),
-            )
-    else:
-        form = StaticBlockForm()
+    def _refresh_file_positions(self) -> None:
+        """Normalizes file positions of a StaticBlock."""
+        static_block = self.get_static_block()
+        for i, file in enumerate(static_block.files.all()):
+            file.position = (i + 1) * 10
+            file.save()
 
-    return render(
-        request,
-        template_name,
-        {
-            "form": form,
-            "static_blocks": StaticBlock.objects.all(),
-            "came_from": (request.POST if request.method == "POST" else request.GET).get(
-                "came_from", reverse("lfs_manage_static_blocks")
-            ),
-        },
-    )
+    def _delete_files_by_keys(self, request: HttpRequest) -> None:
+        """Deletes files based on delete-* keys in POST request."""
+        for key in request.POST.keys():
+            if key.startswith("delete-"):
+                try:
+                    file_id = key.split("-")[1]
+                    # Skip invalid IDs gracefully
+                    if not file_id.isdigit():
+                        continue
+                    File.objects.get(pk=file_id).delete()
+                except (IndexError, File.DoesNotExist, ValueError):
+                    pass
 
+    def _update_files_by_keys(self, request: HttpRequest) -> None:
+        """Updates file titles and positions based on POST keys."""
+        for key, value in request.POST.items():
+            if key.startswith("title-"):
+                file_id = key.split("-")[1]
+                try:
+                    # Skip invalid IDs gracefully
+                    if not file_id.isdigit():
+                        continue
+                    file = File.objects.get(pk=file_id)
+                    file.title = value
+                    file.save()
+                except (File.DoesNotExist, ValueError):
+                    pass
+            elif key.startswith("position-"):
+                try:
+                    file_id = key.split("-")[1]
+                    # Skip invalid IDs gracefully
+                    if not file_id.isdigit():
+                        continue
+                    file = File.objects.get(pk=file_id)
+                    file.position = value
+                    file.save()
+                except (IndexError, File.DoesNotExist, ValueError):
+                    pass
 
-@permission_required("core.manage_shop")
-def preview_static_block(request, id, template_name="manage/static_block/preview.html"):
-    """Displays a preview of an static block"""
-    sb = get_object_or_404(StaticBlock, pk=id)
-
-    return render(
-        request,
-        template_name,
-        {
-            "static_block": sb,
-        },
-    )
-
-
-@permission_required("core.manage_shop")
-@require_POST
-def sort_static_blocks(request):
-    """Sorts static blocks after drag 'n drop."""
-    static_blocks = request.POST.get("objs", "").split("&")
-    assert isinstance(static_blocks, list)
-    if len(static_blocks) > 0:
-        position = 10
-        for sb_str in static_blocks:
-            sb_id = sb_str.split("=")[1]
-            sb_obj = StaticBlock.objects.get(pk=sb_id)
-            sb_obj.position = position
-            sb_obj.save()
-            position = position + 10
-
-        result = json.dumps(
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with static block."""
+        ctx = super().get_context_data(**kwargs)
+        static_block = self.get_static_block()
+        ctx.update(
             {
-                "message": _("The static blocks have been sorted."),
-            },
-            cls=LazyEncoder,
+                "static_block": static_block,
+            }
         )
+        return ctx
 
-        return HttpResponse(result, content_type="application/json")
+
+class StaticBlockCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
+    """Provides a modal form to add a new static block."""
+
+    model = StaticBlock
+    fields = ["name"]
+    template_name = "manage/static_blocks/add_static_block.html"
+    permission_required = "core.manage_shop"
+    success_message = _("Static block has been created.")
+
+    def get_success_url(self):
+        return reverse("lfs_manage_static_block", kwargs={"id": self.object.id})
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def delete_static_block(request, id):
+class StaticBlockDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a static block."""
+
+    template_name = "manage/static_blocks/delete_static_block.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["static_block"] = get_object_or_404(StaticBlock, pk=self.kwargs["id"])
+        return context
+
+
+class StaticBlockDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """Deletes static block with passed id."""
-    sb = get_object_or_404(StaticBlock, pk=id)
-    sb.delete()
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_static_blocks"),
-        msg=_("Static block has been deleted."),
-    )
+    model = StaticBlock
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+    success_message = _("Static block has been deleted.")
+
+    def get_success_url(self):
+        return reverse("lfs_manage_static_blocks")
+
+
+class StaticBlockPreviewView(PermissionRequiredMixin, TemplateView):
+    """Displays a preview of a static block"""
+
+    permission_required = "core.manage_shop"
+    template_name = "manage/static_blocks/preview.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["static_block"] = get_object_or_404(StaticBlock, pk=self.kwargs["id"])
+        return context

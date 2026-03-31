@@ -1,22 +1,28 @@
-{% extends "manage/manage_base.html" %}
+{% extends "manage/base.html" %}
 {% load i18n %}
 
 {% block help_link %}user/management/shop/delivery_times.html{% endblock %}
 {% block section %}no-delivery-times{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-    <h2>
-        {% trans "Delivery Time" %}
-    </h2>
-    <div class="no-content">
-        {% trans "There are no delivery times yet." %}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-truck display-1 text-muted"></i>
+            </div>
+            <h2 class="h4 mb-3">{% trans "No Delivery Times" %}</h2>
+            <p class="text-muted mb-4">
+                {% trans "You haven't created any delivery times yet. Delivery times help customers understand when they can expect their orders to arrive." %}
+            </p>
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_manage_add_delivery_time' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Create Your First Delivery Time" %}
+            </button>
+        </div>
     </div>
-    <div class="buttons">
-        <form action="{% url 'lfs_manage_add_delivery_time' %}">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Add Delivery Time' %}">
-        </form>
-    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

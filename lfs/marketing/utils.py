@@ -42,7 +42,7 @@ def get_orders(days=14):
     return orders
 
 
-def get_topseller():
+def get_topseller(limit=5):
     """Returns products with the most sales. Limited by given limit."""
     cache_key = "%s-topseller" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
     topseller = cache.get(cache_key)
@@ -55,7 +55,7 @@ def get_topseller():
             products.append(explicit_ts.product)
 
     cache.set(cache_key, products)
-    return products
+    return products[:limit]
 
 
 def get_topseller_for_category(category, limit=5):

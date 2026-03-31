@@ -1,8 +1,0 @@
-{% for manufacturer in manufacturers %}
-    <div>
-        <a class="selectable {% if manufacturer_id == manufacturer.id  %}selected{% endif %}"
-              href="{% url 'lfs_manage_manufacturer' manufacturer.pk %}">
-            {{ manufacturer.name }}
-        </a>
-    </div>
-{% endfor %}

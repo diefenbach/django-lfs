@@ -1,0 +1,1 @@
+# Featured products management module

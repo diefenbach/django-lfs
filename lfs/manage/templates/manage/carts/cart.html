@@ -1,0 +1,202 @@
+{% extends "manage/base.html" %}
+{% load compress i18n static crispy_forms_tags lfs_tags %}
+
+{% block help_link %}user/management/customer/carts.html{% endblock %}
+
+{% block content %}
+    <div class="lfs-carts">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Carts" %}</div>
+                
+                <!-- Filter Form in Sidebar -->
+                <div class="card shadow mb-3">
+                    <div class="card-header bg-primary-subtle p-2">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-funnel me-1"></i>{% trans "Filter" %}
+                        </h6>
+                    </div>
+                    <div class="card-body py-2">
+                        <div class="mb-3">
+                            <div class="btn-group w-100">
+                                <a href="{% url 'lfs_manage_apply_predefined_cart_filter' cart.id 'today' %}" 
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-calendar-day me-1"></i>{% trans "Today" %}
+                                </a>
+                                <a href="{% url 'lfs_manage_apply_predefined_cart_filter' cart.id 'week' %}" 
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-calendar-week me-1"></i>{% trans "Week" %}
+                                </a>
+                                <a href="{% url 'lfs_manage_apply_predefined_cart_filter' cart.id 'month' %}" 
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-calendar-month me-1"></i>{% trans "Month" %}
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <form method="post" action="{% url 'lfs_manage_apply_cart_filters' cart.id %}">
+                            {% csrf_token %}
+                            <div class="mb-2">
+                                {{ filter_form.start }}
+                                {% if filter_form.start.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ filter_form.start.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-2">
+                                {{ filter_form.end }}
+                                {% if filter_form.end.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ filter_form.end.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="btn-group d-flex mt-2">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}
+                                </button>
+                                <a href="{% url 'lfs_manage_reset_cart_filters' %}?cart_id={{ cart.id }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset" %}
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Cart Navigation with Pagination -->
+                <div id="navigation" class="padding-bottom-100">
+                    {% for c in carts_page %}
+                        <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if cart.id == c.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                           data-id="{{ c.id }}" 
+                           href="{% url 'lfs_manage_cart' c.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}">
+                           <div class="d-flex justify-content-between align-items-center">
+                               <div>
+                                   <strong>Cart #{{ c.id }}</strong><br>
+                                   <small class="{% if cart.id == c.id %}text-white-50{% else %}text-muted{% endif %}">
+                                       {{ c.modification_date|date:"SHORT_DATETIME_FORMAT" }}
+                                   </small>
+                               </div>
+                               <div class="text-end">
+                                   <small class="{% if cart.id == c.id %}text-white-50{% else %}text-muted{% endif %}">
+                                       {{ c|get_price_gross:request|currency:request }}
+                                   </small>
+                               </div>
+                           </div>
+                        </a>
+                    {% empty %}
+                        <div class="text-center text-muted py-3">
+                            <i class="bi bi-cart-x"></i><br>
+                            <small>{% trans "No carts found" %}</small>
+                        </div>
+                    {% endfor %}
+                    
+                    <!-- Pagination -->
+                    {% if carts_page.paginator.num_pages > 1 %}
+                        <div class="mt-3">
+                            {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' url_params=cart.id page_info_position='below' %}
+                        </div>
+                    {% endif %}
+                </div>
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <nav aria-label="Breadcrumb" class="me-2">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item">Carts</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ cart.id }}</li>
+                        </ol>
+                    </nav>                                                
+                    <div class="d-flex gap-2 mb-2">
+                        <a href="{% url 'lfs_manage_carts' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-list"></i> {% trans "All Carts" %}
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm" 
+                                hx-get="{% url 'lfs_manage_delete_cart_confirm' cart.id %}" 
+                                hx-target="#modal-body-lg"
+                                hx-swap="innerHTML">
+                            <i class="bi bi-trash"></i> {% trans "Delete Cart" %}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cart Information -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">{% trans "Cart Details" %}</h6>
+                                <div class="row g-2">
+                                    <div class="col-6"><small class="text-muted">{% trans "ID" %}:</small><br>{{ cart.id }}</div>
+                                    <div class="col-6"><small class="text-muted">{% trans "Items" %}:</small><br>{{ cart.get_amount_of_items }}</div>
+                                    <div class="col-6"><small class="text-muted">{% trans "Total" %}:</small><br>{{ cart_total|currency:request }}</div>
+                                    <div class="col-6"><small class="text-muted">{% trans "Modified" %}:</small><br>{{ cart.modification_date|date:"SHORT_DATETIME_FORMAT" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">{% trans "Customer" %}</h6>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <small class="text-muted">{% trans "User" %}:</small><br>
+                                        {% if customer %}
+                                            {{ customer }}
+                                        {% else %}
+                                            <span class="text-muted">{% trans "Anonymous" %}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted">{% trans "Session" %}:</small><br>
+                                        <code class="small">{{ cart.session|default:"-" }}</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if cart_items %}
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-list-ul me-2"></i>{% trans "Cart Items" %}
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>{% trans "Product" %}</th>
+                                        <th class="text-end">{% trans "Quantity" %}</th>
+                                        <th class="text-end">{% trans "Price" %}</th>
+                                        <th class="text-end">{% trans "Total" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in cart_items %}
+                                    <tr>
+                                        <td><a href="{% url 'lfs_manage_product_data' item.product.id %}">{{ item.product.get_name }}</a></td>
+                                        <td class="text-end">{{ item.amount }}</td>
+                                        <td class="text-end">{{ item.product|get_price_gross:request|currency:request }}</td>
+                                        <td class="text-end">{{ item|get_price_gross:request|currency:request }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Include required modal sizes -->
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+{% endblock %}

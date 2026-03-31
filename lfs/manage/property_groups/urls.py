@@ -1,0 +1,55 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path(
+        "property-groups/",
+        views.ManagePropertyGroupsView.as_view(),
+        name="lfs_manage_property_groups",
+    ),
+    path(
+        "property-groups/add",
+        views.PropertyGroupCreateView.as_view(),
+        name="lfs_manage_add_property_group",
+    ),
+    path(
+        "property-groups/no",
+        views.NoPropertyGroupsView.as_view(),
+        name="lfs_manage_no_property_groups",
+    ),
+    path(
+        "property-groups/sort",
+        views.sort_property_groups,
+        name="lfs_manage_sort_property_groups",
+    ),
+    path(
+        "property-group/<int:id>/sort-properties",
+        views.sort_property_group_properties,
+        name="lfs_manage_sort_property_group_properties",
+    ),
+    path(
+        "property-group/<int:id>/products/",
+        views.PropertyGroupProductsView.as_view(),
+        name="lfs_manage_property_group_products",
+    ),
+    path(
+        "property-group/<int:id>/properties/",
+        views.PropertyGroupPropertiesView.as_view(),
+        name="lfs_manage_property_group_properties",
+    ),
+    path(
+        "property-group/<int:id>/data",
+        views.PropertyGroupDataView.as_view(),
+        name="lfs_manage_property_group",
+    ),
+    path(
+        "property-group/<int:id>/delete-confirm",
+        views.PropertyGroupDeleteConfirmView.as_view(),
+        name="lfs_delete_property_group_confirm",
+    ),
+    path(
+        "property-group/<int:id>/delete",
+        views.PropertyGroupDeleteView.as_view(),
+        name="lfs_delete_property_group",
+    ),
+]

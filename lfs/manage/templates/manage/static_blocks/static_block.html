@@ -1,0 +1,107 @@
+{% extends "manage/base.html" %}
+{% load compress i18n static crispy_forms_tags %}
+
+{% block help_link %}user/management/html/static_block.html{% endblock %}
+
+{% block content %}
+    <div class="lfs-static-blocks">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Static blocks" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search"
+                            class="form-control"
+                            placeholder="{% trans 'Search' %}"
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#navigation"
+                            hx-select="#navigation"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search static blocks' %}">
+                    </div>
+                    <div class="list-group">
+                        {% for sb in static_blocks %}
+                            <a class="list-group-item list-group-item-action {% if static_block.id == sb.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_static_block' sb.id %}?q={{ search_query }}">
+                                {{ sb.name }}
+                            </a>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No static blocks found." %}</div>
+                        {% endfor %}
+                    </div>
+                </div>                            
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Statische Blöcke</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ static_block.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <a class="btn btn-sm btn-outline-primary me-2"
+                                    hx-get="{% url 'lfs_manage_add_static_block' %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Static Block' %}
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger me-2"
+                               hx-get="{% url 'lfs_manage_delete_static_block_confirm' static_block.id %}"
+                               hx-target="#modal-body-lg"
+                               hx-trigger="click"
+                               hx-swap="innerHTML"
+                               href="#">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Static Block' %}
+                            </a>
+                            <a class="btn btn-sm btn-outline-secondary"
+                                    hx-get="{% url 'lfs_preview_static_block' static_block.id %}"
+                                    hx-target="#modal-body-xl"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-eye"></i>
+                                {% trans 'Preview Static Block' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs">
+                        {% for key, url in tabs %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                    href="{{ url }}">
+                                    {% if key == "data" %}{% trans "Data" %}{% elif key == "files" %}{% trans "Files" %}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4">
+                        <div class="tab-pane show active">
+                            {% if active_tab == "data" %}
+                                {% include "manage/static_blocks/tabs/_data.html" %}
+                            {% elif active_tab == "files" %}
+                                {% include "manage/static_blocks/tabs/_files.html" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+
+    <script src="{% static 'lfs/manage/js/static-blocks.js' %}"></script>
+{% endblock %}

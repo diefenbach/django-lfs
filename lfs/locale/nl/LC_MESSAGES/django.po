@@ -160,7 +160,7 @@ msgstr "Toon alle producten"
 
 #: catalog/models.py:143 catalog/models.py:1429 catalog/models.py:1525
 #: catalog/settings.py:50 export/models.py:18
-#: templates/manage/manage_base.html:86
+#: templates/manage/base.html:86
 #: templates/manage/cart/carts_inline.html:25
 #: templates/manage/category/manage_category.html:40
 #: templates/manage/category/products.html:7
@@ -632,8 +632,8 @@ msgstr "Aantal decimalen"
 msgid "Step type"
 msgstr "Stap type"
 
-#: catalog/models.py:1552 templates/manage/manage_base.html:90
-#: templates/manage/manage_base.html:92
+#: catalog/models.py:1552 templates/manage/base.html:90
+#: templates/manage/base.html:92
 #: templates/manage/product/product.html:108
 #: templates/manage/properties/properties_inline.html:6
 #: templates/manage/properties/property.html:6
@@ -665,7 +665,7 @@ msgstr "Inhoud id"
 msgid "Display files"
 msgstr "Geef bestanden weer"
 
-#: catalog/models.py:1841 templates/manage/manage_base.html:97
+#: catalog/models.py:1841 templates/manage/base.html:97
 msgid "HTML"
 msgstr "HTML"
 
@@ -681,7 +681,7 @@ msgstr "Bestanden"
 msgid "Standard"
 msgstr "Standaard"
 
-#: catalog/settings.py:9 templates/manage/manage_base.html:166
+#: catalog/settings.py:9 templates/manage/base.html:166
 #: templates/manage/customer/customer_inline.html:30
 #: templates/manage/product/data.html:216
 #: templates/manage/product/product_filters_inline.html:42
@@ -696,7 +696,7 @@ msgstr "Standaard"
 msgid "Yes"
 msgstr "Ja"
 
-#: catalog/settings.py:10 templates/manage/manage_base.html:167
+#: catalog/settings.py:10 templates/manage/base.html:167
 #: templates/manage/customer/customer_inline.html:32
 #: templates/manage/product/data.html:218
 #: templates/manage/product/product_filters_inline.html:43
@@ -738,7 +738,7 @@ msgid "Select"
 msgstr "Selecteer"
 
 #: catalog/settings.py:51 portlet/templatetags/lfs_portlets_tags.py:104
-#: templates/manage/manage_base.html:85
+#: templates/manage/base.html:85
 #: templates/manage/category/manage_categories_portlet.html:2
 #: templates/manage/product/categories.html:3
 #: templates/manage/product/product.html:94
@@ -1361,7 +1361,7 @@ msgstr "Varianten"
 msgid "Category"
 msgstr "Categorie"
 
-#: export/models.py:71 templates/manage/manage_base.html:121
+#: export/models.py:71 templates/manage/base.html:121
 msgid "Export"
 msgstr "Exporteer"
 
@@ -2206,7 +2206,7 @@ msgid "Related Products"
 msgstr "Gerelateerde producten"
 
 #: portlet/templatetags/lfs_portlets_tags.py:164
-#: templates/manage/manage_base.html:115
+#: templates/manage/base.html:115
 #: templates/manage/marketing/marketing.html:15
 #: templates/manage/marketing/topseller_inline.html:90
 msgid "Topseller"
@@ -2228,68 +2228,68 @@ msgstr "Waardering"
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: templates/manage/manage_base.html:57
+#: templates/manage/base.html:57
 msgid "Logout"
 msgstr "Uitloggen"
 
-#: templates/manage/manage_base.html:59
+#: templates/manage/base.html:59
 msgid "Login"
 msgstr "Inloggen"
 
-#: templates/manage/manage_base.html:70 templates/manage/shop/shop.html:9
+#: templates/manage/base.html:70 templates/manage/shop/shop.html:9
 msgid "Shop"
 msgstr "Winkel"
 
-#: templates/manage/manage_base.html:72 templates/manage/shop/action.html:7
+#: templates/manage/base.html:72 templates/manage/shop/action.html:7
 msgid "Actions"
 msgstr "Acties"
 
-#: templates/manage/manage_base.html:73
+#: templates/manage/base.html:73
 msgid "Delivery Times"
 msgstr "Leveringstijden"
 
-#: templates/manage/manage_base.html:74
+#: templates/manage/base.html:74
 #: templates/manage/discounts/discount.html:7
 msgid "Discounts"
 msgstr "Kortingen"
 
-#: templates/manage/manage_base.html:75
+#: templates/manage/base.html:75
 #: templates/manage/manufacturer/manufacturer.html:8
 msgid "Manufacturers"
 msgstr "Leveranciers"
 
-#: templates/manage/manage_base.html:76
+#: templates/manage/base.html:76
 msgid "Payment Methods"
 msgstr "Betalingswijzen"
 
-#: templates/manage/manage_base.html:77
+#: templates/manage/base.html:77
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: templates/manage/manage_base.html:78
+#: templates/manage/base.html:78
 msgid "Shipping Methods"
 msgstr "Verzendwijzen"
 
-#: templates/manage/manage_base.html:79 templates/manage/tax/tax.html:6
+#: templates/manage/base.html:79 templates/manage/tax/tax.html:6
 msgid "Taxes"
 msgstr "BTW"
 
-#: templates/manage/manage_base.html:83
+#: templates/manage/base.html:83
 msgid "Catalog"
 msgstr "Catalogus"
 
-#: templates/manage/manage_base.html:87
+#: templates/manage/base.html:87
 msgid "Products Overview"
 msgstr "Productoverzicht"
 
-#: templates/manage/manage_base.html:93
+#: templates/manage/base.html:93
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
 #: templates/manage/properties/add_property_group.html:12
 msgid "Property Groups"
 msgstr "Eigenschap groepen"
 
-#: templates/manage/manage_base.html:99
+#: templates/manage/base.html:99
 #: templates/manage/cart/carts_filters_inline.html:9
 #: templates/manage/cart/selectable_carts_inline.html:2
 #: templates/manage/customer/customers_filters_inline.html:9
@@ -2303,23 +2303,23 @@ msgstr "Eigenschap groepen"
 msgid "Pages"
 msgstr "Paginas"
 
-#: templates/manage/manage_base.html:100
+#: templates/manage/base.html:100
 #: templates/manage/static_block/static_block.html:6
 msgid "Static blocks"
 msgstr "Tekstblokken"
 
-#: templates/manage/manage_base.html:103 templates/manage/manage_base.html:106
+#: templates/manage/base.html:103 templates/manage/base.html:106
 #: templates/manage/customer/customers.html:15
 #: templates/manage/customer/customers_inline.html:4
 msgid "Customers"
 msgstr "Klanten"
 
-#: templates/manage/manage_base.html:105 templates/manage/cart/carts.html:15
+#: templates/manage/base.html:105 templates/manage/cart/carts.html:15
 #: templates/manage/cart/carts.html:18
 msgid "Carts"
 msgstr "Winkelwagens"
 
-#: templates/manage/manage_base.html:107
+#: templates/manage/base.html:107
 #: templates/manage/customer/customer_inline.html:117
 #: templates/manage/customer/customers_inline.html:32
 #: templates/manage/order/orders.html:14
@@ -2327,68 +2327,68 @@ msgstr "Winkelwagens"
 msgid "Orders"
 msgstr "Bestellingen"
 
-#: templates/manage/manage_base.html:108
+#: templates/manage/base.html:108
 #: templates/manage/reviews/reviews.html:13
 #: templates/manage/reviews/reviews.html:16
 msgid "Reviews"
 msgstr "Waarderingen"
 
-#: templates/manage/manage_base.html:111
+#: templates/manage/base.html:111
 msgid "Marketing"
 msgstr "Marketing"
 
-#: templates/manage/manage_base.html:113
+#: templates/manage/base.html:113
 msgid "Featured"
 msgstr "Populair"
 
-#: templates/manage/manage_base.html:114
+#: templates/manage/base.html:114
 #: templates/manage/marketing/rating_mails.html:13
 msgid "Rating Mails"
 msgstr "Rating mails"
 
-#: templates/manage/manage_base.html:116
+#: templates/manage/base.html:116
 #: templates/manage/voucher/voucher_group.html:26
 #: templates/manage/voucher/vouchers.html:3
 msgid "Vouchers"
 msgstr "Kortingscodes"
 
-#: templates/manage/manage_base.html:119
+#: templates/manage/base.html:119
 msgid "Utils"
 msgstr "Tools"
 
-#: templates/manage/manage_base.html:122
+#: templates/manage/base.html:122
 msgid "Miscellaneous"
 msgstr "Overig"
 
-#: templates/manage/manage_base.html:148
+#: templates/manage/base.html:148
 msgid "Powered by"
 msgstr "Powered by"
 
-#: templates/manage/manage_base.html:150
+#: templates/manage/base.html:150
 msgid "is a product of"
 msgstr "is een product van"
 
-#: templates/manage/manage_base.html:151
+#: templates/manage/base.html:151
 msgid "by"
 msgstr "door"
 
-#: templates/manage/manage_base.html:151
+#: templates/manage/base.html:151
 msgid "All rights reserved"
 msgstr "Alle rechten voorbehouden"
 
-#: templates/manage/manage_base.html:153
+#: templates/manage/base.html:153
 msgid "Distributed under the"
 msgstr "Gedistribueerd onder de"
 
-#: templates/manage/manage_base.html:153
+#: templates/manage/base.html:153
 msgid "BSD-License"
 msgstr "BSD licentie"
 
-#: templates/manage/manage_base.html:159
+#: templates/manage/base.html:159
 msgid "Please Confirm"
 msgstr "Graag bevestigen"
 
-#: templates/manage/manage_base.html:160
+#: templates/manage/base.html:160
 msgid "Do you really want to delete this object?"
 msgstr "Wil je dit object echt verwijderen?"
 

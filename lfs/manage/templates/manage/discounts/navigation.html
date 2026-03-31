@@ -1,8 +1,0 @@
-{% for discount in discounts %}
-    <div>
-        <a class="selectable {% if current_id == discount.id %}selected{% endif %}"
-           href="{% url 'lfs_manage_discount' discount.id %}">
-            {{ discount.name }}
-        </a>
-    </div>
-{% endfor %}

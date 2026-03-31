@@ -1,0 +1,75 @@
+/* Image Browser Styles */
+.image-grid .image-card {
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.image-grid .image-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.image-grid .image-card.selected {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.image-grid .image-card .image-thumb {
+    transition: opacity 0.2s ease;
+}
+
+.image-grid .image-card:hover .image-thumb {
+    opacity: 0.9;
+}
+
+/* HTMX Loading Indicator */
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1;
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1;
+}
+
+/* Pagination improvements */
+.pagination .page-link {
+    border-radius: 0.375rem;
+    margin: 0 2px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Search form improvements */
+.search-container .input-group {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.search-container .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Insert button state */
+#insertBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#insertBtn:not(:disabled) {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+#insertBtn:not(:disabled):hover {
+    background-color: #157347;
+    border-color: #146c43;
+}
+

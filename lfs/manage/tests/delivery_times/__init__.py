@@ -1,0 +1,1 @@
+# Categories test module

@@ -1,8 +1,0 @@
-{% for customer_tax in customer_taxes %}
-    <div>
-        <a href="{% url 'lfs_manage_customer_tax' customer_tax.id %}"
-           class="selectable {% if customer_tax.id == current_id %}selected{% endif %}">
-           {{ customer_tax.rate }}%
-        </a>
-    </div>
-{% endfor %}

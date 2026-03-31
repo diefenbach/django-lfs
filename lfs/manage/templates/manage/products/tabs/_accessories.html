@@ -1,0 +1,62 @@
+{% load i18n static %}
+
+<div class="tab-pane fade show active" id="accessories-content" role="tabpanel" aria-labelledby="accessories-tab">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="d-flex gap-2">
+            <!-- Filter Controls -->
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text"
+                       class="form-control"
+                       placeholder="{% trans 'Search products...' %}"
+                       name="filter"
+                       value="{{ filter }}"
+                       hx-get="{% url 'lfs_manage_product_accessories' product.id %}"
+                       hx-target="#accessories-tables"
+                       hx-select="#accessories-tables"
+                       hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                       hx-include="[name='amount']"
+                       hx-push-url="true">
+            </div>
+
+            <select name="amount"
+                    class="form-select"
+                    style="width: 120px;"
+                    hx-get="{% url 'lfs_manage_product_accessories' product.id %}"
+                    hx-target="#accessories-tables"
+                    hx-select="#accessories-tables"
+                    hx-include="[name='filter']"
+                    hx-push-url="true">
+                {% for n in page_sizes %}
+                    <option value="{{ n }}" {% if amount == n %}selected{% endif %}>{{ n }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if product.is_variant %}
+            <form method="post" class="d-flex align-items-center gap-2 mb-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="toggle_active">
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="activeAccessories" name="active_accessories" {% if product.active_accessories %}checked{% endif %}>
+                    <label class="form-check-label" for="activeAccessories">{% trans "Active accessories" %}</label>
+                </div>
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-check-lg me-1"></i> {% trans 'Save' %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div id="accessories-tables" class="row g-4">
+        <!-- Available Products (Left Column) -->
+        <div class="col-md-6">
+            {% include 'manage/products/tabs/_available_accessories.html' %}
+        </div>
+
+        <!-- Assigned Accessories (Right Column) -->
+        <div class="col-md-6">
+            {% include 'manage/products/tabs/_assigned_accessories.html' %}
+        </div>
+    </div>
+</div>

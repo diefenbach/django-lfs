@@ -1,0 +1,159 @@
+{% load i18n %}
+{% comment %}
+    Reusable pagination snippet for LFS management templates.
+    
+    Required context variables:
+    - page_obj: The paginated object (e.g., carts_page, products_page)
+    - url_name: The URL name for pagination links (e.g., 'lfs_manage_cart')
+    - url_params: Optional URL parameters (e.g., cart.id for cart detail view)
+    - page_info_position: Optional position for page info ('above', 'beside', or 'below', default: 'below')
+    
+    Usage:
+    {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' url_params=cart.id %}
+    {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' page_info_position='below' %}
+    
+    For list views without additional parameters:
+    {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' %}
+{% endcomment %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+<nav aria-label="{% trans 'Pagination' %}">
+    {% if page_info_position == 'above' %}
+    <div class="text-center">
+        <small class="text-muted">
+            {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
+            Page {{ current }} of {{ total }}
+            {% endblocktrans %}
+        </small>
+    </div>
+    {% endif %}
+    
+    <ul class="pagination pagination-sm justify-content-center mb-0">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center"
+                   {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% endif %}"{% endif %}
+                   title="{% trans 'First page' %}">
+                    <i class="bi bi-chevron-double-left"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center"
+                   {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% endif %}"{% endif %}
+                   title="{% trans 'Previous page' %}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+        {% endif %}
+        
+        {% with total_pages=page_obj.paginator.num_pages current_page=page_obj.number %}
+            {% if total_pages <= 4 %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == current_page %}
+                        <li class="page-item active">
+                            <span class="page-link d-flex align-items-center justify-content-center">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link d-flex align-items-center justify-content-center"
+                               {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% endif %}"{% endif %}>
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% if current_page <= 2 %}
+                    {% for num in "1234"|make_list %}
+                        {% if forloop.counter == current_page %}
+                            <li class="page-item active">
+                                <span class="page-link d-flex align-items-center justify-content-center">{{ forloop.counter }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link d-flex align-items-center justify-content-center"
+                                   {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ forloop.counter }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ forloop.counter }}{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ forloop.counter }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ forloop.counter }}{% endif %}"{% endif %}>
+                                    {{ forloop.counter }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% elif current_page >= total_pages|add:'-1' %}
+                    {% for num in "1234"|make_list %}
+                        {% with page_num=total_pages|add:'-4'|add:forloop.counter %}
+                            {% if page_num == current_page %}
+                                <li class="page-item active">
+                                    <span class="page-link d-flex align-items-center justify-content-center">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link d-flex align-items-center justify-content-center"
+                                       {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% endif %}"{% endif %}>
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    {% for num in "1234"|make_list %}
+                        {% with page_num=current_page|add:'-2'|add:forloop.counter %}
+                            {% if page_num == current_page %}
+                                <li class="page-item active">
+                                    <span class="page-link d-flex align-items-center justify-content-center">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link d-flex align-items-center justify-content-center"
+                                       {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}{% endif %}"{% endif %}>
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endwith %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+        
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center"
+                   {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}{% endif %}"{% endif %}
+                   title="{% trans 'Next page' %}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center"
+                   {% if htmx_target %}hx-get="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}{% endif %}" hx-target="{{ htmx_target }}" hx-swap="{{ htmx_swap }}"{% else %}href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}{% endif %}"{% endif %}
+                   title="{% trans 'Last page' %}">
+                    <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </li>
+        {% endif %}
+        
+        {% if page_info_position == 'beside' %}
+        <li class="page-item disabled">
+            <span class="page-link d-flex align-items-center justify-content-center text-muted">
+                <small>
+                    {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
+                    Page {{ current }} of {{ total }}
+                    {% endblocktrans %}
+                </small>
+            </span>
+        </li>
+        {% endif %}
+    </ul>
+    
+    {% if page_info_position == 'below' or page_info_position == '' %}
+    <div class="text-center mt-2">
+        <small class="text-muted">
+            {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
+            Page {{ current }} of {{ total }}
+            {% endblocktrans %}
+        </small>
+    </div>
+    {% endif %}
+</nav>
+{% endif %}

@@ -1,0 +1,205 @@
+/* Categories DnD Styling - Exact copy from dnd.html */
+
+/* Make links behave like text */
+.item-content a {
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+}
+
+.item-content a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Ebene 1 - Hauptpunkte */
+.level-1 {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.level-1 > li {
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.level-1 > li:hover {
+    background-color: #e9ecef;
+}
+
+/* Ebene 2 - Unterpunkte */
+.level-2 {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 20px;
+}
+
+.level-2 > li {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    padding: 12px;
+}
+
+.level-2 > li:hover {
+    background-color: #f8f9fa;
+}
+
+/* Ebene 3 - Unter-Unterpunkte */
+.level-3 {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 25px;
+}
+
+.level-3 > li {
+    background-color: #f8f9fa;
+    border: 1px solid #adb5bd;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    padding: 10px;
+}
+
+.level-3 > li:hover {
+    background-color: #e9ecef;
+}
+
+/* Ebene 4 - Unter-Unter-Unterpunkte */
+.level-4 {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0 30px;
+}
+
+.level-4 > li {
+    background-color: #ffffff;
+    border: 1px solid #6c757d;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    padding: 8px;
+}
+
+.level-4 > li:hover {
+    background-color: #f8f9fa;
+}
+
+.drag-handle {
+    margin-right: 10px;
+    color: #6c757d;
+    font-size: 16px;
+    cursor: grab;
+    user-select: none;
+}
+
+.drag-handle:hover {
+    color: #495057;
+    cursor: grabbing;
+}
+
+.item-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.ghost {
+    opacity: 0.5 !important;
+    background-color: #007bff !important;
+    border: 2px dashed #0056b3 !important;
+}
+
+.chosen {
+    background-color: #e3f2fd !important;
+    border-color: #2196f3 !important;
+}
+
+/* Empty lists get minimum height for better drop targeting */
+.level-2:empty,
+.level-3:empty,
+.level-4:empty {
+    min-height: 20px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+/* Visual feedback when dragging over empty lists */
+.level-2:empty.sortable-ghost,
+.level-3:empty.sortable-ghost,
+.level-4:empty.sortable-ghost {
+    background-color: #e8f5e8;
+    border: 2px dashed #28a745;
+    min-height: 30px;
+}
+
+/* Toggle Button Styling */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 8px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    line-height: 1;
+}
+
+.toggle-btn:hover {
+    background-color: #e9ecef;
+    color: #495057;
+    transform: scale(1.1);
+}
+
+.toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.toggle-btn i {
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+/* Toggle Button States */
+.toggle-btn.collapsed i {
+    transition: transform 0.2s ease;
+}
+
+.toggle-btn.expanded i {
+    transform: rotate(0deg);
+}
+
+/* Collapsed/Expanded States für UL-Elemente */
+.level-2.collapsed,
+.level-3.collapsed,
+.level-4.collapsed {
+    display: none;
+}
+
+.level-2.expanded,
+.level-3.expanded,
+.level-4.expanded {
+    display: block;
+}
+
+/* Drag & Drop Cursor States */
+.hierarchical-categories-sidebar .drag-handle {
+    cursor: grab;
+}
+
+.hierarchical-categories-sidebar .drag-handle:hover {
+    cursor: grabbing;
+}

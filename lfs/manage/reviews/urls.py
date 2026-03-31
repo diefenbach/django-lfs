@@ -1,0 +1,55 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path(
+        "reviews/",
+        views.ReviewListView.as_view(),
+        name="lfs_manage_reviews",
+    ),
+    path(
+        "review/<int:id>/",
+        views.ReviewDataView.as_view(),
+        name="lfs_manage_review",
+    ),
+    path(
+        "review/<int:id>/apply-filters/",
+        views.ApplyReviewFiltersView.as_view(),
+        name="lfs_apply_review_filters",
+    ),
+    path(
+        "reviews/apply-filters/",
+        views.ApplyReviewFiltersView.as_view(),
+        name="lfs_apply_review_filters_list",
+    ),
+    path(
+        "review/delete-confirm/<int:id>/",
+        views.ReviewDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_review_confirm",
+    ),
+    path(
+        "review/delete/<int:id>/",
+        views.ReviewDeleteView.as_view(),
+        name="lfs_delete_review",
+    ),
+    path(
+        "reviews/no/",
+        views.NoReviewsView.as_view(),
+        name="lfs_manage_no_reviews",
+    ),
+    path(
+        "reviews/reset-filters/",
+        views.ResetReviewFiltersView.as_view(),
+        name="lfs_reset_review_filters",
+    ),
+    path(
+        "reviews/set-ordering/<str:ordering>/",
+        views.SetReviewOrderingView.as_view(),
+        name="lfs_set_review_ordering",
+    ),
+    path(
+        "reviews/set-state/<int:id>/",
+        views.SetReviewStateView.as_view(),
+        name="lfs_set_review_state",
+    ),
+]

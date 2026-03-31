@@ -23,10 +23,21 @@ on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-# extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo']
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.githubpages",
+]
 
-# if not on_rtd:
-#     extensions.append('sphinxcontrib.spelling')
+if not on_rtd:
+    try:
+        import enchant
+
+        extensions.append("sphinxcontrib.spelling")
+    except ImportError:
+        print("Warning: sphinxcontrib.spelling not available (enchant library missing)")
+        pass
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -38,11 +49,11 @@ source_suffix = ".rst"
 # source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = "index"
+root_doc = "index"
 
 # General information about the project.
 project = "django-lfs"
-copyright = "2009-2011, Kai Diefenbach, et al."
+copyright = "2009-2025, Kai Diefenbach, et al."
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -68,7 +79,7 @@ release = "dev"
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ["_build"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 # default_role = None
@@ -87,23 +98,48 @@ exclude_trees = ["_build"]
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 
+# If true, `todo` and `todoList` produce output, else they produce nothing.
+todo_include_todos = True
+
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
 
 
 # -- Options for HTML output ---------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  Major themes that come with
-# Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = "lfstheme"
+# The theme to use for HTML and HTML Help pages.
+# Try to use sphinx_rtd_theme if available, otherwise fall back to custom theme
+try:
+    import sphinx_rtd_theme
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-# html_theme_options = {}
-
-# Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ["."]
+    html_theme = "sphinx_rtd_theme"
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    html_theme_options = {
+        "analytics_id": "G-XXXXXXXXXX",
+        "logo_only": False,
+        "display_version": True,
+        "prev_next_buttons_location": "bottom",
+        "style_external_links": False,
+        "vcs_pageview_mode": "",
+        "style_nav_header_background": "white",
+        "collapse_navigation": True,
+        "sticky_navigation": True,
+        "navigation_depth": 4,
+        "includehidden": True,
+        "titles_only": False,
+    }
+except ImportError:
+    # Use the custom theme
+    html_theme = "lfstheme"
+    html_theme_path = ["."]
+    html_theme_options = {
+        "analytics_code": "4711",
+        "collapse_navigation": True,
+        "sticky_navigation": True,
+        "navigation_depth": 4,
+        "includehidden": True,
+        "titles_only": False,
+    }
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -125,6 +161,21 @@ html_theme_path = ["."]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    "custom.css",
+]
+
+# Custom sidebar templates, must be a dictionary that maps document names
+# to template names.
+html_sidebars = {
+    "**": [
+        "relations.html",  # needs 'show_related': True theme option to display
+        "searchbox.html",
+    ]
+}
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

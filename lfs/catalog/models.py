@@ -803,7 +803,13 @@ class Product(models.Model):
         self.short_description = unescape(self.short_description)
 
         pc = self.get_price_calculator(None)
-        self.effective_price = pc.get_effective_price()
+
+        # For newly added Product with Variants
+        try:
+            self.effective_price = pc.get_effective_price()
+        except ValueError:
+            self.effective_price = 0.0
+
         if self.is_variant():
             dv = self.parent.get_default_variant()
             # if this is default variant
@@ -1149,9 +1155,15 @@ class Product(models.Model):
         if self.is_variant():
             if self.active_name:
                 name = self.name
-                name = name.replace("%P", self.parent.name)
+                if self.parent:
+                    name = name.replace("%P", self.parent.name)
+                else:
+                    name = name
             else:
-                name = self.parent.name
+                if self.parent:
+                    name = self.parent.name
+                else:
+                    name = self.name
         else:
             name = self.name
 
@@ -1681,7 +1693,7 @@ class Product(models.Model):
         Returns the sku of the product. Takes care whether the product is a
         variant and sku is active or not.
         """
-        if self.is_variant() and not self.active_sku:
+        if self.is_variant() and not self.active_sku and self.parent:
             return self.parent.sku
         else:
             return self.sku

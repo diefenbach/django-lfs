@@ -1,13 +1,16 @@
-{% load i18n %}
-<form action="{% url 'lfs_edit_portlet' portletassigment_id %}"
-      method="post">
-    <div class="field">
-        <div class="label">
-            <label>{% trans 'Slot' %}:</label>
-        </div>
-        <div>
-            <select id="id_slot"
-                    name="slot">
+{% load i18n crispy_forms_tags %}
+
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
+    {% trans 'Edit' %} {% trans portlet_type_name %}
+</h5>
+
+<div class="modal-body">
+    <form action="{% url 'lfs_edit_portlet' portletassigment_id %}" method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="id_slot" class="form-label">{% trans 'Slot' %}</label>
+            <select id="id_slot" name="slot" class="form-select">
                 {% for slot in slots %}
                     <option value="{{ slot.id }}"
                         {% if slot.selected %}selected="selected"{% endif %}>
@@ -16,13 +19,20 @@
                 {% endfor %}
             </select>
         </div>
-    </div>
 
-    <div id="portlet-form-inline">
-        {% include "manage/lfs_form.html" %}
-    </div>
+        <div id="portlet-form-inline">
+            {{ form|crispy }}
+        </div>
 
-    <input class="ajax-save-button button"
-           type="submit"
-           value="{% trans 'Save portlet' %}" />
-</form>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="bi bi-x-circle me-1"></i>
+                {% trans 'Cancel' %}
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save me-1"></i>
+                {% trans 'Save portlet' %}
+            </button>
+        </div>
+    </form>
+</div>

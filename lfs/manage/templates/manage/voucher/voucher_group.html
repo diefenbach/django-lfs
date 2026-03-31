@@ -1,41 +1,101 @@
-{% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% extends "manage/base.html" %}
+{% load compress i18n static crispy_forms_tags %}
 
 {% block help_link %}user/management/marketing/vouchers.html{% endblock %}
-{% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Voucher groups" %}
-    </h2>
-    <div class="navigation-body">
-        {{ navigation|safe }}
-    </div>
-{% endblock %}
 
 {% block content %}
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_manage_add_voucher_group' %}?came_from={% url 'lfs_manage_voucher_group' voucher_group.id %}">{% trans 'Add voucher group' %}</a>
+    <div class="lfs-voucher-groups">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Voucher groups" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search"
+                            class="form-control"
+                            placeholder="{% trans 'Search' %}"
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#navigation"
+                            hx-select="#navigation"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search voucher groups' %}">
+                    </div>
+                    <div class="list-group">
+                        {% for vg in voucher_groups %}
+                            <a class="list-group-item list-group-item-action {% if voucher_group.id == vg.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_voucher_group' vg.id %}?q={{ search_query }}">
+                                {{ vg.name }}
+                            </a>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No voucher groups found." %}</div>
+                        {% endfor %}
+                    </div>
+                </div>                            
+            </aside>
 
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this voucher group?' %}"
-           href="{% url 'lfs_delete_voucher_group' voucher_group.id %}">{% trans 'Delete voucher group' %}</a>
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Voucher Groups</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ voucher_group.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2"
+                                    hx-get="{% url 'lfs_manage_add_voucher_group' %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Voucher Group' %}
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger me-2"
+                               hx-get="{% url 'lfs_manage_delete_voucher_group_confirm' voucher_group.id %}"
+                               hx-target="#modal-body-lg"
+                               hx-trigger="click"
+                               hx-swap="innerHTML"
+                               href="#">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Voucher Group' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs">
+                        {% for key, url in tabs %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                    href="{{ url }}">
+                                    {% if key == "data" %}{% trans "Data" %}{% elif key == "vouchers" %}{% trans "Vouchers" %}{% elif key == "options" %}{% trans "Options" %}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4">
+                        <div class="tab-pane show active">
+                            {% if active_tab == "data" %}
+                                {% include "manage/voucher/tabs/_data.html" %}
+                            {% elif active_tab == "vouchers" %}
+                                {% include "manage/voucher/tabs/_vouchers.html" %}
+                            {% elif active_tab == "options" %}
+                                {% include "manage/voucher/tabs/_options.html" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#vouchers">{% trans 'Vouchers' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#options">{% trans 'Options' %}</a></li>
-        </ul>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 
-        <div id="data">
-            {{ data_tab|safe }}
-        </div>
-        <div id="vouchers">
-            {{ vouchers_tab|safe }}
-        </div>
-        <div id="options">
-            {{ options_tab|safe }}
-        </div>
-    </div>
+    <script src="{% static 'lfs/js/management/vouchers.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,152 @@
+{% load i18n lfs_tags static %}
+
+<div class="tab-pane fade show active" id="bulk-prices-content" role="tabpanel" aria-labelledby="bulk-prices-tab">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="mb-1">{% trans "Bulk prices" %}</h5>
+            <p class="text-muted mb-0">{% trans "Set different prices based on quantity" %}</p>
+        </div>
+        <button type="button" class="btn btn-primary add-bulk-price-button">
+            <i class="bi bi-plus-circle me-2"></i>{% trans "Add Price Tier" %}
+        </button>
+    </div>
+
+    <form method="post" id="bulk-prices-form">
+        {% csrf_token %}
+
+        <div id="bulk-prices-container">
+            {% if not prices %}
+                <!-- Default first price tier -->
+                <div class="bulk-price-card card mb-3 border-primary">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 text-primary">
+                            <i class="bi bi-star-fill me-2"></i>{% trans "Base Price" %}
+                        </h6>
+                        <div class="d-flex gap-2">
+                            {% if forloop.last %}
+                                <button type="button" class="btn btn-sm btn-outline-primary add-bulk-price-button" title="{% trans 'Add new price tier' %}">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            {% endif %}
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-bulk-price-button" title="{% trans 'Remove this price tier' %}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" name="price_id" value="first" />
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">{% trans "Minimum Quantity" %}</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control number amount" name="amount-first" value="1,0" />
+                                    <span class="input-group-text">{{ product.get_unit }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">{% trans "Price per Unit" %}</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control price-absolute price-absolute-first number first"
+                                           name="price_absolute-first" value="{{ product.price }}" />
+                                    <span class="input-group-text">{{ currency }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">{% trans "Discount" %}</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="100" readonly />
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% for price in prices %}
+                <div class="bulk-price-card card mb-3{% if forloop.first %} border-primary{% endif %}">
+                    <div class="card-header{% if forloop.first %} bg-light{% endif %} d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0{% if forloop.first %} text-primary{% endif %}">
+                            {% if forloop.first %}
+                                <i class="bi bi-star-fill me-2"></i>{% trans "Base Price" %}
+                            {% else %}
+                                <i class="bi bi-tag-fill me-2"></i>{% trans "Price Tier" %} {{ forloop.counter }}
+                            {% endif %}
+                        </h6>
+                        <div class="d-flex gap-2">
+                            {% if forloop.last %}
+                                <button type="button" class="btn btn-sm btn-outline-primary add-bulk-price-button">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            {% endif %}
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-bulk-price-button">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" name="price_id" value="{{ price.id }}" />
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">{% trans "Minimum Quantity" %}</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control number amount" name="amount-{{ price.id }}" value="{{ price.amount }}" />
+                                    <span class="input-group-text">{{ product.get_unit }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">{% trans "Price per Unit" %}</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control price-absolute price-absolute-{{ price.id }} number{% if forloop.first %} first{% endif %}"
+                                           name="price_absolute-{{ price.id }}" value="{{ price.price_absolute }}" />
+                                    <span class="input-group-text">{{ currency }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">{% trans "Discount" %}</label>
+                                <div class="input-group">
+                                    {% if forloop.first %}
+                                        <input type="text" class="form-control" value="100" readonly />
+                                    {% else %}
+                                        <input type="text" class="form-control price-percentual price-percentual-{{ price.id }} number"
+                                               name="price_percentual-{{ price.id }}" value="{{ price.price_percentual }}" />
+                                    {% endif %}
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="reset" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-counterclockwise me-2"></i>{% trans "Reset" %}
+            </button>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle me-2"></i>{% trans "Save Changes" %}
+            </button>
+        </div>
+    </form>
+
+    <!-- Empty state when no prices exist -->
+    <div id="empty-state" class="text-center py-5" style="display: none;">
+        <div class="mb-3">
+            <i class="bi bi-graph-up display-1 text-muted"></i>
+        </div>
+        <h6 class="text-muted">{% trans "No bulk prices configured" %}</h6>
+        <p class="text-muted">{% trans "Add price tiers to offer quantity-based discounts" %}</p>
+        <button type="button" class="btn btn-primary add-bulk-price-button">
+            <i class="bi bi-plus-circle me-2"></i>{% trans "Add First Price Tier" %}
+        </button>
+    </div>
+
+    <script src="{% static 'lfs_bulk_prices/manage.js' %}"></script>
+    <script>
+        "use strict";
+        window.BP = window.BP || {};
+        BP.price_unit = "{{ product.get_unit }}";
+        BP.currency = "{{ currency }}";
+    </script>
+</div>

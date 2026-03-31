@@ -1,4 +1,4 @@
-{% extends "manage/manage_base.html" %}
+{% extends "manage/base.html" %}
 {% load i18n %}
 
 {% block help_link %}user/management/shop/manufacturers.html{% endblock %}
@@ -13,7 +13,7 @@
         {% trans "There are no manufacturers yet." %}
     </div>
     <div class="buttons">
-        <form action="{% url 'lfs_manufacturer_add_manufacturer' %}">
+        <form action="{% url 'lfs_manage_add_manufacturer' %}">
             <input type="submit"
                    class="button"
                    value="{% trans 'Add Manufacturer' %}">

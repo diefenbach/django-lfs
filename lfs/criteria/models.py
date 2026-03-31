@@ -288,7 +288,13 @@ class Criterion(models.Model):
                 values.append(value.name)
             return ", ".join(values)
         else:
-            return value
+            # Format numeric values according to locale (German format)
+            if isinstance(value, (int, float)):
+                from django.utils.formats import localize
+
+                return localize(value)
+            else:
+                return value
 
     def is_valid(self):
         """
@@ -364,16 +370,58 @@ class Criterion(models.Model):
         """
         if isinstance(self.value, float):
             try:
-                value = float(value)
-            except (ValueError, TypeError):
-                value = 0.0
-            self.value = value
+                # Use Django's locale-aware number parsing
+                from django.utils.formats import sanitize_separators
+                from decimal import Decimal, InvalidOperation
+
+                if isinstance(value, str):
+                    if value.strip():  # Only process non-empty strings
+                        # Handle German number format properly
+                        # For cases like "1.234,56", sanitize_separators doesn't work perfectly
+                        # so we need a small helper for the German format
+                        if "." in value and "," in value:
+                            # German format: 1.234,56 - dot is thousand separator, comma is decimal
+                            value = value.replace(".", "").replace(",", ".")
+                        else:
+                            # Use Django's built-in sanitizer for simpler cases
+                            value = sanitize_separators(value)
+
+                        # Convert via Decimal for better precision, then to float
+                        value = float(Decimal(value))
+                        self.value = value
+                    # If empty string, don't update the value (preserve existing)
+                elif value is not None:
+                    value = float(value)
+                    self.value = value
+            except (ValueError, TypeError, InvalidOperation):
+                # Don't update value on error, keep existing value
+                pass
         elif isinstance(self.value, int):
             try:
-                value = int(value)
-            except (ValueError, TypeError):
-                value = 0
-            self.value = value
+                # Use Django's locale-aware number parsing
+                from django.utils.formats import sanitize_separators
+                from decimal import Decimal, InvalidOperation
+
+                if isinstance(value, str):
+                    if value.strip():  # Only process non-empty strings
+                        # Handle German number format properly
+                        if "." in value and "," in value:
+                            # German format: 1.234,56 - dot is thousand separator, comma is decimal
+                            value = value.replace(".", "").replace(",", ".")
+                        else:
+                            # Use Django's built-in sanitizer for simpler cases
+                            value = sanitize_separators(value)
+
+                        # Convert via Decimal for better precision, then to int
+                        value = int(Decimal(value))
+                        self.value = value
+                    # If empty string, don't update the value (preserve existing)
+                elif value is not None:
+                    value = int(value)
+                    self.value = value
+            except (ValueError, TypeError, InvalidOperation):
+                # Don't update value on error, keep existing value
+                pass
         elif self.value.__class__.__name__ == "ManyRelatedManager":
             for value_id in value:
                 self.value.add(value_id)

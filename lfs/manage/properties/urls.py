@@ -1,0 +1,50 @@
+from django.urls import path
+import lfs.manage.properties.views
+
+urlpatterns = [
+    path(
+        "property/add",
+        lfs.manage.properties.views.PropertyCreateView.as_view(),
+        name="lfs_add_property",
+    ),
+    path(
+        "property/<int:id>/delete",
+        lfs.manage.properties.views.PropertyDeleteView.as_view(),
+        name="lfs_delete_property",
+    ),
+    path(
+        "property/<int:id>/delete-confirm",
+        lfs.manage.properties.views.PropertyDeleteConfirmView.as_view(),
+        name="lfs_delete_property_confirm",
+    ),
+    path(
+        "properties",
+        lfs.manage.properties.views.ManagePropertiesView.as_view(),
+        name="lfs_manage_properties",
+    ),
+    path(
+        "property/<int:id>/data",
+        lfs.manage.properties.views.PropertyDataView.as_view(),
+        name="lfs_manage_property",
+    ),
+    path(
+        "no-properties",
+        lfs.manage.properties.views.NoPropertiesView.as_view(),
+        name="lfs_manage_no_properties",
+    ),
+    path(
+        "property/<int:property_id>/add-option",
+        lfs.manage.properties.views.PropertyOptionAddView.as_view(),
+        name="lfs_add_property_option",
+    ),
+    path(
+        "property/<int:property_id>/update-option",
+        lfs.manage.properties.views.PropertyOptionUpdateView.as_view(),
+        name="lfs_update_property_option",
+    ),
+    path(
+        "property/<int:option_id>/delete-option",
+        lfs.manage.properties.views.PropertyOptionDeleteView.as_view(),
+        name="lfs_delete_property_option",
+    ),
+]

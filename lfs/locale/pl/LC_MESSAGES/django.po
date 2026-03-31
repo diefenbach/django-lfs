@@ -255,7 +255,7 @@ msgstr "Pokaż wszystkie produkty"
 #: manage/templates/manage/discounts/products_inline.html:32
 #: manage/templates/manage/export/export.html:36
 #: manage/templates/manage/export/export.html:44
-#: manage/templates/manage/manage_base.html:92
+#: manage/templates/manage/base.html:92
 #: manage/templates/manage/manufacturers/manufacturer.html:39
 #: manage/templates/manage/manufacturers/manufacturer.html:52
 #: manage/templates/manage/marketing/featured_inline.html:31
@@ -356,7 +356,7 @@ msgstr "Kategoria"
 #: catalog/models.py:195 catalog/settings.py:72
 #: manage/templates/manage/category/manage_categories_portlet.html:2
 #: manage/templates/manage/category/no_categories.html:11
-#: manage/templates/manage/manage_base.html:91
+#: manage/templates/manage/base.html:91
 #: manage/templates/manage/product/categories.html:3
 #: manage/templates/manage/product/product.html:95
 #: portlet/templatetags/lfs_portlets_tags.py:108
@@ -426,7 +426,7 @@ msgstr "Jednostka ceny"
 msgid "Quantity field unit"
 msgstr "Jednostka pola z ilością"
 
-#: catalog/models.py:606 manage/templates/manage/manage_base.html:85
+#: catalog/models.py:606 manage/templates/manage/base.html:85
 #: manage/templates/manage/product/images.html:3
 #: manage/templates/manage/product/product.html:98
 msgid "Images"
@@ -744,8 +744,8 @@ msgstr "Wymagane"
 msgid "Step type"
 msgstr "Rodzaj kroku"
 
-#: catalog/models.py:2194 manage/templates/manage/manage_base.html:96
-#: manage/templates/manage/manage_base.html:98
+#: catalog/models.py:2194 manage/templates/manage/base.html:96
+#: manage/templates/manage/base.html:98
 #: manage/templates/manage/product/product.html:110
 #: manage/templates/manage/properties/no_properties.html:11
 #: manage/templates/manage/property_groups/properties_inline.html:6
@@ -775,7 +775,7 @@ msgstr "Id treści"
 msgid "Display files"
 msgstr "Wyświetlaj pliki"
 
-#: catalog/models.py:2529 manage/templates/manage/manage_base.html:103
+#: catalog/models.py:2529 manage/templates/manage/base.html:103
 msgid "HTML"
 msgstr ""
 
@@ -805,7 +805,7 @@ msgstr "Standard"
 
 #: catalog/settings.py:20
 #: manage/templates/manage/customer/customer_inline.html:30
-#: manage/templates/manage/manage_base.html:183
+#: manage/templates/manage/base.html:183
 #: manage/templates/manage/order/orders_inline.html:50
 #: manage/templates/manage/product/data.html:226
 #: manage/templates/manage/product/data.html:297
@@ -824,7 +824,7 @@ msgstr "Tak"
 
 #: catalog/settings.py:21
 #: manage/templates/manage/customer/customer_inline.html:32
-#: manage/templates/manage/manage_base.html:184
+#: manage/templates/manage/base.html:184
 #: manage/templates/manage/order/orders_inline.html:52
 #: manage/templates/manage/product/data.html:228
 #: manage/templates/manage/product/data.html:299
@@ -1101,7 +1101,7 @@ msgid "Footer"
 msgstr "Stopka"
 
 #: core/templatetags/lfs_tags.py:153 core/templatetags/lfs_tags.py:183
-#: manage/templates/manage/manage_base.html:79
+#: manage/templates/manage/base.html:79
 #: manage/templates/manage/manufacturers/manufacturer.html:9
 #: manage/templates/manage/manufacturers/no_manufacturers.html:10
 msgid "Manufacturers"
@@ -1364,7 +1364,7 @@ msgstr "Skrypt"
 msgid "Variants"
 msgstr "Warianty"
 
-#: export/models.py:73 manage/templates/manage/manage_base.html:128
+#: export/models.py:73 manage/templates/manage/base.html:128
 msgid "Export"
 msgstr "Eksport"
 
@@ -1835,7 +1835,7 @@ msgstr "Blok statyczny został usunięty."
 
 #: manage/templates/manage/actions/action.html:9
 #: manage/templates/manage/actions/no_actions.html:10
-#: manage/templates/manage/manage_base.html:77
+#: manage/templates/manage/base.html:77
 msgid "Actions"
 msgstr "Akcje"
 
@@ -2076,7 +2076,7 @@ msgstr "Zarządzaj koszykami"
 
 #: manage/templates/manage/cart/carts.html:17
 #: manage/templates/manage/cart/carts.html:20
-#: manage/templates/manage/manage_base.html:111
+#: manage/templates/manage/base.html:111
 msgid "Carts"
 msgstr "Koszyki"
 
@@ -2084,7 +2084,7 @@ msgstr "Koszyki"
 #: manage/templates/manage/cart/selectable_carts_inline.html:2
 #: manage/templates/manage/customer/customers_filters_inline.html:9
 #: manage/templates/manage/customer/selectable_customers_inline.html:3
-#: manage/templates/manage/manage_base.html:105
+#: manage/templates/manage/base.html:105
 #: manage/templates/manage/order/orders_filter.html:7
 #: manage/templates/manage/order/orders_filters_inline.html:7
 #: manage/templates/manage/order/selectable_orders_inline.html:3
@@ -2535,7 +2535,7 @@ msgstr "Adres wysyłki"
 
 #: manage/templates/manage/customer/customer_inline.html:67
 #: manage/templates/manage/customer/customers_inline.html:32
-#: manage/templates/manage/manage_base.html:113
+#: manage/templates/manage/base.html:113
 #: manage/templates/manage/order/orders.html:14
 #: manage/templates/manage/order/orders_inline.html:2
 msgid "Orders"
@@ -2552,8 +2552,8 @@ msgstr "Zarządzaj klientami"
 
 #: manage/templates/manage/customer/customers.html:16
 #: manage/templates/manage/customer/customers_inline.html:4
-#: manage/templates/manage/manage_base.html:109
-#: manage/templates/manage/manage_base.html:112
+#: manage/templates/manage/base.html:109
+#: manage/templates/manage/base.html:112
 msgid "Customers"
 msgstr "Klienci"
 
@@ -2598,7 +2598,7 @@ msgid "Save criteria"
 msgstr "Zapisz kryteria"
 
 #: manage/templates/manage/customer_tax/customer_tax.html:8
-#: manage/templates/manage/manage_base.html:84
+#: manage/templates/manage/base.html:84
 msgid "Customer Taxes"
 msgstr "Podatki wg. krajów"
 
@@ -2688,7 +2688,7 @@ msgstr "Zapisz"
 
 #: manage/templates/manage/discounts/discount.html:9
 #: manage/templates/manage/discounts/no_discounts.html:10
-#: manage/templates/manage/manage_base.html:122
+#: manage/templates/manage/base.html:122
 msgid "Discounts"
 msgstr "Rabaty"
 
@@ -2823,144 +2823,144 @@ msgstr "Wersje"
 msgid "Package"
 msgstr "Pakunek"
 
-#: manage/templates/manage/manage_base.html:62
+#: manage/templates/manage/base.html:62
 msgid "Logout"
 msgstr "Wyloguj się"
 
-#: manage/templates/manage/manage_base.html:64
+#: manage/templates/manage/base.html:64
 msgid "Login"
 msgstr "Zaloguj się"
 
-#: manage/templates/manage/manage_base.html:75
+#: manage/templates/manage/base.html:75
 #: manage/templates/manage/shop/shop.html:10
 msgid "Shop"
 msgstr "Sklep"
 
-#: manage/templates/manage/manage_base.html:78
+#: manage/templates/manage/base.html:78
 msgid "Delivery Times"
 msgstr "Czasy dostawy"
 
-#: manage/templates/manage/manage_base.html:80
+#: manage/templates/manage/base.html:80
 msgid "Payment Methods"
 msgstr "Sposoby płatności"
 
-#: manage/templates/manage/manage_base.html:81
+#: manage/templates/manage/base.html:81
 msgid "Preferences"
 msgstr "Ustawienia"
 
-#: manage/templates/manage/manage_base.html:82
+#: manage/templates/manage/base.html:82
 #: manage/templates/manage/shipping_methods/no_shipping_methods.html:11
 msgid "Shipping Methods"
 msgstr "Sposoby wysyłki"
 
-#: manage/templates/manage/manage_base.html:83
+#: manage/templates/manage/base.html:83
 #: manage/templates/manage/product_taxes/no_taxes.html:11
 #: manage/templates/manage/product_taxes/tax.html:10
 msgid "Product Taxes"
 msgstr "Podatki dla produktów"
 
-#: manage/templates/manage/manage_base.html:89
+#: manage/templates/manage/base.html:89
 msgid "Catalog"
 msgstr "Katalog"
 
-#: manage/templates/manage/manage_base.html:93
+#: manage/templates/manage/base.html:93
 msgid "Products Overview"
 msgstr "Przegąd Produktów"
 
-#: manage/templates/manage/manage_base.html:99
+#: manage/templates/manage/base.html:99
 #: manage/templates/manage/product/properties.html:2
 #: manage/templates/manage/product/variants.html:4
 #: manage/templates/manage/property_groups/no_property_groups.html:11
 msgid "Property Groups"
 msgstr "Grupy Cech"
 
-#: manage/templates/manage/manage_base.html:106
+#: manage/templates/manage/base.html:106
 #: manage/templates/manage/static_block/static_block.html:14
 msgid "Static blocks"
 msgstr "Bloki statyczne"
 
-#: manage/templates/manage/manage_base.html:114
+#: manage/templates/manage/base.html:114
 #: manage/templates/manage/reviews/reviews.html:14
 #: manage/templates/manage/reviews/reviews.html:17
 msgid "Reviews"
 msgstr "Opinie"
 
-#: manage/templates/manage/manage_base.html:117
+#: manage/templates/manage/base.html:117
 msgid "Marketing"
 msgstr "Marketing"
 
-#: manage/templates/manage/manage_base.html:119
+#: manage/templates/manage/base.html:119
 msgid "Featured"
 msgstr "Polecane"
 
-#: manage/templates/manage/manage_base.html:120
+#: manage/templates/manage/base.html:120
 #: manage/templates/manage/marketing/marketing.html:16
 #: manage/templates/manage/marketing/topseller_inline.html:90
 #: portlet/templatetags/lfs_portlets_tags.py:170
 msgid "Topseller"
 msgstr "Bestseller"
 
-#: manage/templates/manage/manage_base.html:121
+#: manage/templates/manage/base.html:121
 #: manage/templates/manage/voucher/no_vouchers.html:11
 #: manage/templates/manage/voucher/voucher_group.html:27
 #: manage/templates/manage/voucher/vouchers.html:3
 msgid "Vouchers"
 msgstr "Kupony"
 
-#: manage/templates/manage/manage_base.html:123
+#: manage/templates/manage/base.html:123
 #: manage/templates/manage/marketing/rating_mails.html:13
 msgid "Rating Mails"
 msgstr "E-maile z oceną"
 
-#: manage/templates/manage/manage_base.html:126
+#: manage/templates/manage/base.html:126
 msgid "Utils"
 msgstr "Narzędzia"
 
-#: manage/templates/manage/manage_base.html:129
+#: manage/templates/manage/base.html:129
 msgid "Miscellaneous"
 msgstr "Inne ustawienia"
 
-#: manage/templates/manage/manage_base.html:130
+#: manage/templates/manage/base.html:130
 msgid "Environment"
 msgstr "Środowisko"
 
-#: manage/templates/manage/manage_base.html:136
+#: manage/templates/manage/base.html:136
 msgid "Help"
 msgstr "Pomoc"
 
-#: manage/templates/manage/manage_base.html:163
+#: manage/templates/manage/base.html:163
 msgid "Powered by"
 msgstr ""
 
-#: manage/templates/manage/manage_base.html:165
+#: manage/templates/manage/base.html:165
 msgid "by"
 msgstr ""
 
-#: manage/templates/manage/manage_base.html:165
+#: manage/templates/manage/base.html:165
 msgid "All rights reserved"
 msgstr "Wszystkie prawa zastrzeżone"
 
-#: manage/templates/manage/manage_base.html:167
+#: manage/templates/manage/base.html:167
 msgid "Distributed under the"
 msgstr "Dystrybuowany na zasadach"
 
-#: manage/templates/manage/manage_base.html:167
+#: manage/templates/manage/base.html:167
 msgid "BSD-License"
 msgstr "Licencji BSD"
 
-#: manage/templates/manage/manage_base.html:171
+#: manage/templates/manage/base.html:171
 msgid "LFS Dialog"
 msgstr "Okno dialogowe"
 
-#: manage/templates/manage/manage_base.html:172
+#: manage/templates/manage/base.html:172
 msgid "Portlets dialog"
 msgstr "Okno portletów"
 
-#: manage/templates/manage/manage_base.html:176
+#: manage/templates/manage/base.html:176
 msgid "Please Confirm"
 msgstr "Proszę potwierdź"
 
-#: manage/templates/manage/manage_base.html:178
+#: manage/templates/manage/base.html:178
 msgid "Do you really want to delete this object?"
 msgstr "Czy na pewno chcesz usunąć ten obiekt?"
 

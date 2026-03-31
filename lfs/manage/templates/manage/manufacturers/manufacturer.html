@@ -1,77 +1,111 @@
-{% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% extends "manage/base.html" %}
+{% load i18n static crispy_forms_tags %}
 
-{% block title %}{% trans "Manage Manufacturer" %}{% endblock %}
-{% block section %}manage-manufacturer{% endblock %}
 {% block help_link %}user/management/shop/manufacturers.html{% endblock %}
+{% block section %}manage-manufacturer{% endblock %}
+{% block content %}
+    <div class="lfs-manufacturers">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Manufacturers" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search" 
+                            class="form-control" 
+                            placeholder="{% trans 'Search' %}" 
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#manufacturers-list"
+                            hx-select="#manufacturers-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search manufacturers' %}">
+                    </div>
+                    <div class="list-group" id="manufacturers-list">
+                        {% for mfr in manufacturers %}
+                            <a class="list-group-item list-group-item-action {% if mfr.id == manufacturer.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_manufacturer' mfr.id %}{% if search_query %}?q={{ search_query }}{% endif %}">
+                                {{ mfr.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </aside>
 
-{% block left_slot %}
-    <h2 class="navigation-title">{% trans "Manufacturers" %}</h2>
-    <div class="navigation-body"
-         id="selectable-manufacturers">
-        {{ selectable_manufacturers_inline|safe }}
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Manufacturers</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ manufacturer.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2" 
+                                hx-get="{% url 'lfs_manage_add_manufacturer' %}?came_from={% url 'lfs_manage_manufacturer' manufacturer.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Manufacturer' %}
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-danger me-2"
+                                hx-get="{% url 'lfs_delete_manufacturer_confirm' manufacturer.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Manufacturer' %}
+                            </button>
+
+                            <a class="btn btn-sm btn-outline-secondary"
+                                href="{% url 'lfs_manufacturer_by_id' manufacturer.id %}">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                                {% trans 'View Manufacturer' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="manufacturerTabs" role="tablist" hx-swap-oob="true">
+                        {% for key, url in tabs %}
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                href="{{ url }}" 
+                                role="tab"
+                                aria-controls="{{ key }}-content"
+                                aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                    {% trans key|title %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4" id="manufacturerTabsContent">
+                        {% if active_tab == "data" %}
+                            {% include "manage/manufacturers/tabs/_data.html" %}
+                        {% elif active_tab == "products" %}
+                            {% include "manage/manufacturers/tabs/_products.html" %}
+                        {% elif active_tab == "seo" %}
+                            {% include "manage/manufacturers/tabs/_seo.html" %}
+                        {% elif active_tab == "portlets" %}
+                            {% include "manage/manufacturers/tabs/_portlets.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}
 
-{% block content %}
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_manufacturer_add_manufacturer' %}?came_from={% url 'lfs_manage_manufacturer' manufacturer_id %}">
-           {% trans 'Add Manufacturer' %}</a>
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this manufacturer?' %}"
-           href="{% url 'lfs_manufacturer_delete_manufacturer' manufacturer_id %}">
-           {% trans 'Delete Manufacturer' %}</a>
-        <a class="preview popup-link"
-           href="{{ manufacturer.get_absolute_url }}">
-            {% trans 'View Manufacturer' %}
-        </a>
-        <a class="preview"
-           href="{{ manufacturer.get_absolute_url }}">
-            {% trans 'Goto Manufacturer' %}
-        </a>
-    </div>
-    <div id="manufacturer-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#view">{% trans 'View' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="{% url 'lfs_manufacturer_load_products_tab' manufacturer.pk %}">{% trans 'Products' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#products-tree">{% trans 'Products tree' %}</a></li>
-        </ul>
-        <div id="data">
-            {{ manufacturer_data_inline|safe }}
-        </div>
-        <div id="view">
-            {{ view|safe }}
-        </div>
-        <div id="seo">
-            {{ seo|safe }}
-        </div>
-        <div id="products-tree">
-            <h2>{% trans "Products" %}</h2>
-            <ul class="manufacturer-tree">
-
-                {% for category in categories %}
-                    <li class="category {{ category.klass }}"
-                        data="{% url 'lfs_manufacturer_category_state' manufacturer_id category.id %}">
-                        <input id="factory-category-input-{{ category.id }}"
-                               class="export-category-input"
-                               type="checkbox"
-                               data-url="{% url 'lfs_manufacturer_edit_category' manufacturer_id category.id %}"
-                               {% if category.checked %}checked="checked"{% endif %} />
-
-                        <a class="category-ajax-link collapsed"
-                           id="{{ category.id }}"
-                           href="{% url 'lfs_manufacturer_inline' manufacturer_id category.id %}">
-                            {{ category.name }}
-                        </a>
-                        <span class="category-state" id="category-state-{{ category.id }}">
-                            {% if category.klass == "half" %}(1/2){% endif %}
-                        </span>
-                        <div id="sub-categories-{{ category.id }}"></div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+{% block javascript %}
+    <script src="{% static 'lfs/manage/js/manufacturers.js' %}"></script>
 {% endblock %}

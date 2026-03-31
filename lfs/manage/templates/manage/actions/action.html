@@ -1,40 +1,113 @@
-{% extends "manage/manage_base.html" %}
-{% load i18n %}
-
-{% block help_link %}user/management/shop/actions.html{% endblock %}
-
-{% block section %}manage-action{% endblock %}
-{% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Actions" %}
-    </h2>
-    <div id="navigation"
-         class="navigation-body">
-        {{ navigation|safe }}
-    </div>
-{% endblock %}
+{% extends "manage/base.html" %}
+{% load i18n static crispy_forms_tags %}
 
 {% block content %}
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_add_action' %}?came_from={% url 'lfs_manage_action' action.id %}">{% trans 'Add action' %}</a>
+    <div class="lfs-actions">
+        <div class="row">
+            <aside class="scrollable-content col-3 bg-white border-end p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Actions" %}</div>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="search" 
+                           class="form-control" 
+                           placeholder="{% trans 'Search' %}" 
+                           name="q"
+                           value="{{ search_query }}"
+                           hx-get="{{ request.path }}"
+                           hx-target="#action-groups"
+                           hx-select="#action-groups"
+                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                           hx-include="this"
+                           hx-push-url="true"
+                           aria-label="Suchen">
+                </div>
+        
+                <div id="action-groups" class="mt-3 padding-bottom-100" hx-swap-oob="true">
+                    {% for group in groups %}
+                        <div class="action-group-name mt-3 mb-2">{{ group.name }}</div>
+                        <div class="action-group" data-list="{{ group.id }}">
+                            {% for group_action in group.filtered_actions %}
+                                <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if group_action.id == action.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                                    data-id="{{ group_action.id }}" 
+                                    href="{% url 'lfs_manage_action' group_action.id %}?q={{ search_query }}">
+                                    {{ group_action.title }}
+                                </a>
+                            {% endfor %}
+                        </div>                            
+                    {% endfor %}
+                </div>
+            </aside>
 
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this action?' %}"
-           href="{% url 'lfs_delete_action' action.id %}">{% trans 'Delete action' %}</a>
+        <main class="col-9 p-4 pt-3 scrollable-content">
+            <div class="padding-bottom-100">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <nav aria-label="Breadcrumb" class="me-2">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item">Actions</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ action.title }}</li>
+                        </ol>
+                    </nav>                                
+                    <div class="site-actions mb-2" id="site-actions">
+                        <button class="btn btn-sm btn-outline-primary me-2" 
+                            hx-get="{% url 'lfs_manage_add_action' %}" 
+                            hx-target="#modal-body-lg" 
+                            hx-trigger="click" 
+                            hx-swap="innerHTML" 
+                            id="add-action-btn">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            {% trans 'Add action' %}
+                        </button>
 
-        <a class="view popup-link"
-           href="{% url 'lfs_shop_view' %}">
-           {% trans 'View Shop' %}
-        </a>
+                        <a class="btn btn-sm btn-outline-danger me-2"
+                           hx-get="{% url 'lfs_manage_delete_action_confirm' action.id %}"
+                           hx-target="#modal-body-sm"
+                           hx-trigger="click"
+                           hx-swap="innerHTML"
+                           href="#">
+                            <i class="bi bi-trash"></i>
+                            {% trans 'Delete action' %}
+                        </a>
+
+                        <a class="btn btn-sm btn-outline-secondary"
+                            href="{% url 'lfs_shop_view' %}">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            {% trans 'View Shop' %}
+                        </a>
+                    </div>
+                </div>
+
+            <ul class="nav nav-tabs" id="actionTabs" role="tablist" hx-swap-oob="true">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-content" type="button" role="tab" aria-controls="data-content" aria-selected="true">{% trans 'Data' %}</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content border border-top-0 bg-white p-4" id="actionTabsContent">
+                <div class="tab-pane show active" 
+                        id="data-content" 
+                        role="tabpanel" 
+                        aria-labelledby="data-tab">
+                    <form action="." method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="q" value="{{ search_query }}" id="search-query" hx-swap-oob="true">
+                        {{ form|crispy }}
+                        <div class="buttons">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-save me-1"></i>
+                                {% trans 'Save' %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Action' %}</a></li>
-        </ul>
-        <div id="data">
-            {{ data|safe }}
-        </div>
-    </div>
+    <script>
+        window.LFS_SORT_ACTIONS_URL = '{% url "lfs_manage_sort_actions" %}';
+    </script>
+    <script src="{% static 'lfs/manage/js/action.js' %}"></script>
 {% endblock %}
