@@ -11,6 +11,8 @@
             </div>
         {% else %}
             <form action="{% url 'lfs_update_product_property_groups' product.id %}" method="post" class="mb-4">
+                <input type="hidden" name="action" value="update_property_groups" />
+                
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="selected-property-groups" class="form-label">{% trans 'Select Property Groups' %}</label>
@@ -34,10 +36,11 @@
                     {% trans 'Update property groups' %}
                 </button>
             </form>
-
+            
             {% if display_configurables %}
                 <form action="{% url 'lfs_update_product_properties' product.id %}" method="post" class="mb-4">
                     {% csrf_token %}
+
                     <h5 class="border-bottom pb-2 mb-3">{% trans 'Default values' %}</h5>
 
                     {% for property_group in configurables %}
@@ -87,6 +90,7 @@
                     {% endfor %}
 
                     <input type="hidden" name="type" value="1" />
+                    <input type="hidden" name="action" value="update_properties" />
 
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-save me-1"></i>
@@ -148,6 +152,7 @@
                     {% endfor %}
 
                     <input type="hidden" name="type" value="0" />
+                    <input type="hidden" name="action" value="update_properties" />
 
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-save me-1"></i>
@@ -207,6 +212,7 @@
                     {% endfor %}
 
                     <input type="hidden" name="type" value="2" />
+                    <input type="hidden" name="action" value="update_properties" />
 
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-save me-1"></i>
