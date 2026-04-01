@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{% static 'lfs/manage/css/image_browser.css' %}">
 
 <div class="modal fade" id="imageBrowserModal" tabindex="-1" aria-labelledby="imageBrowserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-fullscreen-lg-down modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="imageBrowserModalLabel">{% trans "Select Image" %}</h5>
@@ -11,8 +11,8 @@
             </div>
             <div class="modal-body">
                 <div class="search-container mb-3">
-                    <div class="row">
-                        <div class="col-md-8">
+                    <div class="d-flex gap-3">
+                        <div class="flex-grow-1">
                             <form hx-get="{% url 'tinymce_image_browser' %}" 
                                   hx-target="#imageContainer" 
                                   hx-trigger="keyup from:#searchInput delay:300ms, submit">
@@ -29,16 +29,9 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="col-md-4">
-                            <div class="d-flex gap-2">
-                                <select id="sizeSelect" class="form-select">
-                                    <option value="">{% trans "Original" %}</option>
-                                </select>
-                                <button class="btn btn-primary" id="insertBtn" disabled>
-                                    <i class="bi bi-check-circle"></i> {% trans "Insert" %}
-                                </button>
-                            </div>
-                        </div>
+                        <button class="btn btn-primary" id="insertBtn" disabled>
+                            <i class="bi bi-check-circle"></i> {% trans "Insert" %}
+                        </button>
                     </div>
                 </div>
 
@@ -58,96 +51,48 @@
 </div>
 
 <script>
-    // TinyMCE Image Browser with HTMX
-    class TinyMCEImageBrowserHTMX {
-        constructor() {
-            this.selectedImage = null;
-            this.init();
-        }
+    (function() {
+        // Prevent multiple initialization
+        if (window.TinyMCEImageBrowserInitialized) return;
+        window.TinyMCEImageBrowserInitialized = true;
         
-        init() {
-            this.bindEvents();
-        }
+        let selectedImage = null;
         
-        bindEvents() {
-            // Handle image selection
-            document.addEventListener('click', (e) => {
-                if (e.target.closest('.image-card')) {
-                    this.selectImage(e.target.closest('.image-card'));
-                }
-            });
-            
-            // Handle size selection change
-            document.getElementById('sizeSelect').addEventListener('change', () => {
-                this.updateInsertButton();
-            });
-            
-            // Handle insert button
-            document.getElementById('insertBtn').addEventListener('click', () => {
-                this.insertImage();
-            });
-            
-            // Reset when modal is shown
-            document.getElementById('imageBrowserModal').addEventListener('show.bs.modal', () => {
-                this.reset();
-            });
-        }
-        
-        reset() {
-            this.selectedImage = null;
-            document.getElementById('searchInput').value = '';
-            document.getElementById('insertBtn').disabled = true;
-            document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
-        }
-        
-        selectImage(card) {
-            // Remove previous selection
-            document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
-            
-            // Select current card
-            card.classList.add('selected');
-            this.selectedImage = {
-                url: card.dataset.imageUrl,
-                title: card.dataset.imageTitle
-            };
-            
-            this.updateInsertButton();
-        }
-        
-        updateInsertButton() {
-            const insertBtn = document.getElementById('insertBtn');
-            insertBtn.disabled = !this.selectedImage;
-        }
-        
-        insertImage() {
-            if (!this.selectedImage) return;
-            
-            const size = document.getElementById('sizeSelect').value;
-            let finalUrl = this.selectedImage.url;
-            
-            // Apply size if selected
-            if (size) {
-                const urlParts = finalUrl.split('.');
-                const extension = urlParts.pop();
-                finalUrl = urlParts.join('.') + '.' + size + '.' + extension;
+        // Handle image selection via event delegation
+        document.addEventListener('click', (e) => {
+            const card = e.target.closest('.image-card');
+            if (card) {
+                document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedImage = {
+                    url: card.dataset.imageUrl,
+                    title: card.dataset.imageTitle
+                };
+                document.getElementById('insertBtn').disabled = false;
             }
+        });
+        
+        // Handle insert button
+        document.getElementById('insertBtn').addEventListener('click', () => {
+            if (!selectedImage) return;
             
-            // Call TinyMCE callback
             if (window.tinymceImageCallback) {
-                window.tinymceImageCallback(finalUrl, {
-                    title: this.selectedImage.title,
-                    alt: this.selectedImage.title
+                window.tinymceImageCallback(selectedImage.url, {
+                    title: selectedImage.title,
+                    alt: selectedImage.title
                 });
             }
             
-            // Close modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('imageBrowserModal'));
-            modal.hide();
-        }
-    }
-    
-    // Initialize when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        new TinyMCEImageBrowserHTMX();
-    });
+            if (modal) modal.hide();
+        });
+        
+        // Reset when modal is shown
+        document.getElementById('imageBrowserModal').addEventListener('show.bs.modal', () => {
+            selectedImage = null;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('insertBtn').disabled = true;
+            document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+        });
+    })();
 </script>

@@ -65,13 +65,37 @@ class TinyMCEImageBrowserView(PermissionRequiredMixin, TemplateView):
                     "has_next": current_page.has_next(),
                     "has_previous": current_page.has_previous(),
                     "total_count": paginator.count,
-                    "page_range": current_page.paginator.page_range,
+                    "page_range": self._get_page_range(current_page.number, paginator.num_pages),
                 },
                 "query": query,
             }
         )
 
         return context
+
+    def _get_page_range(self, current_page: int, total_pages: int, window: int = 2) -> List[int]:
+        """Calculate a window of page numbers around current page with ellipsis markers."""
+        if total_pages <= 7:
+            return list(range(1, total_pages + 1))
+
+        pages = []
+        pages.append(1)
+
+        start = max(2, current_page - window)
+        end = min(total_pages - 1, current_page + window)
+
+        if start > 2:
+            pages.append(None)
+
+        for p in range(start, end + 1):
+            pages.append(p)
+
+        if end < total_pages - 1:
+            pages.append(None)
+
+        pages.append(total_pages)
+
+        return pages
 
     def _get_available_sizes(self, image) -> List[Dict[str, str]]:
         """Get available sizes for an image."""

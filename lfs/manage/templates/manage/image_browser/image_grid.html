@@ -2,25 +2,21 @@
 
 <div class="image-grid">
     {% if images %}
-        <div class="row g-3">
+        <div class="image-grid-container">
             {% for image in images %}
-                <div class="col-md-3 col-sm-4 col-6">
-                    <div class="card image-card h-100" 
-                         data-image-url="{{ image.url }}" 
-                         data-image-title="{{ image.title }}"
-                         data-image-id="{{ image.id }}"
-                         style="cursor: pointer;">
+                <div class="image-card" 
+                     data-image-url="{{ image.url }}" 
+                     data-image-title="{{ image.title }}"
+                     data-image-id="{{ image.id }}">
+                    <div class="image-thumb-wrapper">
                         <img src="{{ image.thumb }}" 
                              alt="{{ image.alt }}" 
-                             class="card-img-top image-thumb"
-                             style="height: 150px; object-fit: cover;">
-                        <div class="card-body p-2">
-                            <h6 class="card-title small mb-0" 
-                                title="{{ image.title }}"
-                                style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                {{ image.title }}
-                            </h6>
-                        </div>
+                             class="image-thumb"
+                             loading="lazy"
+                             onerror="this.onerror=null; this.src='{{ image.url }}'">
+                    </div>
+                    <div class="image-title" title="{{ image.title }}">
+                        {{ image.title }}
                     </div>
                 </div>
             {% endfor %}
@@ -29,27 +25,37 @@
         <!-- Pagination -->
         {% if pagination.total_pages > 1 %}
             <nav class="mt-4">
-                <ul class="pagination justify-content-center">
+                <ul class="pagination pagination-sm justify-content-center flex-wrap">
                     {% if pagination.has_previous %}
                         <li class="page-item">
                             <a class="page-link" 
                                href="#" 
                                hx-get="{% url 'tinymce_image_browser' %}?page={{ pagination.current_page|add:'-1' }}{% if query %}&q={{ query }}{% endif %}"
                                hx-target="#imageContainer">
-                                {% trans "Previous" %}
+                                <i class="bi bi-chevron-left"></i>
                             </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-left"></i></span>
                         </li>
                     {% endif %}
                     
                     {% for page_num in pagination.page_range %}
-                        <li class="page-item {% if page_num == pagination.current_page %}active{% endif %}">
-                            <a class="page-link" 
-                               href="#" 
-                               hx-get="{% url 'tinymce_image_browser' %}?page={{ page_num }}{% if query %}&q={{ query }}{% endif %}"
-                               hx-target="#imageContainer">
-                                {{ page_num }}
-                            </a>
-                        </li>
+                        {% if page_num %}
+                            <li class="page-item {% if page_num == pagination.current_page %}active{% endif %}">
+                                <a class="page-link" 
+                                   href="#" 
+                                   hx-get="{% url 'tinymce_image_browser' %}?page={{ page_num }}{% if query %}&q={{ query }}{% endif %}"
+                                   hx-target="#imageContainer">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">…</span>
+                            </li>
+                        {% endif %}
                     {% endfor %}
                     
                     {% if pagination.has_next %}
@@ -58,8 +64,12 @@
                                href="#" 
                                hx-get="{% url 'tinymce_image_browser' %}?page={{ pagination.current_page|add:1 }}{% if query %}&q={{ query }}{% endif %}"
                                hx-target="#imageContainer">
-                                {% trans "Next" %}
+                                <i class="bi bi-chevron-right"></i>
                             </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-right"></i></span>
                         </li>
                     {% endif %}
                 </ul>
