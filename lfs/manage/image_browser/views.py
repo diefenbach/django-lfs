@@ -45,6 +45,9 @@ class TinyMCEImageBrowserView(PermissionRequiredMixin, TemplateView):
         # Format images for template
         images = []
         for image in current_page.object_list:
+            if not image.image:
+                continue
+
             images.append(
                 {
                     "id": image.id,
