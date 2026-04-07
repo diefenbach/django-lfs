@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import parse_qs, urlencode, urlparse
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -242,7 +243,18 @@ class ProductDataView(PermissionRequiredMixin, ProductTabMixin, UpdateView):
         return response
 
     def get_success_url(self) -> str:
-        return reverse("lfs_manage_product_data", kwargs={"id": self.object.pk})
+        url = reverse("lfs_manage_product_data", kwargs={"id": self.object.pk})
+        q = self.request.GET.get("q", "").strip()
+        if not q:
+            q = self.request.POST.get("q", "").strip()
+        if not q:
+            referer = self.request.META.get("HTTP_REFERER", "")
+            if referer:
+                parsed_referer = urlparse(referer)
+                q = parse_qs(parsed_referer.query).get("q", [""])[0].strip()
+        if q:
+            return f"{url}?{urlencode({'q': q})}"
+        return url
 
     def delete(self, request, *args, **kwargs):
         """Handle product deletion via POST request."""

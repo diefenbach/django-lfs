@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="tab-pane show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
-    <form method="post" action="{% url 'lfs_manage_product_data' product.id %}">
+    <form method="post" action="{% url 'lfs_manage_product_data' product.id %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}">
         {% csrf_token %}
         
         <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">

@@ -376,6 +376,41 @@ class TestProductDataView:
         expected_url = f"/manage/product/{product.id}/data/"
         assert url == expected_url
 
+    def test_get_success_url_preserves_q_parameter(self, product):
+        """Should keep q parameter in redirect URL when provided."""
+        factory = RequestFactory()
+        request = factory.get("/?q=test")
+        view = ProductDataView()
+        view.request = request
+        view.object = product
+
+        url = view.get_success_url()
+        expected_url = f"/manage/product/{product.id}/data/?q=test"
+        assert url == expected_url
+
+    def test_get_success_url_preserves_q_from_referer(self, product):
+        """Should keep q parameter from referer when not in request GET."""
+        factory = RequestFactory()
+        request = factory.post("/")
+        request.META["HTTP_REFERER"] = f"http://testserver/manage/product/{product.id}/data/?q=test"
+        view = ProductDataView()
+        view.request = request
+        view.object = product
+
+        url = view.get_success_url()
+        expected_url = f"/manage/product/{product.id}/data/?q=test"
+        assert url == expected_url
+
+    def test_data_form_action_preserves_q_parameter(self, client, admin_user, product):
+        """Should include q parameter in data form action."""
+        client.login(username="admin", password="testpass123")
+
+        response = client.get(f"/manage/product/{product.id}/data/?q=test")
+
+        assert response.status_code == 200
+        expected_action = f'action="/manage/product/{product.id}/data/?q=test"'
+        assert expected_action in response.content.decode("utf-8")
+
     def test_delete_standard_product_redirects_to_products_overview(self, rf, admin_user, product, mocker):
         """Should redirect to products overview when deleting standard product."""
         from django.contrib import messages
