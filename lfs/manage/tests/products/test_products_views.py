@@ -1475,6 +1475,24 @@ class TestProductVariantsView:
         assert isinstance(context["all_properties"], list)
         assert isinstance(context["local_properties"], list)
 
+    def test_variants_tab_renders_manage_and_frontend_link_for_each_variant(self, client, admin_user, product):
+        """Should render links to variant management and frontend pages."""
+        client.login(username="admin", password="testpass123")
+        variant = Product.objects.create(
+            parent=product,
+            name="Variant Product",
+            slug="variant-product-manage-link",
+            sku="VAR-MANAGE-001",
+            price=9.99,
+        )
+
+        response = client.get(f"/manage/product/{product.id}/variants/")
+
+        assert response.status_code == 200
+        content = response.content.decode("utf-8")
+        assert f"/manage/product/{variant.id}/data/" in content
+        assert f"/manage/product/{variant.id}/data/?view=1" in content
+
 
 class TestProductRelatedProductsView:
     """Test the ProductRelatedProductsView class-based view."""

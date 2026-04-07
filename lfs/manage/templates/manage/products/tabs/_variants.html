@@ -142,8 +142,16 @@
                     {% for v in variants %}
                         <tr>
                             <td>
-                                <input type="hidden" name="variant-{{ v.id }}" value="1">
-                                <input type="checkbox" class="form-check-input select-variant" name="delete-{{ v.id }}" form="variants-delete-form">
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="hidden" name="variant-{{ v.id }}" value="1">
+                                    <input type="checkbox" class="form-check-input select-variant" name="delete-{{ v.id }}" form="variants-delete-form">
+                                    <a href="{% url 'lfs_manage_product_data' id=v.id %}" class="small" title="{% trans 'Manage' %}" aria-label="{% trans 'Manage' %}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'lfs_manage_product_data' id=v.id %}?view=1" class="small" title="{% trans 'View product' %}" aria-label="{% trans 'View product' %}">
+                                        <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </div>
                             </td>
                             <td><input type="number" class="form-control form-control-sm" name="position-{{ v.id }}" value="{{ v.position }}"></td>
                             <td><input type="checkbox" class="form-check-input select-active" name="active-{{ v.id }}" {% if v.active %}checked{% endif %}></td>
