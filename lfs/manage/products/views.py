@@ -185,7 +185,7 @@ class ProductTabMixin:
         )
 
         # Only show bulk prices tab if price calculator is set to bulk prices
-        if product.price_calculator == "lfs_bulk_prices.calculator.BulkPricesCalculator":
+        if product.get_price_calculator(self.request).__class__.__name__ == "BulkPricesCalculator":
             tabs.append(("bulk_prices", reverse("lfs_manage_product_bulk_prices", args=[product.pk]) + query_param))
 
         tabs.extend(
