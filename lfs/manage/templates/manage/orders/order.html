@@ -305,8 +305,13 @@
                                             <td>
                                                 {% if item.product %}
                                                     <a href="{% url 'lfs_manage_product_data' item.product.id %}">
-                                                        {{ item.product_name }}
+                                                        {{ item.product_name }} 
                                                     </a>
+                                                    &nbsp;
+                                                    <a href="{% url 'lfs_manage_product_data' item.product.id %}?view=1">
+                                                        <i class="bi bi-box-arrow-up-right"></i>
+                                                 </a>
+                     
                                                 {% else %}
                                                     {{ item.product_name }}
                                                 {% endif %}
