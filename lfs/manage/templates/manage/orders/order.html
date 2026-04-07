@@ -209,8 +209,8 @@
                                             <td>{{ current_order.price|currency:request }}</td>
                                         </tr>
                                         <tr>
-                                            <td class="fw-bold">{% trans 'Inclusive VAT' %}:</td>
-                                            <td>{{ current_order.tax|currency:request }}</td>
+                                            <td class="fw-bold">{% trans 'Lieferzeit' %}:</td>
+                                            <td>{{ current_order.delivery_time.round.as_string }}</td>
                                         </tr>
                                     </table>
                                 </div>
