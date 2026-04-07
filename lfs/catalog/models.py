@@ -1466,7 +1466,7 @@ class Product(models.Model):
         Returns the price calculator class as defined in LFS_PRICE_CALCULATORS
         in settings.
         """
-        if self.is_variant() and (self.price_calculator is None):
+        if self.is_variant() and (not self.price_calculator):
             obj = self.get_parent()
         else:
             obj = self
