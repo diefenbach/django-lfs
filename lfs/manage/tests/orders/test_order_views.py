@@ -170,6 +170,77 @@ class TestApplyOrderFiltersView:
         assert "name" not in session_filters
         assert session_filters["state"] == "1"
 
+    def test_apply_order_filters_accepts_dmy_format(self, authenticated_client, order):
+        """Dates entered as d.m.Y (flatpickr) are stored as ISO in session."""
+        url = reverse("lfs_manage_set_order_filter")
+        data = {
+            "start": "14.04.2026",
+            "end": "20.04.2026",
+            "order-id": str(order.id),
+        }
+
+        response = authenticated_client.post(url, data)
+
+        assert response.status_code == 302
+        session_filters = authenticated_client.session.get("order-filters", {})
+        assert session_filters["start"] == "2026-04-14"
+        assert session_filters["end"] == "2026-04-20"
+
+    def test_apply_order_filters_accepts_iso_format(self, authenticated_client, order):
+        """Dates entered as ISO are stored as ISO in session."""
+        url = reverse("lfs_manage_set_order_filter")
+        data = {
+            "start": "2024-01-01",
+            "end": "2024-12-31",
+            "order-id": str(order.id),
+        }
+
+        response = authenticated_client.post(url, data)
+
+        assert response.status_code == 302
+        session_filters = authenticated_client.session.get("order-filters", {})
+        assert session_filters["start"] == "2024-01-01"
+        assert session_filters["end"] == "2024-12-31"
+
+    def test_apply_order_filters_invalid_date_preserves_existing(self, authenticated_client, order):
+        """Invalid date input must not overwrite existing session filters."""
+        session = authenticated_client.session
+        session["order-filters"] = {"start": "2024-01-01", "end": "2024-12-31"}
+        session.save()
+
+        url = reverse("lfs_manage_set_order_filter")
+        data = {
+            "start": "nonsense",
+            "order-id": str(order.id),
+        }
+
+        response = authenticated_client.post(url, data)
+
+        assert response.status_code == 302
+        session_filters = authenticated_client.session.get("order-filters", {})
+        assert session_filters["start"] == "2024-01-01"
+        assert session_filters["end"] == "2024-12-31"
+
+    def test_apply_order_filters_empty_dates_clear_session(self, authenticated_client, order):
+        """Empty date fields remove previously stored date filters."""
+        session = authenticated_client.session
+        session["order-filters"] = {"start": "2024-01-01", "end": "2024-12-31"}
+        session.save()
+
+        url = reverse("lfs_manage_set_order_filter")
+        data = {
+            "start": "",
+            "end": "",
+            "order-id": str(order.id),
+        }
+
+        response = authenticated_client.post(url, data)
+
+        assert response.status_code == 302
+        session_filters = authenticated_client.session.get("order-filters", {})
+        assert "start" not in session_filters
+        assert "end" not in session_filters
+
 
 class TestResetOrderFiltersView:
     """Test ResetOrderFiltersView functionality."""

@@ -190,7 +190,8 @@ class ApplyOrderFiltersView(PermissionRequiredMixin, FormView):
     """Handles filter form submissions and redirects back to order view."""
 
     permission_required = "core.manage_shop"
-    form_class = None
+    form_class = OrderFilterForm
+    template_name = "manage/orders/order_list.html"
 
     def get_success_url(self) -> str:
         """Redirects back to the order view or order list."""
@@ -199,41 +200,33 @@ class ApplyOrderFiltersView(PermissionRequiredMixin, FormView):
             return reverse("lfs_manage_order", kwargs={"order_id": order_id})
         return reverse("lfs_manage_orders")
 
-    def post(self, request, *args, **kwargs):
-        """Saves filter data to session."""
-        order_filters = request.session.get("order-filters", {})
-
-        # Update filters
-        name = request.POST.get("name", "").strip()
-        state = request.POST.get("state", "").strip()
-        start = request.POST.get("start", "").strip()
-        end = request.POST.get("end", "").strip()
-
+    def form_valid(self, form):
+        """Saves validated filter data to session."""
+        order_filters = self.request.session.get("order-filters", {})
         filter_service = OrderFilterService()
 
-        if name:
-            order_filters["name"] = name
-        elif "name" in order_filters:
-            del order_filters["name"]
+        for key in ("name", "state"):
+            value = (form.cleaned_data.get(key) or "").strip()
+            if value:
+                order_filters[key] = value
+            elif key in order_filters:
+                del order_filters[key]
 
-        if state:
-            order_filters["state"] = state
-        elif "state" in order_filters:
-            del order_filters["state"]
+        for key in ("start", "end"):
+            value = form.cleaned_data.get(key)
+            if value:
+                order_filters[key] = filter_service.format_iso_date(value)
+            elif key in order_filters:
+                del order_filters[key]
 
-        if start:
-            order_filters["start"] = filter_service.format_iso_date(start)
-        elif "start" in order_filters:
-            del order_filters["start"]
+        self.request.session["order-filters"] = order_filters
 
-        if end:
-            order_filters["end"] = filter_service.format_iso_date(end)
-        elif "end" in order_filters:
-            del order_filters["end"]
+        messages.success(self.request, _("Order filters have been updated."))
+        return HttpResponseRedirect(self.get_success_url())
 
-        request.session["order-filters"] = order_filters
-
-        messages.success(request, _("Order filters have been updated."))
+    def form_invalid(self, form):
+        """Keeps existing filters and informs the user about invalid input."""
+        messages.error(self.request, _("Invalid filter input. Please check the date fields."))
         return HttpResponseRedirect(self.get_success_url())
 
 

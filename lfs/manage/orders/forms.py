@@ -23,15 +23,19 @@ class OrderFilterForm(forms.Form):
     start = forms.DateField(
         label=_("Start Date"),
         required=False,
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
         widget=forms.DateInput(
-            attrs={"class": "form-control form-control-sm dateinput", "placeholder": _("Select start date")}
+            format="%d.%m.%Y",
+            attrs={"class": "form-control form-control-sm dateinput", "placeholder": _("Select start date")},
         ),
     )
 
     end = forms.DateField(
         label=_("End Date"),
         required=False,
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
         widget=forms.DateInput(
-            attrs={"class": "form-control form-control-sm dateinput", "placeholder": _("Select end date")}
+            format="%d.%m.%Y",
+            attrs={"class": "form-control form-control-sm dateinput", "placeholder": _("Select end date")},
         ),
     )
