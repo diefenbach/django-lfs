@@ -250,6 +250,32 @@
             {% endif %}
         </fieldset>
 
+        {% if product.is_configurable_product %}
+            <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+                <legend>{% trans "Price calculation" %}</legend>
+                <div class="field mb-3">
+                    <div class="form-check">
+                        {{ form.active_price_calculation }}
+                        <label for="{{ form.active_price_calculation.id_for_label }}" class="form-check-label">
+                            {{ form.active_price_calculation.label }}
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="field mb-3">
+                    <label for="{{ form.price_calculation.id_for_label }}" class="form-label">
+                        {{ form.price_calculation.label }}
+                    </label>
+                    {{ form.price_calculation }}
+                    {% if form.price_calculation.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.price_calculation.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </fieldset>
+        {% endif %}
+
         {% if not product.is_variant %}
             <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
                 <legend>{% trans "Quantity field" %}</legend>
