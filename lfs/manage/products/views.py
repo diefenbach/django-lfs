@@ -778,7 +778,7 @@ class ProductVariantsView(PermissionRequiredMixin, ProductTabMixin, TemplateView
             for pd in all_properties:
                 prop = pd["property"]
                 pg = pd["property_group"]
-                pg_id = pg.pk if pg else 0
+                pg_id = pg.pk if pg else ""
                 key = f"property_{pg_id}_{prop.id}"
                 val = request.POST.get(key)
                 if val == "all":
