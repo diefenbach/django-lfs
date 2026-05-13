@@ -78,6 +78,13 @@
                             </ol>
                         </nav>
                         <div class="site-actions mb-2">
+                            {% if product.is_variant %}
+                                <a class="btn btn-sm btn-outline-primary me-2"
+                                   href="{% url 'lfs_manage_product_data' product.parent_id %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}">
+                                    <i class="bi bi-arrow-left-circle"></i>
+                                    {% trans 'Base Product' %}
+                                </a>
+                            {% endif %}
                             <button class="btn btn-sm btn-outline-primary me-2"
                                     hx-get="{% url 'lfs_manage_add_product' %}"
                                     hx-target="#modal-body-lg"

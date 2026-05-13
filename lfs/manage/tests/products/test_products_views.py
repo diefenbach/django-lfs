@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.test import RequestFactory
 from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.views.generic.edit import UpdateView
 
 from lfs.catalog.models import Product
@@ -145,7 +146,6 @@ class TestProductDataView:
         """Should have get method."""
         assert hasattr(ProductDataView, "get")
         assert callable(getattr(ProductDataView, "get"))
-
 
 class TestProductStockView:
     """Test the ProductStockView class-based view."""
@@ -410,6 +410,26 @@ class TestProductDataView:
         assert response.status_code == 200
         expected_action = f'action="/manage/product/{product.id}/data/?q=test"'
         assert expected_action in response.content.decode("utf-8")
+
+    def test_variant_product_page_shows_base_product_button(self, client, admin_user, variant_product):
+        """Should show a base-product button linking to parent for variants."""
+        client.login(username="admin", password="testpass123")
+
+        response = client.get(reverse("lfs_manage_product_data", kwargs={"id": variant_product.id}))
+        content = response.content.decode("utf-8")
+
+        assert response.status_code == 200
+        assert "Base Product" in content
+        assert reverse("lfs_manage_product_data", kwargs={"id": variant_product.parent_id}) in content
+
+    def test_standard_product_page_hides_base_product_button(self, client, admin_user, product):
+        """Should not render the base-product button for non-variant products."""
+        client.login(username="admin", password="testpass123")
+
+        response = client.get(reverse("lfs_manage_product_data", kwargs={"id": product.id}))
+
+        assert response.status_code == 200
+        assert "Base Product" not in response.content.decode("utf-8")
 
     def test_delete_standard_product_redirects_to_products_overview(self, rf, admin_user, product, mocker):
         """Should redirect to products overview when deleting standard product."""
