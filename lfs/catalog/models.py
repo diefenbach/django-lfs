@@ -699,7 +699,7 @@ class Product(models.Model):
     manage_stock_amount = models.BooleanField(_("Manage stock amount"), default=False)
     stock_amount = models.FloatField(_("Stock amount"), default=0)
 
-    active_packing_unit = models.PositiveSmallIntegerField(_("Active packing"), default=0)
+    active_packing_unit = models.PositiveSmallIntegerField(_("Active packing"), default=0, blank=True)
     packing_unit = models.FloatField(_("Amount per packing"), blank=True, null=True)
     packing_unit_unit = models.CharField(
         _("Packing unit"), blank=True, default="", max_length=30, choices=LFS_PACKING_UNITS
