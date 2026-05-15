@@ -34,6 +34,14 @@ class OrderFilterService:
             except (ValueError, TypeError):
                 pass
 
+        # Apply payment method filter
+        payment_method_id = filters.get("payment_method")
+        if payment_method_id and payment_method_id != "":
+            try:
+                queryset = queryset.filter(payment_method_id=int(payment_method_id))
+            except (ValueError, TypeError):
+                pass
+
         # Apply date filters
         start = filters.get("start", "")
         end = filters.get("end", "")

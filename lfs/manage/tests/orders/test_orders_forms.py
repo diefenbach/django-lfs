@@ -14,6 +14,7 @@ def request_factory():
     return RequestFactory()
 
 
+@pytest.mark.django_db
 class TestOrderFilterForm:
     """Test OrderFilterForm functionality."""
 
@@ -23,9 +24,10 @@ class TestOrderFilterForm:
 
         assert "name" in form.fields
         assert "state" in form.fields
+        assert "payment_method" in form.fields
         assert "start" in form.fields
         assert "end" in form.fields
-        assert len(form.fields) == 4
+        assert len(form.fields) == 5
 
     def test_form_fields_have_correct_types(self):
         """Test that form fields are the correct types."""
@@ -33,6 +35,7 @@ class TestOrderFilterForm:
 
         assert isinstance(form.fields["name"], forms.CharField)
         assert isinstance(form.fields["state"], forms.ChoiceField)
+        assert isinstance(form.fields["payment_method"], forms.ChoiceField)
         assert isinstance(form.fields["start"], forms.DateField)
         assert isinstance(form.fields["end"], forms.DateField)
 
@@ -88,6 +91,7 @@ class TestOrderFilterForm:
 
         assert form.cleaned_data["name"] == ""
         assert form.cleaned_data["state"] == ""
+        assert form.cleaned_data["payment_method"] == ""
         assert form.cleaned_data["start"] is None
         assert form.cleaned_data["end"] is None
 
@@ -161,6 +165,7 @@ class TestOrderFilterForm:
 
         assert form.fields["name"].label == _("Customer Name")
         assert form.fields["state"].label == _("Order State")
+        assert form.fields["payment_method"].label == _("Payment Method")
         assert form.fields["start"].label == _("Start Date")
         assert form.fields["end"].label == _("End Date")
 
@@ -202,8 +207,25 @@ class TestOrderFilterForm:
         form = OrderFilterForm()
         field_names = list(form.fields.keys())
 
-        expected_order = ["name", "state", "start", "end"]
+        expected_order = ["name", "state", "payment_method", "start", "end"]
         assert field_names == expected_order
+
+    def test_payment_method_field_choices(self, payment_method):
+        """Test payment method field includes configured payment methods."""
+        form = OrderFilterForm()
+        choices = list(form.fields["payment_method"].choices)
+
+        assert choices[0] == ("", _("All Payment Methods"))
+        assert (str(payment_method.id), payment_method.name) in choices
+
+    def test_payment_method_field_attributes(self):
+        """Test payment method field has correct attributes."""
+        form = OrderFilterForm()
+        payment_method_field = form.fields["payment_method"]
+
+        assert payment_method_field.required is False
+        assert payment_method_field.label == _("Payment Method")
+        assert "form-select form-select-sm" in payment_method_field.widget.attrs["class"]
 
     def test_form_as_table_rendering(self):
         """Test form can be rendered as table."""

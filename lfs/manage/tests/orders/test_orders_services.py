@@ -6,6 +6,7 @@ from django.test import RequestFactory
 from django.utils import timezone
 
 from lfs.order.models import Order, OrderItem
+from lfs.payment.models import PaymentMethod
 from lfs.manage.orders.services import OrderFilterService, OrderDataService
 
 
@@ -206,6 +207,51 @@ class TestOrderFilterService:
 
         assert result.count() == 1
         assert result.first().customer_firstname == "John0"
+
+    def test_filter_orders_by_payment_method(
+        self, order_filter_service, db, customer, address, shipping_method, product
+    ):
+        """Should filter orders by payment method."""
+        from django.contrib.contenttypes.models import ContentType
+
+        address_content_type = ContentType.objects.get_for_model(address.__class__)
+        pm_card = PaymentMethod.objects.create(name="Card", active=True)
+        pm_invoice = PaymentMethod.objects.create(name="Invoice", active=True)
+
+        order_card = Order.objects.create(
+            session=customer.session,
+            customer_firstname="Alice",
+            customer_lastname="Smith",
+            customer_email="alice@example.com",
+            price=Decimal("10.00"),
+            payment_method=pm_card,
+            shipping_method=shipping_method,
+            sa_content_type=address_content_type,
+            sa_object_id=address.id,
+            ia_content_type=address_content_type,
+            ia_object_id=address.id,
+        )
+        Order.objects.create(
+            session=customer.session,
+            customer_firstname="Bob",
+            customer_lastname="Jones",
+            customer_email="bob@example.com",
+            price=Decimal("20.00"),
+            payment_method=pm_invoice,
+            shipping_method=shipping_method,
+            sa_content_type=address_content_type,
+            sa_object_id=address.id,
+            ia_content_type=address_content_type,
+            ia_object_id=address.id,
+        )
+
+        queryset = Order.objects.all()
+        filters = {"payment_method": str(pm_card.id)}
+
+        result = order_filter_service.filter_orders(queryset, filters)
+
+        assert result.count() == 1
+        assert result.first().id == order_card.id
 
 
 class TestOrderDataService:

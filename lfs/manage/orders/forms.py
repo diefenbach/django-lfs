@@ -1,6 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+
 from lfs.order.settings import ORDER_STATES
+from lfs.payment.models import PaymentMethod
 
 
 class OrderFilterForm(forms.Form):
@@ -17,6 +19,13 @@ class OrderFilterForm(forms.Form):
         label=_("Order State"),
         required=False,
         choices=[("", _("All States"))] + list(ORDER_STATES),
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"}),
+    )
+
+    payment_method = forms.ChoiceField(
+        label=_("Payment Method"),
+        required=False,
+        choices=[],
         widget=forms.Select(attrs={"class": "form-select form-select-sm"}),
     )
 
@@ -39,3 +48,10 @@ class OrderFilterForm(forms.Form):
             attrs={"class": "form-control form-control-sm dateinput", "placeholder": _("Select end date")},
         ),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        choices = [("", _("All Payment Methods"))]
+        for pm in PaymentMethod.objects.all().order_by("name"):
+            choices.append((str(pm.id), pm.name))
+        self.fields["payment_method"].choices = choices

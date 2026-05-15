@@ -71,6 +71,14 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            <div class="mb-2">
+                                {{ filter_form.payment_method }}
+                                {% if filter_form.payment_method.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ filter_form.payment_method.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
                             <div class="btn-group d-flex mt-2">
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}

@@ -146,6 +146,39 @@ class TestApplyOrderFiltersView:
         assert session_filters["name"] == "John"
         assert session_filters["state"] == "1"
 
+    def test_apply_order_filters_saves_payment_method_to_session(
+        self, authenticated_client, order, payment_method
+    ):
+        """Test that payment method filter is saved to session."""
+        url = reverse("lfs_manage_set_order_filter")
+        data = {
+            "payment_method": str(payment_method.id),
+            "order-id": str(order.id),
+        }
+
+        authenticated_client.post(url, data)
+
+        session_filters = authenticated_client.session.get("order-filters", {})
+        assert session_filters["payment_method"] == str(payment_method.id)
+
+    def test_apply_order_filters_clears_empty_payment_method(self, authenticated_client, order, payment_method):
+        """Test that empty payment method filter is removed from session."""
+        authenticated_client.session["order-filters"] = {
+            "payment_method": str(payment_method.id),
+        }
+        authenticated_client.session.save()
+
+        url = reverse("lfs_manage_set_order_filter")
+        data = {
+            "payment_method": "",
+            "order-id": str(order.id),
+        }
+
+        authenticated_client.post(url, data)
+
+        session_filters = authenticated_client.session.get("order-filters", {})
+        assert "payment_method" not in session_filters
+
     def test_apply_order_filters_clears_empty_values(self, authenticated_client, order):
         """Test that empty filter values are removed from session."""
         # First set some filters

@@ -92,6 +92,7 @@ class OrderListView(PermissionRequiredMixin, TemplateView):
         return {
             "name": order_filters.get("name", ""),
             "state": order_filters.get("state", ""),
+            "payment_method": order_filters.get("payment_method", ""),
             "start": start,
             "end": end,
         }
@@ -181,6 +182,7 @@ class OrderDataView(PermissionRequiredMixin, TemplateView):
         return {
             "name": order_filters.get("name", ""),
             "state": order_filters.get("state", ""),
+            "payment_method": order_filters.get("payment_method", ""),
             "start": start,
             "end": end,
         }
@@ -205,7 +207,7 @@ class ApplyOrderFiltersView(PermissionRequiredMixin, FormView):
         order_filters = self.request.session.get("order-filters", {})
         filter_service = OrderFilterService()
 
-        for key in ("name", "state"):
+        for key in ("name", "state", "payment_method"):
             value = (form.cleaned_data.get(key) or "").strip()
             if value:
                 order_filters[key] = value
