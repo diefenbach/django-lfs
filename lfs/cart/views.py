@@ -37,12 +37,17 @@ def cart(request, template_name="lfs/cart/cart.html"):
     """
     The main view of the cart.
     """
+    added_to_cart_event = request.session.pop("added_to_cart_event", None)
+    if added_to_cart_event is not None:
+        request.session.pop("cart_items", None)
+
     return render(
         request,
         template_name,
         {
             "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
             "cart_inline": cart_inline(request),
+            "added_to_cart_event": added_to_cart_event,
         },
     )
 
@@ -388,6 +393,8 @@ def add_to_cart(request, product_id=None):
 
     # Store cart items for retrieval within added_to_cart.
     request.session["cart_items"] = cart_items
+    request.session["added_to_cart_event"] = cart_utils.build_add_to_cart_event(request, cart_items)
+
     cart_changed.send(cart, request=request)
 
     # Update the customer's shipping method (if appropriate)

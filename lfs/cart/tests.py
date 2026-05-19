@@ -840,3 +840,83 @@ class AddedToCartTestCase(TestCase):
         self.assertContains(response, "Summer")
         self.assertContains(response, "Voucher")
         # self.assertContains(response, "The voucher is valid")
+
+
+class BuildAddToCartEventTestCase(TestCase):
+    fixtures = ["lfs_shop.xml"]
+
+    def setUp(self):
+        self.p1 = Product.objects.create(
+            name="Product 1", slug="product-1", price=10.0, active=True, deliverable=True
+        )
+        self.user = User.objects.create(username="doe")
+        self.session = SessionStore()
+        self.session.save()
+
+    def test_build_add_to_cart_event(self):
+        from lfs.cart.utils import build_add_to_cart_event
+
+        rf = RequestFactory()
+        request = rf.get("/")
+        request.session = self.session
+        request.user = self.user
+
+        cart = lfs.cart.utils.get_or_create_cart(request)
+        cart_item = cart.add(product=self.p1, amount=2)
+
+        event = build_add_to_cart_event(request, [cart_item])
+
+        unit_price = cart_item.get_product_price_gross(request)
+        self.assertEqual(event["event"], "add_to_cart")
+        self.assertEqual(event["ecommerce"]["currency"], "EUR")
+        self.assertEqual(event["ecommerce"]["value"], unit_price * 2)
+        self.assertEqual(len(event["ecommerce"]["items"]), 1)
+        self.assertEqual(event["ecommerce"]["items"][0]["item_id"], self.p1.get_sku())
+        self.assertEqual(event["ecommerce"]["items"][0]["item_name"], self.p1.get_name())
+        self.assertEqual(event["ecommerce"]["items"][0]["price"], unit_price)
+        self.assertEqual(event["ecommerce"]["items"][0]["quantity"], 2)
+
+
+class AddToCartEventSessionTestCase(TestCase):
+    fixtures = ["lfs_shop.xml"]
+
+    def setUp(self):
+        self.p1 = Product.objects.create(
+            name="Product 1", slug="product-1", price=10.0, active=True, deliverable=True
+        )
+        self.user = User.objects.create(username="doe")
+        self.session = SessionStore()
+        self.session.save()
+
+    def test_add_to_cart_stores_event_in_session(self):
+        rf = RequestFactory()
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request.session = self.session
+        request.user = self.user
+
+        add_to_cart(request, self.p1.id)
+
+        self.assertIn("added_to_cart_event", request.session)
+        self.assertEqual(request.session["added_to_cart_event"]["event"], "add_to_cart")
+        self.assertNotIn("added_to_cart", request.session)
+
+    def test_cart_view_pops_event_from_session(self):
+        from django.test import override_settings
+
+        from lfs.cart.views import cart
+
+        rf = RequestFactory()
+        request = rf.get("/")
+        request.session = self.session
+        request.user = self.user
+        request.session["added_to_cart_event"] = {
+            "event": "add_to_cart",
+            "ecommerce": {"currency": "EUR", "value": 10.0, "items": []},
+        }
+
+        with override_settings(GTM_ID="GTM-TEST"):
+            response = cart(request)
+
+        self.assertNotIn("added_to_cart_event", request.session)
+        self.assertContains(response, 'id="added-to-cart-event"')
+        self.assertContains(response, "add_to_cart")

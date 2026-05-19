@@ -15,6 +15,33 @@ from lfs.manufacturer.models import Manufacturer
 logger = logging.getLogger(__name__)
 
 
+def build_add_to_cart_event(request, cart_items) -> dict:
+    """
+    Build a GA4-compatible add_to_cart dataLayer event for the given cart items.
+    """
+    items = []
+    total = 0
+    for cart_item in cart_items:
+        price = cart_item.get_product_price_gross(request)
+        total += price * cart_item.amount
+        items.append(
+            {
+                "item_id": cart_item.product.get_sku(),
+                "item_name": cart_item.product.get_name(),
+                "price": price,
+                "quantity": cart_item.amount,
+            }
+        )
+    return {
+        "event": "add_to_cart",
+        "ecommerce": {
+            "currency": "EUR",
+            "value": total,
+            "items": items,
+        },
+    }
+
+
 def get_or_create_cart(request):
     """
     Returns the cart of the current user. If no cart exists yet it creates a
