@@ -16,7 +16,10 @@ from lfs.customer.models import Customer
 from lfs.discounts.settings import DISCOUNT_TYPE_ABSOLUTE
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
-from lfs.order.utils import add_order
+from django.test import override_settings
+
+from lfs.checkout.views import thank_you
+from lfs.order.utils import add_order, order_to_tracking_snapshot
 from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
@@ -212,6 +215,41 @@ class OrderTestCase(TestCase):
 
         # delivery time should of the selected shipping method should be saved with order
         self.assertTrue(order.delivery_time is not None)
+
+    def test_order_to_tracking_snapshot_returns_neutral_dict(self):
+        order = add_order(self.request)
+        snapshot = order_to_tracking_snapshot(order)
+
+        self.assertEqual(snapshot["order_id"], str(order.number))
+        self.assertEqual(snapshot["currency"], "EUR")
+        self.assertEqual(snapshot["value"], order.price)
+        self.assertEqual(snapshot["tax"], order.tax)
+        self.assertEqual(snapshot["shipping"], order.shipping_price)
+        self.assertNotIn("event", snapshot)
+        self.assertNotIn("ecommerce", snapshot)
+
+        self.assertEqual(len(snapshot["line_items"]), 2)
+        first = snapshot["line_items"][0]
+        self.assertEqual(first["sku"], "sku-1")
+        self.assertEqual(first["name"], "Product 1")
+        self.assertEqual(first["price"], 1.1)
+        self.assertEqual(first["quantity"], 2)
+
+    def test_order_to_tracking_snapshot_returns_none_without_order(self):
+        self.assertIsNone(order_to_tracking_snapshot(None))
+
+    def test_thank_you_pushes_purchase_and_clears_session(self):
+        order = add_order(self.request)
+
+        with override_settings(GTM_ID="GTM-TEST"):
+            response = thank_you(self.request)
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode()
+        self.assertIn('id="purchase-event"', content)
+        self.assertIn("purchase", content)
+        self.assertIn(str(order.number), content)
+        self.assertIsNone(self.request.session.get("order"))
 
     def test_pay_link(self):
         """Tests empty pay link."""

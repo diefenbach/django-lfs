@@ -15,6 +15,35 @@ from lfs.order.models import OrderItemPropertyValue
 from lfs.voucher.utils import delete_current_voucher_number
 
 
+def order_to_tracking_snapshot(order):
+    """
+    Build a tracker-neutral order snapshot for analytics adapters (e.g. lfs_gtm).
+    """
+    if order is None:
+        return None
+
+    order_id = str(order.number) if order.number else str(order.pk)
+    line_items = []
+    for item in order.items.all():
+        line_items.append(
+            {
+                "sku": item.product_sku,
+                "name": item.product_name,
+                "price": item.product_price_gross,
+                "quantity": item.amount,
+            }
+        )
+
+    return {
+        "order_id": order_id,
+        "currency": "EUR",
+        "value": order.price,
+        "tax": order.tax,
+        "shipping": order.shipping_price,
+        "line_items": line_items,
+    }
+
+
 def add_order(request):
     """Adds an order based on current cart for the current customer.
 

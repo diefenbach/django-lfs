@@ -853,8 +853,8 @@ class BuildAddToCartEventTestCase(TestCase):
         self.session = SessionStore()
         self.session.save()
 
-    def test_build_add_to_cart_event(self):
-        from lfs.cart.utils import build_add_to_cart_event
+    def test_cart_items_to_tracking_snapshot(self):
+        from lfs.cart.utils import cart_items_to_tracking_snapshot
 
         rf = RequestFactory()
         request = rf.get("/")
@@ -864,17 +864,18 @@ class BuildAddToCartEventTestCase(TestCase):
         cart = lfs.cart.utils.get_or_create_cart(request)
         cart_item = cart.add(product=self.p1, amount=2)
 
-        event = build_add_to_cart_event(request, [cart_item])
+        snapshot = cart_items_to_tracking_snapshot(request, [cart_item])
 
         unit_price = cart_item.get_product_price_gross(request)
-        self.assertEqual(event["event"], "add_to_cart")
-        self.assertEqual(event["ecommerce"]["currency"], "EUR")
-        self.assertEqual(event["ecommerce"]["value"], unit_price * 2)
-        self.assertEqual(len(event["ecommerce"]["items"]), 1)
-        self.assertEqual(event["ecommerce"]["items"][0]["item_id"], self.p1.get_sku())
-        self.assertEqual(event["ecommerce"]["items"][0]["item_name"], self.p1.get_name())
-        self.assertEqual(event["ecommerce"]["items"][0]["price"], unit_price)
-        self.assertEqual(event["ecommerce"]["items"][0]["quantity"], 2)
+        self.assertEqual(snapshot["currency"], "EUR")
+        self.assertEqual(snapshot["value"], unit_price * 2)
+        self.assertNotIn("event", snapshot)
+        self.assertNotIn("ecommerce", snapshot)
+        self.assertEqual(len(snapshot["line_items"]), 1)
+        self.assertEqual(snapshot["line_items"][0]["sku"], self.p1.get_sku())
+        self.assertEqual(snapshot["line_items"][0]["name"], self.p1.get_name())
+        self.assertEqual(snapshot["line_items"][0]["price"], unit_price)
+        self.assertEqual(snapshot["line_items"][0]["quantity"], 2)
 
 
 class AddToCartEventSessionTestCase(TestCase):
@@ -896,8 +897,10 @@ class AddToCartEventSessionTestCase(TestCase):
 
         add_to_cart(request, self.p1.id)
 
-        self.assertIn("added_to_cart_event", request.session)
-        self.assertEqual(request.session["added_to_cart_event"]["event"], "add_to_cart")
+        self.assertIn("added_to_cart_tracking", request.session)
+        tracking = request.session["added_to_cart_tracking"]
+        self.assertEqual(tracking["currency"], "EUR")
+        self.assertNotIn("event", tracking)
         self.assertNotIn("added_to_cart", request.session)
 
     def test_cart_view_pops_event_from_session(self):
@@ -909,14 +912,15 @@ class AddToCartEventSessionTestCase(TestCase):
         request = rf.get("/")
         request.session = self.session
         request.user = self.user
-        request.session["added_to_cart_event"] = {
-            "event": "add_to_cart",
-            "ecommerce": {"currency": "EUR", "value": 10.0, "items": []},
+        request.session["added_to_cart_tracking"] = {
+            "currency": "EUR",
+            "value": 10.0,
+            "line_items": [{"sku": "sku-1", "name": "Product 1", "price": 10.0, "quantity": 1}],
         }
 
         with override_settings(GTM_ID="GTM-TEST"):
             response = cart(request)
 
-        self.assertNotIn("added_to_cart_event", request.session)
+        self.assertNotIn("added_to_cart_tracking", request.session)
         self.assertContains(response, 'id="added-to-cart-event"')
         self.assertContains(response, "add_to_cart")

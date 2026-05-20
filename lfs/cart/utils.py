@@ -15,30 +15,30 @@ from lfs.manufacturer.models import Manufacturer
 logger = logging.getLogger(__name__)
 
 
-def build_add_to_cart_event(request, cart_items) -> dict:
+def cart_items_to_tracking_snapshot(request, cart_items) -> dict | None:
     """
-    Build a GA4-compatible add_to_cart dataLayer event for the given cart items.
+    Build a tracker-neutral cart snapshot for analytics adapters (e.g. lfs_gtm).
     """
-    items = []
+    if not cart_items:
+        return None
+
+    line_items = []
     total = 0
     for cart_item in cart_items:
         price = cart_item.get_product_price_gross(request)
         total += price * cart_item.amount
-        items.append(
+        line_items.append(
             {
-                "item_id": cart_item.product.get_sku(),
-                "item_name": cart_item.product.get_name(),
+                "sku": cart_item.product.get_sku(),
+                "name": cart_item.product.get_name(),
                 "price": price,
                 "quantity": cart_item.amount,
             }
         )
     return {
-        "event": "add_to_cart",
-        "ecommerce": {
-            "currency": "EUR",
-            "value": total,
-            "items": items,
-        },
+        "currency": "EUR",
+        "value": total,
+        "line_items": line_items,
     }
 
 

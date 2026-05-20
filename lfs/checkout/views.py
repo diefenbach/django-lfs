@@ -393,14 +393,18 @@ def empty_page_checkout(request, template_name="lfs/checkout/empty_page_checkout
 
 def thank_you(request, template_name="lfs/checkout/thank_you_page.html"):
     """Displays a thank you page ot the customer"""
-    order = request.session.get("order")
-    # pay_link = order.get_pay_link(request) if order else None
+    from lfs.order.utils import order_to_tracking_snapshot
+
+    order = request.session.pop("order", None)
+    if "voucher" in request.session:
+        del request.session["voucher"]
+    order_tracking = order_to_tracking_snapshot(order) if order else None
     return render(
         request,
         template_name,
         {
             "order": order,
-            # "pay_link": pay_link,
+            "order_tracking": order_tracking,
         },
     )
 
