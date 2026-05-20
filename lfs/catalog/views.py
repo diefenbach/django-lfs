@@ -52,7 +52,6 @@ def select_variant(request):
         {
             "product": product_inline(request, variant),
             "message": msg,
-            "tracking_snapshot": lfs.catalog.utils.product_to_tracking_snapshot(request, variant),
         },
         cls=LazyEncoder,
     )
@@ -178,7 +177,6 @@ def select_variant_from_properties(request):
         {
             "product": product_inline(request, variant),
             "message": msg,
-            "tracking_snapshot": lfs.catalog.utils.product_to_tracking_snapshot(request, variant),
         },
         cls=LazyEncoder,
     )

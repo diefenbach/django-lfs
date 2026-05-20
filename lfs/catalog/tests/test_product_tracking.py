@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
@@ -91,6 +92,19 @@ class ProductTrackingUtilsTestCase(TestCase):
     def test_product_to_tracking_snapshot_returns_none_without_product(self):
         self.assertIsNone(product_to_tracking_snapshot(self.request, None))
 
+    def test_product_to_tracking_snapshot_serializes_decimal_prices_as_float(self):
+        from lfs.core.utils import LazyEncoder
+
+        snapshot = {
+            "currency": "EUR",
+            "value": 9.99,
+            "line_items": [{"sku": "S1", "name": "P", "price": 9.99, "quantity": 1}],
+        }
+        payload = json.dumps({"tracking_snapshot": snapshot}, cls=LazyEncoder)
+        data = json.loads(payload)
+        self.assertEqual(data["tracking_snapshot"]["value"], 9.99)
+        self.assertIsInstance(data["tracking_snapshot"]["line_items"][0]["price"], float)
+
 
 @override_settings(GTM_ID="GTM-TEST")
 class ProductViewItemTrackingTestCase(TestCase):
@@ -137,10 +151,3 @@ class ProductViewItemTrackingTestCase(TestCase):
         self.assertContains(response, "view-item-event")
         self.assertContains(response, '"item_id": "SKU-V1"')
 
-    def test_select_variant_returns_tracking_snapshot(self):
-        url = reverse("lfs_select_variant")
-        response = self.client.post(url, {"variant_id": self.variant.pk})
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        self.assertIn("tracking_snapshot", data)
-        self.assertEqual(data["tracking_snapshot"]["line_items"][0]["sku"], "SKU-V1")

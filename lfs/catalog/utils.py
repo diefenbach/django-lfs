@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 
 from django.db import connection
 from django.core.exceptions import FieldError
@@ -38,6 +39,9 @@ def product_to_tracking_snapshot(request, product) -> dict | None:
         return None
 
     price = product.get_price_gross(request)
+    if isinstance(price, Decimal):
+        price = float(price)
+
     line_items = [
         {
             "sku": product.get_sku(),
