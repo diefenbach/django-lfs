@@ -10,6 +10,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ngettext
 
+import lfs.catalog.utils
 from lfs.catalog.models import Product
 from lfs.core.utils import lfs_pagination
 
@@ -72,6 +73,7 @@ def search(request, template_name="lfs/search/search_results.html"):
             {
                 "q": q,
                 "total": 0,
+                "item_list_tracking": None,
             },
         )
 
@@ -108,6 +110,17 @@ def search(request, template_name="lfs/search/search_results.html"):
         "count": amount_of_products
     }
 
+    tracking_products = [
+        lfs.catalog.utils.resolve_product_for_search_list(request, product)
+        for product in current_page.object_list
+    ]
+    item_list_tracking = lfs.catalog.utils.item_list_to_tracking_snapshot(
+        request,
+        tracking_products,
+        list_id="search",
+        list_name=q,
+    )
+
     return render(
         request,
         template_name,
@@ -116,5 +129,6 @@ def search(request, template_name="lfs/search/search_results.html"):
             "pagination": pagination_data,
             "q": q,
             "total": products.count(),
+            "item_list_tracking": item_list_tracking,
         },
     )

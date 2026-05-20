@@ -57,6 +57,62 @@ def product_to_tracking_snapshot(request, product) -> dict | None:
     }
 
 
+def resolve_product_for_category_list(request, product):
+    """
+    Return the product as shown in a category product list (matches category_products).
+    """
+    if product is None:
+        return None
+    if product.is_product_with_variants():
+        variant = product.get_variant_for_category(request)
+        if variant:
+            return variant
+    return product
+
+
+def resolve_product_for_search_list(request, product):
+    """
+    Return the product as tracked for search results (default variant when applicable).
+    """
+    return get_display_product(request, product)
+
+
+def item_list_to_tracking_snapshot(
+    request, products, *, list_id: str, list_name: str
+) -> dict | None:
+    """
+    Build a tracker-neutral item list snapshot for analytics adapters (e.g. lfs_gtm).
+    """
+    line_items = []
+    total = 0.0
+    for product in products:
+        if product is None:
+            continue
+        price = product.get_price_gross(request)
+        if isinstance(price, Decimal):
+            price = float(price)
+        total += price
+        line_items.append(
+            {
+                "sku": product.get_sku(),
+                "name": product.get_name(),
+                "price": price,
+                "quantity": 1,
+            }
+        )
+
+    if not line_items:
+        return None
+
+    return {
+        "list_id": list_id,
+        "list_name": list_name,
+        "currency": "EUR",
+        "value": total,
+        "line_items": line_items,
+    }
+
+
 # TODO: Add unit test
 def get_current_top_category(request, obj):
     """

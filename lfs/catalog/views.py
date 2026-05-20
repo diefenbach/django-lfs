@@ -420,6 +420,7 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
             "top_category": lfs.catalog.utils.get_current_top_category(request, category),
             "pagination": (request.POST if request.method == "POST" else request.GET).get("start", 0),
             "pagination_data": pagination_data,
+            "item_list_tracking": inline_dict.get("item_list_tracking"),
         },
     )
 
@@ -552,11 +553,11 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     # Calculate products
     row = []
     products = []
+    tracking_products = []
     for i, product in enumerate(current_page.object_list):
-        if product.is_product_with_variants():
-            default_variant = product.get_variant_for_category(request)
-            if default_variant:
-                product = default_variant
+        display_product = lfs.catalog.utils.resolve_product_for_category_list(request, product)
+        tracking_products.append(display_product)
+        product = display_product
 
         image = None
         product_image = product.get_image()
@@ -601,7 +602,16 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
 
     result_html = render_to_string(template_name, request=request, context=template_data)
 
-    result = {"pagination_data": pagination_data, "html": result_html}
+    result = {
+        "pagination_data": pagination_data,
+        "html": result_html,
+        "item_list_tracking": lfs.catalog.utils.item_list_to_tracking_snapshot(
+            request,
+            tracking_products,
+            list_id=category.slug,
+            list_name=category.name,
+        ),
+    }
 
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)
