@@ -40,6 +40,8 @@ def addresses(request, template_name="lfs/checkout/new_addresses.html"):
     else:
         initial_address["email"] = request.user.email
 
+    begin_checkout_tracking = None
+
     if request.method == "POST":
         iam = AddressManagement(customer, invoice_address, "invoice", request.POST, initial=initial_address)
 
@@ -80,6 +82,12 @@ def addresses(request, template_name="lfs/checkout/new_addresses.html"):
         iam = AddressManagement(customer, invoice_address, "invoice", initial=initial_address)
         sam = AddressManagement(customer, shipping_address, "shipping", initial=initial_address)
 
+        begin_checkout_tracking = request.session.pop("begin_checkout_tracking", None)
+        if begin_checkout_tracking is None:
+            begin_checkout_tracking = lfs.cart.utils.cart_items_to_tracking_snapshot(
+                request, list(cart.get_items())
+            )
+
     return render(
         request,
         template_name,
@@ -87,6 +95,7 @@ def addresses(request, template_name="lfs/checkout/new_addresses.html"):
             "invoice_address_inline": iam.render(request),
             "shipping_address_inline": sam.render(request),
             "no_shipping": request.POST.get("no_shipping", "") == "on",
+            "begin_checkout_tracking": begin_checkout_tracking,
         },
     )
 

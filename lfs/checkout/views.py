@@ -110,6 +110,21 @@ def login(request, template_name="lfs/checkout/login.html"):
     )
 
 
+def store_begin_checkout_tracking(request):
+    """
+    Store a tracker-neutral cart snapshot for begin_checkout on the addresses step.
+    """
+    cart = cart_utils.get_cart(request)
+    if cart is None:
+        return
+    cart_items = list(cart.get_items())
+    if not cart_items:
+        return
+    snapshot = cart_utils.cart_items_to_tracking_snapshot(request, cart_items)
+    if snapshot:
+        request.session["begin_checkout_tracking"] = snapshot
+
+
 def checkout_dispatcher(request):
     """Dispatcher to display the correct checkout form"""
     shop = lfs.core.utils.get_default_shop(request)
@@ -117,6 +132,8 @@ def checkout_dispatcher(request):
 
     if cart is None or not cart.get_items():
         return empty_page_checkout(request)
+
+    store_begin_checkout_tracking(request)
 
     if request.user.is_authenticated or shop.checkout_type == CHECKOUT_TYPE_ANON:
         return HttpResponseRedirect(reverse("lfs_checkout_addresses"))
