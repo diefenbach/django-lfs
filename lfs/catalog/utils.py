@@ -15,6 +15,44 @@ from lfs.manufacturer.models import Manufacturer
 logger = logging.getLogger(__name__)
 
 
+def get_display_product(request, product):
+    """
+    Return the product actually shown on the product detail page.
+
+    Matches product_inline: parent with variants resolves to the default variant.
+    """
+    if product is None:
+        return None
+    if product.is_product_with_variants():
+        default_variant = product.get_default_variant()
+        if default_variant:
+            return default_variant
+    return product
+
+
+def product_to_tracking_snapshot(request, product) -> dict | None:
+    """
+    Build a tracker-neutral single-product snapshot for analytics adapters (e.g. lfs_gtm).
+    """
+    if product is None:
+        return None
+
+    price = product.get_price_gross(request)
+    line_items = [
+        {
+            "sku": product.get_sku(),
+            "name": product.get_name(),
+            "price": price,
+            "quantity": 1,
+        }
+    ]
+    return {
+        "currency": "EUR",
+        "value": price,
+        "line_items": line_items,
+    }
+
+
 # TODO: Add unit test
 def get_current_top_category(request, obj):
     """

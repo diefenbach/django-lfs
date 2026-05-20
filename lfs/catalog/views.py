@@ -52,6 +52,7 @@ def select_variant(request):
         {
             "product": product_inline(request, variant),
             "message": msg,
+            "tracking_snapshot": lfs.catalog.utils.product_to_tracking_snapshot(request, variant),
         },
         cls=LazyEncoder,
     )
@@ -177,6 +178,7 @@ def select_variant_from_properties(request):
         {
             "product": product_inline(request, variant),
             "message": msg,
+            "tracking_snapshot": lfs.catalog.utils.product_to_tracking_snapshot(request, variant),
         },
         cls=LazyEncoder,
     )
@@ -630,6 +632,8 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     else:
         variant_canonical = product
 
+    display_product = lfs.catalog.utils.get_display_product(request, product)
+
     result = render(
         request,
         template_name,
@@ -637,6 +641,7 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
             "product_inline": product_inline(request, product),
             "variant_canonical": variant_canonical,
             "product": product,
+            "product_tracking": lfs.catalog.utils.product_to_tracking_snapshot(request, display_product),
         },
     )
 
@@ -663,10 +668,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     if result is not None:
         return result
 
-    # Switching to default variant
-    if product.is_product_with_variants():
-        temp = product.get_default_variant()
-        product = temp if temp else product
+    product = lfs.catalog.utils.get_display_product(request, product)
 
     properties = []
     variants = []
