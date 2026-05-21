@@ -17,12 +17,10 @@ import lfs.catalog.utils
 import lfs.core.utils
 import lfs.utils.misc
 from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id
-from lfs.cart.views import add_to_cart
-from lfs.catalog.models import Category, Property
+from lfs.catalog.models import Category
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
-from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
@@ -746,6 +744,8 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     # attachments
     attachments = product.get_attachments()
 
+    average_rating, review_count = product.get_average_rating()
+
     result = render_to_string(
         template_name,
         request=request,
@@ -762,6 +762,8 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
             "unit": product.get_unit(),
             "display_variants_list": display_variants_list,
             "for_sale": product.get_for_sale(),
+            "average_rating": average_rating,
+            "review_count": review_count,
         },
     )
 

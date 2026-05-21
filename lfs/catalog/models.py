@@ -65,6 +65,8 @@ from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
 
+from reviews import utils as reviews_utils
+
 
 PRODUCT_TEMPLATES_CHOICES = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
 CATEGORY_TEMPLATES_CHOICES = [(ord, d["name"]) for (ord, d) in enumerate(CATEGORY_TEMPLATES)]
@@ -834,6 +836,12 @@ class Product(models.Model):
         Returns the content type of the product as lower string.
         """
         return "product"
+
+    def get_average_rating(self):
+        """
+        Returns the average rating of the product.
+        """
+        return reviews_utils.get_average_for_instance(self)
 
     def decrease_stock_amount(self, amount):
         """
