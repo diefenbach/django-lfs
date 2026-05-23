@@ -16,6 +16,8 @@ from django.views.decorators.csrf import csrf_exempt
 import lfs.catalog.utils
 import lfs.core.utils
 import lfs.utils.misc
+
+from lfs.cart.views import add_to_cart
 from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id
 from lfs.catalog.models import Category
 from lfs.catalog.models import File
@@ -27,6 +29,7 @@ from lfs.catalog.settings import SELECT
 from lfs.core.utils import LazyEncoder, atof, lfs_pagination
 from lfs.core.templatetags import lfs_tags
 from lfs.manufacturer.models import Manufacturer
+from lfs.shipping.utils import get_product_delivery_time
 
 
 def file_download(request, language=None, file_id=None):
@@ -745,6 +748,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     attachments = product.get_attachments()
 
     average_rating, review_count = product.get_average_rating()
+    delivery_time = get_product_delivery_time(request, product).as_days()
 
     result = render_to_string(
         template_name,
@@ -762,8 +766,10 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
             "unit": product.get_unit(),
             "display_variants_list": display_variants_list,
             "for_sale": product.get_for_sale(),
+            # for schema.org
             "average_rating": average_rating,
             "review_count": review_count,
+            "delivery_time": delivery_time,
         },
     )
 
