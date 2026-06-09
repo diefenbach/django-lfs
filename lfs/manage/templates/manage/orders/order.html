@@ -220,6 +220,22 @@
                                             <td class="fw-bold">{% trans 'Lieferzeit' %}:</td>
                                             <td>{{ current_order.delivery_time.round.as_string }}</td>
                                         </tr>
+                                        <tr>
+                                            <td class="fw-bold">{% trans 'Gesamtgewicht' %}:</td>
+                                            <td>{{ current_order.order_extensions.total_weight }} kg</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                Europallettentausch möglich:
+                                            </th>
+                                            <td>
+                                                {% if current_order.order_extensions.europallet_change %}
+                                                    Ja
+                                                {% else %}
+                                                    Nein
+                                                {% endif %}
+                                            </td>
+                                        </tr>                                    
                                     </table>
                                 </div>
                             </div>
