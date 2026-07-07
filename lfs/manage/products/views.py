@@ -149,7 +149,9 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
         """Saves the product and redirects."""
         product = form.save()
         messages.success(self.request, _("Product has been added."))
-        return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": product.id}))
+        response = HttpResponse()
+        response["HX-Redirect"] = reverse("lfs_manage_product_data", kwargs={"id": product.id})
+        return response
 
 
 class ProductTabMixin:

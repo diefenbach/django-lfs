@@ -6,7 +6,10 @@
 
 <div class="row">
     <div class="col-12">
-        <form method="post" action="{% url 'lfs_manage_add_product' %}">
+        <form method="post"
+              hx-post="{% url 'lfs_manage_add_product' %}"
+              hx-target="#modal-body-lg"
+              hx-swap="innerHTML">
             {% csrf_token %}
             {{ form|crispy }}
             <div class="mt-3">
