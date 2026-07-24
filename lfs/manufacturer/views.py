@@ -78,7 +78,7 @@ def manufacturer_products(request, slug, start=1, template_name="lfs/manufacture
     except AttributeError:
         default_sorting = "price"
 
-    sorting = request.session.get("sorting", default_sorting)
+    sorting = request.session.get("sorting", "name")
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 

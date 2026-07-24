@@ -12,10 +12,30 @@ function initializeCheckboxSelectAllManagers() {
     new CheckboxSelectAllManager('.select-all-assigned-related', '.select-assigned-related');
 }
 
+function scrollActiveProductIntoView() {
+    const active = document.getElementById('active-product');
+    if (!active) return;
+
+    let container = active.parentElement;
+    while (container) {
+        const overflowY = getComputedStyle(container).overflowY;
+        if (overflowY === 'auto' || overflowY === 'scroll') break;
+        container = container.parentElement;
+    }
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    container.scrollTop += (activeRect.top - containerRect.top)
+        - (container.clientHeight / 2) + (activeRect.height / 2);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initializeCheckboxSelectAllManagers();
+    scrollActiveProductIntoView();
 });
 
 document.addEventListener('htmx:afterSwap', () => {
     initializeCheckboxSelectAllManagers();
+    scrollActiveProductIntoView();
 });

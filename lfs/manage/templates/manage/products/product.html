@@ -28,7 +28,7 @@
                     <div id="products-list" class="list-group" hx-swap-oob="true">
                         {% for p in products %}
                             <div class="list-group-item p-0">
-                                <div class="d-flex justify-content-between align-items-center p-3 {% if p.id == product.id %}bg-primary text-white{% endif %}">
+                                <div class="d-flex justify-content-between align-items-center p-3 {% if p.id == product.id %}bg-primary text-white{% endif %}"{% if p.id == product.id %} id="active-product"{% endif %}>
                                     <a class="d-flex align-items-center flex-grow-1 text-decoration-none {% if p.id == product.id %}text-white{% else %}text-dark{% endif %}"
                                        href="{% url 'lfs_manage_product_data' p.id %}?q={{ search_query }}">
                                         <i class="bi {% if p.is_standard %}bi-box{% elif p.is_product_with_variants %}bi-collection{% elif p.sub_type == '3' %}bi-gear{% else %}bi-box{% endif %} me-2"></i>
@@ -51,7 +51,7 @@
                                 {% if p.is_product_with_variants and p.variants.count > 0 %}
                                     <div class="collapse{% for variant in p.variants.all %}{% if variant.id == product.id %} show{% endif %}{% endfor %}" id="variants-{{ p.id }}">
                                         {% for variant in p.variants.all %}
-                                            <a class="list-group-item list-group-item-action d-flex align-items-center ps-4 text-muted small border-0 {% if variant.id == product.id %}bg-primary text-white{% endif %}"
+                                            <a class="list-group-item list-group-item-action d-flex align-items-center ps-4 text-muted small border-0 {% if variant.id == product.id %}bg-primary text-white{% endif %}"{% if variant.id == product.id %} id="active-product"{% endif %}
                                                href="{% url 'lfs_manage_product_data' variant.id %}?q={{ search_query }}">
                                                 <i class="bi bi-box-seam me-2"></i>
                                                 {{ variant.get_name }}
