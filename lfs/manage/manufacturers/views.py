@@ -195,7 +195,7 @@ class ManufacturerProductsView(PermissionRequiredMixin, ManufacturerTabMixin, Te
         manufacturer = self.get_manufacturer()
 
         # Get assigned products
-        manufacturer_products = Product.objects.filter(manufacturer=manufacturer).select_related("parent")
+        manufacturer_products = Product.objects.filter(manufacturer=manufacturer).order_by("name")
 
         # Handle filters
         r = self.request.POST if self.request.method == "POST" else self.request.GET
@@ -232,7 +232,8 @@ class ManufacturerProductsView(PermissionRequiredMixin, ManufacturerTabMixin, Te
                 filters &= Q(categories__in=categories)
 
         # Get available products (excluding already assigned)
-        products = Product.objects.select_related("parent").filter(filters)
+        products = Product.objects.filter(filters, parent=None).exclude(name="").order_by("name")
+
         paginator = Paginator(products.exclude(pk__in=manufacturer_products), 25)
 
         try:
