@@ -198,6 +198,13 @@ class ProductTabMixin:
                 ("portlets", reverse("lfs_manage_product_portlets", args=[product.pk]) + query_param),
             ]
         )
+
+        # Optional add-on: samples tab (provided by lfs_samples)
+        from django.apps import apps
+
+        if apps.is_installed("lfs_samples"):
+            tabs.append(("samples", reverse("lfs_manage_product_samples", args=[product.pk]) + query_param))
+
         return tabs
 
     def _get_products_queryset(self):
