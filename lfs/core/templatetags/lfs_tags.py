@@ -166,7 +166,7 @@ def breadcrumbs(context, obj, current_page=""):
         cache_key = "%s-category-breadcrumbs-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, obj.slug)
         objects = cache.get(cache_key)
         if objects is not None:
-            return objects
+            return {**objects, "request": context.get("request")}
         objects = [current_page] if current_page else []
         while obj is not None:
             objects.insert(
@@ -240,6 +240,7 @@ def breadcrumbs(context, obj, current_page=""):
             "objects": ({"name": obj},),
         }
 
+    result["request"] = context.get("request")
     return result
 
 
