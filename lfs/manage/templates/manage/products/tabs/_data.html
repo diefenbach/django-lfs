@@ -160,7 +160,23 @@
                     </div>
                 </div>
             </div>
-            
+            {% if not product.is_variant %}
+                <div class="field mb-3">
+                    <label for="{{ form.tax.id_for_label }}" class="form-label">
+                        {{ form.tax.label }}
+                    </label>
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ form.tax }}
+                            {% if form.tax.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.tax.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             <div class="field mb-3">
                 <label for="{{ form.price_calculator.id_for_label }}" class="form-label">
                     {{ form.price_calculator.label }}
