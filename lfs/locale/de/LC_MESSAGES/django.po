@@ -4354,11 +4354,11 @@ msgstr "Bezahlung ist markiert"
 
 #: other_translations.py:3
 msgid "Price excludes tax"
-msgstr "Preis brutto"
+msgstr "Preis netto"
 
 #: other_translations.py:4
 msgid "Price includes tax"
-msgstr "Preis netto"
+msgstr "Preis brutto"
 
 #: other_translations.py:5
 msgid "Street"
