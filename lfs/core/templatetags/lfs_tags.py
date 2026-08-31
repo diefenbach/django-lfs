@@ -29,7 +29,7 @@ from lfs.manufacturer.models import Manufacturer
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
 
-logger = logging.getLogger(__name__)    
+logger = logging.getLogger(__name__)
 register = template.Library()
 
 
@@ -675,7 +675,7 @@ def packages(cart_item):
 
     packing_unit, _ = cart_item.product.get_packing_info()
     if packing_unit:
-        return int(math.ceil(cart_item_amount / packing_unit))
+        return int(math.ceil(round(cart_item_amount / packing_unit, 1)))
     return 0
 
 

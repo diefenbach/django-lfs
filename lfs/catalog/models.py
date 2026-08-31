@@ -896,7 +896,7 @@ class Product(models.Model):
     def get_amount_by_packages(self, quantity):
         """ """
         packing_unit, packing_unit_unit = self.get_packing_info()
-        packages = math.ceil(quantity / packing_unit)
+        packages = math.ceil(round(quantity / packing_unit, 1))
         return packages * packing_unit
 
     def get_categories(self, with_parents=False):
