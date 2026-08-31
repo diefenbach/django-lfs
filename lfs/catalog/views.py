@@ -78,8 +78,6 @@ def calculate_packing(
 
     try:
         packs = math.ceil(round(quantity / packing_amount, 1))
-        print(quantity / packing_amount)
-
         real_quantity = packs * packing_amount
         price = product.get_price_gross(request, with_properties=with_properties, amount=quantity)
         price += _calculate_property_price(request)
