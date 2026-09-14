@@ -1857,6 +1857,120 @@ class TestProductRelatedProductsView:
         assert available_page.paginator.count == 1
         assert available_page.object_list[0].name == "Apple Product"
 
+    def test_get_context_data_nests_variants_under_parent(self, rf, product):
+        """Should list PWV at top level and nest variants under available_variants."""
+        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
+
+        parent = Product.objects.create(
+            name="Widget Cord",
+            slug="widget-cord",
+            sku="WC-PARENT",
+            price=20.0,
+            sub_type=PRODUCT_WITH_VARIANTS,
+        )
+        variant = Product.objects.create(
+            name="",
+            slug="widget-cord-v1",
+            sku="",
+            price=20.0,
+            sub_type=PRODUCT_VARIANT,
+            parent=parent,
+            active_name=False,
+            active_sku=False,
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/")
+        request.session = {}
+
+        view = ProductRelatedProductsView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        available_page = view.get_context_data()["available_page"]
+        top_level_ids = [p.id for p in available_page.object_list]
+        assert parent.id in top_level_ids
+        assert variant.id not in top_level_ids
+
+        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
+        assert variant.id in [v.id for v in listed_parent.available_variants]
+
+    def test_get_context_data_filter_includes_variants_by_parent_name(self, rf, product):
+        """Should nest variants under parent when search matches parent name."""
+        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
+
+        parent = Product.objects.create(
+            name="Widget Cord",
+            slug="widget-cord",
+            sku="WC-PARENT",
+            price=20.0,
+            sub_type=PRODUCT_WITH_VARIANTS,
+        )
+        variant = Product.objects.create(
+            name="",
+            slug="widget-cord-v1",
+            sku="",
+            price=20.0,
+            sub_type=PRODUCT_VARIANT,
+            parent=parent,
+            active_name=False,
+            active_sku=False,
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/?filter=Widget")
+        request.session = {}
+
+        view = ProductRelatedProductsView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        available_page = view.get_context_data()["available_page"]
+        top_level_ids = [p.id for p in available_page.object_list]
+        assert parent.id in top_level_ids
+        assert variant.id not in top_level_ids
+
+        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
+        assert variant.id in [v.id for v in listed_parent.available_variants]
+
+    def test_get_context_data_filter_includes_variants_by_parent_sku(self, rf, product):
+        """Should nest variants under parent when search matches parent sku."""
+        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
+
+        parent = Product.objects.create(
+            name="Other Parent",
+            slug="other-parent",
+            sku="SKU-WIDGET-99",
+            price=20.0,
+            sub_type=PRODUCT_WITH_VARIANTS,
+        )
+        variant = Product.objects.create(
+            name="",
+            slug="other-parent-v1",
+            sku="",
+            price=20.0,
+            sub_type=PRODUCT_VARIANT,
+            parent=parent,
+            active_name=False,
+            active_sku=False,
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/?filter=WIDGET-99")
+        request.session = {}
+
+        view = ProductRelatedProductsView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        available_page = view.get_context_data()["available_page"]
+        top_level_ids = [p.id for p in available_page.object_list]
+        assert parent.id in top_level_ids
+        assert variant.id not in top_level_ids
+
+        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
+        assert variant.id in [v.id for v in listed_parent.available_variants]
+
     def test_get_context_data_excludes_current_product(self, rf, product):
         """Should exclude the current product from available products."""
         # Create another product

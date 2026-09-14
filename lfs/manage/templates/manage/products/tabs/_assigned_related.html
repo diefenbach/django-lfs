@@ -47,6 +47,7 @@
                                     </td>
                                     <td>
                                         <a href="{% url 'lfs_manage_product_data' rp.id %}" class="text-decoration-none">
+                                            <i class="bi {% if rp.is_variant %}bi-box-seam{% elif rp.is_standard %}bi-box{% elif rp.is_product_with_variants %}bi-collection{% elif rp.sub_type == '3' %}bi-gear{% else %}bi-box{% endif %} me-2"></i>
                                             {{ rp.get_name }}
                                         </a>
                                     </td>

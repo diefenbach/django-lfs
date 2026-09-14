@@ -47,6 +47,7 @@
                                     </td>
                                     <td>
                                         <a href="{% url 'lfs_manage_product_data' p.id %}" class="text-decoration-none">
+                                            <i class="bi {% if p.is_variant %}bi-box-seam{% elif p.is_standard %}bi-box{% elif p.is_product_with_variants %}bi-collection{% elif p.sub_type == '3' %}bi-gear{% else %}bi-box{% endif %} me-2"></i>
                                             {{ p.get_name }}
                                         </a>
                                     </td>
@@ -61,6 +62,33 @@
                                         {% endif %}
                                     </td>
                                 </tr>
+                                {% if p.is_product_with_variants %}
+                                    {% for v in p.available_variants %}
+                                        <tr class="text-muted">
+                                            <td>
+                                                <input type="checkbox"
+                                                       name="product-{{ v.id }}"
+                                                       class="form-check-input select-available-related" />
+                                            </td>
+                                            <td class="ps-4">
+                                                <a href="{% url 'lfs_manage_product_data' v.id %}" class="text-decoration-none text-muted">
+                                                    <i class="bi bi-box-seam me-2"></i>
+                                                    {{ v.get_name }}
+                                                </a>
+                                            </td>
+                                            <td class="small text-muted">
+                                                {{ v.get_sku|default:"---" }}
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                {% if v.is_active %}
+                                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                                {% else %}
+                                                    <i class="bi bi-x-circle-fill text-danger"></i>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>

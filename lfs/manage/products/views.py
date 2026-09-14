@@ -1230,7 +1230,7 @@ class ProductRelatedProductsView(PermissionRequiredMixin, ProductTabMixin, Templ
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         from django.core.paginator import Paginator
-        from django.db.models import Q
+        from django.db.models import Prefetch, Q
 
         ctx = super().get_context_data(**kwargs)
         product = self.get_product()
@@ -1254,10 +1254,35 @@ class ProductRelatedProductsView(PermissionRequiredMixin, ProductTabMixin, Templ
 
         filters = Q()
         if filter_q:
-            filters &= Q(name__icontains=filter_q) | Q(sku__icontains=filter_q)
+            matching_parent_ids = (
+                Product.objects.filter(sub_type=PRODUCT_VARIANT)
+                .filter(
+                    Q(name__icontains=filter_q)
+                    | Q(sku__icontains=filter_q)
+                    | Q(parent__name__icontains=filter_q)
+                    | Q(parent__sku__icontains=filter_q)
+                )
+                .values_list("parent_id", flat=True)
+            )
+            filters &= (
+                Q(name__icontains=filter_q) | Q(sku__icontains=filter_q) | Q(pk__in=matching_parent_ids)
+            )
 
         available_qs = (
-            Product.objects.filter(filters).exclude(pk=product.pk).exclude(pk__in=related_ids).order_by("name")
+            Product.objects.filter(filters)
+            .exclude(sub_type=PRODUCT_VARIANT)
+            .exclude(pk=product.pk)
+            .exclude(pk__in=related_ids)
+            .prefetch_related(
+                Prefetch(
+                    "variants",
+                    queryset=Product.objects.exclude(pk__in=related_ids)
+                    .exclude(pk=product.pk)
+                    .order_by("variant_position", "pk"),
+                    to_attr="available_variants",
+                )
+            )
+            .order_by("name")
         )
         paginator = Paginator(available_qs, amount)
         try:
