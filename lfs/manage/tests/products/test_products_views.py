@@ -899,6 +899,72 @@ class TestProductAccessoriesView:
         assert available_page.paginator.count == 1
         assert available_page.object_list[0].name == "Apple Product"
 
+    def test_get_context_data_filter_includes_variants_by_parent_name(self, rf, product):
+        """Should include variants when search matches parent name."""
+        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
+
+        parent = Product.objects.create(
+            name="Widget Cord",
+            slug="widget-cord",
+            sku="WC-PARENT",
+            price=20.0,
+            sub_type=PRODUCT_WITH_VARIANTS,
+        )
+        variant = Product.objects.create(
+            name="",
+            slug="widget-cord-v1",
+            sku="",
+            price=20.0,
+            sub_type=PRODUCT_VARIANT,
+            parent=parent,
+            active_name=False,
+            active_sku=False,
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/?filter=Widget")
+        request.session = {}
+
+        view = ProductAccessoriesView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        available_ids = [p.id for p in view.get_context_data()["available_page"].object_list]
+        assert variant.id in available_ids
+
+    def test_get_context_data_filter_includes_variants_by_parent_sku(self, rf, product):
+        """Should include variants when search matches parent sku."""
+        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
+
+        parent = Product.objects.create(
+            name="Other Parent",
+            slug="other-parent",
+            sku="SKU-WIDGET-99",
+            price=20.0,
+            sub_type=PRODUCT_WITH_VARIANTS,
+        )
+        variant = Product.objects.create(
+            name="",
+            slug="other-parent-v1",
+            sku="",
+            price=20.0,
+            sub_type=PRODUCT_VARIANT,
+            parent=parent,
+            active_name=False,
+            active_sku=False,
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/?filter=WIDGET-99")
+        request.session = {}
+
+        view = ProductAccessoriesView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        available_ids = [p.id for p in view.get_context_data()["available_page"].object_list]
+        assert variant.id in available_ids
+
 
 class TestProductDeleteConfirmView:
     """Test the ProductDeleteConfirmView class-based view."""

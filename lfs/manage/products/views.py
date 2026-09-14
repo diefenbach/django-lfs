@@ -1133,10 +1133,19 @@ class ProductAccessoriesView(PermissionRequiredMixin, ProductTabMixin, TemplateV
 
         filters = Q()
         if filter_q:
-            filters &= Q(name__icontains=filter_q) | Q(sku__icontains=filter_q)
+            filters &= (
+                Q(name__icontains=filter_q)
+                | Q(sku__icontains=filter_q)
+                | Q(sub_type=PRODUCT_VARIANT, parent__name__icontains=filter_q)
+                | Q(sub_type=PRODUCT_VARIANT, parent__sku__icontains=filter_q)
+            )
 
         available_qs = (
-            Product.objects.filter(filters).exclude(pk=product.pk).exclude(pk__in=accessory_ids).order_by("name")
+            Product.objects.filter(filters)
+            .exclude(pk=product.pk)
+            .exclude(pk__in=accessory_ids)
+            .select_related("parent")
+            .order_by("name")
         )
         paginator = Paginator(available_qs, amount)
         try:
