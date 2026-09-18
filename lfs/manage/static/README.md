@@ -5,10 +5,11 @@
 - sass scss/main.scss css/main.css --style compressed --no-source-map --watch
 
 # How to download vendor apps (for now, we'll bundle later)
-- cd src/lfs/lfs/manage
+- cd src/lfs/lfs/manage/static
 - npm run setup
 
 
 # How to update
-npm update
-npm run vendor:update
+- cd src/lfs/lfs/manage/static
+- npm update
+- npm run vendor:update
