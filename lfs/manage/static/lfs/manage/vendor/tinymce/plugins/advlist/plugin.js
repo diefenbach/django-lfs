@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -56,6 +56,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -223,7 +228,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -287,9 +292,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativeIndexOf = Array.prototype.indexOf;
     const rawIndexOf = (ts, t) => nativeIndexOf.call(ts, t);
@@ -394,7 +396,7 @@
         const stylesContainsAliasMap = map(listStyleTypeAliases, (alias) => contains(styles, alias));
         editor.ui.registry.addSplitButton(id, {
             tooltip,
-            chevronTooltip: `${tooltip} menu`,
+            chevronTooltip: tooltip,
             icon: nodeName === "OL" /* ListType.OrderedList */ ? 'ordered-list' : 'unordered-list',
             presets: 'listpreview',
             columns: nodeName === "OL" /* ListType.OrderedList */ ? 3 : 4,
@@ -447,8 +449,9 @@
         addControl(editor, 'bullist', 'Bullet list', 'InsertUnorderedList', "UL" /* ListType.UnorderedList */, getBulletStyles(editor));
     };
 
+    const PLUGIN_CODE = 'advlist';
     var Plugin = () => {
-        global$1.add('advlist', (editor) => {
+        global$1.add(PLUGIN_CODE, (editor) => {
             if (editor.hasPlugin('lists')) {
                 register$1(editor);
                 register(editor);
@@ -458,6 +461,9 @@
                 // eslint-disable-next-line no-console
                 console.error('Please use the Lists plugin together with the List Styles plugin.');
             }
+            return {
+                getMetadata: () => ({ name: 'List Styles', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

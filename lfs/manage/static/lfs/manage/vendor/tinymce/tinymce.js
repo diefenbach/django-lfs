@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -93,13 +93,12 @@
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const getPrototypeOf$2 = Object.getPrototypeOf;
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -201,6 +200,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -368,7 +372,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -432,9 +436,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativeSlice = Array.prototype.slice;
     const nativeIndexOf = Array.prototype.indexOf;
@@ -572,15 +573,17 @@
         }
         return Optional.none();
     };
-    const findLastIndex = (arr, pred) => {
+    const findLastByPredicate = (arr, pred) => {
         for (let i = arr.length - 1; i >= 0; i--) {
             if (pred(arr[i], i)) {
-                return Optional.some(i);
+                return Optional.some({ v: arr[i], i });
             }
         }
         return Optional.none();
     };
-    const flatten = (xs) => {
+    const findLast = (arr, pred) => findLastByPredicate(arr, pred).map((r) => r.v);
+    const findLastIndex = (arr, pred) => findLastByPredicate(arr, pred).map((r) => r.i);
+    const flatten$1 = (xs) => {
         // Note, this is possible because push supports multiple arguments:
         // http://jsperf.com/concat-push/6
         // Note that in the past, concat() would silently work (very slowly) for array-like objects.
@@ -595,7 +598,7 @@
         }
         return r;
     };
-    const bind$3 = (xs, f) => flatten(map$3(xs, f));
+    const bind$3 = (xs, f) => flatten$1(map$3(xs, f));
     const forall = (xs, pred) => {
         for (let i = 0, len = xs.length; i < len; ++i) {
             const x = xs[i];
@@ -624,9 +627,9 @@
         copy.sort(comparator);
         return copy;
     };
-    const get$b = (xs, i) => i >= 0 && i < xs.length ? Optional.some(xs[i]) : Optional.none();
-    const head = (xs) => get$b(xs, 0);
-    const last$2 = (xs) => get$b(xs, xs.length - 1);
+    const get$c = (xs, i) => i >= 0 && i < xs.length ? Optional.some(xs[i]) : Optional.none();
+    const head = (xs) => get$c(xs, 0);
+    const last$2 = (xs) => get$c(xs, xs.length - 1);
     const from = isFunction(Array.from) ? Array.from : (x) => nativeSlice.call(x);
     const findMap = (arr, f) => {
         for (let i = 0; i < arr.length; i++) {
@@ -708,7 +711,7 @@
     const values = (obj) => {
         return mapToArray(obj, identity);
     };
-    const get$a = (obj, key) => {
+    const get$b = (obj, key) => {
         return has$2(obj, key) ? Optional.from(obj[key]) : Optional.none();
     };
     const has$2 = (obj, key) => hasOwnProperty$1.call(obj, key);
@@ -719,7 +722,7 @@
      * Generates a church encoded ADT (https://en.wikipedia.org/wiki/Church_encoding)
      * For syntax and use, look at the test code.
      */
-    const generate$2 = (cases) => {
+    const generate$1 = (cases) => {
         // validation
         if (!isArray$1(cases)) {
             throw new Error('cases must be an array');
@@ -800,7 +803,7 @@
         return adt;
     };
     const Adt = {
-        generate: generate$2
+        generate: generate$1
     };
 
     const Cell = (initial) => {
@@ -945,7 +948,7 @@
      * generate :: String -> String
      */
     let unique = 0;
-    const generate$1 = (prefix) => {
+    const generate = (prefix) => {
         const date = new Date();
         const time = date.getTime();
         const random$1 = Math.floor(random() * 1000000000);
@@ -1019,6 +1022,7 @@
     */
     const lift2 = (oa, ob, f) => oa.isSome() && ob.isSome() ? Optional.some(f(oa.getOrDie(), ob.getOrDie())) : Optional.none();
     const lift3 = (oa, ob, oc, f) => oa.isSome() && ob.isSome() && oc.isSome() ? Optional.some(f(oa.getOrDie(), ob.getOrDie(), oc.getOrDie())) : Optional.none();
+    const flatten = (oot) => oot.bind(identity);
     // This can help with type inference, by specifying the type param on the none case, so the caller doesn't have to.
     const someIf = (b, a) => b ? Optional.some(a) : Optional.none();
 
@@ -1369,7 +1373,7 @@
     const detectBrowser$1 = (browsers, userAgentData) => {
         return findMap(userAgentData.brands, (uaBrand) => {
             const lcBrand = uaBrand.brand.toLowerCase();
-            return find$2(browsers, (browser) => { var _a; return lcBrand === ((_a = browser.brand) === null || _a === void 0 ? void 0 : _a.toLowerCase()); })
+            return find$2(browsers, (browser) => lcBrand === browser.brand?.toLowerCase())
                 .map((info) => ({
                 current: info.name,
                 version: Version.nu(parseInt(uaBrand.version, 10), 0)
@@ -2196,14 +2200,14 @@
     const siblings = (element) => {
         // TODO: Refactor out children so we can just not add self instead of filtering afterwards
         const filterSelf = (elements) => filter$5(elements, (x) => !eq(element, x));
-        return parent(element).map(children$1).map(filterSelf).getOr([]);
+        return parent(element).map(children$2).map(filterSelf).getOr([]);
     };
     const prevSibling = (element) => Optional.from(element.dom.previousSibling).map(SugarElement.fromDom);
     const nextSibling = (element) => Optional.from(element.dom.nextSibling).map(SugarElement.fromDom);
     // This one needs to be reversed, so they're still in DOM order
     const prevSiblings = (element) => reverse(toArray(element, prevSibling));
     const nextSiblings = (element) => toArray(element, nextSibling);
-    const children$1 = (element) => map$3(element.dom.childNodes, SugarElement.fromDom);
+    const children$2 = (element) => map$3(element.dom.childNodes, SugarElement.fromDom);
     const child$1 = (element, index) => {
         const cs = element.dom.childNodes;
         return Optional.from(cs[index]).map(SugarElement.fromDom);
@@ -2401,7 +2405,7 @@
             throw new Error('Attribute value was not simple');
         }
     };
-    const set$4 = (element, key, value) => {
+    const set$5 = (element, key, value) => {
         rawSet(element.dom, key, value);
     };
     const setAll$1 = (element, attrs) => {
@@ -2410,12 +2414,12 @@
             rawSet(dom, k, v);
         });
     };
-    const get$9 = (element, key) => {
+    const get$a = (element, key) => {
         const v = element.dom.getAttribute(key);
         // undefined is the more appropriate value for JS, and this matches JQuery
         return v === null ? undefined : v;
     };
-    const getOpt = (element, key) => Optional.from(get$9(element, key));
+    const getOpt = (element, key) => Optional.from(get$a(element, key));
     const has$1 = (element, key) => {
         const dom = element.dom;
         // return false for non-element nodes, no point in throwing an error
@@ -2440,7 +2444,7 @@
         // than removing every child node manually.
         // The following is (probably) safe for performance as 99.9% of the time the trick works and
         // Traverse.children will return an empty array.
-        each$e(children$1(element), (rogue) => {
+        each$e(children$2(element), (rogue) => {
             remove$8(rogue);
         });
     };
@@ -2451,7 +2455,7 @@
         }
     };
     const unwrap = (wrapper) => {
-        const children = children$1(wrapper);
+        const children = children$2(wrapper);
         if (children.length > 0) {
             after$3(wrapper, children);
         }
@@ -2474,7 +2478,7 @@
     const mutate = (original, tag) => {
         const nu = shallowAs(original, tag);
         after$4(original, nu);
-        const children = children$1(original);
+        const children = children$2(original);
         append(nu, children);
         remove$8(original);
         return nu;
@@ -2484,12 +2488,12 @@
         const doc = scope || document;
         const div = doc.createElement('div');
         div.innerHTML = html;
-        return children$1(SugarElement.fromDom(div));
+        return children$2(SugarElement.fromDom(div));
     };
     const fromDom$1 = (nodes) => map$3(nodes, SugarElement.fromDom);
 
-    const get$8 = (element) => element.dom.innerHTML;
-    const set$3 = (element, content) => {
+    const get$9 = (element) => element.dom.innerHTML;
+    const set$4 = (element, content) => {
         const owner = owner$1(element);
         const docDom = owner.dom;
         // FireFox has *terrible* performance when using innerHTML = x
@@ -2503,7 +2507,7 @@
         const container = SugarElement.fromTag('div');
         const clone = SugarElement.fromDom(element.dom.cloneNode(true));
         append$1(container, clone);
-        return get$8(container);
+        return get$9(container);
     };
 
     // some elements, such as mathml, don't have style attributes
@@ -2523,6 +2527,14 @@
         }
         const doc = dom.ownerDocument;
         return getShadowRoot(SugarElement.fromDom(dom)).fold(() => doc.body.contains(dom), compose1(inBody, getShadowHost));
+    };
+    const body = () => getBody(SugarElement.fromDom(document));
+    const getBody = (doc) => {
+        const b = doc.dom.body;
+        if (b === null || b === undefined) {
+            throw new Error('Body is not available yet');
+        }
+        return SugarElement.fromDom(b);
     };
 
     const internalSet = (dom, property, value) => {
@@ -2550,7 +2562,7 @@
             dom.style.removeProperty(property);
         }
     };
-    const set$2 = (element, property, value) => {
+    const set$3 = (element, property, value) => {
         const dom = element.dom;
         internalSet(dom, property, value);
     };
@@ -2566,7 +2578,7 @@
      *
      * https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
      */
-    const get$7 = (element, property) => {
+    const get$8 = (element, property) => {
         const dom = element.dom;
         /*
          * IE9 and above per
@@ -2665,7 +2677,7 @@
             const r = getOffset(element);
             // zero or null means non-standard or disconnected, fall back to CSS
             if (r <= 0 || r === null) {
-                const css = get$7(element, name);
+                const css = get$8(element, name);
                 // ugh this feels dirty, but it saves cycles
                 return parseFloat(css) || 0;
             }
@@ -2675,7 +2687,7 @@
         // although these calculations only seem relevant for quirks mode, and edge cases TBIO doesn't rely on
         const getOuter = get;
         const aggregate = (element, properties) => foldl(properties, (acc, property) => {
-            const val = get$7(element, property);
+            const val = get$8(element, property);
             const value = val === undefined ? 0 : parseInt(val, 10);
             return isNaN(value) ? acc : acc + value;
         }, 0);
@@ -2699,7 +2711,7 @@
         const dom = element.dom;
         return inBody(element) ? dom.getBoundingClientRect().height : dom.offsetHeight;
     });
-    const get$6 = (element) => api$1.get(element);
+    const get$7 = (element) => api$1.get(element);
 
     const r = (left, top) => {
         const translate = (x, y) => r(left + x, top + y);
@@ -2733,8 +2745,8 @@
         if (body === element.dom) {
             return SugarPosition(body.offsetLeft, body.offsetTop);
         }
-        const scrollTop = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageYOffset, html.scrollTop);
-        const scrollLeft = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageXOffset, html.scrollLeft);
+        const scrollTop = firstDefinedOrZero(win?.pageYOffset, html.scrollTop);
+        const scrollLeft = firstDefinedOrZero(win?.pageXOffset, html.scrollLeft);
         const clientTop = firstDefinedOrZero(html.clientTop, body.clientTop);
         const clientLeft = firstDefinedOrZero(html.clientLeft, body.clientLeft);
         return viewport(element).translate(scrollLeft - clientLeft, scrollTop - clientTop);
@@ -2753,7 +2765,7 @@
     };
 
     // get scroll position (x,y) relative to document _doc (or global if not supplied)
-    const get$5 = (_DOC) => {
+    const get$6 = (_DOC) => {
         const doc = _DOC !== undefined ? _DOC.dom : document;
         // ASSUMPTION: This is for cross-browser support, body works for Safari & EDGE, and when we have an iframe body scroller
         const x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
@@ -2811,25 +2823,25 @@
     };
 
     const api = NodeValue(isText$c, 'text');
-    const get$4 = (element) => api.get(element);
+    const get$5 = (element) => api.get(element);
     const getOption = (element) => api.getOption(element);
-    const set$1 = (element, value) => api.set(element, value);
+    const set$2 = (element, value) => api.set(element, value);
 
     // Methods for handling attributes that contain a list of values <div foo="alpha beta theta">
     const read$4 = (element, attr) => {
-        const value = get$9(element, attr);
+        const value = get$a(element, attr);
         return value === undefined || value === '' ? [] : value.split(' ');
     };
     const add$4 = (element, attr, id) => {
         const old = read$4(element, attr);
         const nu = old.concat([id]);
-        set$4(element, attr, nu.join(' '));
+        set$5(element, attr, nu.join(' '));
         return true;
     };
     const remove$6 = (element, attr, id) => {
         const nu = filter$5(read$4(element, attr), (v) => v !== id);
         if (nu.length > 0) {
-            set$4(element, attr, nu.join(' '));
+            set$5(element, attr, nu.join(' '));
         }
         else {
             remove$9(element, attr);
@@ -2864,7 +2876,7 @@
         }
         return Optional.none();
     };
-    const closest$4 = (scope, predicate, isRoot) => {
+    const closest$5 = (scope, predicate, isRoot) => {
         // This is required to avoid ClosestOrAncestor passing the predicate to itself
         const is = (s, test) => test(s);
         return ClosestOrAncestor(is, ancestor$5, scope, predicate, isRoot);
@@ -2902,18 +2914,18 @@
     const ancestor$4 = (scope, selector, isRoot) => ancestor$5(scope, (e) => is$2(e, selector), isRoot);
     const descendant$1 = (scope, selector) => one(selector, scope);
     // Returns Some(closest ancestor element (sugared)) matching 'selector' up to isRoot, or None() otherwise
-    const closest$3 = (scope, selector, isRoot) => {
+    const closest$4 = (scope, selector, isRoot) => {
         const is = (element, selector) => is$2(element, selector);
         return ClosestOrAncestor(is, ancestor$4, scope, selector, isRoot);
     };
 
     // IE11 Can return undefined for a classList on elements such as math, so we make sure it's not undefined before attempting to use it.
     const supports = (element) => element.dom.classList !== undefined;
-    const get$3 = (element) => read$4(element, 'class');
+    const get$4 = (element) => read$4(element, 'class');
     const add$3 = (element, clazz) => add$4(element, 'class', clazz);
     const remove$5 = (element, clazz) => remove$6(element, 'class', clazz);
     const toggle$2 = (element, clazz) => {
-        if (contains$2(get$3(element), clazz)) {
+        if (contains$2(get$4(element), clazz)) {
             return remove$5(element, clazz);
         }
         else {
@@ -2937,7 +2949,7 @@
         }
     };
     const cleanClass = (element) => {
-        const classList = supports(element) ? element.dom.classList : get$3(element);
+        const classList = supports(element) ? element.dom.classList : get$4(element);
         // classList is a "live list", so this is up to date already
         if (classList.length === 0) {
             // No more classes left, remove the class attribute as well
@@ -2976,27 +2988,32 @@
         });
     };
 
-    const closest$2 = (target) => closest$3(target, '[contenteditable]');
+    const closest$3 = (target) => closest$4(target, '[contenteditable]');
     const isEditable$2 = (element, assumeEditable = false) => {
         if (inBody(element)) {
             return element.dom.isContentEditable;
         }
         else {
             // Find the closest contenteditable element and check if it's editable
-            return closest$2(element).fold(constant(assumeEditable), (editable) => getRaw(editable) === 'true');
+            return closest$3(element).fold(constant(assumeEditable), (editable) => getRaw(editable) === 'true');
         }
     };
     const getRaw = (element) => element.dom.contentEditable;
-    const set = (element, editable) => {
+    const set$1 = (element, editable) => {
         element.dom.contentEditable = editable ? 'true' : 'false';
     };
 
+    const get$3 = (element) => element.dom.textContent;
+    const set = (element, value) => {
+        element.dom.textContent = value;
+    };
+
     const ancestors$1 = (scope, predicate, isRoot) => filter$5(parents$1(scope, isRoot), predicate);
-    const children = (scope, predicate) => filter$5(children$1(scope), predicate);
+    const children$1 = (scope, predicate) => filter$5(children$2(scope), predicate);
     const descendants$1 = (scope, predicate) => {
         let result = [];
         // Recurse.toArray() might help here
-        each$e(children$1(scope), (x) => {
+        each$e(children$2(scope), (x) => {
             if (predicate(x)) {
                 result = result.concat([x]);
             }
@@ -3014,6 +3031,10 @@
     // It may surprise you to learn this is exactly what JQuery does
     // TODO: Avoid all this wrapping and unwrapping
     ancestors$1(scope, (e) => is$2(e, selector), isRoot);
+    const children = (scope, selector) => 
+    // It may surprise you to learn this is exactly what JQuery does
+    // TODO: Avoid all the wrapping and unwrapping
+    children$1(scope, (e) => is$2(e, selector));
     const descendants = (scope, selector) => all(selector, scope);
 
     const ancestor$3 = (scope, predicate, isRoot) => ancestor$5(scope, predicate, isRoot).isSome();
@@ -3023,6 +3044,7 @@
     const ancestor$2 = (element, target) => ancestor$3(element, curry(eq, target));
 
     const ancestor$1 = (scope, selector, isRoot) => ancestor$4(scope, selector, isRoot).isSome();
+    const closest$2 = (scope, selector, isRoot) => closest$4(scope, selector, isRoot).isSome();
 
     const ensureIsRoot = (isRoot) => isFunction(isRoot) ? isRoot : never;
     const ancestor = (scope, transform, isRoot) => {
@@ -3051,7 +3073,7 @@
     // For the purposes of finding cursor positions only allow text nodes with content,
     // but trim removes &nbsp; and that's allowed
     text.trim().length !== 0 || text.indexOf(nbsp) > -1).isSome();
-    const isContentEditableFalse$b = (elem) => isHTMLElement$1(elem) && (get$9(elem, 'contenteditable') === 'false');
+    const isContentEditableFalse$b = (elem) => isHTMLElement$1(elem) && (get$a(elem, 'contenteditable') === 'false');
     const elementsWithCursorPosition = ['img', 'br'];
     const isCursorPosition = (elem) => {
         const hasCursorPosition = isTextNodeWithCursorPosition(elem);
@@ -3122,21 +3144,18 @@
         range
     };
 
-    const caretPositionFromPoint = (doc, x, y) => {
-        var _a;
-        return Optional.from((_a = doc.caretPositionFromPoint) === null || _a === void 0 ? void 0 : _a.call(doc, x, y))
-            .bind((pos) => {
-            // It turns out that Firefox can return null for pos.offsetNode
-            if (pos.offsetNode === null) {
-                return Optional.none();
-            }
-            const r = doc.createRange();
-            r.setStart(pos.offsetNode, pos.offset);
-            r.collapse();
-            return Optional.some(r);
-        });
-    };
-    const caretRangeFromPoint = (doc, x, y) => { var _a; return Optional.from((_a = doc.caretRangeFromPoint) === null || _a === void 0 ? void 0 : _a.call(doc, x, y)); };
+    const caretPositionFromPoint = (doc, x, y) => Optional.from(doc.caretPositionFromPoint?.(x, y))
+        .bind((pos) => {
+        // It turns out that Firefox can return null for pos.offsetNode
+        if (pos.offsetNode === null) {
+            return Optional.none();
+        }
+        const r = doc.createRange();
+        r.setStart(pos.offsetNode, pos.offset);
+        r.collapse();
+        return Optional.some(r);
+    });
+    const caretRangeFromPoint = (doc, x, y) => Optional.from(doc.caretRangeFromPoint?.(x, y));
     const availableSearch = (doc, x, y) => {
         if (doc.caretPositionFromPoint) {
             return caretPositionFromPoint(doc, x, y); // defined standard, firefox only
@@ -3200,6 +3219,20 @@
     };
     const getAtPoint = (win, x, y) => fromPoint$1(win, x, y);
 
+    const getImageSize = (url) => new Promise((resolve, reject) => {
+        const img = document.createElement('img');
+        img.addEventListener('load', () => {
+            resolve({
+                width: img.naturalWidth,
+                height: img.naturalHeight
+            });
+        });
+        img.addEventListener('error', () => {
+            reject(`Failed to get image dimensions for: ${url}`);
+        });
+        img.src = url;
+    });
+
     const get$2 = (_win) => {
         const win = _win === undefined ? window : _win;
         if (detect$1().browser.isFirefox()) {
@@ -3221,7 +3254,7 @@
     const getBounds = (_win) => {
         const win = _win === undefined ? window : _win;
         const doc = win.document;
-        const scroll = get$5(SugarElement.fromDom(doc));
+        const scroll = get$6(SugarElement.fromDom(doc));
         return get$2(win).fold(() => {
             const html = win.document.documentElement;
             // Don't use window.innerWidth/innerHeight here, as we don't want to include scrollbars
@@ -3247,6 +3280,8 @@
      * } while (walker.next());
      */
     class DomTreeWalker {
+        rootNode;
+        node;
         constructor(startNode, rootNode) {
             this.node = startNode;
             this.rootNode = rootNode;
@@ -3464,6 +3499,8 @@
     const isListItem$3 = matchNodeName$1('li');
     const isDetails = matchNodeName$1('details');
     const isSummary$1 = matchNodeName$1('summary');
+    const ucVideoNodeName = 'uc-video';
+    const isUcVideo = matchNodeName$1(ucVideoNodeName);
 
     const defaultOptionValues = {
         skipBogus: true,
@@ -3609,11 +3646,10 @@
         return filter$5(scope.querySelectorAll(transparentSelector), (transparent) => updateTransparent(blocksSelector, transparent));
     };
     const trimEdge = (schema, el, leftSide) => {
-        var _a;
         const childPropertyName = leftSide ? 'lastChild' : 'firstChild';
         for (let child = el[childPropertyName]; child; child = child[childPropertyName]) {
             if (isEmptyNode(schema, child, { checkRootAsContent: true })) {
-                (_a = child.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(child);
+                child.parentNode?.removeChild(child);
                 return;
             }
         }
@@ -3652,7 +3688,7 @@
         const isRoot = (el) => eq(el, rootNode);
         each$e(fromDom$1(transparentBlocks), (transparentBlock) => {
             ancestor$5(transparentBlock, isBlock, isRoot).each((parentBlock) => {
-                const invalidChildren = children(transparentBlock, (el) => isBlock(el) && !schema.isValidChild(name(parentBlock), name(el)));
+                const invalidChildren = children$1(transparentBlock, (el) => isBlock(el) && !schema.isValidChild(name(parentBlock), name(el)));
                 if (invalidChildren.length > 0) {
                     const stateScope = parentElement(parentBlock);
                     each$e(invalidChildren, (child) => {
@@ -3688,7 +3724,7 @@
         const parents = parents$1(SugarElement.fromDom(caretParent), isRoot);
         // Check the element just above below the root so in if caretParent is I in this
         // case <body><p><b><i>|</i></b></p></body> it would use the P as the scope
-        get$b(parents, parents.length - 2).filter(isElement$8).fold(() => updateChildren(schema, root), (scope) => updateChildren(schema, scope.dom));
+        get$c(parents, parents.length - 2).filter(isElement$8).fold(() => updateChildren(schema, root), (scope) => updateChildren(schema, scope.dom));
     };
     const hasBlockAttr = (el) => el.hasAttribute(transparentBlockAttr);
     const isTransparentElementName = (schema, name) => has$2(schema.getTransparentElements(), name);
@@ -3703,7 +3739,7 @@
     // this tries to compensate for that by detecting if that offsets are incorrect and then remove the height
     const getTableCaptionDeltaY = (elm) => {
         if (browser$2.isFirefox() && name(elm) === 'table') {
-            return firstElement(children$1(elm)).filter((elm) => {
+            return firstElement(children$2(elm)).filter((elm) => {
                 return name(elm) === 'caption';
             }).bind((caption) => {
                 return firstElement(nextSiblings(caption)).map((body) => {
@@ -3726,7 +3762,7 @@
         if (elm) {
             // Use getBoundingClientRect if it exists since it's faster than looping offset nodes
             // Fallback to offsetParent calculations if the body isn't static better since it stops at the body root
-            if (rootElm === body && elm.getBoundingClientRect && get$7(SugarElement.fromDom(body), 'position') === 'static') {
+            if (rootElm === body && elm.getBoundingClientRect && get$8(SugarElement.fromDom(body), 'position') === 'static') {
                 const pos = elm.getBoundingClientRect();
                 // Add scroll offsets from documentElement or body since IE with the wrong box model will use d.body and so do WebKit
                 // Also remove the body/documentelement clientTop/clientLeft on IE 6, 7 since they offset the position
@@ -3785,7 +3821,7 @@
             const styleContainer = getStyleContainer(edos);
             descendant$1(styleContainer, '#' + id).each(remove$8);
         };
-        const getOrCreateState = (url) => get$a(loadedStates, url).getOrThunk(() => ({
+        const getOrCreateState = (url) => get$b(loadedStates, url).getOrThunk(() => ({
             id: 'mce-u' + (idCount++),
             passed: [],
             failed: [],
@@ -3847,17 +3883,17 @@
             });
             const crossorigin = getCrossOrigin$1(url, settings);
             if (crossorigin !== undefined) {
-                set$4(linkElem, 'crossOrigin', crossorigin);
+                set$5(linkElem, 'crossOrigin', crossorigin);
             }
             if (settings.referrerPolicy) {
                 // Note: Don't use link.referrerPolicy = ... here as it doesn't work on Safari
-                set$4(linkElem, 'referrerpolicy', settings.referrerPolicy);
+                set$5(linkElem, 'referrerpolicy', settings.referrerPolicy);
             }
             link = linkElem.dom;
             link.onload = passed;
             link.onerror = failed;
             addStyle(linkElem);
-            set$4(linkElem, 'href', urlWithSuffix);
+            set$5(linkElem, 'href', urlWithSuffix);
         });
         /**
          * Loads the specified css string in as a style element with an unique key.
@@ -3908,7 +3944,7 @@
          */
         const unload = (url) => {
             const urlWithSuffix = Tools._addCacheSuffix(url);
-            get$a(loadedStates, urlWithSuffix).each((state) => {
+            get$b(loadedStates, urlWithSuffix).each((state) => {
                 const count = --state.count;
                 if (count === 0) {
                     delete loadedStates[urlWithSuffix];
@@ -3923,7 +3959,7 @@
          * @param {String} key Key of CSS style resource to unload.
          */
         const unloadRawCss = (key) => {
-            get$a(loadedStates, key).each((state) => {
+            get$b(loadedStates, key).each((state) => {
                 const count = --state.count;
                 if (count === 0) {
                     delete loadedStates[key];
@@ -4001,7 +4037,6 @@
     // this function will then trim off empty edges and produce:
     //   <p>text 1</p><b>CHOP</b><p>text 2</p>
     const trimNode = (dom, node, schema, root) => {
-        var _a;
         const rootNode = root || node;
         if (isElement$7(node) && isBookmarkNode$2(node)) {
             return node;
@@ -4014,7 +4049,7 @@
         if (isElement$7(node)) {
             const currentChildren = node.childNodes;
             if (currentChildren.length === 1 && isBookmarkNode$2(currentChildren[0])) {
-                (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(currentChildren[0], node);
+                node.parentNode?.insertBefore(currentChildren[0], node);
             }
         }
         // Remove any empty nodes
@@ -4432,7 +4467,7 @@
         add('title hr noscript br');
         add('base', 'href target');
         add('link', 'href rel media hreflang type sizes hreflang');
-        add('meta', 'name http-equiv content charset');
+        add('meta', 'name http-equiv content charset property'); // Property is an RDFa spec attribute.
         add('style', 'media type scoped');
         add('script', 'src async defer type charset');
         add('body', 'onafterprint onbeforeprint onbeforeunload onblur onerror onfocus ' +
@@ -4485,6 +4520,7 @@
             add('canvas', 'width height', flowContent);
             add('data', 'value', phrasingContent);
             add('video', 'src crossorigin poster preload autoplay mediagroup loop ' +
+                'controlslist disablepictureinpicture disableremoteplayback playsinline ' +
                 'muted controls width height buffered', [flowContent, 'track source'].join(' '));
             add('audio', 'src crossorigin preload autoplay mediagroup loop muted controls ' +
                 'buffered volume', [flowContent, 'track source'].join(' '));
@@ -4759,12 +4795,12 @@
         }
     };
     const Schema = (settings = {}) => {
-        var _a;
         const elements = {};
         const children = {};
         let patternElements = [];
         const customElementsMap = {};
         const specialElements = {};
+        const componentUrls = {};
         // Creates an lookup table map object for the specified option or the default value
         const createLookupTable = (option, defaultValue, extendWith) => {
             const value = settings[option];
@@ -4782,7 +4818,7 @@
                 return makeMap$2(value, /[, ]/, makeMap$2(value.toUpperCase(), /[, ]/));
             }
         };
-        const schemaType = (_a = settings.schema) !== null && _a !== void 0 ? _a : 'html5';
+        const schemaType = settings.schema ?? 'html5';
         const schemaItems = makeSchema(schemaType);
         // Allow all elements and attributes if verify_html is set to false
         if (settings.verify_html === false) {
@@ -4819,7 +4855,7 @@
         const addValidElements = (validElements) => {
             const globalElement = Optional.from(elements['@']);
             const hasPatternsRegExp = /[*?+]/;
-            each$e(parseValidElementsRules(globalElement, validElements !== null && validElements !== void 0 ? validElements : ''), ({ name, element, aliasName }) => {
+            each$e(parseValidElementsRules(globalElement, validElements ?? ''), ({ name, element, aliasName }) => {
                 if (aliasName) {
                     elements[aliasName] = element;
                 }
@@ -4844,14 +4880,13 @@
             addValidElements(validElements);
         };
         const addCustomElement = (name, spec) => {
-            var _a, _b;
             // Flush cached items since we are altering the default maps
             delete mapCache.text_block_elements;
             delete mapCache.block_elements;
             const inline = spec.extends ? !isBlock(spec.extends) : false;
             const cloneName = spec.extends;
             children[name] = cloneName ? children[cloneName] : {};
-            customElementsMap[name] = cloneName !== null && cloneName !== void 0 ? cloneName : name;
+            customElementsMap[name] = cloneName ?? name;
             // Treat all custom elements as being non-empty by default
             nonEmptyElementsMap[name.toUpperCase()] = {};
             nonEmptyElementsMap[name] = {};
@@ -4876,7 +4911,7 @@
                     customRule.attributesOrder.push(name);
                     customRule.attributes[name] = {};
                 };
-                const customRule = (_a = elements[name]) !== null && _a !== void 0 ? _a : {};
+                const customRule = elements[name] ?? {};
                 delete customRule.attributesDefault;
                 delete customRule.attributesForced;
                 delete customRule.attributePatterns;
@@ -4900,7 +4935,7 @@
             }
             // Add custom pad empty rule
             if (isBoolean(spec.padEmpty)) {
-                const customRule = (_b = elements[name]) !== null && _b !== void 0 ? _b : {};
+                const customRule = elements[name] ?? {};
                 customRule.paddEmpty = spec.padEmpty;
                 elements[name] = customRule;
             }
@@ -4938,13 +4973,22 @@
             }
         };
         const addCustomElementsFromString = (customElements) => {
-            each$e(parseCustomElementsRules(customElements !== null && customElements !== void 0 ? customElements : ''), ({ name, cloneName }) => {
+            each$e(parseCustomElementsRules(customElements ?? ''), ({ name, cloneName }) => {
                 addCustomElement(name, { extends: cloneName });
             });
         };
+        const addComponentUrl = (elementName, componentUrl) => {
+            componentUrls[elementName] = componentUrl;
+        };
         const addCustomElements = (customElements) => {
             if (isObject(customElements)) {
-                each$d(customElements, (spec, name) => addCustomElement(name, spec));
+                each$d(customElements, (spec, name) => {
+                    const componentUrl = spec.componentUrl;
+                    if (isString(componentUrl)) {
+                        addComponentUrl(name, componentUrl);
+                    }
+                    addCustomElement(name, spec);
+                });
             }
             else if (isString(customElements)) {
                 addCustomElementsFromString(customElements);
@@ -4952,7 +4996,7 @@
         };
         // Adds valid children to the schema object
         const addValidChildren = (validChildren) => {
-            each$e(parseValidChildrenRules(validChildren !== null && validChildren !== void 0 ? validChildren : ''), ({ operation, name, validChildren }) => {
+            each$e(parseValidChildrenRules(validChildren ?? ''), ({ operation, name, validChildren }) => {
                 const parent = operation === 'replace' ? { '#comment': {} } : children[name];
                 const processNodeName = (name) => {
                     if (operation === 'remove') {
@@ -5300,6 +5344,13 @@
          * @method addValidChildren
          * @param {String} valid_children Valid children elements string to parse
          */
+        /**
+         * Returns an object of all custom elements that have component URLs.
+         *
+         * @method getComponentUrls
+         * @return {Object} Object with where key is the component and the value is the url for that component.
+         */
+        const getComponentUrls = constant(componentUrls);
         setup();
         return {
             type: schemaType,
@@ -5320,6 +5371,7 @@
             getWhitespaceElements,
             getTransparentElements,
             getSpecialElements,
+            getComponentUrls,
             isValidChild,
             isValid,
             isBlock,
@@ -5329,7 +5381,7 @@
             addValidElements,
             setValidElements,
             addCustomElements,
-            addValidChildren
+            addValidChildren,
         };
     };
 
@@ -5570,12 +5622,16 @@
                     let matches;
                     while ((matches = styleRegExp.exec(css))) {
                         styleRegExp.lastIndex = matches.index + matches[0].length;
-                        let name = matches[1].replace(trimRightRegExp, '').toLowerCase();
+                        let name = matches[1].replace(trimRightRegExp, '');
                         let value = matches[2].replace(trimRightRegExp, '');
                         if (name && value) {
                             // Decode escaped sequences like \65 -> e
                             name = decodeHexSequences(name);
                             value = decodeHexSequences(value);
+                            // Custom properties (--*) keep user case; standard names normalize to lowercase
+                            if (!name.startsWith('--')) {
+                                name = name.toLowerCase();
+                            }
                             // Skip properties with double quotes and sequences like \" \' in their names
                             // See 'mXSS Attacks: Attacking well-secured Web-Applications by using innerHTML Mutations'
                             // https://cure53.de/fp170.pdf
@@ -5589,9 +5645,6 @@
                             // Opera will produce 700 instead of bold in their style values
                             if (name === 'font-weight' && value === '700') {
                                 value = 'bold';
-                            }
-                            else if (name === 'color' || name === 'background-color') { // Lowercase colors like RED
-                                value = value.toLowerCase();
                             }
                             // Convert RGB colors to HEX
                             if (getColorFormat(value) === 'rgb') {
@@ -5611,7 +5664,9 @@
                     compress('border', '-style');
                     compress('padding', '');
                     compress('margin', '');
-                    compress2('border', 'border-width', 'border-style', 'border-color');
+                    if (!/(#.* rgb(a?)\(.*)|(rgb(a?)\(.*\) )/.test(styles['border-color'])) {
+                        compress2('border', 'border-width', 'border-style', 'border-color');
+                    }
                     // Remove pointless border, IE produces these
                     if (styles.border === 'medium none') {
                         delete styles.border;
@@ -5686,7 +5741,8 @@
         webkitMovementX: true,
         webkitMovementY: true,
         keyIdentifier: true,
-        mozPressure: true
+        mozPressure: true,
+        mozInputSource: true,
     };
     // Note: We can't rely on `instanceof` here as it won't work if the event was fired from another window.
     // Additionally, the constructor name might be `MouseEvent` or similar so we can't rely on the constructor name.
@@ -5696,7 +5752,7 @@
     // An event needs normalizing if it doesn't have the prevent default function or if it's a native event
     const needsNormalizing = (event) => isNullable(event.preventDefault) || isNativeEvent(event);
     const clone$2 = (originalEvent, data) => {
-        const event = data !== null && data !== void 0 ? data : {};
+        const event = data ?? {};
         // Copy all properties from the original event
         for (const name in originalEvent) {
             // Some properties are deprecated and produces a warning so don't include them
@@ -5722,12 +5778,11 @@
         return event;
     };
     const normalize$3 = (type, originalEvent, fallbackTarget, data) => {
-        var _a;
         const event = clone$2(originalEvent, data);
         event.type = type;
         // Normalize target IE uses srcElement
         if (isNullable(event.target)) {
-            event.target = (_a = event.srcElement) !== null && _a !== void 0 ? _a : fallbackTarget;
+            event.target = event.srcElement ?? fallbackTarget;
         }
         if (needsNormalizing(originalEvent)) {
             // Add preventDefault method
@@ -5842,11 +5897,14 @@
      * This class enables you to bind/unbind native events to elements and normalize it's behavior across browsers.
      */
     class EventUtils {
+        static Event = new EventUtils();
+        // State if the DOMContentLoaded was executed or not
+        domLoaded = false;
+        events = {};
+        expando;
+        hasFocusIn;
+        count = 1;
         constructor() {
-            // State if the DOMContentLoaded was executed or not
-            this.domLoaded = false;
-            this.events = {};
-            this.count = 1;
             this.expando = eventExpandoPrefix + (+new Date()).toString(32);
             this.hasFocusIn = 'onfocusin' in document.documentElement;
             this.count = 1;
@@ -5994,7 +6052,7 @@
                     // IE will fail here since it can't delete properties from window
                     delete target[this.expando];
                 }
-                catch (_a) {
+                catch {
                     // IE will set it to null
                     target[this.expando] = null;
                 }
@@ -6117,7 +6175,6 @@
             }
         }
     }
-    EventUtils.Event = new EventUtils();
 
     /**
      * Utility class for various DOM manipulation and retrieval functions.
@@ -6140,7 +6197,7 @@
             remove$9(elm, name);
         }
         else {
-            set$4(elm, name, value);
+            set$5(elm, name, value);
         }
     };
     // Convert camel cased names back to hyphenated names
@@ -6163,7 +6220,7 @@
         return idx;
     };
     const updateInternalStyleAttr = (styles, elm) => {
-        const rawValue = get$9(elm, 'style');
+        const rawValue = get$a(elm, 'style');
         const value = styles.serialize(styles.parse(rawValue), name(elm));
         legacySetAttribute(elm, internalStyleName, value);
     };
@@ -6181,7 +6238,7 @@
             remove$7($elm, normalizedName);
         }
         else {
-            set$2($elm, normalizedName, convertStyleToString(cssValue, normalizedName));
+            set$3($elm, normalizedName, convertStyleToString(cssValue, normalizedName));
         }
     };
     const setupAttrHooks = (styles, settings, getContext) => {
@@ -6198,7 +6255,7 @@
             },
             get: (elm, name) => {
                 const sugarElm = SugarElement.fromDom(elm);
-                return get$9(sugarElm, 'data-mce-' + name) || get$9(sugarElm, name);
+                return get$a(sugarElm, 'data-mce-' + name) || get$a(sugarElm, name);
             }
         };
         const attrHooks = {
@@ -6217,7 +6274,7 @@
                 },
                 get: (elm) => {
                     const sugarElm = SugarElement.fromDom(elm);
-                    const value = get$9(sugarElm, internalStyleName) || get$9(sugarElm, 'style');
+                    const value = get$a(sugarElm, internalStyleName) || get$a(sugarElm, 'style');
                     return styles.serialize(styles.parse(value), name(sugarElm));
                 }
             }
@@ -6295,7 +6352,7 @@
                     value = hook.get($elm.dom, name);
                 }
                 else {
-                    value = get$9($elm, name);
+                    value = get$a($elm, name);
                 }
             }
             return isNonNullable(value) ? value : defaultVal;
@@ -6309,7 +6366,7 @@
                 if (isElement$7(e)) {
                     const $elm = SugarElement.fromDom(e);
                     const val = value === '' ? null : value;
-                    const originalValue = get$9($elm, name);
+                    const originalValue = get$a($elm, name);
                     const hook = attrHooks[name];
                     if (hook && hook.set) {
                         hook.set($elm.dom, val, name);
@@ -6368,7 +6425,7 @@
                 return undefined;
             }
             if (computed) {
-                return get$7(SugarElement.fromDom($elm), camelCaseToHyphens(name));
+                return get$8(SugarElement.fromDom($elm), camelCaseToHyphens(name));
             }
             else {
                 // Camelcase it, if needed
@@ -6476,12 +6533,11 @@
         const getPrev = (node, selector) => _findSib(node, selector, 'previousSibling');
         const isParentNode = (node) => isFunction(node.querySelectorAll);
         const select = (selector, scope) => {
-            var _a, _b;
-            const elm = (_b = (_a = get(scope)) !== null && _a !== void 0 ? _a : settings.root_element) !== null && _b !== void 0 ? _b : doc;
+            const elm = get(scope) ?? settings.root_element ?? doc;
             return isParentNode(elm) ? from(elm.querySelectorAll(selector)) : [];
         };
         const run = function (elm, func, scope) {
-            const context = scope !== null && scope !== void 0 ? scope : this;
+            const context = scope ?? this;
             if (isArray$1(elm)) {
                 const result = [];
                 each$a(elm, (e, i) => {
@@ -6507,7 +6563,7 @@
         const setHTML = (elm, html) => {
             run(elm, (e) => {
                 const $elm = SugarElement.fromDom(e);
-                set$3($elm, html);
+                set$4($elm, html);
             });
         };
         const add = (parentElm, name, attrs, html, create) => run(parentElm, (parentElm) => {
@@ -6564,7 +6620,7 @@
                 const $node = SugarElement.fromDom(n);
                 if (keepChildren) {
                     // Unwrap but don't keep any empty text nodes
-                    each$e(children$1($node), (child) => {
+                    each$e(children$2($node), (child) => {
                         if (isText$c(child) && child.dom.length === 0) {
                             remove$8(child);
                         }
@@ -6660,7 +6716,7 @@
             run(elm, (e) => remove$7(SugarElement.fromDom(e), 'display'));
         };
         const hide = (elm) => {
-            run(elm, (e) => set$2(SugarElement.fromDom(e), 'display', 'none'));
+            run(elm, (e) => set$3(SugarElement.fromDom(e), 'display', 'none'));
         };
         const isHidden = (elm) => {
             const $elm = _get(elm);
@@ -6686,8 +6742,8 @@
         const insertAfter = (node, reference) => {
             const referenceNode = get(reference);
             return run(node, (node) => {
-                const parent = referenceNode === null || referenceNode === void 0 ? void 0 : referenceNode.parentNode;
-                const nextSibling = referenceNode === null || referenceNode === void 0 ? void 0 : referenceNode.nextSibling;
+                const parent = referenceNode?.parentNode;
+                const nextSibling = referenceNode?.nextSibling;
                 if (parent) {
                     if (nextSibling) {
                         parent.insertBefore(node, nextSibling);
@@ -6700,14 +6756,13 @@
             });
         };
         const replace = (newElm, oldElm, keepChildren) => run(oldElm, (elm) => {
-            var _a;
             const replacee = isArray$1(oldElm) ? newElm.cloneNode(true) : newElm;
             if (keepChildren) {
                 each$a(grep(elm.childNodes), (node) => {
                     replacee.appendChild(node);
                 });
             }
-            (_a = elm.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(replacee, elm);
+            elm.parentNode?.replaceChild(replacee, elm);
             return elm;
         });
         const rename = (elm, name) => {
@@ -7565,18 +7620,20 @@
      *   alert('All scripts are now loaded.');
      * });
      */
-    const DOM$f = DOMUtils.DOM;
+    const DOM$e = DOMUtils.DOM;
     const QUEUED = 0;
     const LOADING = 1;
     const LOADED = 2;
     const FAILED = 3;
     class ScriptLoader {
+        static ScriptLoader = new ScriptLoader();
+        settings;
+        states = {};
+        queue = [];
+        scriptLoadedCallbacks = {};
+        queueLoadedCallbacks = [];
+        loading = false;
         constructor(settings = {}) {
-            this.states = {};
-            this.queue = [];
-            this.scriptLoadedCallbacks = {};
-            this.queueLoadedCallbacks = [];
-            this.loading = false;
             this.settings = settings;
         }
         _setReferrerPolicy(referrerPolicy) {
@@ -7594,7 +7651,8 @@
          */
         loadScript(url) {
             return new Promise((resolve, reject) => {
-                const dom = DOM$f;
+                const dom = DOM$e;
+                const doc = document;
                 let elm;
                 const cleanup = () => {
                     dom.remove(id);
@@ -7616,7 +7674,7 @@
                 };
                 const id = dom.uniqueId();
                 // Create new script element
-                elm = document.createElement('script');
+                elm = doc.createElement('script');
                 elm.id = id;
                 elm.type = 'text/javascript';
                 elm.src = Tools._addCacheSuffix(url);
@@ -7635,7 +7693,7 @@
                 // Add onerror event will get fired on some browsers but not all of them
                 elm.onerror = error;
                 // Add script to document
-                (document.getElementsByTagName('head')[0] || document.body).appendChild(elm);
+                (doc.head || doc.body).appendChild(elm);
             });
         }
         /**
@@ -7714,7 +7772,7 @@
             const self = this;
             const execCallbacks = (name, url) => {
                 // Execute URL callback functions
-                get$a(self.scriptLoadedCallbacks, url).each((callbacks) => {
+                get$b(self.scriptLoadedCallbacks, url).each((callbacks) => {
                     each$e(callbacks, (callback) => callback[name](url));
                 });
                 delete self.scriptLoadedCallbacks[url];
@@ -7783,8 +7841,28 @@
                 return processQueue(uniqueScripts);
             }
         }
+        /**
+         * Returns the attributes that should be added to a script tag when loading the specified URL.
+         *
+         * @method getScriptAttributes
+         * @param {String} url Url to get attributes for.
+         * @return {Object} Object with attributes to add to the script tag.
+         */
+        getScriptAttributes(url) {
+            const attrs = {};
+            if (this.settings.referrerPolicy) {
+                attrs.referrerpolicy = this.settings.referrerPolicy;
+            }
+            const crossOrigin = this.settings.crossOrigin;
+            if (isFunction(crossOrigin)) {
+                const resultCrossOrigin = crossOrigin(url);
+                if (isString(resultCrossOrigin)) {
+                    attrs.crossorigin = resultCrossOrigin;
+                }
+            }
+            return attrs;
+        }
     }
-    ScriptLoader.ScriptLoader = new ScriptLoader();
 
     const isDuplicated = (items, item) => {
         const firstIndex = items.indexOf(item);
@@ -7794,7 +7872,7 @@
     const isTokenised = (str) => isArray$1(str) && str.length > 1;
     const data = {};
     const currentCode = Cell('en');
-    const getLanguageData = () => get$a(data, currentCode.get());
+    const getLanguageData = () => get$b(data, currentCode.get());
     const getData$1 = () => map$2(data, (value) => ({ ...value }));
     /**
      * Sets the current language code.
@@ -7874,7 +7952,7 @@
             const textStr = toString(text);
             return has$2(langData, textStr)
                 ? toString(langData[textStr])
-                : get$a(langData, textStr.toLowerCase()).map(toString).getOr(textStr);
+                : get$b(langData, textStr.toLowerCase()).map(toString).getOr(textStr);
         };
         const removeContext = (str) => str.replace(/{context:\w+}$/, '');
         const replaceWithEllipsisChar = (text) => text.replaceAll('...', ellipsis);
@@ -7902,7 +7980,7 @@
      * @return {Boolean} True if the current language pack is rtl.
      */
     const isRtl$1 = () => getLanguageData()
-        .bind((items) => get$a(items, '_dir'))
+        .bind((items) => get$b(items, '_dir'))
         .exists((dir) => dir === 'rtl');
     /**
      * Returns true/false if specified language pack exists.
@@ -8102,7 +8180,7 @@
         const root = SugarElement.fromDom(editor.getBody());
         const selector = annotationName.fold(() => '.' + annotation(), (an) => `[${dataAnnotation()}="${an}"]`);
         const newStart = child$1(start, rng.startOffset).getOr(start);
-        const closest = closest$3(newStart, selector, isRoot$1(root));
+        const closest = closest$4(newStart, selector, isRoot$1(root));
         return closest.bind((c) => getOpt(c, `${dataAnnotationId()}`).bind((uid) => getOpt(c, `${dataAnnotation()}`).map((name) => {
             const elements = findMarkers(editor, uid);
             return {
@@ -8125,8 +8203,8 @@
         const directory = {};
         each$e(markers, (m) => {
             if (!isBogusElement(m, body)) {
-                const uid = get$9(m, dataAnnotationId());
-                const nodesAlready = get$a(directory, uid).getOr([]);
+                const uid = get$a(m, dataAnnotationId());
+                const nodesAlready = get$b(directory, uid).getOr([]);
                 directory[uid] = nodesAlready.concat([m]);
             }
         });
@@ -8147,7 +8225,7 @@
         };
         const updateCallbacks = (name, f) => {
             const callbackMap = changeCallbacks.get();
-            const data = get$a(callbackMap, name).getOrThunk(initData);
+            const data = get$b(callbackMap, name).getOrThunk(initData);
             const outputData = f(data);
             callbackMap[name] = outputData;
             changeCallbacks.set(callbackMap);
@@ -8168,7 +8246,7 @@
         const toggleActiveAttr = (uid, state) => {
             each$e(findMarkers(editor, uid), (elem) => {
                 if (state) {
-                    set$4(elem, dataAnnotationActive(), 'true');
+                    set$5(elem, dataAnnotationActive(), 'true');
                 }
                 else {
                     remove$9(elem, dataAnnotationActive());
@@ -8225,14 +8303,13 @@
         const dataAnnotation$1 = dataAnnotation();
         const identifyParserNode = (node) => Optional.from(node.attr(dataAnnotation$1)).bind(registry.lookup);
         const removeDirectAnnotation = (node) => {
-            var _a, _b;
             node.attr(dataAnnotationId(), null);
             node.attr(dataAnnotation(), null);
             node.attr(dataAnnotationActive(), null);
             const customAttrNames = Optional.from(node.attr(dataAnnotationAttributes())).map((names) => names.split(',')).getOr([]);
             const customClasses = Optional.from(node.attr(dataAnnotationClasses())).map((names) => names.split(',')).getOr([]);
             each$e(customAttrNames, (name) => node.attr(name, null));
-            const classList = (_b = (_a = node.attr('class')) === null || _a === void 0 ? void 0 : _a.split(' ')) !== null && _b !== void 0 ? _b : [];
+            const classList = node.attr('class')?.split(' ') ?? [];
             const newClassList = difference(classList, [annotation()].concat(customClasses));
             node.attr('class', newClassList.length > 0 ? newClassList.join(' ') : null);
             node.attr(dataAnnotationClasses(), null);
@@ -8263,7 +8340,7 @@
                 settings
             };
         };
-        const lookup = (name) => get$a(annotations, name).map((a) => a.settings);
+        const lookup = (name) => get$b(annotations, name).map((a) => a.settings);
         const getNames = () => keys(annotations);
         return {
             register,
@@ -8334,7 +8411,7 @@
          * @return {Object} An object containing the matched text node and offset. If no match is found, null will be returned.
          */
         const backwards = (node, offset, process, root) => {
-            const walker = TextWalker(node, root !== null && root !== void 0 ? root : dom.getRoot(), isBlockBoundary);
+            const walker = TextWalker(node, root ?? dom.getRoot(), isBlockBoundary);
             return walk(node, offset, () => walker.prev().map((prev) => ({ container: prev, offset: prev.length })), process).getOrNull();
         };
         /**
@@ -8348,7 +8425,7 @@
          * @return {Object} An object containing the matched text node and offset. If no match is found, null will be returned.
          */
         const forwards = (node, offset, process, root) => {
-            const walker = TextWalker(node, root !== null && root !== void 0 ? root : dom.getRoot(), isBlockBoundary);
+            const walker = TextWalker(node, root ?? dom.getRoot(), isBlockBoundary);
             return walk(node, offset, () => walker.next().map((next) => ({ container: next, offset: 0 })), process).getOrNull();
         };
         return {
@@ -8377,6 +8454,9 @@
     // WARNING: don't add anything to this file, the intention is to move these checks into the Schema
     const isTable$1 = (node) => name(node) === 'table';
     const isBr$6 = (node) => isElement$8(node) && name(node) === 'br';
+    const isScript = (node) => isElement$8(node) && name(node) === 'script';
+    const isStyle = (node) => isElement$8(node) && name(node) === 'style';
+    const isIframe = (node) => isElement$8(node) && name(node) === 'iframe';
     const isTextBlock$3 = lazyLookup(textBlocks);
     const isList$1 = lazyLookup(lists);
     const isListItem$2 = lazyLookup(listItems$1);
@@ -8402,7 +8482,7 @@
     };
     const createPaddingBr = () => {
         const br = SugarElement.fromTag('br');
-        set$4(br, 'data-mce-bogus', '1');
+        set$5(br, 'data-mce-bogus', '1');
         return br;
     };
     const fillWithPaddingBr = (elm) => {
@@ -8454,8 +8534,7 @@
     const isCaretContainer$2 = (node) => isCaretContainerBlock$1(node) || isCaretContainerInline(node);
     const hasContent = (node) => node.firstChild !== node.lastChild || !isBr$7(node.firstChild);
     const insertInline$1 = (node, before) => {
-        var _a;
-        const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+        const doc = node.ownerDocument ?? document;
         const textNode = doc.createTextNode(ZWSP$1);
         const parentNode = node.parentNode;
         if (!before) {
@@ -8470,10 +8549,10 @@
                 }
             }
             if (node.nextSibling) {
-                parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(textNode, node.nextSibling);
+                parentNode?.insertBefore(textNode, node.nextSibling);
             }
             else {
-                parentNode === null || parentNode === void 0 ? void 0 : parentNode.appendChild(textNode);
+                parentNode?.appendChild(textNode);
             }
         }
         else {
@@ -8486,7 +8565,7 @@
                     return sibling.splitText(sibling.data.length - 1);
                 }
             }
-            parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(textNode, node);
+            parentNode?.insertBefore(textNode, node);
         }
         return textNode;
     };
@@ -8507,8 +8586,7 @@
         return container.data.charAt(pos.offset() - 1) === ZWSP$1 || pos.isAtEnd() && isCaretContainerInline(container.nextSibling);
     };
     const insertBlock = (blockName, node, before) => {
-        var _a;
-        const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+        const doc = node.ownerDocument ?? document;
         const blockNode = doc.createElement(blockName);
         blockNode.setAttribute('data-mce-caret', before ? 'before' : 'after');
         blockNode.setAttribute('data-mce-bogus', 'all');
@@ -8516,25 +8594,24 @@
         const parentNode = node.parentNode;
         if (!before) {
             if (node.nextSibling) {
-                parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(blockNode, node.nextSibling);
+                parentNode?.insertBefore(blockNode, node.nextSibling);
             }
             else {
-                parentNode === null || parentNode === void 0 ? void 0 : parentNode.appendChild(blockNode);
+                parentNode?.appendChild(blockNode);
             }
         }
         else {
-            parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(blockNode, node);
+            parentNode?.insertBefore(blockNode, node);
         }
         return blockNode;
     };
     const startsWithCaretContainer$1 = (node) => isText$9(node) && node.data[0] === ZWSP$1;
     const endsWithCaretContainer$1 = (node) => isText$9(node) && node.data[node.data.length - 1] === ZWSP$1;
     const trimBogusBr = (elm) => {
-        var _a;
         const brs = elm.getElementsByTagName('br');
         const lastBr = brs[brs.length - 1];
         if (isBogus$1(lastBr)) {
-            (_a = lastBr.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(lastBr);
+            lastBr.parentNode?.removeChild(lastBr);
         }
     };
     const showCaretContainerBlock = (caretContainer) => {
@@ -8827,7 +8904,6 @@
     };
     const isZeroRect = (r) => r.left === 0 && r.right === 0 && r.top === 0 && r.bottom === 0;
     const getBoundingClientRect$1 = (item) => {
-        var _a;
         let clientRect;
         const clientRects = item.getClientRects();
         if (clientRects.length > 0) {
@@ -8840,7 +8916,7 @@
             return getBrClientRect(item);
         }
         if (isZeroRect(clientRect) && isRange(item)) {
-            return (_a = getBoundingClientRectWebKitText(item)) !== null && _a !== void 0 ? _a : clientRect;
+            return getBoundingClientRectWebKitText(item) ?? clientRect;
         }
         return clientRect;
     };
@@ -9443,7 +9519,7 @@
         selection.moveToBookmark({ id, keep: true, forward });
         return { id, forward };
     };
-    const getBookmark$3 = (selection, type, normalized = false) => {
+    const getBookmark$2 = (selection, type, normalized = false) => {
         if (type === 2) {
             return getOffsetBookmark(trim$2, normalized, selection);
         }
@@ -9459,11 +9535,264 @@
     };
     const getUndoBookmark = curry(getOffsetBookmark, identity, true);
 
+    /**
+     * Checks if the direction is forwards.
+     */
+    const isForwards = (direction) => direction === 1 /* HDirection.Forwards */;
+    /**
+     * Checks if the direction is backwards.
+     */
+    const isBackwards = (direction) => direction === -1 /* HDirection.Backwards */;
+
+    var SimpleResultType;
+    (function (SimpleResultType) {
+        SimpleResultType[SimpleResultType["Error"] = 0] = "Error";
+        SimpleResultType[SimpleResultType["Value"] = 1] = "Value";
+    })(SimpleResultType || (SimpleResultType = {}));
+    const fold$1 = (res, onError, onValue) => res.stype === SimpleResultType.Error ? onError(res.serror) : onValue(res.svalue);
+    const partition = (results) => {
+        const values = [];
+        const errors = [];
+        each$e(results, (obj) => {
+            fold$1(obj, (err) => errors.push(err), (val) => values.push(val));
+        });
+        return { values, errors };
+    };
+    const mapError = (res, f) => {
+        if (res.stype === SimpleResultType.Error) {
+            return { stype: SimpleResultType.Error, serror: f(res.serror) };
+        }
+        else {
+            return res;
+        }
+    };
+    const map = (res, f) => {
+        if (res.stype === SimpleResultType.Value) {
+            return { stype: SimpleResultType.Value, svalue: f(res.svalue) };
+        }
+        else {
+            return res;
+        }
+    };
+    const bind = (res, f) => {
+        if (res.stype === SimpleResultType.Value) {
+            return f(res.svalue);
+        }
+        else {
+            return res;
+        }
+    };
+    const bindError = (res, f) => {
+        if (res.stype === SimpleResultType.Error) {
+            return f(res.serror);
+        }
+        else {
+            return res;
+        }
+    };
+    const svalue = (v) => ({ stype: SimpleResultType.Value, svalue: v });
+    const serror = (e) => ({ stype: SimpleResultType.Error, serror: e });
+    const toResult = (res) => fold$1(res, Result.error, Result.value);
+    const fromResult = (res) => res.fold(serror, svalue);
+    const SimpleResult = {
+        fromResult,
+        toResult,
+        svalue,
+        partition,
+        serror,
+        bind,
+        bindError,
+        map,
+        mapError,
+        fold: fold$1
+    };
+
+    const formatObj = (input) => {
+        return isObject(input) && keys(input).length > 100 ? ' removed due to size' : JSON.stringify(input, null, 2);
+    };
+    const formatErrors = (errors) => {
+        const es = errors.length > 10 ? errors.slice(0, 10).concat([
+            {
+                path: [],
+                getErrorInfo: constant('... (only showing first ten failures)')
+            }
+        ]) : errors;
+        // TODO: Work out a better split between PrettyPrinter and SchemaError
+        return map$3(es, (e) => {
+            return 'Failed path: (' + e.path.join(' > ') + ')\n' + e.getErrorInfo();
+        });
+    };
+
+    const nu = (path, getErrorInfo) => {
+        return SimpleResult.serror([{
+                path,
+                // This is lazy so that it isn't calculated unnecessarily
+                getErrorInfo
+            }]);
+    };
+    const missingRequired = (path, key, obj) => nu(path, () => 'Could not find valid *required* value for "' + key + '" in ' + formatObj(obj));
+    const custom = (path, err) => nu(path, constant(err));
+
+    const value = (validator) => {
+        const extract = (path, val) => {
+            return SimpleResult.bindError(validator(val), (err) => custom(path, err));
+        };
+        const toString = constant('val');
+        return {
+            extract,
+            toString
+        };
+    };
+    const anyValue$1 = value(SimpleResult.svalue);
+
+    const anyValue = constant(anyValue$1);
+    const typedValue = (validator, expectedType) => value((a) => {
+        const actualType = typeof a;
+        return validator(a) ? SimpleResult.svalue(a) : SimpleResult.serror(`Expected type: ${expectedType} but got: ${actualType}`);
+    });
+    const number = typedValue(isNumber, 'number');
+    const string = typedValue(isString, 'string');
+    const functionProcessor = typedValue(isFunction, 'function');
+
+    const required$1 = () => ({ tag: "required" /* FieldPresenceTag.Required */, process: {} });
+    const defaultedThunk = (fallbackThunk) => ({ tag: "defaultedThunk" /* FieldPresenceTag.DefaultedThunk */, process: fallbackThunk });
+    const defaulted$1 = (fallback) => defaultedThunk(constant(fallback));
+    const asOption = () => ({ tag: "option" /* FieldPresenceTag.Option */, process: {} });
+
+    const field$1 = (key, newKey, presence, prop) => ({ tag: "field" /* FieldTag.Field */, key, newKey, presence, prop });
+    const fold = (value, ifField, ifCustom) => {
+        switch (value.tag) {
+            case "field" /* FieldTag.Field */:
+                return ifField(value.key, value.newKey, value.presence, value.prop);
+            case "custom" /* FieldTag.CustomField */:
+                return ifCustom(value.newKey, value.instantiator);
+        }
+    };
+
+    const mergeValues = (values, base) => {
+        return SimpleResult.svalue(deepMerge(base, merge$1.apply(undefined, values)));
+    };
+    const mergeErrors = (errors) => compose(SimpleResult.serror, flatten$1)(errors);
+    const consolidateObj = (objects, base) => {
+        const partition = SimpleResult.partition(objects);
+        return partition.errors.length > 0 ? mergeErrors(partition.errors) : mergeValues(partition.values, base);
+    };
+    const consolidateArr = (objects) => {
+        const partitions = SimpleResult.partition(objects);
+        return partitions.errors.length > 0 ? mergeErrors(partitions.errors) : SimpleResult.svalue(partitions.values);
+    };
+    const ResultCombine = {
+        consolidateObj,
+        consolidateArr
+    };
+
+    const requiredAccess = (path, obj, key, bundle) => 
+    // In required mode, if it is undefined, it is an error.
+    get$b(obj, key).fold(() => missingRequired(path, key, obj), bundle);
+    const fallbackAccess = (obj, key, fallback, bundle) => {
+        const v = get$b(obj, key).getOrThunk(() => fallback(obj));
+        return bundle(v);
+    };
+    const optionAccess = (obj, key, bundle) => bundle(get$b(obj, key));
+    const optionDefaultedAccess = (obj, key, fallback, bundle) => {
+        const opt = get$b(obj, key).map((val) => val === true ? fallback(obj) : val);
+        return bundle(opt);
+    };
+    const extractField = (field, path, obj, key, prop) => {
+        const bundle = (av) => prop.extract(path.concat([key]), av);
+        const bundleAsOption = (optValue) => optValue.fold(() => SimpleResult.svalue(Optional.none()), (ov) => {
+            const result = prop.extract(path.concat([key]), ov);
+            return SimpleResult.map(result, Optional.some);
+        });
+        switch (field.tag) {
+            case "required" /* FieldPresenceTag.Required */:
+                return requiredAccess(path, obj, key, bundle);
+            case "defaultedThunk" /* FieldPresenceTag.DefaultedThunk */:
+                return fallbackAccess(obj, key, field.process, bundle);
+            case "option" /* FieldPresenceTag.Option */:
+                return optionAccess(obj, key, bundleAsOption);
+            case "defaultedOptionThunk" /* FieldPresenceTag.DefaultedOptionThunk */:
+                return optionDefaultedAccess(obj, key, field.process, bundleAsOption);
+            case "mergeWithThunk" /* FieldPresenceTag.MergeWithThunk */: {
+                return fallbackAccess(obj, key, constant({}), (v) => {
+                    const result = deepMerge(field.process(obj), v);
+                    return bundle(result);
+                });
+            }
+        }
+    };
+    const extractFields = (path, obj, fields) => {
+        const success = {};
+        const errors = [];
+        // PERFORMANCE: We use a for loop here instead of Arr.each as this is a hot code path
+        for (const field of fields) {
+            fold(field, (key, newKey, presence, prop) => {
+                const result = extractField(presence, path, obj, key, prop);
+                SimpleResult.fold(result, (err) => {
+                    errors.push(...err);
+                }, (res) => {
+                    success[newKey] = res;
+                });
+            }, (newKey, instantiator) => {
+                success[newKey] = instantiator(obj);
+            });
+        }
+        return errors.length > 0 ? SimpleResult.serror(errors) : SimpleResult.svalue(success);
+    };
+    const objOf = (values) => {
+        const extract = (path, o) => extractFields(path, o, values);
+        const toString = () => {
+            const fieldStrings = map$3(values, (value) => fold(value, (key, _okey, _presence, prop) => key + ' -> ' + prop.toString(), (newKey, _instantiator) => 'state(' + newKey + ')'));
+            return 'obj{\n' + fieldStrings.join('\n') + '}';
+        };
+        return {
+            extract,
+            toString
+        };
+    };
+    const arrOf = (prop) => {
+        const extract = (path, array) => {
+            const results = map$3(array, (a, i) => prop.extract(path.concat(['[' + i + ']']), a));
+            return ResultCombine.consolidateArr(results);
+        };
+        const toString = () => 'array(' + prop.toString() + ')';
+        return {
+            extract,
+            toString
+        };
+    };
+    const arrOfObj = compose(arrOf, objOf);
+
+    const valueOf = (validator) => value((v) => validator(v).fold(SimpleResult.serror, SimpleResult.svalue));
+    const extractValue = (label, prop, obj) => {
+        const res = prop.extract([label], obj);
+        return SimpleResult.mapError(res, (errs) => ({ input: obj, errors: errs }));
+    };
+    const asRaw = (label, prop, obj) => SimpleResult.toResult(extractValue(label, prop, obj));
+    const formatError = (errInfo) => {
+        return 'Errors: \n' + formatErrors(errInfo.errors).join('\n') +
+            '\n\nInput object: ' + formatObj(errInfo.input);
+    };
+
+    const field = field$1;
+    const required = (key) => field(key, key, required$1(), anyValue());
+    const requiredOf = (key, schema) => field(key, key, required$1(), schema);
+    const requiredString = (key) => requiredOf(key, string);
+    const requiredFunction = (key) => requiredOf(key, functionProcessor);
+    const requiredArrayOf = (key, schema) => field(key, key, required$1(), arrOf(schema));
+    const option$1 = (key) => field(key, key, asOption(), anyValue());
+    const optionOf = (key, schema) => field(key, key, asOption(), schema);
+    const optionString = (key) => optionOf(key, string);
+    const optionFunction = (key) => optionOf(key, functionProcessor);
+    const defaulted = (key, fallback) => field(key, key, defaulted$1(fallback), anyValue());
+    const defaultedOf = (key, fallback, schema) => field(key, key, defaulted$1(fallback), schema);
+    const defaultedNumber = (key, fallback) => defaultedOf(key, fallback, number);
+    const defaultedArrayOf = (key, fallback, schema) => defaultedOf(key, fallback, arrOf(schema));
+
     const isInlinePattern = (pattern) => pattern.type === 'inline-command' || pattern.type === 'inline-format';
     const isBlockPattern = (pattern) => pattern.type === 'block-command' || pattern.type === 'block-format';
     const hasBlockTrigger = (pattern, trigger) => (pattern.type === 'block-command' || pattern.type === 'block-format') && pattern.trigger === trigger;
     const normalizePattern = (pattern) => {
-        var _a;
         const err = (message) => Result.error({ message, pattern });
         const formatOrCmd = (name, onFormat, onCommand) => {
             if (pattern.format !== undefined) {
@@ -9533,7 +9862,7 @@
         }
         else {
             // block pattern
-            const trigger = (_a = pattern.trigger) !== null && _a !== void 0 ? _a : 'space';
+            const trigger = pattern.trigger ?? 'space';
             if (pattern.start.length === 0) {
                 return err('Block pattern has empty `start` parameter');
             }
@@ -9640,7 +9969,7 @@
 
     const deviceDetection$1 = detect$1().deviceType;
     const isTouch = deviceDetection$1.isTouch();
-    const DOM$e = DOMUtils.DOM;
+    const DOM$d = DOMUtils.DOM;
     const getHash = (value) => {
         const items = value.indexOf('=') > 0 ? value.split(/[;,](?![^=;,]*(?:[;,]|$))/) : value.split(',');
         return foldl(items, (output, item) => {
@@ -9652,14 +9981,14 @@
         }, {});
     };
     const isRegExp = (x) => is$5(x, RegExp);
-    const option$1 = (name) => (editor) => editor.options.get(name);
+    const option = (name) => (editor) => editor.options.get(name);
     const stringOrObjectProcessor = (value) => isString(value) || isObject(value);
     const bodyOptionProcessor = (editor, defaultValue = '') => (value) => {
         const valid = isString(value);
         if (valid) {
             if (value.indexOf('=') !== -1) {
                 const bodyObj = getHash(value);
-                return { value: get$a(bodyObj, editor.id).getOr(defaultValue), valid };
+                return { value: get$b(bodyObj, editor.id).getOr(defaultValue), valid };
             }
             else {
                 return { value, valid };
@@ -9889,6 +10218,9 @@
             default: isInline$2(editor) ? [] : ['default']
         });
         registerOption('content_style', {
+            processor: 'string'
+        });
+        registerOption('content_language', {
             processor: 'string'
         });
         registerOption('content_css_cors', {
@@ -10316,6 +10648,10 @@
             },
             default: (_ctx) => []
         });
+        registerOption('allow_noneditable', {
+            processor: 'boolean',
+            default: true
+        });
         registerOption('noneditable_class', {
             processor: 'string',
             default: 'mceNonEditable'
@@ -10399,6 +10735,9 @@
             processor: 'string',
             default: 'Anonymous'
         });
+        registerOption('content_id', {
+            processor: 'string',
+        });
         registerOption('fetch_users', {
             processor: (value) => {
                 if (value === undefined) {
@@ -10413,6 +10752,23 @@
                 };
             }
         });
+        const documentsFileTypesOptionsSchema = arrOfObj([
+            requiredString('mimeType'),
+            requiredArrayOf('extensions', valueOf((ext) => {
+                if (isString(ext)) {
+                    return Result.value(ext);
+                }
+                else {
+                    return Result.error('Extensions must be an array of strings');
+                }
+            })),
+        ]);
+        registerOption('documents_file_types', {
+            processor: (value) => asRaw('documents_file_types', documentsFileTypesOptionsSchema, value).fold((_err) => ({
+                valid: false,
+                message: 'Must be a non-empty array of objects matching the configuration schema: https://www.tiny.cloud/docs/tinymce/latest/uploadcare-documents/#documents-file-types'
+            }), (val) => ({ valid: true, value: val }))
+        });
         // These options must be registered later in the init sequence due to their default values
         editor.on('ScriptsLoaded', () => {
             registerOption('directionality', {
@@ -10422,7 +10778,7 @@
             registerOption('placeholder', {
                 processor: 'string',
                 // Fallback to the original elements placeholder if not set in the settings
-                default: DOM$e.getAttrib(editor.getElement(), 'placeholder')
+                default: DOM$d.getAttrib(editor.getElement(), 'placeholder')
             });
         });
         registerOption('lists_indent_on_tab', {
@@ -10444,117 +10800,119 @@
             },
         });
     };
-    const getIframeAttrs = option$1('iframe_attrs');
-    const getDocType = option$1('doctype');
-    const getDocumentBaseUrl = option$1('document_base_url');
-    const getBodyId = option$1('body_id');
-    const getBodyClass = option$1('body_class');
-    const getContentSecurityPolicy = option$1('content_security_policy');
-    const shouldPutBrInPre$1 = option$1('br_in_pre');
-    const getForcedRootBlock = option$1('forced_root_block');
-    const getForcedRootBlockAttrs = option$1('forced_root_block_attrs');
-    const getNewlineBehavior = option$1('newline_behavior');
-    const getBrNewLineSelector = option$1('br_newline_selector');
-    const getNoNewLineSelector = option$1('no_newline_selector');
-    const shouldKeepStyles = option$1('keep_styles');
-    const shouldEndContainerOnEmptyBlock = option$1('end_container_on_empty_block');
-    const isAutomaticUploadsEnabled = option$1('automatic_uploads');
-    const shouldReuseFileName = option$1('images_reuse_filename');
-    const shouldReplaceBlobUris = option$1('images_replace_blob_uris');
-    const getIconPackName = option$1('icons');
-    const getIconsUrl = option$1('icons_url');
-    const getImageUploadUrl = option$1('images_upload_url');
-    const getImageUploadBasePath = option$1('images_upload_base_path');
-    const getImagesUploadCredentials = option$1('images_upload_credentials');
-    const getImagesUploadHandler = option$1('images_upload_handler');
-    const shouldUseContentCssCors = option$1('content_css_cors');
-    const getReferrerPolicy = option$1('referrer_policy');
-    const getCrossOrigin = option$1('crossorigin');
-    const getLanguageCode = option$1('language');
-    const getLanguageUrl = option$1('language_url');
-    const shouldIndentUseMargin = option$1('indent_use_margin');
-    const getIndentation = option$1('indentation');
-    const getContentCss = option$1('content_css');
-    const getContentStyle = option$1('content_style');
-    const getFontCss = option$1('font_css');
-    const getDirectionality = option$1('directionality');
-    const getInlineBoundarySelector = option$1('inline_boundaries_selector');
-    const getObjectResizing = option$1('object_resizing');
-    const getResizeImgProportional = option$1('resize_img_proportional');
-    const getPlaceholder = option$1('placeholder');
-    const getEventRoot = option$1('event_root');
-    const getServiceMessage = option$1('service_message');
-    const getTheme = option$1('theme');
-    const getThemeUrl = option$1('theme_url');
-    const getModel = option$1('model');
-    const getModelUrl = option$1('model_url');
-    const isInlineBoundariesEnabled = option$1('inline_boundaries');
-    const getFormats = option$1('formats');
-    const getPreviewStyles = option$1('preview_styles');
-    const canFormatEmptyLines = option$1('format_empty_lines');
-    const getFormatNoneditableSelector = option$1('format_noneditable_selector');
-    const getCustomUiSelector = option$1('custom_ui_selector');
-    const isInline$2 = option$1('inline');
-    const hasHiddenInput = option$1('hidden_input');
-    const shouldPatchSubmit = option$1('submit_patch');
-    const shouldAddFormSubmitTrigger = option$1('add_form_submit_trigger');
-    const shouldAddUnloadTrigger = option$1('add_unload_trigger');
-    const getCustomUndoRedoLevels = option$1('custom_undo_redo_levels');
-    const shouldDisableNodeChange = option$1('disable_nodechange');
-    const isReadOnly$1 = option$1('readonly');
-    const hasEditableRoot$1 = option$1('editable_root');
-    const hasContentCssCors = option$1('content_css_cors');
-    const getPlugins = option$1('plugins');
-    const getExternalPlugins$1 = option$1('external_plugins');
-    const shouldBlockUnsupportedDrop = option$1('block_unsupported_drop');
-    const isVisualAidsEnabled = option$1('visual');
-    const getVisualAidsTableClass = option$1('visual_table_class');
-    const getVisualAidsAnchorClass = option$1('visual_anchor_class');
-    const getIframeAriaText = option$1('iframe_aria_text');
-    const getSetupCallback = option$1('setup');
-    const getInitInstanceCallback = option$1('init_instance_callback');
-    const getUrlConverterCallback = option$1('urlconverter_callback');
-    const getAutoFocus = option$1('auto_focus');
-    const shouldBrowserSpellcheck = option$1('browser_spellcheck');
-    const getProtect = option$1('protect');
-    const shouldPasteBlockDrop = option$1('paste_block_drop');
-    const shouldPasteDataImages = option$1('paste_data_images');
-    const getPastePreProcess = option$1('paste_preprocess');
-    const getPastePostProcess = option$1('paste_postprocess');
-    const getNewDocumentContent = option$1('newdocument_content');
-    const getPasteWebkitStyles = option$1('paste_webkit_styles');
-    const shouldPasteRemoveWebKitStyles = option$1('paste_remove_styles_if_webkit');
-    const shouldPasteMergeFormats = option$1('paste_merge_formats');
-    const isSmartPasteEnabled = option$1('smart_paste');
-    const isPasteAsTextEnabled = option$1('paste_as_text');
-    const getPasteTabSpaces = option$1('paste_tab_spaces');
-    const shouldAllowHtmlDataUrls = option$1('allow_html_data_urls');
-    const getTextPatterns = option$1('text_patterns');
-    const getTextPatternsLookup = option$1('text_patterns_lookup');
-    const getNonEditableClass = option$1('noneditable_class');
-    const getEditableClass = option$1('editable_class');
-    const getNonEditableRegExps = option$1('noneditable_regexp');
-    const shouldPreserveCData = option$1('preserve_cdata');
-    const shouldHighlightOnFocus = option$1('highlight_on_focus');
-    const shouldSanitizeXss = option$1('xss_sanitization');
-    const shouldUseDocumentWrite = option$1('init_content_sync');
+    const getIframeAttrs = option('iframe_attrs');
+    const getDocType = option('doctype');
+    const getDocumentBaseUrl = option('document_base_url');
+    const getBodyId = option('body_id');
+    const getBodyClass = option('body_class');
+    const getContentSecurityPolicy = option('content_security_policy');
+    const shouldPutBrInPre$1 = option('br_in_pre');
+    const getForcedRootBlock = option('forced_root_block');
+    const getForcedRootBlockAttrs = option('forced_root_block_attrs');
+    const getNewlineBehavior = option('newline_behavior');
+    const getBrNewLineSelector = option('br_newline_selector');
+    const getNoNewLineSelector = option('no_newline_selector');
+    const shouldKeepStyles = option('keep_styles');
+    const shouldEndContainerOnEmptyBlock = option('end_container_on_empty_block');
+    const isAutomaticUploadsEnabled = option('automatic_uploads');
+    const shouldReuseFileName = option('images_reuse_filename');
+    const shouldReplaceBlobUris = option('images_replace_blob_uris');
+    const getIconPackName = option('icons');
+    const getIconsUrl = option('icons_url');
+    const getImageUploadUrl = option('images_upload_url');
+    const getImageUploadBasePath = option('images_upload_base_path');
+    const getImagesUploadCredentials = option('images_upload_credentials');
+    const getImagesUploadHandler = option('images_upload_handler');
+    const shouldUseContentCssCors = option('content_css_cors');
+    const getReferrerPolicy = option('referrer_policy');
+    const getCrossOrigin = option('crossorigin');
+    const getLanguageCode = option('language');
+    const getLanguageUrl = option('language_url');
+    const shouldIndentUseMargin = option('indent_use_margin');
+    const getIndentation = option('indentation');
+    const getContentCss = option('content_css');
+    const getContentStyle = option('content_style');
+    const getContentLanguage = option('content_language');
+    const getFontCss = option('font_css');
+    const getDirectionality = option('directionality');
+    const getInlineBoundarySelector = option('inline_boundaries_selector');
+    const getObjectResizing = option('object_resizing');
+    const getResizeImgProportional = option('resize_img_proportional');
+    const getPlaceholder = option('placeholder');
+    const getEventRoot = option('event_root');
+    const getServiceMessage = option('service_message');
+    const getTheme = option('theme');
+    const getThemeUrl = option('theme_url');
+    const getModel = option('model');
+    const getModelUrl = option('model_url');
+    const isInlineBoundariesEnabled = option('inline_boundaries');
+    const getFormats = option('formats');
+    const getPreviewStyles = option('preview_styles');
+    const canFormatEmptyLines = option('format_empty_lines');
+    const getFormatNoneditableSelector = option('format_noneditable_selector');
+    const getCustomUiSelector = option('custom_ui_selector');
+    const isInline$2 = option('inline');
+    const hasHiddenInput = option('hidden_input');
+    const shouldPatchSubmit = option('submit_patch');
+    const shouldAddFormSubmitTrigger = option('add_form_submit_trigger');
+    const shouldAddUnloadTrigger = option('add_unload_trigger');
+    const getCustomUndoRedoLevels = option('custom_undo_redo_levels');
+    const shouldDisableNodeChange = option('disable_nodechange');
+    const isReadOnly$1 = option('readonly');
+    const hasEditableRoot$1 = option('editable_root');
+    const hasContentCssCors = option('content_css_cors');
+    const getPlugins = option('plugins');
+    const getExternalPlugins$1 = option('external_plugins');
+    const shouldBlockUnsupportedDrop = option('block_unsupported_drop');
+    const isVisualAidsEnabled = option('visual');
+    const getVisualAidsTableClass = option('visual_table_class');
+    const getVisualAidsAnchorClass = option('visual_anchor_class');
+    const getIframeAriaText = option('iframe_aria_text');
+    const getSetupCallback = option('setup');
+    const getInitInstanceCallback = option('init_instance_callback');
+    const getUrlConverterCallback = option('urlconverter_callback');
+    const getAutoFocus = option('auto_focus');
+    const shouldBrowserSpellcheck = option('browser_spellcheck');
+    const getProtect = option('protect');
+    const shouldPasteBlockDrop = option('paste_block_drop');
+    const shouldPasteDataImages = option('paste_data_images');
+    const getPastePreProcess = option('paste_preprocess');
+    const getPastePostProcess = option('paste_postprocess');
+    const getNewDocumentContent = option('newdocument_content');
+    const getPasteWebkitStyles = option('paste_webkit_styles');
+    const shouldPasteRemoveWebKitStyles = option('paste_remove_styles_if_webkit');
+    const shouldPasteMergeFormats = option('paste_merge_formats');
+    const isSmartPasteEnabled = option('smart_paste');
+    const isPasteAsTextEnabled = option('paste_as_text');
+    const getPasteTabSpaces = option('paste_tab_spaces');
+    const shouldAllowHtmlDataUrls = option('allow_html_data_urls');
+    const getTextPatterns = option('text_patterns');
+    const getTextPatternsLookup = option('text_patterns_lookup');
+    const shouldAllowNonEditable = option('allow_noneditable');
+    const getNonEditableClass = option('noneditable_class');
+    const getEditableClass = option('editable_class');
+    const getNonEditableRegExps = option('noneditable_regexp');
+    const shouldPreserveCData = option('preserve_cdata');
+    const shouldHighlightOnFocus = option('highlight_on_focus');
+    const shouldSanitizeXss = option('xss_sanitization');
+    const shouldUseDocumentWrite = option('init_content_sync');
     const hasTextPatternsLookup = (editor) => editor.options.isSet('text_patterns_lookup');
     const getFontStyleValues = (editor) => Tools.explode(editor.options.get('font_size_style_values'));
     const getFontSizeClasses = (editor) => Tools.explode(editor.options.get('font_size_classes'));
     const isEncodingXml = (editor) => editor.options.get('encoding') === 'xml';
     const getAllowedImageFileTypes = (editor) => Tools.explode(editor.options.get('images_file_types'));
-    const hasTableTabNavigation = option$1('table_tab_navigation');
-    const getDetailsInitialState = option$1('details_initial_state');
-    const getDetailsSerializedState = option$1('details_serialized_state');
-    const shouldSandboxIframes = option$1('sandbox_iframes');
+    const hasTableTabNavigation = option('table_tab_navigation');
+    const getDetailsInitialState = option('details_initial_state');
+    const getDetailsSerializedState = option('details_serialized_state');
+    const shouldSandboxIframes = option('sandbox_iframes');
     const getSandboxIframesExclusions = (editor) => editor.options.get('sandbox_iframes_exclusions');
-    const shouldConvertUnsafeEmbeds = option$1('convert_unsafe_embeds');
-    const getLicenseKey = option$1('license_key');
-    const getApiKey = option$1('api_key');
-    const isDisabled$1 = option$1('disabled');
-    const getUserId = option$1('user_id');
-    const getFetchUsers = option$1('fetch_users');
-    const shouldIndentOnTab = option$1('lists_indent_on_tab');
+    const shouldConvertUnsafeEmbeds = option('convert_unsafe_embeds');
+    const getLicenseKey = option('license_key');
+    const getApiKey = option('api_key');
+    const isDisabled$1 = option('disabled');
+    const getUserId = option('user_id');
+    const getFetchUsers = option('fetch_users');
+    const shouldIndentOnTab = option('lists_indent_on_tab');
     const getListMaxDepth = (editor) => Optional.from(editor.options.get('list_max_depth'));
 
     const isElement$4 = isElement$7;
@@ -10657,7 +11015,6 @@
         return clientRect;
     };
     const trimInlineCaretContainers = (root) => {
-        var _a, _b;
         const fakeCaretTargetNodes = descendants(SugarElement.fromDom(root), inlineFakeCaretSelector);
         for (let i = 0; i < fakeCaretTargetNodes.length; i++) {
             const node = fakeCaretTargetNodes[i].dom;
@@ -10665,7 +11022,7 @@
             if (endsWithCaretContainer$1(sibling)) {
                 const data = sibling.data;
                 if (data.length === 1) {
-                    (_a = sibling.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(sibling);
+                    sibling.parentNode?.removeChild(sibling);
                 }
                 else {
                     sibling.deleteData(data.length - 1, 1);
@@ -10675,7 +11032,7 @@
             if (startsWithCaretContainer$1(sibling)) {
                 const data = sibling.data;
                 if (data.length === 1) {
-                    (_b = sibling.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(sibling);
+                    sibling.parentNode?.removeChild(sibling);
                 }
                 else {
                     sibling.deleteData(0, 1);
@@ -10806,8 +11163,6 @@
     const isElement$3 = isElement$7;
     const isText$4 = isText$b;
     const isCaretCandidate$1 = isCaretCandidate$3;
-    const isForwards = (direction) => direction === 1 /* HDirection.Forwards */;
-    const isBackwards = (direction) => direction === -1 /* HDirection.Backwards */;
     const skipCaretContainers = (walk, shallow) => {
         let node;
         while ((node = walk(shallow))) {
@@ -10856,9 +11211,14 @@
             .map((elm) => elm.dom)
             .getOr(rootNode);
     };
+    const isAbsPositionedElement = (node) => isElement$7(node) && get$8(SugarElement.fromDom(node), 'position') === 'absolute';
+    const isInlineBlock = (node, rootNode) => node.parentNode !== rootNode;
+    const isInlineAbsPositionedCEF = (node, rootNode) => isContentEditableFalse$6(node) && isAbsPositionedElement(node) && isInlineBlock(node, rootNode);
     const getParentBlock$3 = (node, rootNode) => {
         while (node && node !== rootNode) {
-            if (isBlockLike(node)) {
+            // Exclude inline absolutely positioned CEF elements since they have 'display: block'
+            // Created TINY-12922 to improve handling non CEF elements
+            if (isBlockLike(node) && !isInlineAbsPositionedCEF(node, rootNode)) {
                 return node;
             }
             node = node.parentNode;
@@ -10878,8 +11238,7 @@
         return Optional.from(container.childNodes[offset + relativeOffset]);
     };
     const beforeAfter = (before, node) => {
-        var _a;
-        const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+        const doc = node.ownerDocument ?? document;
         const range = doc.createRange();
         if (before) {
             range.setStartBefore(node);
@@ -11024,6 +11383,20 @@
         return inSameBlock;
     };
 
+    /**
+     * This module contains logic for moving around a virtual caret in logical order within a DOM element.
+     *
+     * It ignores the most obvious invalid caret locations such as within a script element or within a
+     * contentEditable=false element but it will return locations that isn't possible to render visually.
+     *
+     * @private
+     * @class tinymce.caret.CaretWalker
+     * @example
+     * const caretWalker = CaretWalker(rootElm);
+     *
+     * const prevLogicalCaretPosition = caretWalker.prev(CaretPosition.fromRangeStart(range));
+     * const nextLogicalCaretPosition = caretWalker.next(CaretPosition.fromRangeEnd(range));
+     */
     const isContentEditableFalse$5 = isContentEditableFalse$a;
     const isText$3 = isText$b;
     const isElement$2 = isElement$7;
@@ -11312,8 +11685,7 @@
         });
     };
     const insertZwsp = (node, rng) => {
-        var _a;
-        const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+        const doc = node.ownerDocument ?? document;
         const textNode = doc.createTextNode(ZWSP$1);
         node.appendChild(textNode);
         rng.setStart(textNode, 0);
@@ -11375,9 +11747,9 @@
         return true;
     };
     const isValidTextNode = (node) => isText$b(node) && node.data.length > 0;
-    const restoreEndPoint = (dom, suffix, bookmark) => {
+    const restoreEndPoint$1 = (dom, suffix, bookmark) => {
         const marker = dom.get(bookmark.id + '_' + suffix);
-        const markerParent = marker === null || marker === void 0 ? void 0 : marker.parentNode;
+        const markerParent = marker?.parentNode;
         const keep = bookmark.keep;
         if (marker && markerParent) {
             let container;
@@ -11469,8 +11841,8 @@
         }
     };
     const resolveId = (dom, bookmark) => {
-        const startPos = restoreEndPoint(dom, 'start', bookmark);
-        const endPos = restoreEndPoint(dom, 'end', bookmark);
+        const startPos = restoreEndPoint$1(dom, 'start', bookmark);
+        const endPos = restoreEndPoint$1(dom, 'end', bookmark);
         return lift2(startPos, endPos.or(startPos), (spos, epos) => {
             const range = dom.createRng();
             range.setStart(addBogus(dom, spos.container()), spos.offset());
@@ -11505,8 +11877,8 @@
         return Optional.none();
     };
 
-    const getBookmark$2 = (selection, type, normalized) => {
-        return getBookmark$3(selection, type, normalized);
+    const getBookmark$1 = (selection, type, normalized) => {
+        return getBookmark$2(selection, type, normalized);
     };
     const moveToBookmark = (selection, bookmark) => {
         resolve(selection, bookmark).each(({ range, forward }) => {
@@ -11667,7 +12039,7 @@
     const isSelectionOverWholeTextNode = (range) => isSelectionOverWholeNode(range, isText$b);
     const isSelectionOverWholeAnchor = (range) => isSelectionOverWholeNode(range, isAnchor);
 
-    const isNode = (node) => isNumber(node === null || node === void 0 ? void 0 : node.nodeType);
+    const isNode = (node) => isNumber(node?.nodeType);
     const isElementNode$1 = (node) => isElement$7(node) && !isBookmarkNode$1(node) && !isCaretNode(node) && !isBogus$1(node);
     // In TinyMCE, directly selected elements are indicated with the data-mce-selected attribute
     // Elements that can be directly selected include control elements such as img, media elements, noneditable elements and others
@@ -11703,7 +12075,6 @@
     };
     // Note: The reason why we only care about moving the start is because MatchFormat and its function use the start of the selection to determine if a selection has a given format or not
     const moveStartToNearestText = (dom, selection) => {
-        var _a, _b;
         const rng = selection.getRng();
         const { startContainer, startOffset } = rng;
         const selectedNode = selection.getNode();
@@ -11717,11 +12088,11 @@
             let walker;
             if (startOffset < nodes.length) {
                 const startNode = nodes[startOffset];
-                walker = new DomTreeWalker(startNode, (_a = dom.getParent(startNode, dom.isBlock)) !== null && _a !== void 0 ? _a : root);
+                walker = new DomTreeWalker(startNode, dom.getParent(startNode, dom.isBlock) ?? root);
             }
             else {
                 const startNode = nodes[nodes.length - 1];
-                walker = new DomTreeWalker(startNode, (_b = dom.getParent(startNode, dom.isBlock)) !== null && _b !== void 0 ? _b : root);
+                walker = new DomTreeWalker(startNode, dom.getParent(startNode, dom.isBlock) ?? root);
                 walker.next(true);
             }
             for (let node = walker.current(); node; node = walker.next()) {
@@ -11782,6 +12153,13 @@
         const selector = isEmpty$5(formatNoneditableSelector) ? baseDataSelector : `${baseDataSelector},${formatNoneditableSelector}`;
         return is$2(SugarElement.fromDom(node), selector);
     };
+    const hasEditableDescendants = (dom, node) => dom.select('[contenteditable="true"]', node).length > 0;
+    const getEditableDescendants = (dom, parent) => foldl(from(parent.childNodes), (editableDescendants, child) => [
+        ...editableDescendants,
+        ...(isElement$7(child) && dom.getContentEditable(child) === 'true'
+            ? [child]
+            : getEditableDescendants(dom, child))
+    ], []);
     // A noneditable element is wrappable if it:
     // - is valid target (has data-mce-cef-wrappable attribute or matches selector from option)
     // - has no editable descendants - removing formats in the editable region can result in the wrapped noneditable being split which is undesirable
@@ -11790,7 +12168,7 @@
         return (isElementNode$1(node) &&
             dom.getContentEditable(node) === 'false' &&
             isWrapNoneditableTarget(editor, node) &&
-            dom.select('[contenteditable="true"]', node).length === 0);
+            !hasEditableDescendants(dom, node));
     };
     /**
      * Replaces variables in the value. The variable format is %var.
@@ -11874,7 +12252,7 @@
     const isVariableFormatName = (editor, formatName) => {
         const hasVariableValues = (format) => {
             const isVariableValue = (val) => isFunction(val) || val.length > 1 && val.charAt(0) === '%';
-            return exists(['styles', 'attributes'], (key) => get$a(format, key).exists((field) => {
+            return exists(['styles', 'attributes'], (key) => get$b(format, key).exists((field) => {
                 const fieldValues = isArray$1(field) ? field : values(field);
                 return exists(fieldValues, isVariableValue);
             }));
@@ -11902,7 +12280,7 @@
     const isNonWrappingBlockFormat = (format) => isBlockFormat(format) && format.wrapper !== true;
     const isSelectorFormat = (format) => hasNonNullableKey(format, 'selector');
     const isInlineFormat = (format) => hasNonNullableKey(format, 'inline');
-    const isMixedFormat = (format) => isSelectorFormat(format) && isInlineFormat(format) && is$4(get$a(format, 'mixed'), true);
+    const isMixedFormat = (format) => isSelectorFormat(format) && isInlineFormat(format) && is$4(get$b(format, 'mixed'), true);
     const shouldExpandToSelector = (format) => isSelectorFormat(format) && format.expand !== false && !isInlineFormat(format);
     const getEmptyCaretContainers = (node) => {
         const nodes = [];
@@ -12009,7 +12387,6 @@
         return container;
     };
     const findBlockEndPoint = (dom, formatList, container, siblingName) => {
-        var _a;
         let node = container;
         const root = dom.getRoot();
         const format = formatList[0];
@@ -12019,7 +12396,7 @@
         }
         // Expand to first wrappable block element or any block element
         if (!node) {
-            const scopeRoot = (_a = dom.getParent(container, 'LI,TD,TH,SUMMARY')) !== null && _a !== void 0 ? _a : root;
+            const scopeRoot = dom.getParent(container, 'LI,TD,TH,SUMMARY') ?? root;
             node = dom.getParent(isText$b(container) ? container.parentNode : container, 
             // Fixes #6183 where it would expand to editable parent element in inline mode
             (node) => node !== root && isTextBlock$1(dom.schema, node), scopeRoot);
@@ -12215,7 +12592,6 @@
     };
 
     const walk$3 = (dom, rng, callback) => {
-        var _a;
         const startOffset = rng.startOffset;
         const startContainer = getNode$1(rng.startContainer, startOffset);
         const endOffset = rng.endOffset;
@@ -12266,7 +12642,7 @@
             return callback(exclude([startContainer]));
         }
         // Find common ancestor and end points
-        const ancestor = (_a = dom.findCommonAncestor(startContainer, endContainer)) !== null && _a !== void 0 ? _a : dom.getRoot();
+        const ancestor = dom.findCommonAncestor(startContainer, endContainer) ?? dom.getRoot();
         // Process left side
         if (dom.isChildOf(startContainer, endContainer)) {
             return walkBoundary(startContainer, ancestor, true);
@@ -12304,7 +12680,7 @@
         // Footnootes plugin
         'div.mce-footnotes'
     ];
-    const isZeroWidth = (elem) => isText$c(elem) && get$4(elem) === ZWSP$1;
+    const isZeroWidth = (elem) => isText$c(elem) && get$5(elem) === ZWSP$1;
     const context = (editor, elem, wrapName, nodeName) => parentElement(elem).fold(() => "skipping" /* ChildContext.Skipping */, (parent) => {
         // We used to skip these, but given that they might be representing empty paragraphs, it probably
         // makes sense to treat them just like text nodes
@@ -12337,18 +12713,18 @@
     const applyAnnotation = (elem, masterUId, data, annotationName, decorate, directAnnotation) => {
         const { uid = masterUId, ...otherData } = data;
         add$2(elem, annotation());
-        set$4(elem, `${dataAnnotationId()}`, uid);
-        set$4(elem, `${dataAnnotation()}`, annotationName);
+        set$5(elem, `${dataAnnotationId()}`, uid);
+        set$5(elem, `${dataAnnotation()}`, annotationName);
         const { attributes = {}, classes = [] } = decorate(uid, otherData);
         setAll$1(elem, attributes);
         add$1(elem, classes);
         if (directAnnotation) {
             if (classes.length > 0) {
-                set$4(elem, `${dataAnnotationClasses()}`, classes.join(','));
+                set$5(elem, `${dataAnnotationClasses()}`, classes.join(','));
             }
             const attributeNames = keys(attributes);
             if (attributeNames.length > 0) {
-                set$4(elem, `${dataAnnotationAttributes()}`, attributeNames.join(','));
+                set$5(elem, `${dataAnnotationAttributes()}`, attributeNames.join(','));
             }
         }
     };
@@ -12396,7 +12772,7 @@
             switch (ctx) {
                 case "invalid-child" /* ChildContext.InvalidChild */: {
                     finishWrapper();
-                    const children = children$1(elem);
+                    const children = children$2(elem);
                     processElements(children);
                     finishWrapper();
                     break;
@@ -12428,7 +12804,7 @@
             const selection = editor.selection;
             const initialRng = selection.getRng();
             const hasFakeSelection = getCellsFromEditor(editor).length > 0;
-            const masterUid = generate$1('mce-annotation');
+            const masterUid = generate('mce-annotation');
             if (initialRng.collapsed && !hasFakeSelection) {
                 applyWordGrab(editor, initialRng);
             }
@@ -12437,7 +12813,7 @@
             if (selection.getRng().collapsed && !hasFakeSelection) {
                 const wrapper = makeAnnotation(editor.getDoc(), masterUid, data, name, settings.decorate);
                 // Put something visible in the marker
-                set$3(wrapper, nbsp);
+                set$4(wrapper, nbsp);
                 selection.getRng().insertNode(wrapper.dom);
                 selection.select(wrapper.dom);
             }
@@ -12550,6 +12926,113 @@
         };
     };
 
+    const announcerContainerId = generate('tiny-aria-announcer');
+    const POLITE_MESSAGE_TTL_MS = 600000; // 10 minutes
+    const CREATE_DELAY_MS = 100; // Delay before creating announcer regions to avoid interfering with screen readers initial announcements.
+    const politeTimestampAttr = 'data-mce-announced-at';
+    const OFFSCREEN_STYLES = {
+        position: 'absolute',
+        left: '-9999px',
+        width: '1px',
+        height: '1px',
+        overflow: 'hidden'
+    };
+    const createRegion = (live) => {
+        const region = SugarElement.fromTag('div');
+        setAll$1(region, {
+            'aria-live': live,
+            'aria-atomic': 'false',
+            'aria-relevant': 'additions'
+        });
+        return region;
+    };
+    const isConnected = (element) => element.dom.isConnected;
+    const createNewState = () => {
+        const container = SugarElement.fromTag('div');
+        const politeRegion = createRegion('polite');
+        const assertiveRegion = createRegion('assertive');
+        set$5(container, 'id', announcerContainerId);
+        setAll(container, OFFSCREEN_STYLES);
+        append$1(container, politeRegion);
+        append$1(container, assertiveRegion);
+        append$1(body(), container);
+        return { container, politeRegion, assertiveRegion };
+    };
+    const cleanupExpiredMessages = (polite, now) => {
+        each$e(children(polite, `div[${politeTimestampAttr}]`), (messageDiv) => {
+            getOpt(messageDiv, politeTimestampAttr)
+                .bind((value) => toInt(value))
+                .filter((announcedAt) => now - announcedAt > POLITE_MESSAGE_TTL_MS)
+                .each(() => remove$8(messageDiv));
+        });
+    };
+    const createAnnouncer = () => {
+        const state = value$1();
+        const mountRegions = async () => {
+            const createNewPendingState = async () => {
+                const promise = new Promise((resolve) => {
+                    const newState = createNewState();
+                    setTimeout(() => resolve(newState), CREATE_DELAY_MS);
+                });
+                state.set(promise);
+                return promise;
+            };
+            return state.get().fold(createNewPendingState, async (existingPromise) => {
+                const { container } = await existingPromise;
+                if (isConnected(container)) {
+                    return existingPromise;
+                }
+                else {
+                    // A concurrent caller may have already replaced the stale state while we awaited.
+                    // The block after the await runs atomically, so reuse that state if present and
+                    // only create a fresh one when the state is still the stale promise we observed.
+                    return state.get().filter((current) => current !== existingPromise).getOrThunk(createNewPendingState);
+                }
+            });
+        };
+        const addMessage = (region, message) => {
+            const now = Date.now();
+            cleanupExpiredMessages(region, now);
+            const messageDiv = SugarElement.fromTag('div');
+            set$5(messageDiv, politeTimestampAttr, String(now));
+            append$1(messageDiv, SugarElement.fromText(message));
+            append$1(region, messageDiv);
+        };
+        const polite = async (message) => {
+            const { politeRegion } = await mountRegions();
+            addMessage(politeRegion, message);
+        };
+        const assertive = async (message) => {
+            const { assertiveRegion } = await mountRegions();
+            addMessage(assertiveRegion, message);
+        };
+        return { polite, assertive };
+    };
+
+    const announcer = createAnnouncer();
+    /**
+     * Announces a message to screen readers via an aria-live region, without shifting focus.
+     *
+     * @method announce
+     * @param {String} message The message to announce to screen readers.
+     * @param {Object} options Optional settings.
+     * @param {Boolean} options.assertive If true, uses aria-live="assertive" instead of polite.
+     * @example
+     * tinymce.dom.AriaAnnouncer.announce('Bold on');
+     * tinymce.dom.AriaAnnouncer.announce('Error occurred', { assertive: true });
+     */
+    const announce = (message, options) => {
+        if (options?.assertive === true) {
+            announcer.assertive(message).catch(noop);
+        }
+        else {
+            announcer.polite(message).catch(noop);
+        }
+    };
+    const AriaAnnouncer = {
+        announce
+    };
+
     /**
      * Constructs a new BookmarkManager instance for a specific selection instance.
      *
@@ -12576,7 +13059,7 @@
              * // Restore the selection bookmark
              * tinymce.activeEditor.selection.moveToBookmark(bm);
              */
-            getBookmark: curry(getBookmark$2, selection),
+            getBookmark: curry(getBookmark$1, selection),
             /**
              * Restores the selection to the specified bookmark.
              *
@@ -12614,7 +13097,7 @@
     };
 
     const clamp$1 = (offset, element) => {
-        const max = isText$c(element) ? get$4(element).length : children$1(element).length + 1;
+        const max = isText$c(element) ? get$5(element).length : children$2(element).length + 1;
         if (offset > max) {
             return max;
         }
@@ -12634,7 +13117,7 @@
         const rng = !selection || selection.rangeCount === 0 ? Optional.none() : Optional.from(selection.getRangeAt(0));
         return rng.map(nativeRangeToSelectionRange);
     };
-    const getBookmark$1 = (root) => {
+    const getBookmark = (root) => {
         const win = defaultView(root);
         return readRange(win.dom)
             .filter(isRngInRoot(root));
@@ -12650,12 +13133,12 @@
             rng.setEnd(bookmark.finish.dom, bookmark.foffset);
             return Optional.some(rng);
         }
-        catch (_a) {
+        catch {
             return Optional.none();
         }
     };
     const store = (editor) => {
-        const newBookmark = shouldStore(editor) ? getBookmark$1(SugarElement.fromDom(editor.getBody())) : Optional.none();
+        const newBookmark = shouldStore(editor) ? getBookmark(SugarElement.fromDom(editor.getBody())) : Optional.none();
         editor.bookmark = newBookmark.isSome() ? newBookmark : editor.bookmark;
     };
     const getRng = (editor) => {
@@ -12752,49 +13235,6 @@
         }
     };
 
-    const walkUp = (navigation, doc) => {
-        const frame = navigation.view(doc);
-        return frame.fold(constant([]), (f) => {
-            const parent = navigation.owner(f);
-            const rest = walkUp(navigation, parent);
-            return [f].concat(rest);
-        });
-    };
-    const pathTo = (element, navigation) => {
-        const d = navigation.owner(element);
-        return walkUp(navigation, d);
-    };
-
-    const view = (doc) => {
-        var _a;
-        // Only walk up to the document this script is defined in.
-        // This prevents walking up to the parent window when the editor is in an iframe.
-        const element = doc.dom === document ? Optional.none() : Optional.from((_a = doc.dom.defaultView) === null || _a === void 0 ? void 0 : _a.frameElement);
-        return element.map(SugarElement.fromDom);
-    };
-    const owner = (element) => documentOrOwner(element);
-
-    var Navigation = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        view: view,
-        owner: owner
-    });
-
-    const find = (element) => {
-        const doc = getDocument();
-        const scroll = get$5(doc);
-        const frames = pathTo(element, Navigation);
-        const offset = viewport(element);
-        const r = foldr(frames, (b, a) => {
-            const loc = viewport(a);
-            return {
-                left: b.left + loc.left,
-                top: b.top + loc.top
-            };
-        }, { left: 0, top: 0 });
-        return SugarPosition(r.left + offset.left + scroll.left, r.top + offset.top + scroll.top);
-    };
-
     const isManualNodeChange = (e) => {
         return e.type === 'nodechange' && e.selectionChange;
     };
@@ -12836,7 +13276,7 @@
     };
 
     let documentFocusInHandler;
-    const DOM$d = DOMUtils.DOM;
+    const DOM$c = DOMUtils.DOM;
     const isEditorUIElement = (elm) => {
         // Since this can be overridden by third party we need to use the API reference here
         return isElement$7(elm) && FocusManager.isEditorUIElement(elm);
@@ -12854,7 +13294,7 @@
     };
     const isUIElement = (editor, elm) => {
         const customSelector = getCustomUiSelector(editor);
-        const parent = DOM$d.getParent(elm, (elm) => {
+        const parent = DOM$c.getParent(elm, (elm) => {
             return (isEditorUIElement(elm) ||
                 (customSelector ? editor.dom.is(elm, customSelector) : false));
         });
@@ -12865,7 +13305,7 @@
             const root = getRootNode(SugarElement.fromDom(editor.getElement()));
             return active(root).fold(() => document.body, (x) => x.dom);
         }
-        catch (_a) {
+        catch {
             // IE sometimes fails to get the activeElement when resizing table
             // TODO: Investigate this
             return document.body;
@@ -12881,18 +13321,6 @@
                 fn(contentArea, 'tox-edit-focus');
             }
         };
-        const bringEditorIntoView = (editor) => {
-            const minimumVisibility = 25;
-            if (!editor.iframeElement) {
-                return;
-            }
-            const element = SugarElement.fromDom(editor.iframeElement);
-            const op = find(element);
-            const viewportBounds = getBounds(window);
-            if (op.top < viewportBounds.y || op.top > (viewportBounds.bottom - minimumVisibility)) {
-                element.dom.scrollIntoView({ block: 'center' });
-            }
-        };
         editor.on('focusin', () => {
             const focusedEditor = editorManager.focusedEditor;
             if (isEditorContentAreaElement(getActiveElement(editor))) {
@@ -12906,10 +13334,6 @@
                 editorManager.focusedEditor = editor;
                 editor.dispatch('focus', { blurredEditor: focusedEditor });
                 editor.focus(true);
-                const browser = detect$1().browser;
-                if (editor.inline !== true && (browser.isSafari() || browser.isChromium())) {
-                    bringEditorIntoView(editor);
-                }
             }
         });
         editor.on('focusout', () => {
@@ -12944,7 +13368,7 @@
                     });
                 }
             };
-            DOM$d.bind(document, 'focusin', documentFocusInHandler);
+            DOM$c.bind(document, 'focusin', documentFocusInHandler);
         }
     };
     const unregisterDocumentEvents = (editorManager, e) => {
@@ -12952,7 +13376,7 @@
             editorManager.focusedEditor = null;
         }
         if (!editorManager.activeEditor && documentFocusInHandler) {
-            DOM$d.unbind(document, 'focusin', documentFocusInHandler);
+            DOM$c.unbind(document, 'focusin', documentFocusInHandler);
             documentFocusInHandler = null;
         }
     };
@@ -12982,14 +13406,18 @@
             editor.selection.normalize();
         }, (caretPos) => editor.selection.setRng(caretPos.toRange()));
     };
-    const focusBody = (body) => {
+    const focusBody = (body, preventScroll = false) => {
+        if (preventScroll) {
+            body.focus({ preventScroll: true });
+            return;
+        }
         if (body.setActive) {
             // IE 11 sometimes throws "Invalid function" then fallback to focus
             // setActive is better since it doesn't scroll to the element being focused
             try {
                 body.setActive();
             }
-            catch (_a) {
+            catch {
                 body.focus();
             }
         }
@@ -13013,7 +13441,7 @@
     };
     const hasFocus = (editor) => editor.inline ? hasInlineFocus(editor) : hasIframeFocus(editor);
     const hasEditorOrUiFocus = (editor) => hasFocus(editor) || hasUiFocus(editor);
-    const focusEditor = (editor) => {
+    const focusEditor = (editor, preventScroll) => {
         const selection = editor.selection;
         const body = editor.getBody();
         let rng = selection.getRng();
@@ -13031,9 +13459,9 @@
         const contentEditableHost = getContentEditableHost(editor, selection.getNode());
         if (contentEditableHost && editor.dom.isChildOf(contentEditableHost, body)) {
             if (!hasContentEditableFalseParent$1(editor, contentEditableHost)) {
-                focusBody(body);
+                focusBody(body, preventScroll);
             }
-            focusBody(contentEditableHost);
+            focusBody(contentEditableHost, preventScroll);
             if (!editor.hasEditableRoot()) {
                 restoreBookmark(editor);
             }
@@ -13044,30 +13472,40 @@
         // Focus the window iframe
         if (!editor.inline) {
             // WebKit needs this call to fire focusin event properly see #5948
-            // But Opera pre Blink engine will produce an empty selection so skip Opera
-            if (!Env.browser.isOpera()) {
-                focusBody(body);
+            focusBody(body, preventScroll);
+            if (preventScroll) {
+                if (isNonNullable(editor.iframeElement)) {
+                    editor.iframeElement.focus({ preventScroll: true });
+                }
             }
-            editor.getWin().focus();
+            else {
+                editor.getWin().focus();
+            }
         }
         // Focus the body as well since it's contentEditable
         if (Env.browser.isFirefox() || editor.inline) {
-            focusBody(body);
+            focusBody(body, preventScroll);
             normalizeSelection(editor, rng);
         }
         activateEditor(editor);
     };
     const activateEditor = (editor) => editor.editorManager.setActive(editor);
-    const focus = (editor, skipFocus) => {
+    const normalizeFocusOptions = (args) => {
+        if (isNonNullable(args) && !isBoolean(args)) {
+            return args;
+        }
+        return { scrollToSelection: true };
+    };
+    const focus = (editor, args) => {
         if (editor.removed) {
             return;
         }
-        if (skipFocus) {
+        if (args === true) {
             activateEditor(editor);
+            return;
         }
-        else {
-            focusEditor(editor);
-        }
+        const options = normalizeFocusOptions(args);
+        focusEditor(editor, options.scrollToSelection === false);
     };
 
     /**
@@ -13098,7 +13536,7 @@
     };
 
     const elementSelectionAttr = 'data-mce-selected';
-    const controlElmSelector = 'table,img,figure.image,hr,video,span.mce-preview-object,details';
+    const controlElmSelector = `table,img,figure.image,hr,video,span.mce-preview-object,details,${ucVideoNodeName}`;
     const abs = Math.abs;
     const round$1 = Math.round;
     // Details about each resize handle how to scale etc
@@ -13196,16 +13634,35 @@
                 return elm.cloneNode(true);
             }
         };
+        const setUcVideoSizeProp = (element, name, value) => {
+            // this is needed because otherwise the ghost for `uc-video` is not correctly rendered
+            element[name] = value;
+            const minimumWidth = 400;
+            if (element.width > minimumWidth && !(name === 'width' && value < minimumWidth)) {
+                element[name] = value;
+                dom.setStyle(element, name, value);
+            }
+            else {
+                const valueConsideringMinWidth = name === 'height' ? minimumWidth * (ratio ?? 1) : minimumWidth;
+                element[name] = valueConsideringMinWidth;
+                dom.setStyle(element, name, valueConsideringMinWidth);
+            }
+        };
         const setSizeProp = (element, name, value) => {
             if (isNonNullable(value)) {
                 // Resize by using style or attribute
                 const targets = getResizeTargets(element);
                 each$e(targets, (target) => {
-                    if (target.style[name] || !editor.schema.isValid(target.nodeName.toLowerCase(), name)) {
-                        dom.setStyle(target, name, value);
+                    if (isUcVideo(target)) {
+                        setUcVideoSizeProp(target, name, value);
                     }
                     else {
-                        dom.setAttrib(target, name, '' + value);
+                        if (target.style[name] || !editor.schema.isValid(target.nodeName.toLowerCase(), name)) {
+                            dom.setStyle(target, name, value);
+                        }
+                        else {
+                            dom.setAttrib(target, name, '' + value);
+                        }
                     }
                 });
             }
@@ -13226,7 +13683,7 @@
             // Never scale down lower than 5 pixels
             width = width < 5 ? 5 : width;
             height = height < 5 ? 5 : height;
-            if ((isImage(selectedElm) || isMedia(selectedElm)) && getResizeImgProportional(editor) !== false) {
+            if ((isImage(selectedElm) || isMedia(selectedElm) || isUcVideo(selectedElm)) && getResizeImgProportional(editor) !== false) {
                 proportional = !VK.modifierPressed(e);
             }
             else {
@@ -13428,7 +13885,7 @@
                 return;
             }
             const targetElm = e.type === 'mousedown' ? e.target : selection.getNode();
-            const controlElm = closest$3(SugarElement.fromDom(targetElm), controlElmSelector)
+            const controlElm = closest$4(SugarElement.fromDom(targetElm), controlElmSelector)
                 .map((e) => e.dom)
                 .filter((e) => dom.isEditable(e.parentElement) || (e.nodeName === 'IMG' && dom.isEditable(e)))
                 .getOrUndefined();
@@ -13464,7 +13921,7 @@
                 // Disable object resizing on Gecko
                 editor.getDoc().execCommand('enableObjectResizing', false, 'false');
             }
-            catch (_a) {
+            catch {
                 // Ignore
             }
         };
@@ -13539,7 +13996,7 @@
         }
         return false;
     };
-    const isPrevNode = (node, name) => { var _a; return ((_a = node.previousSibling) === null || _a === void 0 ? void 0 : _a.nodeName) === name; };
+    const isPrevNode = (node, name) => node.previousSibling?.nodeName === name;
     const hasContentEditableFalseParent = (root, node) => {
         let currentNode = node;
         while (currentNode && currentNode !== root) {
@@ -13875,6 +14332,48 @@
     RangeUtils.getSelectedNode = getSelectedNode;
     RangeUtils.getNode = getNode$1;
 
+    const walkUp = (navigation, doc) => {
+        const frame = navigation.view(doc);
+        return frame.fold(constant([]), (f) => {
+            const parent = navigation.owner(f);
+            const rest = walkUp(navigation, parent);
+            return [f].concat(rest);
+        });
+    };
+    const pathTo = (element, navigation) => {
+        const d = navigation.owner(element);
+        return walkUp(navigation, d);
+    };
+
+    const view = (doc) => {
+        // Only walk up to the document this script is defined in.
+        // This prevents walking up to the parent window when the editor is in an iframe.
+        const element = doc.dom === document ? Optional.none() : Optional.from(doc.dom.defaultView?.frameElement);
+        return element.map(SugarElement.fromDom);
+    };
+    const owner = (element) => documentOrOwner(element);
+
+    var Navigation = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        view: view,
+        owner: owner
+    });
+
+    const find = (element) => {
+        const doc = getDocument();
+        const scroll = get$6(doc);
+        const frames = pathTo(element, Navigation);
+        const offset = viewport(element);
+        const r = foldr(frames, (b, a) => {
+            const loc = viewport(a);
+            return {
+                left: b.left + loc.left,
+                top: b.top + loc.top
+            };
+        }, { left: 0, top: 0 });
+        return SugarPosition(r.left + offset.left + scroll.left, r.top + offset.top + scroll.top);
+    };
+
     const excludeFromDescend = (element) => name(element) === 'textarea';
     const fireScrollIntoViewEvent = (editor, data) => {
         const scrollEvent = editor.dispatch('ScrollIntoView', data);
@@ -13884,7 +14383,7 @@
         editor.dispatch('AfterScrollIntoView', data);
     };
     const descend = (element, offset) => {
-        const children = children$1(element);
+        const children = children$2(element);
         if (children.length === 0 || excludeFromDescend(element)) {
             return { element, offset };
         }
@@ -13901,17 +14400,17 @@
                     return { element: last, offset: 1 };
                 }
                 else if (isText$c(last)) {
-                    return { element: last, offset: get$4(last).length };
+                    return { element: last, offset: get$5(last).length };
                 }
                 else {
-                    return { element: last, offset: children$1(last).length };
+                    return { element: last, offset: children$2(last).length };
                 }
             }
         }
     };
     const markerInfo = (element, cleanupFun) => {
         const pos = absolute(element);
-        const height = get$6(element);
+        const height = get$7(element);
         return {
             element,
             bottom: pos.top + height,
@@ -13935,7 +14434,7 @@
         if (fireScrollIntoViewEvent(editor, data)) {
             return;
         }
-        const scrollTop = get$5(doc).top;
+        const scrollTop = get$6(doc).top;
         f(editor, doc, scrollTop, marker, alignToTop);
         fireAfterScrollIntoViewEvent(editor, data);
     };
@@ -14178,8 +14677,7 @@
         return undefined;
     };
     const isEmptyTextNode = (node) => {
-        var _a;
-        const text = (_a = node.value) !== null && _a !== void 0 ? _a : '';
+        const text = node.value ?? '';
         // Non whitespace content
         if (!isWhitespaceText(text)) {
             return false;
@@ -14225,6 +14723,16 @@
             }
             return node;
         }
+        name;
+        type;
+        attributes;
+        value;
+        parent;
+        firstChild;
+        lastChild;
+        next;
+        prev;
+        raw;
         /**
          * Constructs a new Node instance.
          *
@@ -14536,7 +15044,6 @@
          * node.isEmpty({ img: true });
          */
         isEmpty(elements, whitespace = {}, predicate) {
-            var _a;
             const self = this;
             let node = self.firstChild;
             if (isNonEmptyElement(self)) {
@@ -14566,7 +15073,7 @@
                         return false;
                     }
                     // Keep whitespace preserve elements
-                    if (node.type === 3 && node.parent && whitespace[node.parent.name] && isWhitespaceText((_a = node.value) !== null && _a !== void 0 ? _a : '')) {
+                    if (node.type === 3 && node.parent && whitespace[node.parent.name] && isWhitespaceText(node.value ?? '')) {
                         return false;
                     }
                     // Predicate tells that the node is contents
@@ -14610,7 +15117,7 @@
     const trimTemporaryNodes = (tempAttrs, body) => {
         each$e(getTemporaryNodes(tempAttrs, body), (elm) => {
             const element = SugarElement.fromDom(elm);
-            if (get$9(element, 'data-mce-bogus') === 'all') {
+            if (get$a(element, 'data-mce-bogus') === 'all') {
                 remove$8(element);
             }
             else {
@@ -14663,7 +15170,7 @@
     const cleanupBogusElements = (parent) => {
         const bogusElements = descendants(parent, '[data-mce-bogus]');
         each$e(bogusElements, (elem) => {
-            const bogusValue = get$9(elem, 'data-mce-bogus');
+            const bogusValue = get$a(elem, 'data-mce-bogus');
             if (bogusValue === 'all') {
                 remove$8(elem);
             }
@@ -14693,13 +15200,13 @@
         const doc = editor.getDoc();
         const dos = getRootNode(SugarElement.fromDom(editor.getBody()));
         const offscreenDiv = SugarElement.fromTag('div', doc);
-        set$4(offscreenDiv, 'data-mce-bogus', 'all');
+        set$5(offscreenDiv, 'data-mce-bogus', 'all');
         setAll(offscreenDiv, {
             position: 'fixed',
             left: '-9999999px',
             top: '0'
         });
-        set$3(offscreenDiv, body.innerHTML);
+        set$4(offscreenDiv, body.innerHTML);
         cleanupBogusElements(offscreenDiv);
         cleanupInputNames(offscreenDiv);
         // Append the wrapper element so that the browser will evaluate styles when getting the `innerText`
@@ -14910,13 +15417,11 @@
             const handlers = {
                 // #text
                 3: (node) => {
-                    var _a;
-                    writer.text((_a = node.value) !== null && _a !== void 0 ? _a : '', node.raw);
+                    writer.text(node.value ?? '', node.raw);
                 },
                 // #comment
                 8: (node) => {
-                    var _a;
-                    writer.comment((_a = node.value) !== null && _a !== void 0 ? _a : '');
+                    writer.comment(node.value ?? '');
                 },
                 // Processing instruction
                 7: (node) => {
@@ -14924,13 +15429,11 @@
                 },
                 // Doctype
                 10: (node) => {
-                    var _a;
-                    writer.doctype((_a = node.value) !== null && _a !== void 0 ? _a : '');
+                    writer.doctype(node.value ?? '');
                 },
                 // CDATA
                 4: (node) => {
-                    var _a;
-                    writer.cdata((_a = node.value) !== null && _a !== void 0 ? _a : '');
+                    writer.cdata(node.value ?? '');
                 },
                 // Document fragment
                 11: (node) => {
@@ -14944,7 +15447,6 @@
             };
             writer.reset();
             const walk = (node) => {
-                var _a;
                 const handler = handlers[node.type];
                 if (!handler) {
                     const name = node.name;
@@ -14989,7 +15491,7 @@
                                 // Pre and textarea elements treat the first newline character as optional and will omit it. As such, if the content starts
                                 // with a newline we need to add in an additional newline to prevent the current newline in the value being treated as optional
                                 // See https://html.spec.whatwg.org/multipage/syntax.html#element-restrictions
-                                if ((name === 'pre' || name === 'textarea') && child.type === 3 && ((_a = child.value) === null || _a === void 0 ? void 0 : _a[0]) === '\n') {
+                                if ((name === 'pre' || name === 'textarea') && child.type === 3 && child.value?.[0] === '\n') {
                                     writer.text('\n', true);
                                 }
                                 do {
@@ -15067,9 +15569,8 @@
         const nodeStyleProps = getStyleProps(dom, node);
         const parentNodeStyleProps = getStyleProps(dom, parentNode);
         const valueMismatch = (prop) => {
-            var _a, _b;
-            const nodeValue = (_a = dom.getStyle(node, prop)) !== null && _a !== void 0 ? _a : '';
-            const parentValue = (_b = dom.getStyle(parentNode, prop)) !== null && _b !== void 0 ? _b : '';
+            const nodeValue = dom.getStyle(node, prop) ?? '';
+            const parentValue = dom.getStyle(parentNode, prop) ?? '';
             return isNotEmpty(nodeValue) && isNotEmpty(parentValue) && nodeValue !== parentValue;
         };
         return exists(nodeStyleProps, (nodeStyleProp) => {
@@ -15097,7 +15598,7 @@
         return isText$b(container) && (container.data.length === 0 || isZwsp(container.data) && BookmarkManager.isBookmarkNode(container.parentNode));
     };
     const matchesElementPosition = (before, predicate) => (pos) => getChildNodeAtRelativeOffset(before ? 0 : -1, pos).filter(predicate).isSome();
-    const isImageBlock = (node) => isImg(node) && get$7(SugarElement.fromDom(node), 'display') === 'block';
+    const isImageBlock = (node) => isImg(node) && get$8(SugarElement.fromDom(node), 'display') === 'block';
     const isCefNode = (node) => isContentEditableFalse$a(node) && !isBogusAll(node);
     const isBeforeImageBlock = matchesElementPosition(true, isImageBlock);
     const isAfterImageBlock = matchesElementPosition(false, isImageBlock);
@@ -15167,8 +15668,8 @@
     };
     const isPreValue = (value) => contains$2(['pre', 'pre-wrap'], value);
     const isInPre = (pos) => getElementFromPosition(pos)
-        .bind((elm) => closest$4(elm, isElement$8))
-        .exists((elm) => isPreValue(get$7(elm, 'white-space')));
+        .bind((elm) => closest$5(elm, isElement$8))
+        .exists((elm) => isPreValue(get$8(elm, 'white-space')));
     const isAtBeginningOfBody = (root, pos) => prevPosition(root.dom, pos).isNone();
     const isAtEndOfBody = (root, pos) => nextPosition(root.dom, pos).isNone();
     const isAtLineBoundary = (root, pos, schema) => (isAtBeginningOfBody(root, pos) ||
@@ -15406,7 +15907,7 @@
             const br = SugarElement.fromHtml('<br data-mce-bogus="1">');
             // Remove all bogus elements except caret
             if (preserveEmptyCaret) {
-                each$e(children$1(elm), (node) => {
+                each$e(children$2(elm), (node) => {
                     if (!isEmptyCaretFormatElement(node)) {
                         remove$8(node);
                     }
@@ -15472,7 +15973,7 @@
     const isInlineTarget = (editor, elm) => is$2(SugarElement.fromDom(elm), getInlineBoundarySelector(editor))
         && !isTransparentBlock(editor.schema, elm)
         && editor.dom.isEditable(elm);
-    const isRtl = (element) => { var _a; return DOMUtils.DOM.getStyle(element, 'direction', true) === 'rtl' || hasStrongRtl((_a = element.textContent) !== null && _a !== void 0 ? _a : ''); };
+    const isRtl = (element) => DOMUtils.DOM.getStyle(element, 'direction', true) === 'rtl' || hasStrongRtl(element.textContent ?? '');
     const findInlineParents = (isInlineTarget, rootNode, pos) => filter$5(DOMUtils.DOM.getParents(pos.container(), '*', rootNode), isInlineTarget);
     const findRootInline = (isInlineTarget, rootNode, pos) => {
         const parents = findInlineParents(isInlineTarget, rootNode, pos);
@@ -15534,7 +16035,7 @@
     const isTextBlockOrListItem = (element) => isTextBlock$3(element) || isListItem$2(element);
     const getParentBlock$2 = (rootNode, elm) => {
         if (contains(rootNode, elm)) {
-            return closest$4(elm, isTextBlockOrListItem, isBeforeRoot(rootNode));
+            return closest$5(elm, isTextBlockOrListItem, isBeforeRoot(rootNode));
         }
         else {
             return Optional.none();
@@ -15561,11 +16062,10 @@
         return child.bind(freefallRtl).orThunk(() => Optional.some(root));
     };
     const deleteRangeContents = (editor, rng, root, moveSelection = true) => {
-        var _a;
         rng.deleteContents();
         // Pad the last block node
         const lastNode = freefallRtl(root).getOr(root);
-        const lastBlock = SugarElement.fromDom((_a = editor.dom.getParent(lastNode.dom, editor.dom.isBlock)) !== null && _a !== void 0 ? _a : root.dom);
+        const lastBlock = SugarElement.fromDom(editor.dom.getParent(lastNode.dom, editor.dom.isBlock) ?? root.dom);
         // If the block is the editor body then we need to insert the root block as well
         if (lastBlock.dom === editor.getBody()) {
             paddEmptyBody(editor, moveSelection);
@@ -15579,7 +16079,7 @@
         // Clean up any additional leftover nodes. If the last block wasn't a direct child, then we also need to clean up siblings
         if (!eq(root, lastBlock)) {
             const additionalCleanupNodes = is$4(parent(lastBlock), root) ? [] : siblings(lastBlock);
-            each$e(additionalCleanupNodes.concat(children$1(root)), (node) => {
+            each$e(additionalCleanupNodes.concat(children$2(root)), (node) => {
                 if (!eq(node, lastBlock) && !contains(node, lastBlock) && isEmpty$4(editor.schema, node)) {
                     remove$8(node);
                 }
@@ -15639,7 +16139,7 @@
         { partialTable: ['cells', 'outsideDetails'] },
         { multiTable: ['startTableCells', 'endTableCells', 'betweenRng'] },
     ]);
-    const getClosestCell$1 = (container, isRoot) => closest$3(SugarElement.fromDom(container), 'td,th', isRoot);
+    const getClosestCell$1 = (container, isRoot) => closest$4(SugarElement.fromDom(container), 'td,th', isRoot);
     const isExpandedCellRng = (cellRng) => !eq(cellRng.start, cellRng.end);
     const getTableFromCellRng = (cellRng, isRoot) => getClosestTable(cellRng.start, isRoot)
         .bind((startParentTable) => getClosestTable(cellRng.end, isRoot)
@@ -15792,7 +16292,7 @@
         // Restore the data-mce-selected attribute if multiple cells were selected, as if it was a cef element
         // then selection overrides would remove it as it was using an offscreen selection clone.
         if (selectedCells.length > 1 && exists(selectedCells, (cell) => eq(cell, selectedNode))) {
-            set$4(selectedNode, 'data-mce-selected', '1');
+            set$5(selectedNode, 'data-mce-selected', '1');
         }
     };
     /*
@@ -16067,8 +16567,61 @@
         return outRng;
     };
 
-    // TODO: This is a clone of the list bookmark code if we move lists to core then de-duplicate this #TINY-12172
-    const DOM$c = DOMUtils.DOM;
+    const DOM$b = DOMUtils.DOM;
+    const defaultMarker = () => DOM$b.create('span', { 'data-mce-type': 'bookmark' });
+    const setupEndPoint = (container, offset, createMarker) => {
+        if (isElement$7(container)) {
+            const offsetNode = createMarker();
+            if (container.hasChildNodes()) {
+                if (offset === container.childNodes.length) {
+                    container.appendChild(offsetNode);
+                }
+                else {
+                    container.insertBefore(offsetNode, container.childNodes[offset]);
+                }
+            }
+            else {
+                container.appendChild(offsetNode);
+            }
+            return { container: offsetNode, offset: 0 };
+        }
+        else {
+            return { container, offset };
+        }
+    };
+    const restoreEndPoint = (container, offset) => {
+        const nodeIndex = (container) => {
+            let node = container.parentNode?.firstChild;
+            let idx = 0;
+            while (node) {
+                if (node === container) {
+                    return idx;
+                }
+                // Skip data-mce-type=bookmark nodes
+                if (!isElement$7(node) || node.getAttribute('data-mce-type') !== 'bookmark') {
+                    idx++;
+                }
+                node = node.nextSibling;
+            }
+            return -1;
+        };
+        if (isElement$7(container) && isNonNullable(container.parentNode)) {
+            const node = container;
+            offset = nodeIndex(container);
+            container = container.parentNode;
+            DOM$b.remove(node);
+            if (!container.hasChildNodes() && DOM$b.isBlock(container)) {
+                container.appendChild(DOM$b.create('br'));
+            }
+        }
+        return { container, offset };
+    };
+    const createNormalizedRange = (startContainer, startOffset, endContainer, endOffset) => {
+        const rng = DOM$b.createRng();
+        rng.setStart(startContainer, startOffset);
+        rng.setEnd(endContainer, endOffset);
+        return normalizeRange$1(rng);
+    };
     /**
      * Returns a range bookmark. This will convert indexed bookmarks into temporary span elements with
      * index 0 so that they can be restored properly after the DOM has been modified. Text bookmarks will not have spans
@@ -16077,79 +16630,25 @@
      * So this: <p><b>|</b><b>|</b></p>
      * becomes: <p><b><span data-mce-type="bookmark">|</span></b><b data-mce-type="bookmark">|</span></b></p>
      */
-    const createBookmark$1 = (rng) => {
-        const bookmark = {};
-        const setupEndPoint = (start) => {
-            let container = rng[start ? 'startContainer' : 'endContainer'];
-            let offset = rng[start ? 'startOffset' : 'endOffset'];
-            if (isElement$7(container)) {
-                const offsetNode = DOM$c.create('span', { 'data-mce-type': 'bookmark' });
-                if (container.hasChildNodes()) {
-                    if (offset === container.childNodes.length) {
-                        container.appendChild(offsetNode);
-                    }
-                    else {
-                        container.insertBefore(offsetNode, container.childNodes[offset]);
-                    }
-                }
-                else {
-                    container.appendChild(offsetNode);
-                }
-                container = offsetNode;
-                offset = 0;
-            }
-            bookmark[start ? 'startContainer' : 'endContainer'] = container;
-            bookmark[start ? 'startOffset' : 'endOffset'] = offset;
-        };
-        setupEndPoint(true);
-        if (!rng.collapsed) {
-            setupEndPoint();
+    const createBookmark = (rng, createMarker = defaultMarker) => {
+        const { container: startContainer, offset: startOffset } = setupEndPoint(rng.startContainer, rng.startOffset, createMarker);
+        if (rng.collapsed) {
+            return { startContainer, startOffset };
         }
-        return bookmark;
+        else {
+            const { container: endContainer, offset: endOffset } = setupEndPoint(rng.endContainer, rng.endOffset, createMarker);
+            return { startContainer, startOffset, endContainer, endOffset };
+        }
     };
-    const resolveBookmark$2 = (bookmark) => {
-        const restoreEndPoint = (start) => {
-            const nodeIndex = (container) => {
-                var _a;
-                let node = (_a = container.parentNode) === null || _a === void 0 ? void 0 : _a.firstChild;
-                let idx = 0;
-                while (node) {
-                    if (node === container) {
-                        return idx;
-                    }
-                    // Skip data-mce-type=bookmark nodes
-                    if (!isElement$7(node) || node.getAttribute('data-mce-type') !== 'bookmark') {
-                        idx++;
-                    }
-                    node = node.nextSibling;
-                }
-                return -1;
-            };
-            let container = bookmark[start ? 'startContainer' : 'endContainer'];
-            let offset = bookmark[start ? 'startOffset' : 'endOffset'];
-            if (!container) {
-                return;
-            }
-            if (isElement$7(container) && container.parentNode) {
-                const node = container;
-                offset = nodeIndex(container);
-                container = container.parentNode;
-                DOM$c.remove(node);
-                if (!container.hasChildNodes() && DOM$c.isBlock(container)) {
-                    container.appendChild(DOM$c.create('br'));
-                }
-            }
-            bookmark[start ? 'startContainer' : 'endContainer'] = container;
-            bookmark[start ? 'startOffset' : 'endOffset'] = offset;
-        };
-        restoreEndPoint(true);
-        restoreEndPoint();
-        const rng = DOM$c.createRng();
-        rng.setStart(bookmark.startContainer, bookmark.startOffset);
-        if (bookmark.endContainer) {
-            rng.setEnd(bookmark.endContainer, bookmark.endOffset);
+    const resolveBookmark = (bookmark) => {
+        const { container: startContainer, offset: startOffset } = restoreEndPoint(bookmark.startContainer, bookmark.startOffset);
+        if (!isUndefined(bookmark.endContainer) && !isUndefined(bookmark.endOffset)) {
+            const { container: endContainer, offset: endOffset } = restoreEndPoint(bookmark.endContainer, bookmark.endOffset);
+            return createNormalizedRange(startContainer, startOffset, endContainer, endOffset);
         }
-        return normalizeRange$1(rng);
+        else {
+            return createNormalizedRange(startContainer, startOffset, startContainer, startOffset);
+        }
     };
 
     const applyStyles = (dom, elm, format, vars) => {
@@ -16291,14 +16790,23 @@
         }
         return undefined;
     };
+    const containsFormatDeep = (editor, root, name, vars, similar) => isNonNullable(matchNode$1(editor, root, name, vars, similar)) ||
+        exists(from(root.childNodes), (child) => containsFormatDeep(editor, child, name, vars, similar));
+    const matchEditableDescendants = (editor, node, name, vars, similar) => {
+        const dom = editor.dom;
+        if (!isElement$7(node) || dom.getContentEditable(node) !== 'false' || isWrappableNoneditable(editor, node)) {
+            return false;
+        }
+        return exists(getEditableDescendants(dom, node), (descendant) => containsFormatDeep(editor, descendant, name, vars, similar));
+    };
     const match$2 = (editor, name, vars, node, similar) => {
         // Check specified node
         if (node) {
-            return matchParents(editor, node, name, vars, similar);
+            return matchParents(editor, node, name, vars, similar) || matchEditableDescendants(editor, node, name, vars, similar);
         }
         // Check selected node
         node = editor.selection.getNode();
-        if (matchParents(editor, node, name, vars, similar)) {
+        if (matchParents(editor, node, name, vars, similar) || matchEditableDescendants(editor, node, name, vars, similar)) {
             return true;
         }
         // Check start node if it's different
@@ -16444,17 +16952,16 @@
         }
     };
     const insertCaretContainerNode = (editor, caretContainer, formatNode) => {
-        var _a, _b;
         const dom = editor.dom;
         const block = dom.getParent(formatNode, curry(isTextBlock$2, editor.schema));
         if (block && dom.isEmpty(block)) {
             // Replace formatNode with caretContainer when removing format from empty block like <p><b>|</b></p>
-            (_a = formatNode.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(caretContainer, formatNode);
+            formatNode.parentNode?.replaceChild(caretContainer, formatNode);
         }
         else {
             removeTrailingBr(SugarElement.fromDom(formatNode));
             if (dom.isEmpty(formatNode)) {
-                (_b = formatNode.parentNode) === null || _b === void 0 ? void 0 : _b.replaceChild(caretContainer, formatNode);
+                formatNode.parentNode?.replaceChild(caretContainer, formatNode);
             }
             else {
                 dom.insertAfter(caretContainer, formatNode);
@@ -16466,11 +16973,10 @@
         return node;
     };
     const insertFormatNodesIntoCaretContainer = (formatNodes, caretContainer) => {
-        var _a;
         const innerMostFormatNode = foldr(formatNodes, (parentNode, formatNode) => {
             return appendNode(parentNode, formatNode.cloneNode(false));
         }, caretContainer);
-        const doc = (_a = innerMostFormatNode.ownerDocument) !== null && _a !== void 0 ? _a : document;
+        const doc = innerMostFormatNode.ownerDocument ?? document;
         return appendNode(innerMostFormatNode, doc.createTextNode(ZWSP));
     };
     const cleanFormatNode = (editor, caretContainer, formatNode, name, vars, similar) => {
@@ -16494,7 +17000,7 @@
             return Optional.none();
         }
     };
-    const normalizeNbsps = (node) => set$1(node, get$4(node).replace(new RegExp(`${nbsp}$`), ' '));
+    const normalizeNbsps = (node) => set$2(node, get$5(node).replace(new RegExp(`${nbsp}$`), ' '));
     const normalizeNbspsBetween = (editor, caretContainer) => {
         const handler = () => {
             if (caretContainer !== null && !editor.dom.isEmpty(caretContainer)) {
@@ -16555,7 +17061,7 @@
         }
         else {
             let textNode = caretContainer ? findFirstTextNode(caretContainer) : null;
-            if (!caretContainer || (textNode === null || textNode === void 0 ? void 0 : textNode.data) !== ZWSP) {
+            if (!caretContainer || textNode?.data !== ZWSP) {
                 // Need to import the node into the document on IE or we get a lovely WrongDocument exception
                 caretContainer = importNode(editor.getDoc(), createCaretContainer(true).dom);
                 textNode = caretContainer.firstChild;
@@ -16623,7 +17129,7 @@
             const caretContainer = getParentCaretContainer(editor.getBody(), formatNode);
             const parentsAfter = isNonNullable(caretContainer) ? dom.getParents(formatNode.parentNode, always, caretContainer) : [];
             const newCaretContainer = createCaretContainer(false).dom;
-            insertCaretContainerNode(editor, newCaretContainer, caretContainer !== null && caretContainer !== void 0 ? caretContainer : formatNode);
+            insertCaretContainerNode(editor, newCaretContainer, caretContainer ?? formatNode);
             const cleanedFormatNode = cleanFormatNode(editor, newCaretContainer, formatNode, name, vars, similar);
             const caretTextNode = insertFormatNodesIntoCaretContainer([
                 ...parents,
@@ -16695,12 +17201,34 @@
             .exists((pos) => !isBr$7(pos.getNode()) || nextPosition(elm, pos).isSome()) === false;
     };
     const isEditableListItem = (dom) => (elm) => isListItem$3(elm) && dom.isEditable(elm);
+    // TINY-13197: If the content is wrapped inside a block element, the first block returned by getSelectedBlocks() is not LI, even when the content is fully selected.
+    // However, the second and subsequent do return LI as the selected block so only the first block needs to be adjusted
+    const getAndOnlyNormalizeFirstBlockIf = (selection, pred) => map$3(selection.getSelectedBlocks(), (block, i) => {
+        if (i === 0 && pred(block)) {
+            return selection.dom.getParent(block, isListItem$3) ?? block;
+        }
+        else {
+            return block;
+        }
+    });
+    // Resolve list items from the
+    // selected cells directly instead, matching how SelectionUtils.runOnRanges resolves fake selections.
+    const getCellSelectionListItems = (editor) => {
+        const fakeSelectionNodes = getCellsFromEditor(editor);
+        if (fakeSelectionNodes.length > 0) {
+            const listItems = bind$3(fakeSelectionNodes, (cell) => descendants(cell, 'li'));
+            return Optional.some(map$3(listItems, (item) => item.dom));
+        }
+        else {
+            return Optional.none();
+        }
+    };
     const getFullySelectedBlocks = (selection) => {
-        const blocks = selection.getSelectedBlocks();
-        const rng = selection.getRng();
         if (selection.isCollapsed()) {
             return [];
         }
+        const rng = selection.getRng();
+        const blocks = getAndOnlyNormalizeFirstBlockIf(selection, (el) => isRngStartAtStartOfElement(rng, el) && !isListItem$3(el));
         if (blocks.length === 1) {
             return isRngStartAtStartOfElement(rng, blocks[0]) && isRngEndAtEndOfElement(rng, blocks[0]) ? blocks : [];
         }
@@ -16711,8 +17239,15 @@
             return first.concat(middle).concat(last);
         }
     };
-    const getFullySelectedListItems = (selection) => filter$5(getFullySelectedBlocks(selection), isEditableListItem(selection.dom));
-    const getPartiallySelectedListItems = (selection) => filter$5(selection.getSelectedBlocks(), isEditableListItem(selection.dom));
+    const getFullySelectedListItems = (editor) => {
+        const items = getCellSelectionListItems(editor).getOrThunk(() => getFullySelectedBlocks(editor.selection));
+        return filter$5(items, isEditableListItem(editor.selection.dom));
+    };
+    const getPartiallySelectedListItems = (editor) => {
+        const items = getCellSelectionListItems(editor)
+            .getOrThunk(() => getAndOnlyNormalizeFirstBlockIf(editor.selection, (el) => !isListItem$3(el)));
+        return filter$5(items, isEditableListItem(editor.selection.dom));
+    };
 
     const each$8 = Tools.each;
     const isElementNode = (node) => isElement$7(node) && !isBookmarkNode$1(node) && !isCaretNode(node) && !isBogus$1(node);
@@ -16754,12 +17289,11 @@
         return next;
     };
     const mergeSiblings = (editor, format, vars, node) => {
-        var _a;
         // Merge next and previous siblings if they are similar <b>text</b><b>text</b> becomes <b>texttext</b>
         // Note: mergeSiblingNodes attempts to not merge sibilings if they are noneditable
         if (node && format.merge_siblings !== false) {
             // Previous sibling
-            const newNode = (_a = mergeSiblingsNodes(editor, getNonWhiteSpaceSibling(node), node)) !== null && _a !== void 0 ? _a : node;
+            const newNode = mergeSiblingsNodes(editor, getNonWhiteSpaceSibling(node), node) ?? node;
             // Next sibling
             mergeSiblingsNodes(editor, newNode, getNonWhiteSpaceSibling(newNode, true));
         }
@@ -16846,9 +17380,8 @@
         return node;
     };
     const wrap$1 = (dom, node, name, attrs) => {
-        var _a;
         const wrapper = dom.create(name, attrs);
-        (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(wrapper, node);
+        node.parentNode?.insertBefore(wrapper, node);
         wrapper.appendChild(node);
         return wrapper;
     };
@@ -16956,14 +17489,14 @@
     };
     const removeListStyleFormats = (editor, name, vars) => {
         if (name === 'removeformat') {
-            each$e(getPartiallySelectedListItems(editor.selection), (li) => {
+            each$e(getPartiallySelectedListItems(editor), (li) => {
                 each$e(listItemStyles, (name) => editor.dom.setStyle(li, name, ''));
                 removeEmptyStyleAttributeIfNeeded(editor.dom, li);
             });
         }
         else {
             getExpandedListItemFormat(editor.formatter, name).each((liFmt) => {
-                each$e(getPartiallySelectedListItems(editor.selection), (li) => removeStyles$1(editor.dom, li, liFmt, vars, null));
+                each$e(getPartiallySelectedListItems(editor), (li) => removeStyles$1(editor.dom, li, liFmt, vars, null));
             });
         }
     };
@@ -17089,7 +17622,6 @@
         return editor.dom.rename(clone, newName);
     }, constant(null));
     const wrapAndSplit = (editor, formatList, formatRoot, container, target, split, format, vars) => {
-        var _a, _b;
         let lastClone;
         let firstClone;
         const dom = editor.dom;
@@ -17117,11 +17649,11 @@
             }
             // Never split block elements if the format is mixed
             if (split && (!format.mixed || !dom.isBlock(formatRoot))) {
-                container = (_a = dom.split(formatRoot, container)) !== null && _a !== void 0 ? _a : container;
+                container = dom.split(formatRoot, container) ?? container;
             }
             // Wrap container in cloned formats
             if (lastClone && firstClone) {
-                (_b = target.parentNode) === null || _b === void 0 ? void 0 : _b.insertBefore(lastClone, target);
+                target.parentNode?.insertBefore(lastClone, target);
                 firstClone.appendChild(target);
                 // After splitting the nodes may match with other siblings so we need to attempt to merge them
                 // Note: We can't use MergeFormats, as that'd create a circular dependency
@@ -17348,14 +17880,14 @@
         });
     };
     const wrapChildrenInInnerWrapper = (target, wrapper, hasFormat, removeFormatFromElement) => {
-        each$e(children$1(target), (child) => {
+        each$e(children$2(target), (child) => {
             if (isElement$8(child) && hasFormat(child)) {
                 if (removeFormatFromElement(child).isNone()) {
                     unwrap(child);
                 }
             }
         });
-        each$e(children$1(target), (child) => append$1(wrapper, child));
+        each$e(children$2(target), (child) => append$1(wrapper, child));
         prepend(target, wrapper);
     };
     const wrapInOuterWrappers = (target, wrappers) => {
@@ -17398,9 +17930,9 @@
                 return Optional.some(el);
             }
         };
-        const bookmark = createBookmark$1(editor.selection.getRng());
+        const bookmark = createBookmark(editor.selection.getRng());
         normalizeFontSizeElementsInternal(editor.dom, fontSizeElements, hasFormat, createFormatElement, removeFormatFromElement);
-        editor.selection.setRng(resolveBookmark$2(bookmark));
+        editor.selection.setRng(resolveBookmark(bookmark));
     };
     const collectFontSizeElements = (formatter, wrappers) => bind$3(wrappers, (wrapper) => {
         const fontSizeDescendants = descendants$1(wrapper, (el) => isFontSizeAlteringElement(formatter, el));
@@ -17511,14 +18043,14 @@
             node.empty().append(new AstNode('#text', 3)).value = nbsp;
         }
     };
-    const isPaddedWithNbsp = (node) => { var _a; return hasOnlyChild(node, '#text') && ((_a = node === null || node === void 0 ? void 0 : node.firstChild) === null || _a === void 0 ? void 0 : _a.value) === nbsp; };
+    const isPaddedWithNbsp = (node) => hasOnlyChild(node, '#text') && node?.firstChild?.value === nbsp;
     const hasOnlyChild = (node, name) => {
-        const firstChild = node === null || node === void 0 ? void 0 : node.firstChild;
+        const firstChild = node?.firstChild;
         return isNonNullable(firstChild) && firstChild === node.lastChild && firstChild.name === name;
     };
     const isPadded = (schema, node) => {
         const rule = schema.getElementRule(node.name);
-        return (rule === null || rule === void 0 ? void 0 : rule.paddEmpty) === true;
+        return rule?.paddEmpty === true;
     };
     const isEmpty$2 = (schema, nonEmptyElements, whitespaceElements, node) => node.isEmpty(nonEmptyElements, whitespaceElements, (node) => isPadded(schema, node));
     const isLineBreakNode = (node, isBlock) => isNonNullable(node) && (isBlock(node) || node.name === 'br');
@@ -17702,7 +18234,7 @@
         }
         // heading element is valid if it is the only one child of summary
         if (isSummary(parent) && isHeading(node)) {
-            return !((parent === null || parent === void 0 ? void 0 : parent.firstChild) === node && (parent === null || parent === void 0 ? void 0 : parent.lastChild) === node);
+            return !(parent?.firstChild === node && parent?.lastChild === node);
         }
         return false;
     };
@@ -17824,10 +18356,9 @@
         });
     };
     const addFilters = (domParser, settings, schema) => {
-        var _a;
         const styles = Styles();
         if (settings.convert_fonts_to_spans) {
-            addFontToSpansFilter(domParser, styles, Tools.explode((_a = settings.font_size_legacy_values) !== null && _a !== void 0 ? _a : ''));
+            addFontToSpansFilter(domParser, styles, Tools.explode(settings.font_size_legacy_values ?? ''));
         }
         addStrikeFilter(domParser, schema, styles);
     };
@@ -17851,7 +18382,7 @@
         try {
             return decodeURIComponent(data);
         }
-        catch (_a) {
+        catch {
             return data;
         }
     };
@@ -17880,7 +18411,7 @@
             try {
                 str = atob(data);
             }
-            catch (_a) {
+            catch {
                 return Optional.none();
             }
         }
@@ -17915,8 +18446,7 @@
                 resolve(reader.result);
             };
             reader.onerror = () => {
-                var _a;
-                reject((_a = reader.error) === null || _a === void 0 ? void 0 : _a.message);
+                reject(reader.error?.message);
             };
             reader.readAsDataURL(blob);
         });
@@ -17926,13 +18456,14 @@
     const uniqueId$1 = (prefix) => {
         return (prefix || 'blobid') + (count$1++);
     };
+    const utf8Encode = (str) => foldl(new window.TextEncoder().encode(str), (acc, charCode) => acc + String.fromCharCode(charCode), '');
     const processDataUri = (dataUri, base64Only, generateBlobInfo) => {
         return parseDataUri(dataUri).bind(({ data, type, base64Encoded }) => {
             if (base64Only && !base64Encoded) {
                 return Optional.none();
             }
             else {
-                const base64 = base64Encoded ? data : btoa(data);
+                const base64 = base64Encoded ? data : btoa(utf8Encode(data));
                 return generateBlobInfo(base64, type);
             }
         });
@@ -17974,7 +18505,7 @@
     // TINY-10350: A modification of the Regexes.link regex to specifically capture host.
     // eslint-disable-next-line max-len
     const hostCaptureRegex = /^(?:(?:(?:[A-Za-z][A-Za-z\d.+-]{0,14}:\/\/(?:[-.~*+=!&;:'%@?^${}(),\w]+@)?|www\.|[-;:&=+$,.\w]+@)([A-Za-z\d-]+(?:\.[A-Za-z\d-]+)*))(?::\d+)?(?:\/(?:[-.~*+=!;:'%@$(),\/\w]*[-~*+=%@$()\/\w])?)?(?:\?(?:[-.~*+=!&;:'%@?^${}(),\/\w]+)?)?(?:#(?:[-.~*+=!&;:'%@?^${}(),\/\w]+)?)?)$/;
-    const extractHost = (url) => Optional.from(url.match(hostCaptureRegex)).bind((ms) => get$b(ms, 1)).map((h) => startsWith(h, 'www.') ? h.substring(4) : h);
+    const extractHost = (url) => Optional.from(url.match(hostCaptureRegex)).bind((ms) => get$c(ms, 1)).map((h) => startsWith(h, 'www.') ? h.substring(4) : h);
 
     const sandboxIframe = (iframeNode, exclusions) => {
         if (Optional.from(iframeNode.attr('src')).bind(extractHost).forall((host) => !contains$2(exclusions, host))) {
@@ -18031,7 +18562,6 @@
         }
     };
     const register$4 = (parser, settings) => {
-        var _a, _b;
         const schema = parser.schema;
         parser.addAttributeFilter('href', (nodes) => {
             let i = nodes.length;
@@ -18098,11 +18628,10 @@
         const validClasses = schema.getValidClasses();
         if (settings.validate && validClasses) {
             parser.addAttributeFilter('class', (nodes) => {
-                var _a;
                 let i = nodes.length;
                 while (i--) {
                     const node = nodes[i];
-                    const clazz = (_a = node.attr('class')) !== null && _a !== void 0 ? _a : '';
+                    const clazz = node.attr('class') ?? '';
                     const classList = Tools.explode(clazz, ' ');
                     let classValue = '';
                     for (let ci = 0; ci < classList.length; ci++) {
@@ -18131,8 +18660,8 @@
             });
         }
         registerBase64ImageFilter(parser, settings);
-        const shouldSandboxIframes = (_a = settings.sandbox_iframes) !== null && _a !== void 0 ? _a : false;
-        const sandboxIframesExclusions = unique$1((_b = settings.sandbox_iframes_exclusions) !== null && _b !== void 0 ? _b : []);
+        const shouldSandboxIframes = settings.sandbox_iframes ?? false;
+        const sandboxIframesExclusions = unique$1(settings.sandbox_iframes_exclusions ?? []);
         if (settings.convert_unsafe_embeds) {
             parser.addNodeFilter('object,embed', (nodes) => each$e(nodes, (node) => {
                 node.replace(createSafeEmbed({
@@ -18148,24 +18677,65 @@
         }
     };
 
-    /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
+    /*! @license DOMPurify 3.4.12 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.12/LICENSE */
 
-    const {
-      entries,
-      setPrototypeOf,
-      isFrozen,
-      getPrototypeOf,
-      getOwnPropertyDescriptor
-    } = Object;
-    let {
-      freeze,
-      seal,
-      create: create$7
-    } = Object; // eslint-disable-line import/no-mutable-exports
-    let {
-      apply,
-      construct
-    } = typeof Reflect !== 'undefined' && Reflect;
+    function _arrayLikeToArray(r, a) {
+      (null == a || a > r.length) && (a = r.length);
+      for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+      return n;
+    }
+    function _arrayWithHoles(r) {
+      if (Array.isArray(r)) return r;
+    }
+    function _iterableToArrayLimit(r, l) {
+      var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+      if (null != t) {
+        var e,
+          n,
+          i,
+          u,
+          a = [],
+          f = true,
+          o = false;
+        try {
+          if (i = (t = t.call(r)).next, 0 === l) ; else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0);
+        } catch (r) {
+          o = true, n = r;
+        } finally {
+          try {
+            if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
+          } finally {
+            if (o) throw n;
+          }
+        }
+        return a;
+      }
+    }
+    function _nonIterableRest() {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    function _slicedToArray(r, e) {
+      return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest();
+    }
+    function _unsupportedIterableToArray(r, a) {
+      if (r) {
+        if ("string" == typeof r) return _arrayLikeToArray(r, a);
+        var t = {}.toString.call(r).slice(8, -1);
+        return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
+      }
+    }
+
+    const entries = Object.entries,
+      setPrototypeOf = Object.setPrototypeOf,
+      isFrozen = Object.isFrozen,
+      getPrototypeOf = Object.getPrototypeOf,
+      getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+    let freeze = Object.freeze,
+      seal = Object.seal,
+      create$7 = Object.create; // eslint-disable-line import/no-mutable-exports
+    let _ref = typeof Reflect !== 'undefined' && Reflect,
+      apply = _ref.apply,
+      construct = _ref.construct;
     if (!freeze) {
       freeze = function freeze(x) {
         return x;
@@ -18177,12 +18747,18 @@
       };
     }
     if (!apply) {
-      apply = function apply(fun, thisValue, args) {
-        return fun.apply(thisValue, args);
+      apply = function apply(func, thisArg) {
+        for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+          args[_key - 2] = arguments[_key];
+        }
+        return func.apply(thisArg, args);
       };
     }
     if (!construct) {
-      construct = function construct(Func, args) {
+      construct = function construct(Func) {
+        for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+          args[_key2 - 1] = arguments[_key2];
+        }
         return new Func(...args);
       };
     }
@@ -18191,13 +18767,19 @@
     const arrayPop = unapply(Array.prototype.pop);
     const arrayPush = unapply(Array.prototype.push);
     const arraySplice = unapply(Array.prototype.splice);
+    const arrayIsArray = Array.isArray;
     const stringToLowerCase = unapply(String.prototype.toLowerCase);
     const stringToString = unapply(String.prototype.toString);
     const stringMatch = unapply(String.prototype.match);
     const stringReplace = unapply(String.prototype.replace);
     const stringIndexOf = unapply(String.prototype.indexOf);
     const stringTrim = unapply(String.prototype.trim);
+    const numberToString = unapply(Number.prototype.toString);
+    const booleanToString = unapply(Boolean.prototype.toString);
+    const bigintToString = typeof BigInt === 'undefined' ? null : unapply(BigInt.prototype.toString);
+    const symbolToString = typeof Symbol === 'undefined' ? null : unapply(Symbol.prototype.toString);
     const objectHasOwnProperty = unapply(Object.prototype.hasOwnProperty);
+    const objectToString = unapply(Object.prototype.toString);
     const regExpTest = unapply(RegExp.prototype.test);
     const typeErrorCreate = unconstruct(TypeError);
     /**
@@ -18211,8 +18793,8 @@
         if (thisArg instanceof RegExp) {
           thisArg.lastIndex = 0;
         }
-        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
+        for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+          args[_key3 - 1] = arguments[_key3];
         }
         return apply(func, thisArg, args);
       };
@@ -18223,12 +18805,12 @@
      * @param func - The constructor function to be wrapped and called.
      * @returns A new function that constructs an instance of the given constructor function with the provided arguments.
      */
-    function unconstruct(func) {
+    function unconstruct(Func) {
       return function () {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments[_key2];
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments[_key4];
         }
-        return construct(func, args);
+        return construct(Func, args);
       };
     }
     /**
@@ -18246,6 +18828,9 @@
         // independent of any properties defined on Object.prototype.
         // Prevent prototype setters from intercepting set as a this value.
         setPrototypeOf(set, null);
+      }
+      if (!arrayIsArray(array)) {
+        return set;
       }
       let l = array.length;
       while (l--) {
@@ -18287,10 +18872,13 @@
      */
     function clone(object) {
       const newObject = create$7(null);
-      for (const [property, value] of entries(object)) {
+      for (const _ref2 of entries(object)) {
+        var _ref3 = _slicedToArray(_ref2, 2);
+        const property = _ref3[0];
+        const value = _ref3[1];
         const isPropertyExist = objectHasOwnProperty(object, property);
         if (isPropertyExist) {
-          if (Array.isArray(value)) {
+          if (arrayIsArray(value)) {
             newObject[property] = cleanArray(value);
           } else if (value && typeof value === 'object' && value.constructor === Object) {
             newObject[property] = clone(value);
@@ -18300,6 +18888,58 @@
         }
       }
       return newObject;
+    }
+    /**
+     * Convert non-node values into strings without depending on direct property access.
+     *
+     * @param value - The value to stringify.
+     * @returns A string representation of the provided value.
+     */
+    function stringifyValue(value) {
+      switch (typeof value) {
+        case 'string':
+          {
+            return value;
+          }
+        case 'number':
+          {
+            return numberToString(value);
+          }
+        case 'boolean':
+          {
+            return booleanToString(value);
+          }
+        case 'bigint':
+          {
+            return bigintToString ? bigintToString(value) : '0';
+          }
+        case 'symbol':
+          {
+            return symbolToString ? symbolToString(value) : 'Symbol()';
+          }
+        case 'undefined':
+          {
+            return objectToString(value);
+          }
+        case 'function':
+        case 'object':
+          {
+            if (value === null) {
+              return objectToString(value);
+            }
+            const valueAsRecord = value;
+            const valueToString = lookupGetter(valueAsRecord, 'toString');
+            if (typeof valueToString === 'function') {
+              const stringified = valueToString(valueAsRecord);
+              return typeof stringified === 'string' ? stringified : objectToString(stringified);
+            }
+            return objectToString(value);
+          }
+        default:
+          {
+            return objectToString(value);
+          }
+      }
     }
     /**
      * This method automatically checks if the prop is function or getter and behaves accordingly.
@@ -18326,9 +18966,17 @@
       }
       return fallbackValue;
     }
+    function isRegex(value) {
+      try {
+        regExpTest(value, '');
+        return true;
+      } catch (_unused) {
+        return false;
+      }
+    }
 
-    const html$1 = freeze(['a', 'abbr', 'acronym', 'address', 'area', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'big', 'blink', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'content', 'data', 'datalist', 'dd', 'decorator', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'element', 'em', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'main', 'map', 'mark', 'marquee', 'menu', 'menuitem', 'meter', 'nav', 'nobr', 'ol', 'optgroup', 'option', 'output', 'p', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'section', 'select', 'shadow', 'small', 'source', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr']);
-    const svg$1 = freeze(['svg', 'a', 'altglyph', 'altglyphdef', 'altglyphitem', 'animatecolor', 'animatemotion', 'animatetransform', 'circle', 'clippath', 'defs', 'desc', 'ellipse', 'filter', 'font', 'g', 'glyph', 'glyphref', 'hkern', 'image', 'line', 'lineargradient', 'marker', 'mask', 'metadata', 'mpath', 'path', 'pattern', 'polygon', 'polyline', 'radialgradient', 'rect', 'stop', 'style', 'switch', 'symbol', 'text', 'textpath', 'title', 'tref', 'tspan', 'view', 'vkern']);
+    const html$1 = freeze(['a', 'abbr', 'acronym', 'address', 'area', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'big', 'blink', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'content', 'data', 'datalist', 'dd', 'decorator', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'element', 'em', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'main', 'map', 'mark', 'marquee', 'menu', 'menuitem', 'meter', 'nav', 'nobr', 'ol', 'optgroup', 'option', 'output', 'p', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'search', 'section', 'select', 'shadow', 'slot', 'small', 'source', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr']);
+    const svg$1 = freeze(['svg', 'a', 'altglyph', 'altglyphdef', 'altglyphitem', 'animatecolor', 'animatemotion', 'animatetransform', 'circle', 'clippath', 'defs', 'desc', 'ellipse', 'enterkeyhint', 'exportparts', 'filter', 'font', 'g', 'glyph', 'glyphref', 'hkern', 'image', 'inputmode', 'line', 'lineargradient', 'marker', 'mask', 'metadata', 'mpath', 'part', 'path', 'pattern', 'polygon', 'polyline', 'radialgradient', 'rect', 'stop', 'style', 'switch', 'symbol', 'text', 'textpath', 'title', 'tref', 'tspan', 'view', 'vkern']);
     const svgFilters = freeze(['feBlend', 'feColorMatrix', 'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap', 'feDistantLight', 'feDropShadow', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode', 'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile', 'feTurbulence']);
     // List of SVG elements that are disallowed by default.
     // We still need to know them so that we can do namespace
@@ -18341,15 +18989,14 @@
     const mathMlDisallowed = freeze(['maction', 'maligngroup', 'malignmark', 'mlongdiv', 'mscarries', 'mscarry', 'msgroup', 'mstack', 'msline', 'msrow', 'semantics', 'annotation', 'annotation-xml', 'mprescripts', 'none']);
     const text = freeze(['#text']);
 
-    const html = freeze(['accept', 'action', 'align', 'alt', 'autocapitalize', 'autocomplete', 'autopictureinpicture', 'autoplay', 'background', 'bgcolor', 'border', 'capture', 'cellpadding', 'cellspacing', 'checked', 'cite', 'class', 'clear', 'color', 'cols', 'colspan', 'controls', 'controlslist', 'coords', 'crossorigin', 'datetime', 'decoding', 'default', 'dir', 'disabled', 'disablepictureinpicture', 'disableremoteplayback', 'download', 'draggable', 'enctype', 'enterkeyhint', 'face', 'for', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'id', 'inputmode', 'integrity', 'ismap', 'kind', 'label', 'lang', 'list', 'loading', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'minlength', 'multiple', 'muted', 'name', 'nonce', 'noshade', 'novalidate', 'nowrap', 'open', 'optimum', 'pattern', 'placeholder', 'playsinline', 'popover', 'popovertarget', 'popovertargetaction', 'poster', 'preload', 'pubdate', 'radiogroup', 'readonly', 'rel', 'required', 'rev', 'reversed', 'role', 'rows', 'rowspan', 'spellcheck', 'scope', 'selected', 'shape', 'size', 'sizes', 'span', 'srclang', 'start', 'src', 'srcset', 'step', 'style', 'summary', 'tabindex', 'title', 'translate', 'type', 'usemap', 'valign', 'value', 'width', 'wrap', 'xmlns', 'slot']);
-    const svg = freeze(['accent-height', 'accumulate', 'additive', 'alignment-baseline', 'amplitude', 'ascent', 'attributename', 'attributetype', 'azimuth', 'basefrequency', 'baseline-shift', 'begin', 'bias', 'by', 'class', 'clip', 'clippathunits', 'clip-path', 'clip-rule', 'color', 'color-interpolation', 'color-interpolation-filters', 'color-profile', 'color-rendering', 'cx', 'cy', 'd', 'dx', 'dy', 'diffuseconstant', 'direction', 'display', 'divisor', 'dur', 'edgemode', 'elevation', 'end', 'exponent', 'fill', 'fill-opacity', 'fill-rule', 'filter', 'filterunits', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'fx', 'fy', 'g1', 'g2', 'glyph-name', 'glyphref', 'gradientunits', 'gradienttransform', 'height', 'href', 'id', 'image-rendering', 'in', 'in2', 'intercept', 'k', 'k1', 'k2', 'k3', 'k4', 'kerning', 'keypoints', 'keysplines', 'keytimes', 'lang', 'lengthadjust', 'letter-spacing', 'kernelmatrix', 'kernelunitlength', 'lighting-color', 'local', 'marker-end', 'marker-mid', 'marker-start', 'markerheight', 'markerunits', 'markerwidth', 'maskcontentunits', 'maskunits', 'max', 'mask', 'media', 'method', 'mode', 'min', 'name', 'numoctaves', 'offset', 'operator', 'opacity', 'order', 'orient', 'orientation', 'origin', 'overflow', 'paint-order', 'path', 'pathlength', 'patterncontentunits', 'patterntransform', 'patternunits', 'points', 'preservealpha', 'preserveaspectratio', 'primitiveunits', 'r', 'rx', 'ry', 'radius', 'refx', 'refy', 'repeatcount', 'repeatdur', 'restart', 'result', 'rotate', 'scale', 'seed', 'shape-rendering', 'slope', 'specularconstant', 'specularexponent', 'spreadmethod', 'startoffset', 'stddeviation', 'stitchtiles', 'stop-color', 'stop-opacity', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke', 'stroke-width', 'style', 'surfacescale', 'systemlanguage', 'tabindex', 'tablevalues', 'targetx', 'targety', 'transform', 'transform-origin', 'text-anchor', 'text-decoration', 'text-rendering', 'textlength', 'type', 'u1', 'u2', 'unicode', 'values', 'viewbox', 'visibility', 'version', 'vert-adv-y', 'vert-origin-x', 'vert-origin-y', 'width', 'word-spacing', 'wrap', 'writing-mode', 'xchannelselector', 'ychannelselector', 'x', 'x1', 'x2', 'xmlns', 'y', 'y1', 'y2', 'z', 'zoomandpan']);
-    const mathMl = freeze(['accent', 'accentunder', 'align', 'bevelled', 'close', 'columnsalign', 'columnlines', 'columnspan', 'denomalign', 'depth', 'dir', 'display', 'displaystyle', 'encoding', 'fence', 'frame', 'height', 'href', 'id', 'largeop', 'length', 'linethickness', 'lspace', 'lquote', 'mathbackground', 'mathcolor', 'mathsize', 'mathvariant', 'maxsize', 'minsize', 'movablelimits', 'notation', 'numalign', 'open', 'rowalign', 'rowlines', 'rowspacing', 'rowspan', 'rspace', 'rquote', 'scriptlevel', 'scriptminsize', 'scriptsizemultiplier', 'selection', 'separator', 'separators', 'stretchy', 'subscriptshift', 'supscriptshift', 'symmetric', 'voffset', 'width', 'xmlns']);
+    const html = freeze(['accept', 'action', 'align', 'alt', 'autocapitalize', 'autocomplete', 'autopictureinpicture', 'autoplay', 'background', 'bgcolor', 'border', 'capture', 'cellpadding', 'cellspacing', 'checked', 'cite', 'class', 'clear', 'color', 'cols', 'colspan', 'command', 'commandfor', 'controls', 'controlslist', 'coords', 'crossorigin', 'datetime', 'decoding', 'default', 'dir', 'disabled', 'disablepictureinpicture', 'disableremoteplayback', 'download', 'draggable', 'enctype', 'enterkeyhint', 'exportparts', 'face', 'for', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'id', 'inert', 'inputmode', 'integrity', 'ismap', 'kind', 'label', 'lang', 'list', 'loading', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'minlength', 'multiple', 'muted', 'name', 'nonce', 'noshade', 'novalidate', 'nowrap', 'open', 'optimum', 'part', 'pattern', 'placeholder', 'playsinline', 'popover', 'popovertarget', 'popovertargetaction', 'poster', 'preload', 'pubdate', 'radiogroup', 'readonly', 'rel', 'required', 'rev', 'reversed', 'role', 'rows', 'rowspan', 'spellcheck', 'scope', 'selected', 'shape', 'size', 'sizes', 'slot', 'span', 'srclang', 'start', 'src', 'srcset', 'step', 'style', 'summary', 'tabindex', 'title', 'translate', 'type', 'usemap', 'valign', 'value', 'width', 'wrap', 'xmlns']);
+    const svg = freeze(['accent-height', 'accumulate', 'additive', 'alignment-baseline', 'amplitude', 'ascent', 'attributename', 'attributetype', 'azimuth', 'basefrequency', 'baseline-shift', 'begin', 'bias', 'by', 'class', 'clip', 'clippathunits', 'clip-path', 'clip-rule', 'color', 'color-interpolation', 'color-interpolation-filters', 'color-profile', 'color-rendering', 'cx', 'cy', 'd', 'dx', 'dy', 'diffuseconstant', 'direction', 'display', 'divisor', 'dominant-baseline', 'dur', 'edgemode', 'elevation', 'end', 'exponent', 'fill', 'fill-opacity', 'fill-rule', 'filter', 'filterunits', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'fx', 'fy', 'g1', 'g2', 'glyph-name', 'glyphref', 'gradientunits', 'gradienttransform', 'height', 'href', 'id', 'image-rendering', 'in', 'in2', 'intercept', 'k', 'k1', 'k2', 'k3', 'k4', 'kerning', 'keypoints', 'keysplines', 'keytimes', 'lang', 'lengthadjust', 'letter-spacing', 'kernelmatrix', 'kernelunitlength', 'lighting-color', 'local', 'marker-end', 'marker-mid', 'marker-start', 'markerheight', 'markerunits', 'markerwidth', 'maskcontentunits', 'maskunits', 'max', 'mask', 'mask-type', 'media', 'method', 'mode', 'min', 'name', 'numoctaves', 'offset', 'operator', 'opacity', 'order', 'orient', 'orientation', 'origin', 'overflow', 'paint-order', 'path', 'pathlength', 'patterncontentunits', 'patterntransform', 'patternunits', 'points', 'preservealpha', 'preserveaspectratio', 'primitiveunits', 'r', 'rx', 'ry', 'radius', 'refx', 'refy', 'repeatcount', 'repeatdur', 'restart', 'result', 'rotate', 'scale', 'seed', 'shape-rendering', 'slope', 'specularconstant', 'specularexponent', 'spreadmethod', 'startoffset', 'stddeviation', 'stitchtiles', 'stop-color', 'stop-opacity', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke', 'stroke-width', 'style', 'surfacescale', 'systemlanguage', 'tabindex', 'tablevalues', 'targetx', 'targety', 'transform', 'transform-origin', 'text-anchor', 'text-decoration', 'text-orientation', 'text-rendering', 'textlength', 'type', 'u1', 'u2', 'unicode', 'values', 'viewbox', 'visibility', 'version', 'vert-adv-y', 'vert-origin-x', 'vert-origin-y', 'width', 'word-spacing', 'wrap', 'writing-mode', 'xchannelselector', 'ychannelselector', 'x', 'x1', 'x2', 'xmlns', 'y', 'y1', 'y2', 'z', 'zoomandpan']);
+    const mathMl = freeze(['accent', 'accentunder', 'align', 'bevelled', 'close', 'columnalign', 'columnlines', 'columnspacing', 'columnspan', 'denomalign', 'depth', 'dir', 'display', 'displaystyle', 'encoding', 'fence', 'frame', 'height', 'href', 'id', 'largeop', 'length', 'linethickness', 'lquote', 'lspace', 'mathbackground', 'mathcolor', 'mathsize', 'mathvariant', 'maxsize', 'minsize', 'movablelimits', 'notation', 'numalign', 'open', 'rowalign', 'rowlines', 'rowspacing', 'rowspan', 'rspace', 'rquote', 'scriptlevel', 'scriptminsize', 'scriptsizemultiplier', 'selection', 'separator', 'separators', 'stretchy', 'subscriptshift', 'supscriptshift', 'symmetric', 'voffset', 'width', 'xmlns']);
     const xml = freeze(['xlink:href', 'xml:id', 'xlink:title', 'xml:space', 'xmlns:xlink']);
 
-    // eslint-disable-next-line unicorn/better-regex
-    const MUSTACHE_EXPR = seal(/\{\{[\w\W]*|[\w\W]*\}\}/gm); // Specify template detection regex for SAFE_FOR_TEMPLATES mode
-    const ERB_EXPR = seal(/<%[\w\W]*|[\w\W]*%>/gm);
-    const TMPLIT_EXPR = seal(/\$\{[\w\W]*/gm); // eslint-disable-line unicorn/better-regex
+    const MUSTACHE_EXPR = seal(/{{[\w\W]*|^[\w\W]*}}/g);
+    const ERB_EXPR = seal(/<%[\w\W]*|^[\w\W]*%>/g);
+    const TMPLIT_EXPR = seal(/\${[\w\W]*/g);
     const DATA_ATTR = seal(/^data-[\-\w.\u00B7-\uFFFF]+$/); // eslint-disable-line no-useless-escape
     const ARIA_ATTR = seal(/^aria-[\-\w]+$/); // eslint-disable-line no-useless-escape
     const IS_ALLOWED_URI = seal(/^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp|matrix):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i // eslint-disable-line no-useless-escape
@@ -18359,22 +19006,14 @@
     );
     const DOCTYPE_NAME = seal(/^html$/i);
     const CUSTOM_ELEMENT = seal(/^[a-z][.\w]*(-[.\w]+)+$/i);
+    // Markup-significant character probes used by _sanitizeElements.
+    // Shared module-level instances are safe despite the sticky /g flags:
+    // unapply() resets lastIndex for RegExp receivers before every call.
+    const ELEMENT_MARKUP_PROBE = seal(/<[/\w!]/g);
+    const COMMENT_MARKUP_PROBE = seal(/<[/\w]/g);
+    const FALLBACK_TAG_CLOSE = seal(/<\/no(script|embed|frames)/i);
+    const SELF_CLOSING_TAG = seal(/\/>/i);
 
-    var EXPRESSIONS = /*#__PURE__*/Object.freeze({
-      __proto__: null,
-      ARIA_ATTR: ARIA_ATTR,
-      ATTR_WHITESPACE: ATTR_WHITESPACE,
-      CUSTOM_ELEMENT: CUSTOM_ELEMENT,
-      DATA_ATTR: DATA_ATTR,
-      DOCTYPE_NAME: DOCTYPE_NAME,
-      ERB_EXPR: ERB_EXPR,
-      IS_ALLOWED_URI: IS_ALLOWED_URI,
-      IS_SCRIPT_OR_DATA: IS_SCRIPT_OR_DATA,
-      MUSTACHE_EXPR: MUSTACHE_EXPR,
-      TMPLIT_EXPR: TMPLIT_EXPR
-    });
-
-    /* eslint-disable @typescript-eslint/indent */
     // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
     const NODE_TYPE = {
       element: 1,
@@ -18385,7 +19024,7 @@
       // Deprecated
       entityNode: 6,
       // Deprecated
-      progressingInstruction: 7,
+      processingInstruction: 7,
       comment: 8,
       document: 9,
       documentType: 10,
@@ -18446,10 +19085,25 @@
         uponSanitizeShadowNode: []
       };
     };
+    /**
+     * Resolve a set-valued configuration option: a fresh set built from
+     * cfg[key] when it is an own array property (seeded with a clone of
+     * options.base when given, case-normalized via options.transform),
+     * the fallback set otherwise.
+     *
+     * @param cfg the cloned, prototype-free configuration object
+     * @param key the configuration property to read
+     * @param fallback the set to use when the option is absent or not an array
+     * @param options transform and optional base set to merge into
+     * @returns the resolved set
+     */
+    const _resolveSetOption = function _resolveSetOption(cfg, key, fallback, options) {
+      return objectHasOwnProperty(cfg, key) && arrayIsArray(cfg[key]) ? addToSet(options.base ? clone(options.base) : {}, cfg[key], options.transform) : fallback;
+    };
     function createDOMPurify() {
       let window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getGlobal();
       const DOMPurify = root => createDOMPurify(root);
-      DOMPurify.version = '3.2.6';
+      DOMPurify.version = '3.4.12';
       DOMPurify.removed = [];
       if (!window || !window.document || window.document.nodeType !== NODE_TYPE.document || !window.Element) {
         // Not running in a browser, provide a factory function
@@ -18457,28 +19111,29 @@
         DOMPurify.isSupported = false;
         return DOMPurify;
       }
-      let {
-        document
-      } = window;
+      let document = window.document;
       const originalDocument = document;
       const currentScript = originalDocument.currentScript;
-      const {
-        DocumentFragment,
-        HTMLTemplateElement,
-        Node,
-        Element,
-        NodeFilter,
-        NamedNodeMap = window.NamedNodeMap || window.MozNamedAttrMap,
-        HTMLFormElement,
-        DOMParser,
-        trustedTypes
-      } = window;
+      window.DocumentFragment;
+        const HTMLTemplateElement = window.HTMLTemplateElement,
+        Node = window.Node,
+        Element = window.Element,
+        NodeFilter = window.NodeFilter,
+        _window$NamedNodeMap = window.NamedNodeMap;
+        _window$NamedNodeMap === void 0 ? window.NamedNodeMap || window.MozNamedAttrMap : _window$NamedNodeMap;
+        window.HTMLFormElement;
+        const DOMParser = window.DOMParser,
+        trustedTypes = window.trustedTypes;
       const ElementPrototype = Element.prototype;
       const cloneNode = lookupGetter(ElementPrototype, 'cloneNode');
       const remove = lookupGetter(ElementPrototype, 'remove');
       const getNextSibling = lookupGetter(ElementPrototype, 'nextSibling');
       const getChildNodes = lookupGetter(ElementPrototype, 'childNodes');
       const getParentNode = lookupGetter(ElementPrototype, 'parentNode');
+      const getShadowRoot = lookupGetter(ElementPrototype, 'shadowRoot');
+      const getAttributes = lookupGetter(ElementPrototype, 'attributes');
+      const getNodeType = Node && Node.prototype ? lookupGetter(Node.prototype, 'nodeType') : null;
+      const getNodeName = Node && Node.prototype ? lookupGetter(Node.prototype, 'nodeName') : null;
       // As per issue #47, the web-components registry is inherited by a
       // new document created via createHTMLDocument. As per the spec
       // (http://w3c.github.io/webcomponents/spec/custom/#creating-and-passing-registries)
@@ -18493,33 +19148,74 @@
       }
       let trustedTypesPolicy;
       let emptyHTML = '';
-      const {
-        implementation,
-        createNodeIterator,
-        createDocumentFragment,
-        getElementsByTagName
-      } = document;
-      const {
-        importNode
-      } = originalDocument;
+      // The instance's own internal Trusted Types policy. Unlike a caller-supplied
+      // `TRUSTED_TYPES_POLICY`, this is created at most once — Trusted Types throws
+      // on duplicate policy names — and is the only policy allowed to persist
+      // across configurations and survive `clearConfig()`.
+      let defaultTrustedTypesPolicy;
+      let defaultTrustedTypesPolicyResolved = false;
+      // Tracks whether we are already inside a call to the configured Trusted Types
+      // policy (`createHTML` or `createScriptURL`). If a supplied policy callback
+      // itself calls `DOMPurify.sanitize` (the cause of #1422), `sanitize` would
+      // re-enter the policy and recurse until the stack overflows. We detect that
+      // re-entry and throw a clear, actionable error instead. The guard is shared
+      // across both callbacks, because either one re-entering `sanitize` triggers
+      // the same unbounded recursion.
+      let IN_TRUSTED_TYPES_POLICY = 0;
+      const _assertNotInTrustedTypesPolicy = function _assertNotInTrustedTypesPolicy() {
+        if (IN_TRUSTED_TYPES_POLICY > 0) {
+          throw typeErrorCreate('A configured TRUSTED_TYPES_POLICY callback (createHTML or ' + 'createScriptURL) must not call DOMPurify.sanitize, as that causes ' + 'infinite recursion. Do not pass a policy whose callbacks wrap ' + 'DOMPurify as TRUSTED_TYPES_POLICY; see the "DOMPurify and Trusted ' + 'Types" section of the README.');
+        }
+      };
+      const _createTrustedHTML = function _createTrustedHTML(html) {
+        _assertNotInTrustedTypesPolicy();
+        IN_TRUSTED_TYPES_POLICY++;
+        try {
+          return trustedTypesPolicy.createHTML(html);
+        } finally {
+          IN_TRUSTED_TYPES_POLICY--;
+        }
+      };
+      const _createTrustedScriptURL = function _createTrustedScriptURL(scriptUrl) {
+        _assertNotInTrustedTypesPolicy();
+        IN_TRUSTED_TYPES_POLICY++;
+        try {
+          return trustedTypesPolicy.createScriptURL(scriptUrl);
+        } finally {
+          IN_TRUSTED_TYPES_POLICY--;
+        }
+      };
+      // Lazily resolve (and cache) the instance's internal default policy.
+      // Resolution is attempted at most once: a successful `createPolicy` cannot be
+      // repeated (Trusted Types throws on duplicate names), and a failed or
+      // unsupported attempt must not be retried on every parse.
+      const _getDefaultTrustedTypesPolicy = function _getDefaultTrustedTypesPolicy() {
+        if (!defaultTrustedTypesPolicyResolved) {
+          defaultTrustedTypesPolicy = _createTrustedTypesPolicy(trustedTypes, currentScript);
+          defaultTrustedTypesPolicyResolved = true;
+        }
+        return defaultTrustedTypesPolicy;
+      };
+      const _document = document,
+        implementation = _document.implementation,
+        createNodeIterator = _document.createNodeIterator,
+        createDocumentFragment = _document.createDocumentFragment,
+        getElementsByTagName = _document.getElementsByTagName;
+      const importNode = originalDocument.importNode;
       let hooks = _createHooksMap();
       /**
        * Expose whether this browser supports running the full DOMPurify.
        */
       DOMPurify.isSupported = typeof entries === 'function' && typeof getParentNode === 'function' && implementation && implementation.createHTMLDocument !== undefined;
-      const {
-        MUSTACHE_EXPR,
-        ERB_EXPR,
-        TMPLIT_EXPR,
-        DATA_ATTR,
-        ARIA_ATTR,
-        IS_SCRIPT_OR_DATA,
-        ATTR_WHITESPACE,
-        CUSTOM_ELEMENT
-      } = EXPRESSIONS;
-      let {
-        IS_ALLOWED_URI: IS_ALLOWED_URI$1
-      } = EXPRESSIONS;
+      const MUSTACHE_EXPR$1 = MUSTACHE_EXPR,
+        ERB_EXPR$1 = ERB_EXPR,
+        TMPLIT_EXPR$1 = TMPLIT_EXPR,
+        DATA_ATTR$1 = DATA_ATTR,
+        ARIA_ATTR$1 = ARIA_ATTR,
+        IS_SCRIPT_OR_DATA$1 = IS_SCRIPT_OR_DATA,
+        ATTR_WHITESPACE$1 = ATTR_WHITESPACE,
+        CUSTOM_ELEMENT$1 = CUSTOM_ELEMENT;
+      let IS_ALLOWED_URI$1 = IS_ALLOWED_URI;
       /**
        * We consider the elements and attributes below to be safe. Ideally
        * don't add any new ones but feel free to remove unwanted ones.
@@ -18560,6 +19256,21 @@
       let FORBID_TAGS = null;
       /* Explicitly forbidden attributes (overrides ALLOWED_ATTR/ADD_ATTR) */
       let FORBID_ATTR = null;
+      /* Config object to store ADD_TAGS/ADD_ATTR functions (when used as functions) */
+      const EXTRA_ELEMENT_HANDLING = Object.seal(create$7(null, {
+        tagCheck: {
+          writable: true,
+          configurable: false,
+          enumerable: true,
+          value: null
+        },
+        attributeCheck: {
+          writable: true,
+          configurable: false,
+          enumerable: true,
+          value: null
+        }
+      }));
       /* Decide if ARIA attributes are okay */
       let ALLOW_ARIA_ATTR = true;
       /* Decide if custom data attributes are okay */
@@ -18581,6 +19292,13 @@
       let WHOLE_DOCUMENT = false;
       /* Track whether config is already set on this instance of DOMPurify. */
       let SET_CONFIG = false;
+      /* Pristine allowlist bindings captured at setConfig() time. On the
+       * persistent-config path sanitize() restores the sets from these before
+       * the per-walk hook clone-guard, so a hook's in-call widening cannot
+       * carry across calls. Null until setConfig() is called; reset by
+       * clearConfig(). */
+      let SET_CONFIG_ALLOWED_TAGS = null;
+      let SET_CONFIG_ALLOWED_ATTR = null;
       /* Decide if all elements (e.g. style, script) must be children of
        * document.body. By default, browsers might move them to document.head */
       let FORCE_BODY = false;
@@ -18623,7 +19341,17 @@
       let USE_PROFILES = {};
       /* Tags to ignore content of when KEEP_CONTENT is true */
       let FORBID_CONTENTS = null;
-      const DEFAULT_FORBID_CONTENTS = addToSet({}, ['annotation-xml', 'audio', 'colgroup', 'desc', 'foreignobject', 'head', 'iframe', 'math', 'mi', 'mn', 'mo', 'ms', 'mtext', 'noembed', 'noframes', 'noscript', 'plaintext', 'script', 'style', 'svg', 'template', 'thead', 'title', 'video', 'xmp']);
+      const DEFAULT_FORBID_CONTENTS = addToSet({}, ['annotation-xml', 'audio', 'colgroup', 'desc', 'foreignobject', 'head', 'iframe', 'math', 'mi', 'mn', 'mo', 'ms', 'mtext', 'noembed', 'noframes', 'noscript', 'plaintext', 'script',
+      // <selectedcontent> mirrors the selected <option>'s subtree, cloned by
+      // the UA (customizable <select>) — including any on* handlers — and the
+      // engine re-mirrors synchronously whenever a removal changes which
+      // option/selectedcontent is current, even inside DOMPurify's inert
+      // DOMParser document. Hoisting its children on removal re-inserts a fresh
+      // mirror target ahead of the walk, which the engine refills, looping
+      // forever (DoS) and amplifying output. Dropping its content on removal
+      // (rather than hoisting) breaks that cascade; the content is a duplicate
+      // of the option, which is sanitized on its own. See campaign-3 F1/F6.
+      'selectedcontent', 'style', 'svg', 'template', 'thead', 'title', 'video', 'xmp']);
       /* Tags that are safe for data: URIs */
       let DATA_URI_TAGS = null;
       const DEFAULT_DATA_URI_TAGS = addToSet({}, ['audio', 'video', 'img', 'source', 'image', 'track']);
@@ -18639,8 +19367,10 @@
       /* Allowed XHTML+XML namespaces */
       let ALLOWED_NAMESPACES = null;
       const DEFAULT_ALLOWED_NAMESPACES = addToSet({}, [MATHML_NAMESPACE, SVG_NAMESPACE, HTML_NAMESPACE], stringToString);
-      let MATHML_TEXT_INTEGRATION_POINTS = addToSet({}, ['mi', 'mo', 'mn', 'ms', 'mtext']);
-      let HTML_INTEGRATION_POINTS = addToSet({}, ['annotation-xml']);
+      const DEFAULT_MATHML_TEXT_INTEGRATION_POINTS = freeze(['mi', 'mo', 'mn', 'ms', 'mtext']);
+      let MATHML_TEXT_INTEGRATION_POINTS = addToSet({}, DEFAULT_MATHML_TEXT_INTEGRATION_POINTS);
+      const DEFAULT_HTML_INTEGRATION_POINTS = freeze(['annotation-xml']);
+      let HTML_INTEGRATION_POINTS = addToSet({}, DEFAULT_HTML_INTEGRATION_POINTS);
       // Certain elements are allowed in both SVG and HTML
       // namespace. We need to specify them explicitly
       // so that they don't get erroneously deleted from
@@ -18682,15 +19412,33 @@
         // HTML tags and attributes are not case-sensitive, converting to lowercase. Keeping XHTML as is.
         transformCaseFunc = PARSER_MEDIA_TYPE === 'application/xhtml+xml' ? stringToString : stringToLowerCase;
         /* Set configuration parameters */
-        ALLOWED_TAGS = objectHasOwnProperty(cfg, 'ALLOWED_TAGS') ? addToSet({}, cfg.ALLOWED_TAGS, transformCaseFunc) : DEFAULT_ALLOWED_TAGS;
-        ALLOWED_ATTR = objectHasOwnProperty(cfg, 'ALLOWED_ATTR') ? addToSet({}, cfg.ALLOWED_ATTR, transformCaseFunc) : DEFAULT_ALLOWED_ATTR;
-        ALLOWED_NAMESPACES = objectHasOwnProperty(cfg, 'ALLOWED_NAMESPACES') ? addToSet({}, cfg.ALLOWED_NAMESPACES, stringToString) : DEFAULT_ALLOWED_NAMESPACES;
-        URI_SAFE_ATTRIBUTES = objectHasOwnProperty(cfg, 'ADD_URI_SAFE_ATTR') ? addToSet(clone(DEFAULT_URI_SAFE_ATTRIBUTES), cfg.ADD_URI_SAFE_ATTR, transformCaseFunc) : DEFAULT_URI_SAFE_ATTRIBUTES;
-        DATA_URI_TAGS = objectHasOwnProperty(cfg, 'ADD_DATA_URI_TAGS') ? addToSet(clone(DEFAULT_DATA_URI_TAGS), cfg.ADD_DATA_URI_TAGS, transformCaseFunc) : DEFAULT_DATA_URI_TAGS;
-        FORBID_CONTENTS = objectHasOwnProperty(cfg, 'FORBID_CONTENTS') ? addToSet({}, cfg.FORBID_CONTENTS, transformCaseFunc) : DEFAULT_FORBID_CONTENTS;
-        FORBID_TAGS = objectHasOwnProperty(cfg, 'FORBID_TAGS') ? addToSet({}, cfg.FORBID_TAGS, transformCaseFunc) : clone({});
-        FORBID_ATTR = objectHasOwnProperty(cfg, 'FORBID_ATTR') ? addToSet({}, cfg.FORBID_ATTR, transformCaseFunc) : clone({});
-        USE_PROFILES = objectHasOwnProperty(cfg, 'USE_PROFILES') ? cfg.USE_PROFILES : false;
+        ALLOWED_TAGS = _resolveSetOption(cfg, 'ALLOWED_TAGS', DEFAULT_ALLOWED_TAGS, {
+          transform: transformCaseFunc
+        });
+        ALLOWED_ATTR = _resolveSetOption(cfg, 'ALLOWED_ATTR', DEFAULT_ALLOWED_ATTR, {
+          transform: transformCaseFunc
+        });
+        ALLOWED_NAMESPACES = _resolveSetOption(cfg, 'ALLOWED_NAMESPACES', DEFAULT_ALLOWED_NAMESPACES, {
+          transform: stringToString
+        });
+        URI_SAFE_ATTRIBUTES = _resolveSetOption(cfg, 'ADD_URI_SAFE_ATTR', DEFAULT_URI_SAFE_ATTRIBUTES, {
+          transform: transformCaseFunc,
+          base: DEFAULT_URI_SAFE_ATTRIBUTES
+        });
+        DATA_URI_TAGS = _resolveSetOption(cfg, 'ADD_DATA_URI_TAGS', DEFAULT_DATA_URI_TAGS, {
+          transform: transformCaseFunc,
+          base: DEFAULT_DATA_URI_TAGS
+        });
+        FORBID_CONTENTS = _resolveSetOption(cfg, 'FORBID_CONTENTS', DEFAULT_FORBID_CONTENTS, {
+          transform: transformCaseFunc
+        });
+        FORBID_TAGS = _resolveSetOption(cfg, 'FORBID_TAGS', clone({}), {
+          transform: transformCaseFunc
+        });
+        FORBID_ATTR = _resolveSetOption(cfg, 'FORBID_ATTR', clone({}), {
+          transform: transformCaseFunc
+        });
+        USE_PROFILES = objectHasOwnProperty(cfg, 'USE_PROFILES') ? cfg.USE_PROFILES && typeof cfg.USE_PROFILES === 'object' ? clone(cfg.USE_PROFILES) : cfg.USE_PROFILES : false;
         ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR !== false; // Default true
         ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR !== false; // Default true
         ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false; // Default false
@@ -18706,20 +19454,22 @@
         SANITIZE_NAMED_PROPS = cfg.SANITIZE_NAMED_PROPS || false; // Default false
         KEEP_CONTENT = cfg.KEEP_CONTENT !== false; // Default true
         IN_PLACE = cfg.IN_PLACE || false; // Default false
-        IS_ALLOWED_URI$1 = cfg.ALLOWED_URI_REGEXP || IS_ALLOWED_URI;
-        NAMESPACE = cfg.NAMESPACE || HTML_NAMESPACE;
-        MATHML_TEXT_INTEGRATION_POINTS = cfg.MATHML_TEXT_INTEGRATION_POINTS || MATHML_TEXT_INTEGRATION_POINTS;
-        HTML_INTEGRATION_POINTS = cfg.HTML_INTEGRATION_POINTS || HTML_INTEGRATION_POINTS;
-        CUSTOM_ELEMENT_HANDLING = cfg.CUSTOM_ELEMENT_HANDLING || {};
-        if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.tagNameCheck)) {
-          CUSTOM_ELEMENT_HANDLING.tagNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.tagNameCheck;
+        IS_ALLOWED_URI$1 = isRegex(cfg.ALLOWED_URI_REGEXP) ? cfg.ALLOWED_URI_REGEXP : IS_ALLOWED_URI; // Default regexp
+        NAMESPACE = typeof cfg.NAMESPACE === 'string' ? cfg.NAMESPACE : HTML_NAMESPACE; // Default HTML namespace
+        MATHML_TEXT_INTEGRATION_POINTS = objectHasOwnProperty(cfg, 'MATHML_TEXT_INTEGRATION_POINTS') && cfg.MATHML_TEXT_INTEGRATION_POINTS && typeof cfg.MATHML_TEXT_INTEGRATION_POINTS === 'object' ? clone(cfg.MATHML_TEXT_INTEGRATION_POINTS) : addToSet({}, DEFAULT_MATHML_TEXT_INTEGRATION_POINTS); // Default built-in map
+        HTML_INTEGRATION_POINTS = objectHasOwnProperty(cfg, 'HTML_INTEGRATION_POINTS') && cfg.HTML_INTEGRATION_POINTS && typeof cfg.HTML_INTEGRATION_POINTS === 'object' ? clone(cfg.HTML_INTEGRATION_POINTS) : addToSet({}, DEFAULT_HTML_INTEGRATION_POINTS); // Default built-in map
+        const customElementHandling = objectHasOwnProperty(cfg, 'CUSTOM_ELEMENT_HANDLING') && cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING === 'object' ? clone(cfg.CUSTOM_ELEMENT_HANDLING) : create$7(null);
+        CUSTOM_ELEMENT_HANDLING = create$7(null);
+        if (objectHasOwnProperty(customElementHandling, 'tagNameCheck') && isRegexOrFunction(customElementHandling.tagNameCheck)) {
+          CUSTOM_ELEMENT_HANDLING.tagNameCheck = customElementHandling.tagNameCheck; // Default undefined
         }
-        if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck)) {
-          CUSTOM_ELEMENT_HANDLING.attributeNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck;
+        if (objectHasOwnProperty(customElementHandling, 'attributeNameCheck') && isRegexOrFunction(customElementHandling.attributeNameCheck)) {
+          CUSTOM_ELEMENT_HANDLING.attributeNameCheck = customElementHandling.attributeNameCheck; // Default undefined
         }
-        if (cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements === 'boolean') {
-          CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements = cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements;
+        if (objectHasOwnProperty(customElementHandling, 'allowCustomizedBuiltInElements') && typeof customElementHandling.allowCustomizedBuiltInElements === 'boolean') {
+          CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements = customElementHandling.allowCustomizedBuiltInElements; // Default undefined
         }
+        seal(CUSTOM_ELEMENT_HANDLING);
         if (SAFE_FOR_TEMPLATES) {
           ALLOW_DATA_ATTR = false;
         }
@@ -18729,7 +19479,7 @@
         /* Parse profile info */
         if (USE_PROFILES) {
           ALLOWED_TAGS = addToSet({}, text);
-          ALLOWED_ATTR = [];
+          ALLOWED_ATTR = create$7(null);
           if (USE_PROFILES.html === true) {
             addToSet(ALLOWED_TAGS, html$1);
             addToSet(ALLOWED_ATTR, html);
@@ -18750,27 +19500,45 @@
             addToSet(ALLOWED_ATTR, xml);
           }
         }
+        /* Always reset function-based ADD_TAGS / ADD_ATTR checks to prevent
+         * leaking across calls when switching from function to array config */
+        EXTRA_ELEMENT_HANDLING.tagCheck = null;
+        EXTRA_ELEMENT_HANDLING.attributeCheck = null;
         /* Merge configuration parameters */
-        if (cfg.ADD_TAGS) {
-          if (ALLOWED_TAGS === DEFAULT_ALLOWED_TAGS) {
-            ALLOWED_TAGS = clone(ALLOWED_TAGS);
+        if (objectHasOwnProperty(cfg, 'ADD_TAGS')) {
+          if (typeof cfg.ADD_TAGS === 'function') {
+            EXTRA_ELEMENT_HANDLING.tagCheck = cfg.ADD_TAGS;
+          } else if (arrayIsArray(cfg.ADD_TAGS)) {
+            if (ALLOWED_TAGS === DEFAULT_ALLOWED_TAGS) {
+              ALLOWED_TAGS = clone(ALLOWED_TAGS);
+            }
+            addToSet(ALLOWED_TAGS, cfg.ADD_TAGS, transformCaseFunc);
           }
-          addToSet(ALLOWED_TAGS, cfg.ADD_TAGS, transformCaseFunc);
         }
-        if (cfg.ADD_ATTR) {
-          if (ALLOWED_ATTR === DEFAULT_ALLOWED_ATTR) {
-            ALLOWED_ATTR = clone(ALLOWED_ATTR);
+        if (objectHasOwnProperty(cfg, 'ADD_ATTR')) {
+          if (typeof cfg.ADD_ATTR === 'function') {
+            EXTRA_ELEMENT_HANDLING.attributeCheck = cfg.ADD_ATTR;
+          } else if (arrayIsArray(cfg.ADD_ATTR)) {
+            if (ALLOWED_ATTR === DEFAULT_ALLOWED_ATTR) {
+              ALLOWED_ATTR = clone(ALLOWED_ATTR);
+            }
+            addToSet(ALLOWED_ATTR, cfg.ADD_ATTR, transformCaseFunc);
           }
-          addToSet(ALLOWED_ATTR, cfg.ADD_ATTR, transformCaseFunc);
         }
-        if (cfg.ADD_URI_SAFE_ATTR) {
+        if (objectHasOwnProperty(cfg, 'ADD_URI_SAFE_ATTR') && arrayIsArray(cfg.ADD_URI_SAFE_ATTR)) {
           addToSet(URI_SAFE_ATTRIBUTES, cfg.ADD_URI_SAFE_ATTR, transformCaseFunc);
         }
-        if (cfg.FORBID_CONTENTS) {
+        if (objectHasOwnProperty(cfg, 'FORBID_CONTENTS') && arrayIsArray(cfg.FORBID_CONTENTS)) {
           if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
             FORBID_CONTENTS = clone(FORBID_CONTENTS);
           }
           addToSet(FORBID_CONTENTS, cfg.FORBID_CONTENTS, transformCaseFunc);
+        }
+        if (objectHasOwnProperty(cfg, 'ADD_FORBID_CONTENTS') && arrayIsArray(cfg.ADD_FORBID_CONTENTS)) {
+          if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
+            FORBID_CONTENTS = clone(FORBID_CONTENTS);
+          }
+          addToSet(FORBID_CONTENTS, cfg.ADD_FORBID_CONTENTS, transformCaseFunc);
         }
         /* Add #text in case KEEP_CONTENT is set to true */
         if (KEEP_CONTENT) {
@@ -18785,6 +19553,13 @@
           addToSet(ALLOWED_TAGS, ['tbody']);
           delete FORBID_TAGS.tbody;
         }
+        // Re-derive the active Trusted Types policy from this configuration on
+        // every parse. The active policy must never be sticky closure state that
+        // outlives the config that set it: a caller-supplied policy left in place
+        // after `clearConfig()` — or after a later call that supplied none, or
+        // `TRUSTED_TYPES_POLICY: null` — could sign a subsequent "default"
+        // `RETURN_TRUSTED_TYPE` result with a foreign, possibly unsafe policy.
+        // See GHSA-vxr8-fq34-vvx9.
         if (cfg.TRUSTED_TYPES_POLICY) {
           if (typeof cfg.TRUSTED_TYPES_POLICY.createHTML !== 'function') {
             throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createHTML" hook.');
@@ -18792,18 +19567,45 @@
           if (typeof cfg.TRUSTED_TYPES_POLICY.createScriptURL !== 'function') {
             throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createScriptURL" hook.');
           }
-          // Overwrite existing TrustedTypes policy.
+          // A caller-supplied policy applies to this configuration only.
+          const previousTrustedTypesPolicy = trustedTypesPolicy;
           trustedTypesPolicy = cfg.TRUSTED_TYPES_POLICY;
-          // Sign local variables required by `sanitize`.
-          emptyHTML = trustedTypesPolicy.createHTML('');
-        } else {
-          // Uninitialized policy, attempt to initialize the internal dompurify policy.
-          if (trustedTypesPolicy === undefined) {
-            trustedTypesPolicy = _createTrustedTypesPolicy(trustedTypes, currentScript);
+          // Sign local variables required by `sanitize`. If the supplied policy's
+          // `createHTML` is circular (i.e. it calls `DOMPurify.sanitize`), this
+          // throws via the re-entrancy guard. Restore the previous policy first so
+          // the instance is not left in a poisoned state. See #1422.
+          try {
+            emptyHTML = _createTrustedHTML('');
+          } catch (error) {
+            trustedTypesPolicy = previousTrustedTypesPolicy;
+            throw error;
           }
-          // If creating the internal policy succeeded sign internal variables.
-          if (trustedTypesPolicy !== null && typeof emptyHTML === 'string') {
-            emptyHTML = trustedTypesPolicy.createHTML('');
+        } else if (cfg.TRUSTED_TYPES_POLICY === null) {
+          // Explicit opt-out for this call: perform no Trusted Types signing and
+          // create nothing (so a strict `trusted-types` CSP that disallows a
+          // `dompurify` policy can still call `sanitize` from inside its own
+          // policy — see #1422). Resetting to `undefined` rather than a sticky
+          // `null` also drops any previously retained caller policy, so it cannot
+          // resurface on a later call, while still allowing the next config-less
+          // call to restore the internal default policy. See GHSA-vxr8-fq34-vvx9.
+          trustedTypesPolicy = undefined;
+          emptyHTML = '';
+        } else {
+          // No policy supplied: keep the currently active policy if one is set — a
+          // previously supplied policy is intentionally sticky across config-less
+          // calls — otherwise fall back to the instance's own internal policy,
+          // created at most once. (A policy supplied for a *single* call still
+          // lingers by design; what must not linger is a policy whose configuration
+          // has been torn down via `clearConfig()`, which restores the default.)
+          if (trustedTypesPolicy === undefined) {
+            trustedTypesPolicy = _getDefaultTrustedTypesPolicy();
+          }
+          // Sign internal variables only when a policy is active. A falsy policy
+          // (Trusted Types unsupported, creation failed, or an explicit opt-out)
+          // leaves `emptyHTML` as a plain string, so we never call `.createHTML` on
+          // a non-policy and throw. See #1422.
+          if (trustedTypesPolicy && typeof emptyHTML === 'string') {
+            emptyHTML = _createTrustedHTML('');
           }
         }
         // Prevent further manipulation of configuration.
@@ -18818,6 +19620,77 @@
        * correctly. */
       const ALL_SVG_TAGS = addToSet({}, [...svg$1, ...svgFilters, ...svgDisallowed]);
       const ALL_MATHML_TAGS = addToSet({}, [...mathMl$1, ...mathMlDisallowed]);
+      /**
+       * Namespace rules for an element in the SVG namespace.
+       *
+       * @param tagName the element's lowercase tag name
+       * @param parent the (possibly simulated) parent node
+       * @param parentTagName the parent's lowercase tag name
+       * @returns true if a spec-compliant parser could produce this element
+       */
+      const _checkSvgNamespace = function _checkSvgNamespace(tagName, parent, parentTagName) {
+        // The only way to switch from HTML namespace to SVG
+        // is via <svg>. If it happens via any other tag, then
+        // it should be killed.
+        if (parent.namespaceURI === HTML_NAMESPACE) {
+          return tagName === 'svg';
+        }
+        // The only way to switch from MathML to SVG is via <svg>
+        // if the parent is either <annotation-xml> or a MathML
+        // text integration point.
+        if (parent.namespaceURI === MATHML_NAMESPACE) {
+          return tagName === 'svg' && (parentTagName === 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
+        }
+        // We only allow elements that are defined in SVG
+        // spec. All others are disallowed in SVG namespace.
+        return Boolean(ALL_SVG_TAGS[tagName]);
+      };
+      /**
+       * Namespace rules for an element in the MathML namespace.
+       *
+       * @param tagName the element's lowercase tag name
+       * @param parent the (possibly simulated) parent node
+       * @param parentTagName the parent's lowercase tag name
+       * @returns true if a spec-compliant parser could produce this element
+       */
+      const _checkMathMlNamespace = function _checkMathMlNamespace(tagName, parent, parentTagName) {
+        // The only way to switch from HTML namespace to MathML
+        // is via <math>. If it happens via any other tag, then
+        // it should be killed.
+        if (parent.namespaceURI === HTML_NAMESPACE) {
+          return tagName === 'math';
+        }
+        // The only way to switch from SVG to MathML is via
+        // <math> and HTML integration points
+        if (parent.namespaceURI === SVG_NAMESPACE) {
+          return tagName === 'math' && HTML_INTEGRATION_POINTS[parentTagName];
+        }
+        // We only allow elements that are defined in MathML
+        // spec. All others are disallowed in MathML namespace.
+        return Boolean(ALL_MATHML_TAGS[tagName]);
+      };
+      /**
+       * Namespace rules for an element in the HTML namespace.
+       *
+       * @param tagName the element's lowercase tag name
+       * @param parent the (possibly simulated) parent node
+       * @param parentTagName the parent's lowercase tag name
+       * @returns true if a spec-compliant parser could produce this element
+       */
+      const _checkHtmlNamespace = function _checkHtmlNamespace(tagName, parent, parentTagName) {
+        // The only way to switch from SVG to HTML is via
+        // HTML integration points, and from MathML to HTML
+        // is via MathML text integration points
+        if (parent.namespaceURI === SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
+          return false;
+        }
+        if (parent.namespaceURI === MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
+          return false;
+        }
+        // We disallow tags that are specific for MathML
+        // or SVG and should never appear in HTML namespace
+        return !ALL_MATHML_TAGS[tagName] && (COMMON_SVG_AND_HTML_ELEMENTS[tagName] || !ALL_SVG_TAGS[tagName]);
+      };
       /**
        * @param element a DOM element whose namespace is being checked
        * @returns Return false if the element has a
@@ -18840,51 +19713,13 @@
           return false;
         }
         if (element.namespaceURI === SVG_NAMESPACE) {
-          // The only way to switch from HTML namespace to SVG
-          // is via <svg>. If it happens via any other tag, then
-          // it should be killed.
-          if (parent.namespaceURI === HTML_NAMESPACE) {
-            return tagName === 'svg';
-          }
-          // The only way to switch from MathML to SVG is via`
-          // svg if parent is either <annotation-xml> or MathML
-          // text integration points.
-          if (parent.namespaceURI === MATHML_NAMESPACE) {
-            return tagName === 'svg' && (parentTagName === 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
-          }
-          // We only allow elements that are defined in SVG
-          // spec. All others are disallowed in SVG namespace.
-          return Boolean(ALL_SVG_TAGS[tagName]);
+          return _checkSvgNamespace(tagName, parent, parentTagName);
         }
         if (element.namespaceURI === MATHML_NAMESPACE) {
-          // The only way to switch from HTML namespace to MathML
-          // is via <math>. If it happens via any other tag, then
-          // it should be killed.
-          if (parent.namespaceURI === HTML_NAMESPACE) {
-            return tagName === 'math';
-          }
-          // The only way to switch from SVG to MathML is via
-          // <math> and HTML integration points
-          if (parent.namespaceURI === SVG_NAMESPACE) {
-            return tagName === 'math' && HTML_INTEGRATION_POINTS[parentTagName];
-          }
-          // We only allow elements that are defined in MathML
-          // spec. All others are disallowed in MathML namespace.
-          return Boolean(ALL_MATHML_TAGS[tagName]);
+          return _checkMathMlNamespace(tagName, parent, parentTagName);
         }
         if (element.namespaceURI === HTML_NAMESPACE) {
-          // The only way to switch from SVG to HTML is via
-          // HTML integration points, and from MathML to HTML
-          // is via MathML text integration points
-          if (parent.namespaceURI === SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
-            return false;
-          }
-          if (parent.namespaceURI === MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
-            return false;
-          }
-          // We disallow tags that are specific for MathML
-          // or SVG and should never appear in HTML namespace
-          return !ALL_MATHML_TAGS[tagName] && (COMMON_SVG_AND_HTML_ELEMENTS[tagName] || !ALL_SVG_TAGS[tagName]);
+          return _checkHtmlNamespace(tagName, parent, parentTagName);
         }
         // For XHTML and XML documents that support custom namespaces
         if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && ALLOWED_NAMESPACES[element.namespaceURI]) {
@@ -18909,7 +19744,81 @@
           // eslint-disable-next-line unicorn/prefer-dom-node-remove
           getParentNode(node).removeChild(node);
         } catch (_) {
+          /* The normal detach failed — this is reached for a parentless node
+             (getParentNode() is null, so .removeChild throws). Element.prototype
+             .remove() is itself a spec no-op on a parentless node, so a recorded
+             "removal" would otherwise hand the caller back an intact,
+             payload-bearing node (e.g. a detached IN_PLACE root the mXSS canary or
+             the style-with-element-child rule decided to kill). Fail closed by
+             throwing — exactly as a clobbered root does at the IN_PLACE entry —
+             rather than trying to "neutralize" the node via its own methods.
+             Neutralizing would mean calling getAttributeNames()/removeAttribute()
+             on the node, both of which a <form> root can clobber via a named child
+             (and _isClobbered does not even probe getAttributeNames), so the
+             neutralize step could itself be silently defeated, leaving the payload
+             intact. A throw touches only the cached, clobber-safe remove() and
+             getParentNode(). Generalizes GHSA-r47g-fvhr-h676 (clobbered-form root)
+             to every root-kill reason. REPORT-3.
+                    This lives inside the catch, so it never fires for a normally-removed
+             in-tree node: those have a parent, removeChild() succeeds, and the
+             catch is not entered. Only a kept (parentless) root reaches here. */
           remove(node);
+          if (!getParentNode(node)) {
+            throw typeErrorCreate('a node selected for removal could not be detached from its tree ' + 'and cannot be safely returned; refusing to sanitize in place');
+          }
+        }
+      };
+      /**
+       * _neutralizeRoot
+       *
+       * Fail-closed teardown of an in-place root after the sanitize walk aborts
+       * (campaign-3 F2). An internal throw mid-walk — e.g. a page-registered
+       * custom element's reaction detaches a node so `_forceRemove`'s deliberate
+       * parentless guard throws, or any other re-entrant engine mutation — would
+       * otherwise leave the caller's *live* tree half-sanitized, with everything
+       * after the abort point still carrying its handlers. There is no safe way
+       * to resume the walk (the tree mutated under us), so we strip the root bare:
+       * remove every child and every attribute, then let the caller's catch see
+       * the original error. Clobber-safe (cached `remove`/`childNodes`/`attributes`
+       * getters; the root was already clobber-pre-flighted at the IN_PLACE entry).
+       *
+       * @param root the in-place root to empty
+       */
+      const _neutralizeRoot = function _neutralizeRoot(root) {
+        /* Strip every disallowed attribute (on* handlers included) off the whole
+           subtree BEFORE detaching anything. Detaching first would hand back
+           handler-bearing originals (e.g. an already-loading `<img onerror>`)
+           whose queued resource event still fires in page scope after we throw.
+           Clobber-safe reads; a doomed clobbered node's own attributes are
+           irrelevant while its non-clobbered descendants are reached and scrubbed. */
+        _neutralizeSubtree(root);
+        const childNodes = getChildNodes(root);
+        if (childNodes) {
+          const snapshot = [];
+          arrayForEach(childNodes, child => {
+            arrayPush(snapshot, child);
+          });
+          arrayForEach(snapshot, child => {
+            try {
+              remove(child);
+            } catch (_) {
+              /* Best-effort teardown; a still-attached child is handled below */
+            }
+          });
+        }
+        const attributes = getAttributes(root);
+        if (attributes) {
+          for (let i = attributes.length - 1; i >= 0; --i) {
+            const attribute = attributes[i];
+            const name = attribute && attribute.name;
+            if (typeof name === 'string') {
+              try {
+                root.removeAttribute(name);
+              } catch (_) {
+                /* Clobbered removeAttribute — ignore (fail-closed best effort) */
+              }
+            }
+          }
         }
       };
       /**
@@ -18945,6 +19854,148 @@
         }
       };
       /**
+       * _stripDisallowedAttributes
+       *
+       * Removes every attribute the active configuration does not allow from a
+       * single element, using the same allowlist as the main attribute pass (so
+       * `on*` handlers go, but no `/^on/` blocklist is introduced). Used only to
+       * neutralise nodes that are being discarded from an in-place tree.
+       *
+       * @param element the element to strip
+       */
+      const _stripDisallowedAttributes = function _stripDisallowedAttributes(element) {
+        const attributes = getAttributes(element);
+        if (!attributes) {
+          return;
+        }
+        for (let i = attributes.length - 1; i >= 0; --i) {
+          const attribute = attributes[i];
+          const name = attribute && attribute.name;
+          if (typeof name !== 'string' || ALLOWED_ATTR[transformCaseFunc(name)]) {
+            continue;
+          }
+          try {
+            element.removeAttribute(name);
+          } catch (_) {
+            /* Clobbered removeAttribute on a doomed node — ignore */
+          }
+        }
+      };
+      /**
+       * _neutralizeSubtree
+       *
+       * Completes the audit-5 F1 fix across every removal path. The KEEP_CONTENT
+       * move-hoist neutralises only disallowed-tag removals; clobber, mXSS-canary,
+       * namespace, comment, processing-instruction and KEEP_CONTENT:false removals
+       * all drop their subtree wholesale via `_forceRemove`. On the IN_PLACE path
+       * those dropped nodes are detached from the caller's LIVE tree but a
+       * handler-bearing original among them (an `<img onerror>`/`<video>` that was
+       * loading) keeps its queued resource event, which fires in page scope after
+       * sanitize returns. This walks a removed subtree and strips every attribute
+       * the active configuration does not allow — so `on*` handlers are cancelled
+       * through the SAME allowlist that governs kept nodes, not a separate `/^on/`
+       * blocklist. Run synchronously before sanitize returns, i.e. before any
+       * queued event can fire. Hook-free by design: these nodes leave the output,
+       * so firing attribute hooks for them would be surprising. Clobber-safe reads;
+       * a doomed clobbered node may shadow `removeAttribute` (its own attributes are
+       * irrelevant — it is discarded — while its non-clobbered descendants, e.g.
+       * the `<img>`, are reached and scrubbed).
+       *
+       * @param root the root of a removed subtree to neutralise
+       */
+      const _neutralizeSubtree = function _neutralizeSubtree(root) {
+        const stack = [root];
+        while (stack.length > 0) {
+          const node = stack.pop();
+          const nodeType = getNodeType ? getNodeType(node) : node.nodeType;
+          if (nodeType === NODE_TYPE.element) {
+            _stripDisallowedAttributes(node);
+          }
+          const childNodes = getChildNodes(node);
+          if (childNodes) {
+            for (let i = childNodes.length - 1; i >= 0; --i) {
+              stack.push(childNodes[i]);
+            }
+          }
+        }
+      };
+      /**
+       * _neutralizePatchLinkage
+       *
+       * IN_PLACE entry pre-pass (declarative-partial-updates / streaming
+       * hardening, https://github.com/WICG/declarative-partial-updates).
+       *
+       * The main walk strips patch linkage (`for`/`patchsrc`) and removes range
+       * markers (PIs / markup comments) node-by-node, in document order, AS it
+       * reaches each node. On a live in-place root that leaves a window: from the
+       * moment the root is connected until the walk arrives at a given node, that
+       * node's linkage is live. A patch applied on connection/stream can fire as
+       * a microtask during the walk and inject or teleport an unsanitized DOM
+       * range into a region the iterator has already passed and will not revisit,
+       * so the post-return "tree is sanitized" contract is violated. Sweep the
+       * whole tree once up front and sever every linkage before the walk begins,
+       * closing that window.
+       *
+       * This CANNOT undo a patch that already fired before sanitize ran — that is
+       * the irreducible "do not IN_PLACE a live-connected attacker tree" caveat —
+       * but it closes everything from sanitize-start onward. Gated on SAFE_FOR_XML
+       * to group with the rest of the declarative-partial-updates handling and
+       * stay overridable, consistent with the codebase.
+       *
+       * Clobber-safe traversal (cached childNodes getter); per-node try/catch so a
+       * clobbered root cannot defeat the sweep of its non-clobbered descendants.
+       *
+       * NOTE (pending real-Chrome confirmation, see test/declarative-patch-probe
+       * .html Q1): this mirrors the existing policy of keeping `for` on
+       * <label>/<output>. If the shipping feature can drive a patch through a
+       * surviving `for`-on-label/output + `id` pair, this pre-pass and the
+       * attribute check at _isBasicCustomElement's caller must additionally drop
+       * that pair on the IN_PLACE path. Left as-is until the taxonomy is verified.
+       *
+       * @param root the in-place root to sweep
+       */
+      const _neutralizePatchLinkage = function _neutralizePatchLinkage(root) {
+        if (!SAFE_FOR_XML) {
+          return;
+        }
+        const stack = [root];
+        while (stack.length > 0) {
+          const node = stack.pop();
+          const nodeType = getNodeType ? getNodeType(node) : node.nodeType;
+          /* Remove range markers (the target side of a patch linkage): every
+             processing instruction, and any markup-bearing comment. */
+          if (nodeType === NODE_TYPE.processingInstruction || nodeType === NODE_TYPE.comment && regExpTest(COMMENT_MARKUP_PROBE, node.data)) {
+            try {
+              remove(node);
+            } catch (_) {
+              /* Best-effort */
+            }
+            continue;
+          }
+          /* Strip patch-source attributes (the source side) off elements. */
+          if (nodeType === NODE_TYPE.element) {
+            const element = node;
+            const lcTag = transformCaseFunc(getNodeName ? getNodeName(node) : node.nodeName);
+            try {
+              if (element.hasAttribute && element.hasAttribute('patchsrc')) {
+                element.removeAttribute('patchsrc');
+              }
+              if (element.hasAttribute && element.hasAttribute('for') && lcTag !== 'label' && lcTag !== 'output') {
+                element.removeAttribute('for');
+              }
+            } catch (_) {
+              /* Clobbered removeAttribute/hasAttribute on a doomed node — ignore */
+            }
+          }
+          const childNodes = getChildNodes(node);
+          if (childNodes) {
+            for (let i = childNodes.length - 1; i >= 0; --i) {
+              stack.push(childNodes[i]);
+            }
+          }
+        }
+      };
+      /**
        * _initDocument
        *
        * @param dirty - a string of dirty markup
@@ -18965,7 +20016,7 @@
           // Root of XHTML doc must contain xmlns declaration (see https://www.w3.org/TR/xhtml1/normative.html#strict)
           dirty = '<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>' + dirty + '</body></html>';
         }
-        const dirtyPayload = trustedTypesPolicy ? trustedTypesPolicy.createHTML(dirty) : dirty;
+        const dirtyPayload = trustedTypesPolicy ? _createTrustedHTML(dirty) : dirty;
         /*
          * Use the DOMParser API by default, fallback later if needs be
          * DOMParser not work for svg when has multiple root element.
@@ -19006,28 +20057,259 @@
         NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT | NodeFilter.SHOW_PROCESSING_INSTRUCTION | NodeFilter.SHOW_CDATA_SECTION, null);
       };
       /**
+       * Replace template expression syntax (mustache, ERB, template
+       * literal) with a space; shared by all SAFE_FOR_TEMPLATES scrub
+       * sites. Order matters: mustache, then ERB, then template literal.
+       *
+       * @param value the string to scrub
+       * @returns the scrubbed string
+       */
+      const _stripTemplateExpressions = function _stripTemplateExpressions(value) {
+        value = stringReplace(value, MUSTACHE_EXPR$1, ' ');
+        value = stringReplace(value, ERB_EXPR$1, ' ');
+        value = stringReplace(value, TMPLIT_EXPR$1, ' ');
+        return value;
+      };
+      /**
+       * Strip template-engine expressions ({{...}}, ${...}, <%...%>) from the
+       * character data of an element subtree. Used as the final safety net for
+       * SAFE_FOR_TEMPLATES on every DOM-returning code path so that expressions
+       * which only form after text-node normalization (e.g. fragments split across
+       * stripped elements) cannot survive into a template-evaluating framework.
+       *
+       * Walks text/comment/CDATA/processing-instruction nodes and mutates `.data`
+       * in place rather than round-tripping through innerHTML. This preserves
+       * descendant node references (important for IN_PLACE callers), avoids a
+       * serialize/reparse cycle, and reads literal character data — which means
+       * `<%...%>` in text content matches the ERB regex against its real bytes
+       * instead of the HTML-entity-escaped form innerHTML would produce.
+       *
+       * Attribute values are not visited here; SAFE_FOR_TEMPLATES handling for
+       * attributes is performed during the per-node `_sanitizeAttributes` pass.
+       *
+       * @param node The root element whose character data should be scrubbed.
+       */
+      const _scrubTemplateExpressions2 = function _scrubTemplateExpressions(node) {
+        var _node$querySelectorAl;
+        node.normalize();
+        const walker = createNodeIterator.call(node.ownerDocument || node, node,
+        // eslint-disable-next-line no-bitwise
+        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_CDATA_SECTION | NodeFilter.SHOW_PROCESSING_INSTRUCTION, null);
+        let currentNode = walker.nextNode();
+        while (currentNode) {
+          currentNode.data = _stripTemplateExpressions(currentNode.data);
+          currentNode = walker.nextNode();
+        }
+        // NodeIterator does not descend into <template>.content per the DOM spec,
+        // so we must explicitly recurse into each template's content fragment,
+        // mirroring the approach used by _sanitizeShadowDOM.
+        const templates = (_node$querySelectorAl = node.querySelectorAll) === null || _node$querySelectorAl === void 0 ? void 0 : _node$querySelectorAl.call(node, 'template');
+        if (templates) {
+          arrayForEach(templates, tmpl => {
+            if (_isDocumentFragment(tmpl.content)) {
+              _scrubTemplateExpressions2(tmpl.content);
+            }
+          });
+        }
+      };
+      /**
        * _isClobbered
+       *
+       * Detect DOM-clobbering on HTMLFormElement nodes. Form is the only HTML
+       * interface with [LegacyOverrideBuiltIns]; a descendant element with a
+       * `name` attribute matching a prototype property shadows that property
+       * on direct reads. We use this check at the IN_PLACE entry-point and
+       * during attribute sanitization to refuse clobbered forms.
        *
        * @param element element to check for clobbering attacks
        * @return true if clobbered, false if safe
        */
       const _isClobbered = function _isClobbered(element) {
-        return element instanceof HTMLFormElement && (typeof element.nodeName !== 'string' || typeof element.textContent !== 'string' || typeof element.removeChild !== 'function' || !(element.attributes instanceof NamedNodeMap) || typeof element.removeAttribute !== 'function' || typeof element.setAttribute !== 'function' || typeof element.namespaceURI !== 'string' || typeof element.insertBefore !== 'function' || typeof element.hasChildNodes !== 'function');
+        // Realm-independent tag-name probe. If we can't determine the tag
+        // name at all, we can't reason about clobbering — return false
+        // (the caller's other defences still apply).
+        const realTagName = getNodeName ? getNodeName(element) : null;
+        if (typeof realTagName !== 'string') {
+          return false;
+        }
+        if (transformCaseFunc(realTagName) !== 'form') {
+          return false;
+        }
+        return typeof element.nodeName !== 'string' || typeof element.textContent !== 'string' || typeof element.removeChild !== 'function' ||
+        // Realm-safe NamedNodeMap detection: equality against the cached
+        // prototype getter. Clobbered .attributes (e.g. <input name="attributes">)
+        // makes the direct read diverge from the cached read; a clean form
+        // (same-realm OR foreign-realm) has both reads pointing at the same
+        // canonical NamedNodeMap.
+        element.attributes !== getAttributes(element) || typeof element.removeAttribute !== 'function' || typeof element.setAttribute !== 'function' || typeof element.namespaceURI !== 'string' || typeof element.insertBefore !== 'function' || typeof element.hasChildNodes !== 'function' ||
+        // NodeType clobbering probe. Cached Node.prototype.nodeType getter
+        // returns the integer 1 for any Element regardless of realm; direct
+        // read on a clobbered form (e.g. <input name="nodeType">) returns
+        // the named child element. Cheap addition — nodeType is read from
+        // an internal slot, no serialization cost — and removes a residual
+        // clobbering surface used by several mXSS / PI / comment branches
+        // in _sanitizeElements that compare currentNode.nodeType directly.
+        element.nodeType !== getNodeType(element) ||
+        // HTMLFormElement has [LegacyOverrideBuiltIns]: a descendant named
+        // "childNodes" shadows the prototype getter. Direct reads of
+        // form.childNodes from a clobbered form return the named child
+        // instead of the real NodeList, so any walk that reads it directly
+        // skips the form's real children. Compare the direct read to the
+        // cached Node.prototype getter — when the form's named-property
+        // getter intercepts the read, the two values differ and we flag
+        // the form. This catches every clobbering child type (input,
+        // select, etc.) regardless of whether the named child happens to
+        // carry a numeric .length, which a typeof-based probe would miss
+        // (e.g. HTMLSelectElement.length is a defined unsigned-long).
+        element.childNodes !== getChildNodes(element);
       };
       /**
-       * Checks whether the given object is a DOM node.
+       * Checks whether the given value is a DocumentFragment from any realm.
+       *
+       * The realm-independent replacement reads `nodeType` through the cached
+       * Node.prototype getter and compares to the DOCUMENT_FRAGMENT_NODE
+       * constant (11). nodeType is a numeric value resolved from the node's
+       * internal slot, identical across realms for the same kind of node.
+       *
+       * @param value object to check
+       * @return true if value is a DocumentFragment-shaped node from any realm
+       */
+      const _isDocumentFragment = function _isDocumentFragment(value) {
+        if (!getNodeType || typeof value !== 'object' || value === null) {
+          return false;
+        }
+        try {
+          return getNodeType(value) === NODE_TYPE.documentFragment;
+        } catch (_) {
+          return false;
+        }
+      };
+      /**
+       * Checks whether the given object is a DOM node, including nodes that
+       * originate from a different window/realm (e.g. an iframe's
+       * contentDocument). The previous `value instanceof Node` check was
+       * realm-bound: nodes from a different window failed it, causing
+       * sanitize() to silently stringify them and reset IN_PLACE to false,
+       * returning the original node unsanitized. See GHSA-4w3q-35jp-p934.
        *
        * @param value object to check whether it's a DOM node
-       * @return true is object is a DOM node
+       * @return true if value is a DOM node from any realm
        */
       const _isNode = function _isNode(value) {
-        return typeof Node === 'function' && value instanceof Node;
+        if (!getNodeType || typeof value !== 'object' || value === null) {
+          return false;
+        }
+        try {
+          return typeof getNodeType(value) === 'number';
+        } catch (_) {
+          return false;
+        }
       };
       function _executeHooks(hooks, currentNode, data) {
+        if (hooks.length === 0) {
+          return;
+        }
         arrayForEach(hooks, hook => {
           hook.call(DOMPurify, currentNode, data, CONFIG);
         });
       }
+      /**
+       * Structural-threat checks that condemn a node regardless of the
+       * allowlists: mXSS via namespace confusion, risky CSS construction,
+       * processing instructions, markup-bearing comments. Pure predicate;
+       * the caller removes. Check order is load-bearing.
+       *
+       * @param currentNode the node to inspect
+       * @param tagName the node's transformCaseFunc'd tag name
+       * @return true if the node must be removed
+       */
+      const _isUnsafeNode = function _isUnsafeNode(currentNode, tagName) {
+        /* Detect mXSS attempts abusing namespace confusion */
+        if (SAFE_FOR_XML && currentNode.hasChildNodes() && !_isNode(currentNode.firstElementChild) && regExpTest(ELEMENT_MARKUP_PROBE, currentNode.textContent) && regExpTest(ELEMENT_MARKUP_PROBE, currentNode.innerHTML)) {
+          return true;
+        }
+        /* Remove risky CSS construction leading to mXSS */
+        if (SAFE_FOR_XML && currentNode.namespaceURI === HTML_NAMESPACE && tagName === 'style' && _isNode(currentNode.firstElementChild)) {
+          return true;
+        }
+        /* Remove any occurrence of processing instructions */
+        if (currentNode.nodeType === NODE_TYPE.processingInstruction) {
+          return true;
+        }
+        /* Remove any kind of possibly harmful comments */
+        if (SAFE_FOR_XML && currentNode.nodeType === NODE_TYPE.comment && regExpTest(COMMENT_MARKUP_PROBE, currentNode.data)) {
+          return true;
+        }
+        return false;
+      };
+      /**
+       * Handle a node whose tag is forbidden or not allowlisted: keep
+       * allowed custom elements (false return exits _sanitizeElements
+       * early - the namespace and fallback-tag removal checks are
+       * intentionally skipped for kept custom elements), else hoist
+       * content per KEEP_CONTENT and remove.
+       *
+       * A kept custom element is the ONLY case in which this function
+       * returns false, so the caller uses that return value to run the
+       * afterSanitizeElements hook on the kept element and keep the
+       * element-hook lifecycle consistent with normal allowlisted
+       * elements (GHSA-c2j3-45gr-mqc4).
+       *
+       * @param currentNode the disallowed node
+       * @param tagName the node's transformCaseFunc'd tag name
+       * @return true if the node was removed, false if kept
+       */
+      const _sanitizeDisallowedNode = function _sanitizeDisallowedNode(currentNode, tagName) {
+        /* Check if we have a custom element to handle */
+        if (!FORBID_TAGS[tagName] && _isBasicCustomElement(tagName)) {
+          if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, tagName)) {
+            return false;
+          }
+          if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(tagName)) {
+            return false;
+          }
+        }
+        /* Keep content except for bad-listed elements.
+             Use the cached prototype getters exclusively — the previous code
+             had `|| currentNode.parentNode` / `|| currentNode.childNodes`
+             fallbacks, but the cached getters always return the canonical
+             value (or null for a real parent-less node), so the fallback
+             path was dead in safe cases and a clobbering surface in unsafe
+             ones. Falsy cached results stay falsy; the `if (childNodes &&
+             parentNode)` check already gates correctly. */
+        if (KEEP_CONTENT && !FORBID_CONTENTS[tagName]) {
+          const parentNode = getParentNode(currentNode);
+          const childNodes = getChildNodes(currentNode);
+          if (childNodes && parentNode) {
+            const childCount = childNodes.length;
+            /* In-place: hoist the *original* children so the iterator visits
+                 and sanitises them through the same allowlist pass as every other
+                 node. The caller built the tree in the live document, so the
+                 originals carry already-queued resource events (`<img onerror>`,
+                 `<video>`/`<audio>` error, lazy/`onload`, …); cloning would leave
+                 those originals detached but still armed, firing in page scope
+                 while the returned tree looked clean. Moving is safe in-place: the
+                 root is pre-validated as an allowed tag and so is never the node
+                 being removed, which keeps `parentNode` inside the iterator root
+                 and the relocated child inside the serialised tree.
+                          Otherwise (string / DOM-copy paths): clone. The iterator is rooted
+                 at — and the result serialised from — `body`, so a restrictive
+                 ALLOWED_TAGS that removes `body` itself must leave its content in
+                 place, which only cloning does; and those paths parse into an
+                 inert document, so their discarded originals never had a queued
+                 event to neutralise.
+                          `childNodes` is live; a tail-to-head walk keeps `childNodes[i]`
+                 valid whether we move (drops the trailing entry) or clone (leaves
+                 the list intact). */
+            for (let i = childCount - 1; i >= 0; --i) {
+              const hoisted = IN_PLACE ? childNodes[i] : cloneNode(childNodes[i], true);
+              parentNode.insertBefore(hoisted, getNextSibling(currentNode));
+            }
+          }
+        }
+        _forceRemove(currentNode);
+        return true;
+      };
       /**
        * _sanitizeElements
        *
@@ -19037,81 +20319,89 @@
        * @param currentNode to check for permission to exist
        * @return true if node was killed, false if left alive
        */
-      const _sanitizeElements = function _sanitizeElements(currentNode) {
-        let content = null;
+      // eslint-disable-next-line complexity
+      const _sanitizeElements = function _sanitizeElements(currentNode, root) {
         /* Execute a hook if present */
         _executeHooks(hooks.beforeSanitizeElements, currentNode, null);
+        /* A hook may have detached the node — treat it as removed (see the
+           detached-node comment after the uponSanitizeElement hook below). */
+        if (currentNode !== root && getParentNode(currentNode) === null) {
+          return true;
+        }
         /* Check if element is clobbered or can clobber */
         if (_isClobbered(currentNode)) {
           _forceRemove(currentNode);
           return true;
         }
         /* Now let's check the element's type and name */
-        const tagName = transformCaseFunc(currentNode.nodeName);
+        const tagName = transformCaseFunc(getNodeName ? getNodeName(currentNode) : currentNode.nodeName);
         /* Execute a hook if present */
         _executeHooks(hooks.uponSanitizeElement, currentNode, {
           tagName,
           allowedTags: ALLOWED_TAGS
         });
-        /* Detect mXSS attempts abusing namespace confusion */
-        if (SAFE_FOR_XML && currentNode.hasChildNodes() && !_isNode(currentNode.firstElementChild) && regExpTest(/<[/\w!]/g, currentNode.innerHTML) && regExpTest(/<[/\w!]/g, currentNode.textContent)) {
-          _forceRemove(currentNode);
+        /* A hook may have detached the node from the tree — a long-standing
+           user pattern (issue #469; draw.io-style foreignObject filtering).
+           Per the cached, unclobberable parentNode getter the node is
+           genuinely out of the tree, so it can reach neither the serialized
+           output nor an IN_PLACE live tree; treat it as removed and stop
+           processing it. Without this guard, the unsafe-node / namespace
+           checks below would call _forceRemove on a parentless node and hit
+           the REPORT-3 fail-closed throw — which exists for nodes DOMPurify
+           wants gone but *cannot* detach (clobbered / parentless roots), the
+           opposite of a node that is already safely gone. The walk root is
+           exempt: a detached IN_PLACE root is legitimate input and must still
+           be fully sanitized, and a kill-decision on it must keep hitting the
+           REPORT-3 throw. Nodes detached by hooks are the hook's
+           responsibility: they are not recorded in DOMPurify.removed and are
+           not neutralized by the post-walk IN_PLACE pass. */
+        if (currentNode !== root && getParentNode(currentNode) === null) {
           return true;
         }
-        /* Remove any occurrence of processing instructions */
-        if (currentNode.nodeType === NODE_TYPE.progressingInstruction) {
-          _forceRemove(currentNode);
-          return true;
-        }
-        /* Remove any kind of possibly harmful comments */
-        if (SAFE_FOR_XML && currentNode.nodeType === NODE_TYPE.comment && regExpTest(/<[/\w]/g, currentNode.data)) {
+        /* Remove mXSS vectors, processing instructions and risky comments */
+        if (_isUnsafeNode(currentNode, tagName)) {
           _forceRemove(currentNode);
           return true;
         }
         /* Remove element if anything forbids its presence */
-        if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
-          /* Check if we have a custom element to handle */
-          if (!FORBID_TAGS[tagName] && _isBasicCustomElement(tagName)) {
-            if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, tagName)) {
-              return false;
-            }
-            if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(tagName)) {
-              return false;
-            }
+        if (FORBID_TAGS[tagName] || !(EXTRA_ELEMENT_HANDLING.tagCheck instanceof Function && EXTRA_ELEMENT_HANDLING.tagCheck(tagName)) && !ALLOWED_TAGS[tagName]) {
+          const removed = _sanitizeDisallowedNode(currentNode, tagName);
+          /* A false return means the node is a custom element kept via
+             CUSTOM_ELEMENT_HANDLING - the only keep path through
+             _sanitizeDisallowedNode. Run afterSanitizeElements on it so the
+             element-hook lifecycle matches normal allowlisted elements: a
+             security policy applied in this hook (e.g. stripping an attribute
+             from every surviving element) must not silently skip kept custom
+             elements (GHSA-c2j3-45gr-mqc4). This mirrors the normal-element
+             tail below - the hook runs, then the walker's subsequent
+             _sanitizeAttributes pass sanitizes the element's attributes. The
+             deliberately skipped namespace and fallback-tag removal checks stay
+             skipped; they are removal decisions, not the hook contract. */
+          if (removed === false) {
+            _executeHooks(hooks.afterSanitizeElements, currentNode, null);
           }
-          /* Keep content except for bad-listed elements */
-          if (KEEP_CONTENT && !FORBID_CONTENTS[tagName]) {
-            const parentNode = getParentNode(currentNode) || currentNode.parentNode;
-            const childNodes = getChildNodes(currentNode) || currentNode.childNodes;
-            if (childNodes && parentNode) {
-              const childCount = childNodes.length;
-              for (let i = childCount - 1; i >= 0; --i) {
-                const childClone = cloneNode(childNodes[i], true);
-                childClone.__removalCount = (currentNode.__removalCount || 0) + 1;
-                parentNode.insertBefore(childClone, getNextSibling(currentNode));
-              }
-            }
-          }
-          _forceRemove(currentNode);
-          return true;
+          return removed;
         }
-        /* Check whether element has a valid namespace */
-        if (currentNode instanceof Element && !_checkValidNamespace(currentNode)) {
+        /* Check whether element has a valid namespace.
+           Realm-safe check (GHSA-hpcv-96wg-7vj8): use the cached Node.prototype
+           nodeType getter rather than `instanceof Element`, which is realm-
+           bound and short-circuits to false for any node minted in a different
+           realm — letting a foreign-realm element with a forbidden namespace
+           slip past the namespace check entirely. */
+        const nt = getNodeType ? getNodeType(currentNode) : currentNode.nodeType;
+        if (nt === NODE_TYPE.element && !_checkValidNamespace(currentNode)) {
           _forceRemove(currentNode);
           return true;
         }
         /* Make sure that older browsers don't get fallback-tag mXSS */
-        if ((tagName === 'noscript' || tagName === 'noembed' || tagName === 'noframes') && regExpTest(/<\/no(script|embed|frames)/i, currentNode.innerHTML)) {
+        if ((tagName === 'noscript' || tagName === 'noembed' || tagName === 'noframes') && regExpTest(FALLBACK_TAG_CLOSE, currentNode.innerHTML)) {
           _forceRemove(currentNode);
           return true;
         }
         /* Sanitize element content to be template-safe */
         if (SAFE_FOR_TEMPLATES && currentNode.nodeType === NODE_TYPE.text) {
           /* Get the element's text content */
-          content = currentNode.textContent;
-          arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
-            content = stringReplace(content, expr, ' ');
-          });
+          const content = _stripTemplateExpressions(currentNode.textContent);
           if (currentNode.textContent !== content) {
             arrayPush(DOMPurify.removed, {
               element: currentNode.cloneNode()
@@ -19133,31 +20423,67 @@
        */
       // eslint-disable-next-line complexity
       const _isValidAttribute = function _isValidAttribute(lcTag, lcName, value) {
+        /* FORBID_ATTR must always win, even if ADD_ATTR predicate would allow it */
+        if (FORBID_ATTR[lcName]) {
+          return false;
+        }
+        /* Reject declarative-partial-updates patch-linkage attributes
+           (https://github.com/WICG/declarative-partial-updates).
+                Empirical note (Chrome 150, verified — see
+           test/declarative-patch-probe-v3.html): expansion is NOT applied after
+           sanitization. For the string path it fires during sanitize()'s own
+           parse, so the walk sees and sanitizes the fully materialized expanded
+           tree — teleports into MathML/SVG integration points included; a
+           weaponized `<template for>`->`<img onerror>` comes back with the handler
+           stripped. For the IN_PLACE path it fires on connection, before the walk.
+           Either way DOMPurify is NOT blind to the patch.
+                This removal is therefore defense-in-depth rather than the sole barrier:
+           it prevents live linkage from surviving into the OUTPUT and re-expanding
+           in the caller's context, and keeps behaviour deterministic if a future
+           engine defers expansion. `for` is legitimate only on <label>/<output>;
+           anywhere else (notably <template for>) it links the element to a patch
+           target and teleports or removes an arbitrary DOM range by id/marker name.
+           `patchsrc` fetches remote markup and is treated as a script-loading
+           mechanism (CSP). Gated on SAFE_FOR_XML so the removal groups with the
+           other structural-threat checks and stays overridable, consistent with
+           the rest of the codebase. PI range markers are already removed by
+           _isUnsafeNode. */
+        if (SAFE_FOR_XML && lcName === 'patchsrc') {
+          return false;
+        }
+        if (SAFE_FOR_XML && lcName === 'for' && lcTag !== 'label' && lcTag !== 'output') {
+          return false;
+        }
         /* Make sure attribute cannot clobber */
         if (SANITIZE_DOM && (lcName === 'id' || lcName === 'name') && (value in document || value in formElement)) {
           return false;
         }
+        const nameIsPermitted = ALLOWED_ATTR[lcName] || EXTRA_ELEMENT_HANDLING.attributeCheck instanceof Function && EXTRA_ELEMENT_HANDLING.attributeCheck(lcName, lcTag);
         /* Allow valid data-* attributes: At least one character after "-"
             (https://html.spec.whatwg.org/multipage/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes)
             XML-compatible (https://html.spec.whatwg.org/multipage/infrastructure.html#xml-compatible and http://www.w3.org/TR/xml/#d0e804)
             We don't need to check the value; it's always URI safe. */
-        if (ALLOW_DATA_ATTR && !FORBID_ATTR[lcName] && regExpTest(DATA_ATTR, lcName)) ; else if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR, lcName)) ; else if (!ALLOWED_ATTR[lcName] || FORBID_ATTR[lcName]) {
+        if (ALLOW_DATA_ATTR && regExpTest(DATA_ATTR$1, lcName)) ; else if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR$1, lcName)) ; else if (!nameIsPermitted) {
           if (
           // First condition does a very basic check if a) it's basically a valid custom element tagname AND
           // b) if the tagName passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
           // and c) if the attribute name passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.attributeNameCheck
-          _isBasicCustomElement(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName)) ||
+          _isBasicCustomElement(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName, lcTag)) ||
           // Alternative, second condition checks if it's an `is`-attribute, AND
           // the value passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
           lcName === 'is' && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value))) ; else {
             return false;
           }
           /* Check value is safe. First, is attr inert? If so, is safe */
-        } else if (URI_SAFE_ATTRIBUTES[lcName]) ; else if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value, ATTR_WHITESPACE, ''))) ; else if ((lcName === 'src' || lcName === 'xlink:href' || lcName === 'href') && lcTag !== 'script' && stringIndexOf(value, 'data:') === 0 && DATA_URI_TAGS[lcTag]) ; else if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA, stringReplace(value, ATTR_WHITESPACE, ''))) ; else if (value) {
+        } else if (URI_SAFE_ATTRIBUTES[lcName]) ; else if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value, ATTR_WHITESPACE$1, ''))) ; else if ((lcName === 'src' || lcName === 'xlink:href' || lcName === 'href') && lcTag !== 'script' && stringIndexOf(value, 'data:') === 0 && DATA_URI_TAGS[lcTag]) ; else if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA$1, stringReplace(value, ATTR_WHITESPACE$1, ''))) ; else if (value) {
           return false;
         } else ;
         return true;
       };
+      /* Names the HTML spec reserves from valid-custom-element-name; these must
+       * never be treated as basic custom elements even when a permissive
+       * CUSTOM_ELEMENT_HANDLING.tagNameCheck is configured. */
+      const RESERVED_CUSTOM_ELEMENT_NAMES = addToSet({}, ['annotation-xml', 'color-profile', 'font-face', 'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri', 'missing-glyph']);
       /**
        * _isBasicCustomElement
        * checks if at least one dash is included in tagName, and it's not the first char
@@ -19167,7 +20493,64 @@
        * @returns Returns true if the tag name meets the basic criteria for a custom element, otherwise false.
        */
       const _isBasicCustomElement = function _isBasicCustomElement(tagName) {
-        return tagName !== 'annotation-xml' && stringMatch(tagName, CUSTOM_ELEMENT);
+        return !RESERVED_CUSTOM_ELEMENT_NAMES[stringToLowerCase(tagName)] && regExpTest(CUSTOM_ELEMENT$1, tagName);
+      };
+      /**
+       * Wrap an attribute value in the matching Trusted Types object when
+       * the active policy requires it. Namespaced attributes pass through
+       * unchanged (no TT support yet, see
+       * https://bugs.chromium.org/p/chromium/issues/detail?id=1305293).
+       *
+       * @param lcTag lowercase tag name of the containing element
+       * @param lcName lowercase attribute name
+       * @param namespaceURI the attribute's namespace, if any
+       * @param value the attribute value to wrap
+       * @return the value, wrapped when Trusted Types demand it
+       */
+      const _applyTrustedTypesToAttribute = function _applyTrustedTypesToAttribute(lcTag, lcName, namespaceURI, value) {
+        if (trustedTypesPolicy && typeof trustedTypes === 'object' && typeof trustedTypes.getAttributeType === 'function' && !namespaceURI) {
+          switch (trustedTypes.getAttributeType(lcTag, lcName)) {
+            case 'TrustedHTML':
+              {
+                return _createTrustedHTML(value);
+              }
+            case 'TrustedScriptURL':
+              {
+                return _createTrustedScriptURL(value);
+              }
+          }
+        }
+        return value;
+      };
+      /**
+       * Write a modified attribute value back onto the element. On
+       * success, re-probe for clobbering introduced by the new value and
+       * remove the element when found; otherwise pop the removal entry
+       * recorded by the earlier _removeAttribute (long-standing pairing
+       * with the SANITIZE_NAMED_PROPS path - do not "fix" casually). On
+       * failure, remove the attribute instead.
+       *
+       * @param currentNode the element carrying the attribute
+       * @param name the attribute name as present on the element
+       * @param namespaceURI the attribute's namespace, if any
+       * @param value the new attribute value
+       */
+      const _setAttributeValue = function _setAttributeValue(currentNode, name, namespaceURI, value) {
+        try {
+          if (namespaceURI) {
+            currentNode.setAttributeNS(namespaceURI, name, value);
+          } else {
+            /* Fallback to setAttribute() for browser-unrecognized namespaces e.g. "x-schema". */
+            currentNode.setAttribute(name, value);
+          }
+          if (_isClobbered(currentNode)) {
+            _forceRemove(currentNode);
+          } else {
+            arrayPop(DOMPurify.removed);
+          }
+        } catch (_) {
+          _removeAttribute(name, currentNode);
+        }
       };
       /**
        * _sanitizeAttributes
@@ -19182,9 +20565,7 @@
       const _sanitizeAttributes = function _sanitizeAttributes(currentNode) {
         /* Execute a hook if present */
         _executeHooks(hooks.beforeSanitizeAttributes, currentNode, null);
-        const {
-          attributes
-        } = currentNode;
+        const attributes = currentNode.attributes;
         /* Check if we have attributes; if not we might have a text node */
         if (!attributes || _isClobbered(currentNode)) {
           return;
@@ -19197,14 +20578,13 @@
           forceKeepAttr: undefined
         };
         let l = attributes.length;
+        const lcTag = transformCaseFunc(currentNode.nodeName);
         /* Go backwards over all attributes; safely remove bad ones */
         while (l--) {
           const attr = attributes[l];
-          const {
-            name,
-            namespaceURI,
-            value: attrValue
-          } = attr;
+          const name = attr.name,
+            namespaceURI = attr.namespaceURI,
+            attrValue = attr.value;
           const lcName = transformCaseFunc(name);
           const initValue = attrValue;
           let value = name === 'value' ? initValue : stringTrim(initValue);
@@ -19218,18 +20598,25 @@
           /* Full DOM Clobbering protection via namespace isolation,
            * Prefix id and name attributes with `user-content-`
            */
-          if (SANITIZE_NAMED_PROPS && (lcName === 'id' || lcName === 'name')) {
+          if (SANITIZE_NAMED_PROPS && (lcName === 'id' || lcName === 'name') && stringIndexOf(value, SANITIZE_NAMED_PROPS_PREFIX) !== 0) {
             // Remove the attribute with this value
             _removeAttribute(name, currentNode);
             // Prefix the value and later re-create the attribute with the sanitized value
             value = SANITIZE_NAMED_PROPS_PREFIX + value;
           }
+          // Else: already prefixed, leave the attribute alone — the prefix is
+          // itself the clobbering protection, and re-applying it is incorrect.
           /* Work around a security issue with comments inside attributes */
-          if (SAFE_FOR_XML && regExpTest(/((--!?|])>)|<\/(style|title)/i, value)) {
+          if (SAFE_FOR_XML && regExpTest(/((--!?|])>)|<\/(style|script|title|xmp|textarea|noscript|iframe|noembed|noframes)/i, value)) {
             _removeAttribute(name, currentNode);
             continue;
           }
-          /* Did the hooks approve of the attribute? */
+          /* Make sure we cannot easily use animated hrefs, even if animations are allowed */
+          if (lcName === 'attributename' && stringMatch(value, 'href')) {
+            _removeAttribute(name, currentNode);
+            continue;
+          }
+          /* Did the hooks force-keep the attribute? */
           if (hookEvent.forceKeepAttr) {
             continue;
           }
@@ -19239,56 +20626,24 @@
             continue;
           }
           /* Work around a security issue in jQuery 3.0 */
-          if (!ALLOW_SELF_CLOSE_IN_ATTR && regExpTest(/\/>/i, value)) {
+          if (!ALLOW_SELF_CLOSE_IN_ATTR && regExpTest(SELF_CLOSING_TAG, value)) {
             _removeAttribute(name, currentNode);
             continue;
           }
           /* Sanitize attribute content to be template-safe */
           if (SAFE_FOR_TEMPLATES) {
-            arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
-              value = stringReplace(value, expr, ' ');
-            });
+            value = _stripTemplateExpressions(value);
           }
           /* Is `value` valid for this attribute? */
-          const lcTag = transformCaseFunc(currentNode.nodeName);
           if (!_isValidAttribute(lcTag, lcName, value)) {
             _removeAttribute(name, currentNode);
             continue;
           }
           /* Handle attributes that require Trusted Types */
-          if (trustedTypesPolicy && typeof trustedTypes === 'object' && typeof trustedTypes.getAttributeType === 'function') {
-            if (namespaceURI) ; else {
-              switch (trustedTypes.getAttributeType(lcTag, lcName)) {
-                case 'TrustedHTML':
-                  {
-                    value = trustedTypesPolicy.createHTML(value);
-                    break;
-                  }
-                case 'TrustedScriptURL':
-                  {
-                    value = trustedTypesPolicy.createScriptURL(value);
-                    break;
-                  }
-              }
-            }
-          }
+          value = _applyTrustedTypesToAttribute(lcTag, lcName, namespaceURI, value);
           /* Handle invalid data-* attribute set by try-catching it */
           if (value !== initValue) {
-            try {
-              if (namespaceURI) {
-                currentNode.setAttributeNS(namespaceURI, name, value);
-              } else {
-                /* Fallback to setAttribute() for browser-unrecognized namespaces e.g. "x-schema". */
-                currentNode.setAttribute(name, value);
-              }
-              if (_isClobbered(currentNode)) {
-                _forceRemove(currentNode);
-              } else {
-                arrayPop(DOMPurify.removed);
-              }
-            } catch (_) {
-              _removeAttribute(name, currentNode);
-            }
+            _setAttributeValue(currentNode, name, namespaceURI, value);
           }
         }
         /* Execute a hook if present */
@@ -19299,7 +20654,7 @@
        *
        * @param fragment to iterate over recursively
        */
-      const _sanitizeShadowDOM = function _sanitizeShadowDOM(fragment) {
+      const _sanitizeShadowDOM2 = function _sanitizeShadowDOM(fragment) {
         let shadowNode = null;
         const shadowIterator = _createNodeIterator(fragment);
         /* Execute a hook if present */
@@ -19308,16 +20663,135 @@
           /* Execute a hook if present */
           _executeHooks(hooks.uponSanitizeShadowNode, shadowNode, null);
           /* Sanitize tags and elements */
-          _sanitizeElements(shadowNode);
+          _sanitizeElements(shadowNode, fragment);
           /* Check attributes next */
           _sanitizeAttributes(shadowNode);
-          /* Deep shadow DOM detected */
-          if (shadowNode.content instanceof DocumentFragment) {
-            _sanitizeShadowDOM(shadowNode.content);
+          /* Deep shadow DOM detected.
+             Realm-safe check (GHSA-hpcv-96wg-7vj8): use nodeType against the
+             DOCUMENT_FRAGMENT_NODE constant rather than instanceof, so we
+             recurse into <template>.content from foreign realms too. */
+          if (_isDocumentFragment(shadowNode.content)) {
+            _sanitizeShadowDOM2(shadowNode.content);
+          }
+          /* An element iterated here may itself host an attached
+             shadow root. The default NodeIterator does not enter shadow
+             trees, so a shadow root nested inside template.content was
+             previously reached by no walk at all (the pre-pass at
+             _sanitizeAttachedShadowRoots descends via childNodes, which
+             doesn't enter template.content; the template-content recursion
+             above iterates the content but never inspected shadowRoot).
+             Walk it explicitly. The nodeType guard avoids reading
+             shadowRoot off text / comment / CDATA / PI nodes that the
+             iterator also surfaces. */
+          const shadowNodeType = getNodeType ? getNodeType(shadowNode) : shadowNode.nodeType;
+          if (shadowNodeType === NODE_TYPE.element) {
+            const innerSr = getShadowRoot(shadowNode);
+            if (_isDocumentFragment(innerSr)) {
+              _sanitizeAttachedShadowRoots(innerSr);
+              _sanitizeShadowDOM2(innerSr);
+            }
           }
         }
         /* Execute a hook if present */
         _executeHooks(hooks.afterSanitizeShadowDOM, fragment, null);
+      };
+      /**
+       * _sanitizeAttachedShadowRoots
+       *
+       * Walks `root` and feeds every attached shadow root we encounter into
+       * the existing _sanitizeShadowDOM pipeline. The default node iterator
+       * does not descend into shadow trees, so nodes inside an attached
+       * shadow root would otherwise be skipped entirely.
+       *
+       * Two real input paths put attached shadow roots in front of us:
+       *   1. IN_PLACE on a DOM node that already has shadow roots attached.
+       *   2. DOM-node input where importNode(dirty, true) deep-clones the
+       *      shadow root because it was created with `clonable: true`.
+       *
+       * This pass runs once, up front, so the main iteration loop (and the
+       * existing _sanitizeShadowDOM template-content recursion) stay
+       * untouched — string-input paths are not affected.
+       *
+       * @param root the subtree root to walk for attached shadow roots
+       */
+      const _sanitizeAttachedShadowRoots = function _sanitizeAttachedShadowRoots(root) {
+        /* Iterative (explicit stack) rather than per-child recursion. DOM APIs
+           impose no depth cap, so an attacker-shaped tree (JSON/CRDT/editor data
+           built straight into the DOM — the IN_PLACE surface) deeper than the JS
+           call-stack budget would otherwise overflow native recursion here and
+           throw at the IN_PLACE entry pre-pass, before a single node is
+           sanitized, leaving the caller's live tree untouched (fail-open). See
+           campaign-3 F4. A heap stack keeps depth off the call stack.
+                Each work item is either a node to descend into, or a deferred
+           `_sanitizeShadowDOM` for an already-walked shadow root. The deferred
+           form preserves the original post-order discipline: a shadow root's
+           nested shadow roots are discovered before the outer shadow is
+           sanitized (which may remove hosts). Pushes are in reverse of the
+           desired processing order (LIFO): template content, then children, then
+           the shadow-sanitize, then the shadow walk — so the order matches the
+           previous recursion exactly. */
+        const stack = [{
+          node: root,
+          shadow: null
+        }];
+        while (stack.length > 0) {
+          const item = stack.pop();
+          /* Deferred shadow-DOM sanitisation: runs after its subtree was walked. */
+          if (item.shadow) {
+            _sanitizeShadowDOM2(item.shadow);
+            continue;
+          }
+          const node = item.node;
+          const nodeType = getNodeType ? getNodeType(node) : node.nodeType;
+          const isElement = nodeType === NODE_TYPE.element;
+          /* (pushed last → processed first) Children, snapshotted in reverse so
+             the first child is processed first. Snapshotting matters because a
+             hook may detach siblings mid-walk. */
+          const childNodes = getChildNodes(node);
+          if (childNodes) {
+            for (let i = childNodes.length - 1; i >= 0; --i) {
+              stack.push({
+                node: childNodes[i],
+                shadow: null
+              });
+            }
+          }
+          /* (pushed before children → processed after them, matching the old
+             "template content last" order) When the node is a <template>,
+             descend into its content. */
+          if (isElement) {
+            const rootName = getNodeName ? getNodeName(node) : null;
+            if (typeof rootName === 'string' && transformCaseFunc(rootName) === 'template') {
+              const content = node.content;
+              if (_isDocumentFragment(content)) {
+                stack.push({
+                  node: content,
+                  shadow: null
+                });
+              }
+            }
+          }
+          /* Shadow root (processed first): walk its subtree, then sanitise it.
+             Realm-safe check (GHSA-hpcv-96wg-7vj8): nodeType-based detection
+             rather than `instanceof DocumentFragment`, which is realm-bound and
+             silently skipped foreign-realm shadow roots (e.g.
+             iframe.contentDocument attachShadow). */
+          if (isElement) {
+            const sr = getShadowRoot(node);
+            if (_isDocumentFragment(sr)) {
+              /* Push the deferred sanitise first so it pops after the shadow
+                 walk we push next, i.e. nested shadow roots are discovered
+                 before this one is sanitised. */
+              stack.push({
+                node: null,
+                shadow: sr
+              }, {
+                node: sr,
+                shadow: null
+              });
+            }
+          }
+        }
       };
       // eslint-disable-next-line complexity
       DOMPurify.sanitize = function (dirty) {
@@ -19335,13 +20809,9 @@
         }
         /* Stringify, in case dirty is an object */
         if (typeof dirty !== 'string' && !_isNode(dirty)) {
-          if (typeof dirty.toString === 'function') {
-            dirty = dirty.toString();
-            if (typeof dirty !== 'string') {
-              throw typeErrorCreate('dirty is not a string, aborting');
-            }
-          } else {
-            throw typeErrorCreate('toString is not a function');
+          dirty = stringifyValue(dirty);
+          if (typeof dirty !== 'string') {
+            throw typeErrorCreate('dirty is not a string, aborting');
           }
         }
         /* Return dirty HTML if DOMPurify cannot run */
@@ -19349,24 +20819,90 @@
           return dirty;
         }
         /* Assign config vars */
-        if (!SET_CONFIG) {
+        if (SET_CONFIG) {
+          /* Persistent setConfig() path: _parseConfig is skipped, so the sets are
+           * not re-derived per call. Restore them from the pristine bindings
+           * captured at setConfig() time so a previous call's hook clone (mutated
+           * below) does not carry over. */
+          ALLOWED_TAGS = SET_CONFIG_ALLOWED_TAGS;
+          ALLOWED_ATTR = SET_CONFIG_ALLOWED_ATTR;
+        } else {
           _parseConfig(cfg);
+        }
+        /* Clone the hook-mutable allowlists before the walk whenever an
+         * uponSanitize* hook is registered. The hook event exposes ALLOWED_TAGS
+         * and ALLOWED_ATTR by reference (as allowedTags / allowedAttributes), so
+         * a hook that widens them would otherwise mutate the shared set
+         * permanently: across later calls and across every element. Cloning per
+         * walk keeps documented in-call widening working while scoping it to the
+         * call. A single guard for both config paths - the per-call path rebinds
+         * the sets in _parseConfig each call, the persistent path restores them
+         * from the captured bindings just above - so the two cannot diverge. */
+        if (hooks.uponSanitizeElement.length > 0 || hooks.uponSanitizeAttribute.length > 0) {
+          ALLOWED_TAGS = clone(ALLOWED_TAGS);
+        }
+        if (hooks.uponSanitizeAttribute.length > 0) {
+          ALLOWED_ATTR = clone(ALLOWED_ATTR);
         }
         /* Clean up removed elements */
         DOMPurify.removed = [];
-        /* Check if dirty is correctly typed for IN_PLACE */
-        if (typeof dirty === 'string') {
-          IN_PLACE = false;
-        }
-        if (IN_PLACE) {
-          /* Do some early pre-sanitization to avoid unsafe root nodes */
-          if (dirty.nodeName) {
-            const tagName = transformCaseFunc(dirty.nodeName);
+        /* Resolve IN_PLACE for this call without mutating persistent config.
+           Writing the IN_PLACE closure variable here leaks under setConfig(),
+           where _parseConfig is skipped on later calls: a single string call would
+           disable in-place mode for every subsequent node call, returning a
+           sanitized copy while leaving the caller's node — which in-place callers
+           keep using and whose return value they ignore — unsanitized. REPORT-2. */
+        const inPlace = IN_PLACE && typeof dirty !== 'string' && _isNode(dirty);
+        if (inPlace) {
+          /* Declarative-partial-updates / streaming pre-pass: sever every patch
+             linkage across the live tree BEFORE the walk, so no patch can fire
+             mid-walk and inject into an already-processed region. Runs first, so
+             it also covers the forbidden/clobbered roots that throw below. */
+          _neutralizePatchLinkage(dirty);
+          /* Do some early pre-sanitization to avoid unsafe root nodes.
+             Read nodeName through the cached prototype getter — a clobbering
+             child named "nodeName" on the form root would otherwise shadow
+             the property and let this check skip the root-allowlist
+             validation entirely. */
+          const nn = getNodeName ? getNodeName(dirty) : dirty.nodeName;
+          if (typeof nn === 'string') {
+            const tagName = transformCaseFunc(nn);
             if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
+              /* Fail closed on a live root: neutralize handlers/children before
+                 throwing, exactly as the mid-walk abort path does. */
+              _neutralizeRoot(dirty);
               throw typeErrorCreate('root node is forbidden and cannot be sanitized in-place');
             }
           }
-        } else if (dirty instanceof Node) {
+          /* Pre-flight the root through _isClobbered. The iterator-driven
+             removal path can not detach a parent-less root: _forceRemove
+             falls through to Element.prototype.remove(), which per spec
+             is a no-op on a node with no parent. A clobbered root would
+             then survive the main loop with its attributes uninspected,
+             because _sanitizeAttributes early-returns on _isClobbered. The
+             result would be an attacker-controlled form, complete with any
+             event-handler attributes the caller passed in, handed back to
+             the application unsanitized. Refuse to sanitize such a root
+             the same way we refuse a forbidden tag. GHSA-r47g-fvhr-h676. */
+          if (_isClobbered(dirty)) {
+            /* Fail closed on a live clobbered root before throwing.
+               _neutralizeRoot's reads are clobber-safe (cached getters); the
+               form's non-clobbered descendants, e.g. an armed <img>, are scrubbed. */
+            _neutralizeRoot(dirty);
+            throw typeErrorCreate('root node is clobbered and cannot be sanitized in-place');
+          }
+          /* Sanitize attached shadow roots before the main iterator runs.
+             The iterator does not descend into shadow trees. Same fail-closed
+             barrier as the main walk (campaign-3 F2): a custom-element reaction
+             inside a shadow root could abort this pre-pass before the walk runs,
+             which would otherwise leave the entire live tree unsanitized. */
+          try {
+            _sanitizeAttachedShadowRoots(dirty);
+          } catch (error) {
+            _neutralizeRoot(dirty);
+            throw error;
+          }
+        } else if (_isNode(dirty)) {
           /* If dirty is a DOM element, append to an empty document to avoid
              elements being stripped by the parser */
           body = _initDocument('<!---->');
@@ -19380,12 +20916,18 @@
             // eslint-disable-next-line unicorn/prefer-dom-node-append
             body.appendChild(importedNode);
           }
+          /* Clonable shadow roots are deep-cloned by importNode(); sanitize
+             them before the main iterator runs, since the iterator does not
+             descend into shadow trees. The walk routes every read through a
+             cached prototype getter so clobbering descendants on a form root
+             cannot hide a shadow host from this pass. */
+          _sanitizeAttachedShadowRoots(importedNode);
         } else {
           /* Exit directly if we have nothing to do */
           if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT &&
           // eslint-disable-next-line unicorn/prefer-includes
           dirty.indexOf('<') === -1) {
-            return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(dirty) : dirty;
+            return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? _createTrustedHTML(dirty) : dirty;
           }
           /* Initialize the document to work on */
           body = _initDocument(dirty);
@@ -19399,24 +20941,69 @@
           _forceRemove(body.firstChild);
         }
         /* Get node iterator */
-        const nodeIterator = _createNodeIterator(IN_PLACE ? dirty : body);
-        /* Now start iterating over the created document */
-        while (currentNode = nodeIterator.nextNode()) {
-          /* Sanitize tags and elements */
-          _sanitizeElements(currentNode);
-          /* Check attributes next */
-          _sanitizeAttributes(currentNode);
-          /* Shadow DOM detected, sanitize it */
-          if (currentNode.content instanceof DocumentFragment) {
-            _sanitizeShadowDOM(currentNode.content);
+        const walkRoot = inPlace ? dirty : body;
+        const nodeIterator = _createNodeIterator(walkRoot);
+        /* Now start iterating over the created document.
+           The walk runs inside an exception barrier (campaign-3 F2): a re-entrant
+           engine/custom-element mutation can detach a node mid-walk so
+           `_forceRemove`'s parentless guard throws, aborting the loop. Without the
+           barrier the caller's in-place tree would be left half-sanitized with the
+           unvisited tail still armed. On any throw we fail closed — strip the
+           in-place root bare — then rethrow so the existing throw contract is
+           preserved. (String/DOM-copy paths never return the partial body, so the
+           propagating throw is already fail-closed there.) */
+        try {
+          while (currentNode = nodeIterator.nextNode()) {
+            /* Sanitize tags and elements */
+            _sanitizeElements(currentNode, walkRoot);
+            /* Check attributes next */
+            _sanitizeAttributes(currentNode);
+            /* Shadow DOM detected, sanitize it.
+               Realm-safe check (GHSA-hpcv-96wg-7vj8): nodeType-based detection
+               instead of instanceof, so foreign-realm <template>.content is
+               walked correctly. */
+            if (_isDocumentFragment(currentNode.content)) {
+              _sanitizeShadowDOM2(currentNode.content);
+            }
           }
+        } catch (error) {
+          if (inPlace) {
+            _neutralizeRoot(dirty);
+            /* Nodes _forceRemove'd earlier in the aborted walk are already
+               detached from the root, so _neutralizeRoot's subtree pass does not
+               reach them. Defuse them too, mirroring the success-path loop below. */
+            arrayForEach(DOMPurify.removed, entry => {
+              if (entry.element) {
+                _neutralizeSubtree(entry.element);
+              }
+            });
+          }
+          throw error;
         }
         /* If we sanitized `dirty` in-place, return it. */
-        if (IN_PLACE) {
+        if (inPlace) {
+          /* Fail-closed completion of the audit-5 F1 fix: every node removed from
+             the caller's live tree is detached but may still hold a queued
+             resource-event handler that fires in page scope after we return. The
+             move-hoist covers only disallowed-tag KEEP_CONTENT removals; strip the
+             non-allow-listed attributes off every other removed subtree (clobber,
+             mXSS, namespace, comments, KEEP_CONTENT:false, …) so those handlers are
+             cancelled before any event can fire. Runs synchronously, pre-return. */
+          arrayForEach(DOMPurify.removed, entry => {
+            if (entry.element) {
+              _neutralizeSubtree(entry.element);
+            }
+          });
+          if (SAFE_FOR_TEMPLATES) {
+            _scrubTemplateExpressions2(dirty);
+          }
           return dirty;
         }
         /* Return sanitized string or DOM */
         if (RETURN_DOM) {
+          if (SAFE_FOR_TEMPLATES) {
+            _scrubTemplateExpressions2(body);
+          }
           if (RETURN_DOM_FRAGMENT) {
             returnNode = createDocumentFragment.call(body.ownerDocument);
             while (body.firstChild) {
@@ -19445,20 +21032,28 @@
         }
         /* Sanitize final string template-safe */
         if (SAFE_FOR_TEMPLATES) {
-          arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
-            serializedHTML = stringReplace(serializedHTML, expr, ' ');
-          });
+          serializedHTML = _stripTemplateExpressions(serializedHTML);
         }
-        return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(serializedHTML) : serializedHTML;
+        return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? _createTrustedHTML(serializedHTML) : serializedHTML;
       };
       DOMPurify.setConfig = function () {
         let cfg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         _parseConfig(cfg);
         SET_CONFIG = true;
+        SET_CONFIG_ALLOWED_TAGS = ALLOWED_TAGS;
+        SET_CONFIG_ALLOWED_ATTR = ALLOWED_ATTR;
       };
       DOMPurify.clearConfig = function () {
         CONFIG = null;
         SET_CONFIG = false;
+        SET_CONFIG_ALLOWED_TAGS = null;
+        SET_CONFIG_ALLOWED_ATTR = null;
+        // Drop any caller-supplied Trusted Types policy so it cannot poison later
+        // `RETURN_TRUSTED_TYPE` output. The internal default policy (cached, and
+        // never recreated — Trusted Types throws on duplicate names) is restored by
+        // the next `_parseConfig`. See GHSA-vxr8-fq34-vvx9.
+        trustedTypesPolicy = defaultTrustedTypesPolicy;
+        emptyHTML = '';
       };
       DOMPurify.isValidAttribute = function (tag, attr, value) {
         /* Initialize shared config vars if necessary. */
@@ -19473,9 +21068,19 @@
         if (typeof hookFunction !== 'function') {
           return;
         }
+        /* Reject unknown entry points. Without this, a non-hook key (e.g.
+         * '__proto__') indexes off the prototype chain rather than a real
+         * hook array, and arrayPush then writes to Object.prototype. Guard
+         * with an own-property check against the known hook names. */
+        if (!objectHasOwnProperty(hooks, entryPoint)) {
+          return;
+        }
         arrayPush(hooks[entryPoint], hookFunction);
       };
       DOMPurify.removeHook = function (entryPoint, hookFunction) {
+        if (!objectHasOwnProperty(hooks, entryPoint)) {
+          return undefined;
+        }
         if (hookFunction !== undefined) {
           const index = arrayLastIndexOf(hooks[entryPoint], hookFunction);
           return index === -1 ? undefined : arraySplice(hooks[entryPoint], index, 1)[0];
@@ -19483,6 +21088,9 @@
         return arrayPop(hooks[entryPoint]);
       };
       DOMPurify.removeHooks = function (entryPoint) {
+        if (!objectHasOwnProperty(hooks, entryPoint)) {
+          return;
+        }
         hooks[entryPoint] = [];
       };
       DOMPurify.removeAllHooks = function () {
@@ -19522,7 +21130,7 @@
             // Might throw malformed URI sequence
             return decodeURIComponent(encodedUri);
         }
-        catch (_a) {
+        catch {
             // Fallback to non UTF-8 decoder
             return unescape(encodedUri);
         }
@@ -19581,11 +21189,10 @@
             }
         }
         static getDocumentBaseUrl(loc) {
-            var _a;
             let baseUrl;
             // Pass applewebdata:// and other non web protocols though
             if (loc.protocol.indexOf('http') !== 0 && loc.protocol !== 'file:') {
-                baseUrl = (_a = loc.href) !== null && _a !== void 0 ? _a : '';
+                baseUrl = loc.href ?? '';
             }
             else {
                 baseUrl = loc.protocol + '//' + loc.host + loc.pathname;
@@ -19598,6 +21205,21 @@
             }
             return baseUrl;
         }
+        source;
+        protocol;
+        authority;
+        userInfo;
+        user;
+        password;
+        host;
+        port;
+        relative;
+        path = '';
+        directory = '';
+        file;
+        query;
+        anchor;
+        settings;
         /**
          * Constructs a new URI instance.
          *
@@ -19607,8 +21229,6 @@
          * @param {Object} settings Optional settings object.
          */
         constructor(url, settings = {}) {
-            this.path = '';
-            this.directory = '';
             url = trim(url);
             this.settings = settings;
             const baseUri = settings.base_uri;
@@ -19627,7 +21247,7 @@
             // Relative path http:// or protocol relative //path
             if (!/^[\w\-]*:?\/\//.test(url)) {
                 const baseUrl = baseUri ? baseUri.path : new URI(document.location.href).directory;
-                if ((baseUri === null || baseUri === void 0 ? void 0 : baseUri.protocol) === '') {
+                if (baseUri?.protocol === '') {
                     url = '//mce_host' + self.toAbsPath(baseUrl, url);
                 }
                 else {
@@ -19912,19 +21532,18 @@
     const internalElementAttr = 'data-mce-type';
     let uid = 0;
     const processNode = (node, settings, schema, scope, evt) => {
-        var _a, _b, _c, _d;
         const validate = settings.validate;
         const specialElements = schema.getSpecialElements();
         if (node.nodeType === COMMENT) {
             // Pad conditional comments if they aren't allowed
-            if (!settings.allow_conditional_comments && /^\[if/i.test((_a = node.nodeValue) !== null && _a !== void 0 ? _a : '')) {
+            if (!settings.allow_conditional_comments && /^\[if/i.test(node.nodeValue ?? '')) {
                 node.nodeValue = ' ' + node.nodeValue;
             }
             if (settings.sanitize && settings.allow_html_in_comments && isString(node.nodeValue)) {
                 node.nodeValue = encodeData(node.nodeValue);
             }
         }
-        const lcTagName = (_b = evt === null || evt === void 0 ? void 0 : evt.tagName) !== null && _b !== void 0 ? _b : node.nodeName.toLowerCase();
+        const lcTagName = evt?.tagName ?? node.nodeName.toLowerCase();
         if (scope !== 'html' && schema.isValid(scope)) {
             if (isNonNullable(evt)) {
                 evt.allowedTags[lcTagName] = true;
@@ -19937,10 +21556,22 @@
         }
         // Construct the sugar element wrapper
         const element = SugarElement.fromDom(node);
+        if (settings.sanitize) {
+            // TINY-9655: Preserve the content of script and style tags if they are valid elements in the schema
+            const shouldKeepContent = (isScript(element) && schema.isValid('script')) || (isStyle(element) && schema.isValid('style'));
+            if (shouldKeepContent) {
+                Optional.from(get$3(element)).each((content) => set$5(element, 'data-mce-tmp', content));
+            }
+            // TINY-9655: Clear innerHTML of script and iframe tags to prevent DOMPurify from removing them entirely
+            const shouldClearContent = isIframe(element) && schema.isValid('iframe');
+            if (shouldKeepContent || shouldClearContent) {
+                empty(element);
+            }
+        }
         // Determine if we're dealing with an internal attribute
         const isInternalElement = has$1(element, internalElementAttr);
         // Cleanup bogus elements
-        const bogus = get$9(element, 'data-mce-bogus');
+        const bogus = get$a(element, 'data-mce-bogus');
         if (!isInternalElement && isString(bogus)) {
             if (bogus === 'all') {
                 remove$8(element);
@@ -19970,12 +21601,12 @@
         // Validate the element using the attribute rules
         if (validate && rule && !isInternalElement) {
             // Fix the attributes for the element, unwrapping it if we have to
-            each$e((_c = rule.attributesForced) !== null && _c !== void 0 ? _c : [], (attr) => {
-                set$4(element, attr.name, attr.value === '{$uid}' ? `mce_${uid++}` : attr.value);
+            each$e(rule.attributesForced ?? [], (attr) => {
+                set$5(element, attr.name, attr.value === '{$uid}' ? `mce_${uid++}` : attr.value);
             });
-            each$e((_d = rule.attributesDefault) !== null && _d !== void 0 ? _d : [], (attr) => {
+            each$e(rule.attributesDefault ?? [], (attr) => {
                 if (!has$1(element, attr.name)) {
-                    set$4(element, attr.name, attr.value === '{$uid}' ? `mce_${uid++}` : attr.value);
+                    set$5(element, attr.name, attr.value === '{$uid}' ? `mce_${uid++}` : attr.value);
                 }
             });
             // If none of the required attributes were found then remove
@@ -20000,7 +21631,7 @@
         evt.keepAttr = shouldKeepAttribute(settings, schema, scope, tagName, attrName, attrValue);
         if (evt.keepAttr) {
             evt.allowedAttributes[attrName] = true;
-            if (isBooleanAttribute(attrName, schema)) {
+            if (isBooleanAttributeOfNonCustomElement(attrName, schema, ele.nodeName)) {
                 evt.attrValue = attrName;
             }
             // We need to tell DOMPurify to forcibly keep the attribute if it's an SVG data URI and svg data URIs are allowed
@@ -20022,7 +21653,7 @@
             (!settings.validate || schema.isValid(tagName, attrName) || startsWith(attrName, 'data-') || startsWith(attrName, 'aria-'));
     };
     const isRequiredAttributeOfInternalElement = (ele, attrName) => ele.hasAttribute(internalElementAttr) && (attrName === 'id' || attrName === 'class' || attrName === 'style');
-    const isBooleanAttribute = (attrName, schema) => attrName in schema.getBoolAttrs();
+    const isBooleanAttributeOfNonCustomElement = (attrName, schema, nodeName) => attrName in schema.getBoolAttrs() && !has$2(schema.getCustomElements(), nodeName.toLowerCase());
     const filterAttributes = (ele, settings, schema, scope) => {
         const { attributes } = ele;
         for (let i = attributes.length - 1; i >= 0; i--) {
@@ -20032,9 +21663,19 @@
             if (!shouldKeepAttribute(settings, schema, scope, ele.tagName.toLowerCase(), attrName, attrValue) && !isRequiredAttributeOfInternalElement(ele, attrName)) {
                 ele.removeAttribute(attrName);
             }
-            else if (isBooleanAttribute(attrName, schema)) {
+            else if (isBooleanAttributeOfNonCustomElement(attrName, schema, ele.nodeName)) {
                 ele.setAttribute(attrName, attrName);
             }
+        }
+    };
+    const restoreValidContent = (node) => {
+        // Construct the sugar element wrapper
+        const element = SugarElement.fromDom(node);
+        if (isScript(element) || isStyle(element)) {
+            getOpt(element, 'data-mce-tmp').each((content) => {
+                set(element, content);
+                remove$9(element, 'data-mce-tmp');
+            });
         }
     };
     const setupPurify = (settings, schema, namespaceTracker) => {
@@ -20042,6 +21683,9 @@
         // We use this to add new tags to the allow-list as we parse, if we notice that a tag has been banned but it's still in the schema
         purify$1.addHook('uponSanitizeElement', (ele, evt) => {
             processNode(ele, settings, schema, namespaceTracker.track(ele), evt);
+        });
+        purify$1.addHook('afterSanitizeElements', (ele) => {
+            restoreValidContent(ele);
         });
         // Let's do the same thing for attributes
         purify$1.addHook('uponSanitizeAttribute', (ele, evt) => {
@@ -20056,7 +21700,7 @@
             // Deliberately ban all tags and attributes by default, and then un-ban them on demand in hooks
             // #comment and #cdata-section are always allowed as they aren't controlled via the schema
             // body is also allowed due to the DOMPurify checking the root node before sanitizing
-            ALLOWED_TAGS: ['#comment', '#cdata-section', 'body'],
+            ALLOWED_TAGS: ['#comment', '#cdata-section', 'body', 'html'],
             ALLOWED_ATTR: []
         };
         const config = { ...basePurifyConfig };
@@ -20120,10 +21764,9 @@
             }
         };
         purify$1.addHook('uponSanitizeElement', (node, evt) => {
-            var _a;
             // We know the node is an element as we have
             // passed an element to the purify.sanitize function below
-            const lcTagName = (_a = evt.tagName) !== null && _a !== void 0 ? _a : node.nodeName.toLowerCase();
+            const lcTagName = evt.tagName ?? node.nodeName.toLowerCase();
             const keepElementOpt = isValidElementOpt(node, lcTagName);
             keepElementOpt.each((keepElement) => {
                 evt.allowedTags[lcTagName] = keepElement;
@@ -20205,7 +21848,7 @@
      * @class tinymce.html.DomParser
      * @version 3.4
      */
-    const extraBlockLikeElements = ['script', 'style', 'template', 'param'];
+    const extraBlockLikeElements = ['script', 'style', 'template', 'param', 'meta', 'title', 'link'];
     const makeMap = Tools.makeMap, extend$1 = Tools.extend;
     const transferChildren = (parent, nativeParent, specialElements, nsSanitizer, decodeComments) => {
         const parentName = parent.name;
@@ -20318,11 +21961,10 @@
             return isBlock(node.parent) && (node.parent !== root || args.isRootContent === true);
         };
         const preprocess = (node) => {
-            var _a;
             if (node.type === 3) {
                 // Remove leading whitespace here, so that all whitespace in nodes to the left of us has already been fixed
                 if (!hasWhitespaceParent(node)) {
-                    let text = (_a = node.value) !== null && _a !== void 0 ? _a : '';
+                    let text = node.value ?? '';
                     text = text.replace(allWhiteSpaceRegExp, ' ');
                     if (isLineBreakNode(node.prev, isBlock) || isAtEdgeOfBlock(node, true)) {
                         text = text.replace(startWhiteSpaceRegExp, '');
@@ -20340,7 +21982,6 @@
             }
         };
         const postprocess = (node) => {
-            var _a;
             if (node.type === 1) {
                 // Check for empty nodes here, because children will have been processed and (if necessary) emptied / removed already
                 const elementRule = schema.getElementRule(node.name);
@@ -20365,7 +22006,7 @@
             else if (node.type === 3) {
                 // Removing trailing whitespace here, so that all whitespace in nodes to the right of us has already been fixed
                 if (!hasWhitespaceParent(node)) {
-                    let text = (_a = node.value) !== null && _a !== void 0 ? _a : '';
+                    let text = node.value ?? '';
                     if (node.next && isBlock(node.next) || isAtEdgeOfBlock(node, false)) {
                         text = text.replace(endWhiteSpaceRegExp, '');
                     }
@@ -20381,8 +22022,7 @@
         return [preprocess, postprocess];
     };
     const getRootBlockName = (settings, args) => {
-        var _a;
-        const name = (_a = args.forced_root_block) !== null && _a !== void 0 ? _a : settings.forced_root_block;
+        const name = args.forced_root_block ?? settings.forced_root_block;
         if (name === false) {
             return '';
         }
@@ -20393,6 +22033,7 @@
             return name;
         }
     };
+    const xhtmlAttribte = ' xmlns="http://www.w3.org/1999/xhtml"';
     const DomParser = (settings = {}, schema = Schema()) => {
         const nodeFilterRegistry = create$8();
         const attributeFilterRegistry = create$8();
@@ -20406,25 +22047,28 @@
         };
         const parser = new DOMParser();
         const sanitizer = getSanitizer(defaultedSettings, schema);
-        const parseAndSanitizeWithContext = (html, rootName, format = 'html') => {
-            const mimeType = format === 'xhtml' ? 'application/xhtml+xml' : 'text/html';
+        const parseAndSanitizeWithContext = (html, rootName, format = 'html', useDocumentNotBody = false) => {
+            const isxhtml = format === 'xhtml';
+            const mimeType = isxhtml ? 'application/xhtml+xml' : 'text/html';
             // Determine the root element to wrap the HTML in when parsing. If we're dealing with a
             // special element then we need to wrap it so the internal content is handled appropriately.
             const isSpecialRoot = has$2(schema.getSpecialElements(), rootName.toLowerCase());
             const content = isSpecialRoot ? `<${rootName}>${html}</${rootName}>` : html;
             const makeWrap = () => {
-                if (format === 'xhtml') {
-                    // If parsing XHTML then the content must contain the xmlns declaration, see https://www.w3.org/TR/xhtml1/normative.html#strict
-                    return `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${content}</body></html>`;
-                }
-                else if (/^[\s]*<head/i.test(html) || /^[\s]*<html/i.test(html) || /^[\s]*<!DOCTYPE/i.test(html)) {
-                    return `<html>${content}</html>`;
+                if (/^[\s]*<head/i.test(html) || /^[\s]*<html/i.test(html) || /^[\s]*<!DOCTYPE/i.test(html)) {
+                    return `<html${isxhtml ? xhtmlAttribte : ''}>${content}</html>`;
                 }
                 else {
-                    return `<body>${content}</body>`;
+                    if (isxhtml) {
+                        return `<html${xhtmlAttribte}><head></head><body>${content}</body></html>`;
+                    }
+                    else {
+                        return `<body>${content}</body>`;
+                    }
                 }
             };
-            const body = parser.parseFromString(makeWrap(), mimeType).body;
+            const document = parser.parseFromString(makeWrap(), mimeType);
+            const body = useDocumentNotBody ? document.documentElement : document.body;
             sanitizer.sanitizeHtmlElement(body, mimeType);
             return isSpecialRoot ? body.firstChild : body;
         };
@@ -20506,15 +22150,14 @@
             // Removes whitespace at beginning and end of block so:
             // <p> x </p> -> <p>x</p>
             const trim = (rootBlock) => {
-                var _a, _b;
                 if (rootBlock) {
                     node = rootBlock.firstChild;
                     if (node && node.type === 3) {
-                        node.value = (_a = node.value) === null || _a === void 0 ? void 0 : _a.replace(startWhiteSpaceRegExp, '');
+                        node.value = node.value?.replace(startWhiteSpaceRegExp, '');
                     }
                     node = rootBlock.lastChild;
                     if (node && node.type === 3) {
-                        node.value = (_b = node.value) === null || _b === void 0 ? void 0 : _b.replace(endWhiteSpaceRegExp, '');
+                        node.value = node.value?.replace(endWhiteSpaceRegExp, '');
                     }
                 }
             };
@@ -20555,11 +22198,11 @@
          * const rootNode = tinymce.html.DomParser({...}).parse('<b>text</b>');
          */
         const parse = (html, args = {}) => {
-            var _a;
             const validate = defaultedSettings.validate;
-            const rootName = (_a = args.context) !== null && _a !== void 0 ? _a : defaultedSettings.root_name;
+            const preferFullDocument = (args.context ?? defaultedSettings.root_name) === '#document';
+            const rootName = args.context ?? (preferFullDocument ? 'html' : defaultedSettings.root_name);
             // Parse and sanitize the content
-            const element = parseAndSanitizeWithContext(html, rootName, args.format);
+            const element = parseAndSanitizeWithContext(html, rootName, args.format, preferFullDocument);
             updateChildren(schema, element);
             // Create the AST representation
             const rootNode = new AstNode(rootName, 11);
@@ -20694,8 +22337,7 @@
         'tab_focus,tabfocus_elements,table_responsive_width,text_block_elements,text_inline_elements,toolbar_drawer,types,validate,whitespace_elements,' +
         'paste_enable_default_filters,paste_filter_drop,paste_word_valid_elements,paste_retain_style_properties,paste_convert_word_fake_lists,' +
         'template_cdate_classes,template_mdate_classes,template_selected_content_classes,template_preview_replace_values,template_replace_values,templates,template_cdate_format,template_mdate_format').split(',');
-    // const deprecatedOptions: string[] = ('').split(',');
-    const deprecatedOptions = [];
+    const deprecatedOptions = ['content_css_cors'];
     const removedPlugins = 'bbcode,colorpicker,contextmenu,fullpage,legacyoutput,spellchecker,template,textcolor,rtc'.split(',');
     const deprecatedPlugins = [
         {
@@ -20913,7 +22555,7 @@
         }
         // Skip last child if it's an empty block
         if (isEmptyFragmentElement(schema, lastChild)) {
-            lastChild = lastChild === null || lastChild === void 0 ? void 0 : lastChild.prev;
+            lastChild = lastChild?.prev;
         }
         if (!firstChild || firstChild !== lastChild) {
             return false;
@@ -20921,15 +22563,14 @@
         return firstChild.name === 'ul' || firstChild.name === 'ol';
     };
     const cleanupDomFragment = (domFragment) => {
-        var _a, _b;
         const firstChild = domFragment.firstChild;
         const lastChild = domFragment.lastChild;
         // TODO: remove the meta tag from paste logic
         if (firstChild && firstChild.nodeName === 'META') {
-            (_a = firstChild.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(firstChild);
+            firstChild.parentNode?.removeChild(firstChild);
         }
         if (lastChild && lastChild.id === 'mce_marker') {
-            (_b = lastChild.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(lastChild);
+            lastChild.parentNode?.removeChild(lastChild);
         }
         return domFragment;
     };
@@ -20939,8 +22580,7 @@
         return cleanupDomFragment(domFragment);
     };
     const listItems = (elm) => {
-        var _a;
-        return filter$5((_a = elm === null || elm === void 0 ? void 0 : elm.childNodes) !== null && _a !== void 0 ? _a : [], (child) => {
+        return filter$5(elm?.childNodes ?? [], (child) => {
             return child.nodeName === 'LI';
         });
     };
@@ -20948,7 +22588,7 @@
         return node.data === nbsp || isBr$7(node);
     };
     const isListItemPadded = (node) => {
-        return isNonNullable(node === null || node === void 0 ? void 0 : node.firstChild) && node.firstChild === node.lastChild && isPadding(node.firstChild);
+        return isNonNullable(node?.firstChild) && node.firstChild === node.lastChild && isPadding(node.firstChild);
     };
     const isEmptyOrPadded = (elm) => {
         return !elm.firstChild || isListItemPadded(elm);
@@ -21021,7 +22661,7 @@
             const caretPos = CaretPosition.fromRangeStart(rng);
             const caretWalker = CaretWalker(dom.getRoot());
             const newPos = location === BEGINNING ? caretWalker.prev(caretPos) : caretWalker.next(caretPos);
-            const newPosNode = newPos === null || newPos === void 0 ? void 0 : newPos.getNode();
+            const newPosNode = newPos?.getNode();
             return newPosNode ? getParentLi(dom, newPosNode) !== liTarget : true;
         };
         if (!liTarget) {
@@ -21040,7 +22680,6 @@
 
     const mergeableWrappedElements = ['pre'];
     const shouldPasteContentOnly = (dom, fragment, parentNode, root) => {
-        var _a;
         const firstNode = fragment.firstChild;
         const lastNode = fragment.lastChild;
         const last = lastNode.attr('data-mce-type') === 'bookmark' ? lastNode.prev : lastNode;
@@ -21048,7 +22687,7 @@
         const isWrappedElement = contains$2(mergeableWrappedElements, firstNode.name);
         if (isPastingSingleElement && isWrappedElement) {
             const isContentEditable = firstNode.attr('contenteditable') !== 'false';
-            const isPastingInTheSameBlockTag = ((_a = dom.getParent(parentNode, dom.isBlock)) === null || _a === void 0 ? void 0 : _a.nodeName.toLowerCase()) === firstNode.name;
+            const isPastingInTheSameBlockTag = dom.getParent(parentNode, dom.isBlock)?.nodeName.toLowerCase() === firstNode.name;
             const isPastingInContentEditable = Optional.from(getContentEditableRoot$1(root, parentNode)).forall(isContentEditableTrue$3);
             return isContentEditable && isPastingInTheSameBlockTag && isPastingInContentEditable;
         }
@@ -21076,11 +22715,10 @@
         }
     };
     const validInsertion = (editor, value, parentNode) => {
-        var _a;
         // Should never insert content into bogus elements, since these can
         // be resize handles or similar
         if (parentNode.getAttribute('data-mce-bogus') === 'all') {
-            (_a = parentNode.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(editor.dom.createFragment(value), parentNode);
+            parentNode.parentNode?.insertBefore(editor.dom.createFragment(value), parentNode);
         }
         else {
             if (isEditableEmptyBlock(editor.dom, parentNode)) {
@@ -21144,7 +22782,6 @@
         return isNonNullable(node) && !editor.schema.getVoidElements()[node.nodeName];
     };
     const moveSelectionToMarker = (editor, marker) => {
-        var _a, _b, _c;
         let nextRng;
         const dom = editor.dom;
         const selection = editor.selection;
@@ -21164,11 +22801,11 @@
         // If previous sibling is a text node set the selection to the end of that node
         const node = marker.previousSibling;
         if (isText$b(node)) {
-            rng.setStart(node, (_b = (_a = node.nodeValue) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0);
+            rng.setStart(node, node.nodeValue?.length ?? 0);
             const node2 = marker.nextSibling;
             if (isText$b(node2)) {
                 node.appendData(node2.data);
-                (_c = node2.parentNode) === null || _c === void 0 ? void 0 : _c.removeChild(node2);
+                node2.parentNode?.removeChild(node2);
             }
         }
         else {
@@ -21180,7 +22817,7 @@
             let caretPos = CaretPosition.fromRangeStart(rng);
             const caretWalker = CaretWalker(editor.getBody());
             caretPos = caretWalker.next(caretPos);
-            return caretPos === null || caretPos === void 0 ? void 0 : caretPos.toRange();
+            return caretPos?.toRange();
         };
         // Remove the marker node and set the new range
         const parentBlock = dom.getParent(marker, dom.isBlock);
@@ -21231,11 +22868,9 @@
         return Optional.none();
     };
     const notHeadingsInSummary = (dom, node, fragment) => {
-        var _a;
-        return exists(fragment.children(), isHeading) && ((_a = dom.getParent(node, dom.isBlock)) === null || _a === void 0 ? void 0 : _a.nodeName) === 'SUMMARY';
+        return exists(fragment.children(), isHeading) && dom.getParent(node, dom.isBlock)?.nodeName === 'SUMMARY';
     };
     const insertHtmlAtCaret = (editor, value, details) => {
-        var _a;
         const selection = editor.selection;
         const dom = editor.dom;
         // Setup parser and serializer
@@ -21284,7 +22919,7 @@
             return value;
         }
         if (details.paste === true && shouldPasteContentOnly(dom, fragment, parentNode, editor.getBody())) {
-            (_a = fragment.firstChild) === null || _a === void 0 ? void 0 : _a.unwrap();
+            fragment.firstChild?.unwrap();
         }
         markFragmentElements(fragment);
         // Move the caret to a more suitable location
@@ -21456,7 +23091,7 @@
             append(SugarElement.fromDom(pre1), [
                 SugarElement.fromTag('br', doc),
                 SugarElement.fromTag('br', doc),
-                ...children$1(sPre2)
+                ...children$2(sPre2)
             ]);
         };
         if (!rng.collapsed) {
@@ -21603,10 +23238,12 @@
             const wrapName = format.inline || format.block;
             const wrapElm = createWrapElement(wrapName);
             const isMatchingWrappingBlock = (node) => isWrappingBlockFormat(format) && matchNode$1(ed, node, name, vars);
+            const canRenameChildBlocks = (node) => forall(node.childNodes, (child) => !isTextBlock$2(ed.schema, child) || isValid(ed, wrapName, child.nodeName.toLowerCase()));
             const canRenameBlock = (node, parentName, isEditableDescendant) => {
                 const isValidBlockFormatForNode = isNonWrappingBlockFormat(format) &&
                     isTextBlock$2(ed.schema, node) &&
-                    isValid(ed, parentName, wrapName);
+                    isValid(ed, parentName, wrapName) &&
+                    canRenameChildBlocks(node);
                 return isEditableDescendant && isValidBlockFormatForNode;
             };
             const canWrapNode = (node, parentName, isEditableDescendant, isWrappableNoneditableElm) => {
@@ -21757,12 +23394,38 @@
                 }
             });
         };
-        // TODO: TINY-9142: Remove this to make nested noneditable formatting work
         const targetNode = isNode(node) ? node : selection.getNode();
         if (dom.getContentEditable(targetNode) === 'false' && !isWrappableNoneditable(ed, targetNode)) {
             // node variable is used by other functions above in the same scope so need to set it here
             node = targetNode;
             applyNodeStyle(formatList, node);
+            if (hasEditableDescendants(dom, node)) {
+                each$e(getEditableDescendants(dom, node), (island) => {
+                    const rng = dom.createRng();
+                    rng.selectNodeContents(island);
+                    applyRngStyle(dom, rng, true);
+                });
+                return;
+            }
+            if (isBlockFormat(format) && !dom.isBlock(node)) {
+                const parentBlock = dom.getParent(node, dom.isBlock);
+                if (dom.isEditable(parentBlock)) {
+                    const wrapperElementName = format.block;
+                    if (parentBlock.nodeName.toLowerCase() === wrapperElementName.toLowerCase()) {
+                        setElementFormat(ed, parentBlock, format, vars, node);
+                    }
+                    else if (!isWrappingBlockFormat(format)) {
+                        const elm = dom.rename(parentBlock, wrapperElementName);
+                        setElementFormat(ed, elm, format, vars, node);
+                    }
+                }
+            }
+            else {
+                const selectorFormats = filter$5(formatList, isSelectorFormat);
+                Optional.from(dom.getParent(node, (candidate) => exists(selectorFormats, (fmt) => dom.is(candidate, fmt.selector))))
+                    .filter(dom.isEditable)
+                    .each((parent) => applyNodeStyle(formatList, parent));
+            }
             fireFormatApply(ed, name, node, vars);
             return;
         }
@@ -21796,7 +23459,8 @@
                     applyCaretFormat(ed, name, vars);
                 }
                 getExpandedListItemFormat(ed.formatter, name).each((liFmt) => {
-                    each$e(getFullySelectedListItems(ed.selection), (li) => applyStyles(dom, li, liFmt, vars));
+                    const list = getFullySelectedListItems(ed);
+                    each$e(list, (li) => applyStyles(dom, li, liFmt, vars));
                 });
             }
             postProcess$1(name, ed);
@@ -21826,7 +23490,7 @@
     const fallbackElement = (editor) => editor.selection.getStart();
     const matchingNode = (editor, parents, format, similar, vars) => {
         const isMatchingNode = (node) => {
-            const matchingFormat = editor.formatter.matchNode(node, format, vars !== null && vars !== void 0 ? vars : {}, similar);
+            const matchingFormat = editor.formatter.matchNode(node, format, vars ?? {}, similar);
             return !isUndefined(matchingFormat);
         };
         const isUnableToMatch = (node) => {
@@ -21846,7 +23510,7 @@
         return findUntil$1(parents, isMatchingNode, isUnableToMatch);
     };
     const getParents = (editor, elm) => {
-        const element = elm !== null && elm !== void 0 ? elm : fallbackElement(editor);
+        const element = elm ?? fallbackElement(editor);
         return filter$5(getParents$2(editor.dom, element), (node) => isElement$7(node) && !isBogus$1(node));
     };
     const updateAndFireChangeCallbacks = (editor, elm, registeredCallbacks) => {
@@ -21874,7 +23538,7 @@
     const addListeners = (editor, registeredFormatListeners, formats, callback, similar, vars) => {
         const formatChangeItems = registeredFormatListeners.get();
         each$e(formats.split(','), (format) => {
-            const group = get$a(formatChangeItems, format).getOrThunk(() => {
+            const group = get$b(formatChangeItems, format).getOrThunk(() => {
                 const base = {
                     withSimilar: {
                         state: Cell(false),
@@ -21915,7 +23579,7 @@
     };
     const removeListeners = (registeredFormatListeners, formats, callback) => {
         const formatChangeItems = registeredFormatListeners.get();
-        each$e(formats.split(','), (format) => get$a(formatChangeItems, format).each((group) => {
+        each$e(formats.split(','), (format) => get$b(formatChangeItems, format).each((group) => {
             formatChangeItems[format] = {
                 withSimilar: {
                     ...group.withSimilar,
@@ -22120,7 +23784,6 @@
     };
     const getContextNodeName = (parentBlockOpt) => parentBlockOpt.map((block) => block.nodeName).getOr('div').toLowerCase();
     const getTextContent = (editor) => Optional.from(editor.selection.getRng()).map((rng) => {
-        var _a;
         const parentBlockOpt = Optional.from(editor.dom.getParent(rng.commonAncestorContainer, editor.dom.isBlock));
         const body = editor.getBody();
         const contextNodeName = getContextNodeName(parentBlockOpt);
@@ -22133,7 +23796,7 @@
         }, rangeContentClone.dom);
         const text = getInnerText(bin);
         // textContent will not strip leading/trailing spaces since it doesn't consider how it'll render
-        const nonRenderedText = trim$2((_a = bin.textContent) !== null && _a !== void 0 ? _a : '');
+        const nonRenderedText = trim$2(bin.textContent ?? '');
         editor.dom.remove(bin);
         if (isCollapsibleWhitespace(nonRenderedText, 0) || isCollapsibleWhitespace(nonRenderedText, nonRenderedText.length - 1)) {
             // If the bin contains a trailing/leading space, then we need to inspect the parent block to see if we should include the spaces
@@ -22391,7 +24054,7 @@
     // We need to create a temporary document instead of using the global document since
     // innerHTML on a detached element will still make http requests to the images
     const lazyTempDocument = cached(() => document.implementation.createHTMLDocument('undo'));
-    const hasIframes = (body) => body.querySelector('iframe') !== null;
+    const shouldBeFragmented = (body) => body.querySelector(`iframe, ${ucVideoNodeName}`) !== null;
     const createFragmentedLevel = (fragments) => {
         return {
             type: 'fragmented',
@@ -22413,7 +24076,7 @@
     const createFromEditor = (editor) => {
         const tempAttrs = editor.serializer.getTempAttrs();
         const body = trim$1(editor.getBody(), tempAttrs);
-        return hasIframes(body) ? createFragmentedLevel(read$2(body, true)) : createCompleteLevel(trim$2(body.innerHTML));
+        return shouldBeFragmented(body) ? createFragmentedLevel(read$2(body, true)) : createCompleteLevel(trim$2(body.innerHTML));
     };
     const applyToEditor = (editor, level, before) => {
         const bookmark = before ? level.beforeBookmark : level.bookmark;
@@ -22438,16 +24101,19 @@
     const getLevelContent = (level) => {
         return level.type === 'fragmented' ? level.fragments.join('') : level.content;
     };
-    const getCleanLevelContent = (level) => {
+    const getCleanLevelContent = (isReadonly, level) => {
         const elm = SugarElement.fromTag('body', lazyTempDocument());
-        set$3(elm, getLevelContent(level));
+        set$4(elm, getLevelContent(level));
         each$e(descendants(elm, '*[data-mce-bogus]'), unwrap);
-        return get$8(elm);
+        if (isReadonly) {
+            each$e(descendants(elm, 'details[open]'), (element) => remove$9(element, 'open'));
+        }
+        return get$9(elm);
     };
     const hasEqualContent = (level1, level2) => getLevelContent(level1) === getLevelContent(level2);
-    const hasEqualCleanedContent = (level1, level2) => getCleanLevelContent(level1) === getCleanLevelContent(level2);
+    const hasEqualCleanedContent = (isReadonly, level1, level2) => getCleanLevelContent(isReadonly, level1) === getCleanLevelContent(isReadonly, level2);
     // Most of the time the contents is equal so it's faster to first check that using strings then fallback to a cleaned dom comparison
-    const isEq$1 = (level1, level2) => {
+    const isEq$1 = (isReadonly, level1, level2) => {
         if (!level1 || !level2) {
             return false;
         }
@@ -22455,7 +24121,7 @@
             return true;
         }
         else {
-            return hasEqualCleanedContent(level1, level2);
+            return hasEqualCleanedContent(isReadonly, level1, level2);
         }
     };
 
@@ -22495,7 +24161,7 @@
             return null;
         }
         // Add undo level if needed
-        if (lastLevel && isEq$1(lastLevel, newLevel)) {
+        if (lastLevel && isEq$1(editor.readonly, lastLevel, newLevel)) {
             return null;
         }
         // Set before bookmark on previous level
@@ -22583,7 +24249,7 @@
     };
     const hasUndo$1 = (editor, undoManager, index) => 
     // Has undo levels or typing and content isn't the same as the initial level
-    index.get() > 0 || (undoManager.typing && undoManager.data[0] && !isEq$1(createFromEditor(editor), undoManager.data[0]));
+    index.get() > 0 || (undoManager.typing && undoManager.data[0] && !isEq$1(editor.readonly, createFromEditor(editor), undoManager.data[0]));
     const hasRedo$1 = (undoManager, index) => index.get() < undoManager.data.length - 1 && !undoManager.typing;
     const transact$1 = (undoManager, locks, callback) => {
         endTyping(undoManager, locks);
@@ -22783,7 +24449,7 @@
         };
     };
     const isRtc = (editor) => has$2(editor.plugins, 'rtc');
-    const getRtcSetup = (editor) => get$a(editor.plugins, 'rtc').bind((rtcPlugin) => 
+    const getRtcSetup = (editor) => get$b(editor.plugins, 'rtc').bind((rtcPlugin) => 
     // This might not exist if the stub plugin is loaded on cloud
     Optional.from(rtcPlugin.setup));
     const setup$z = (editor) => {
@@ -23150,7 +24816,7 @@
                 try {
                     return sourceRange.compareBoundaryPoints(how, destinationRange);
                 }
-                catch (_a) {
+                catch {
                     // Gecko throws wrong document exception if the range points
                     // to nodes that where removed from the dom #6690
                     // Browsers should mutate existing DOMRange instances so that they always point
@@ -23178,7 +24844,7 @@
                     rng = processRanges(editor, [rng])[0];
                 }
             }
-            catch (_a) {
+            catch {
                 // IE throws unspecified error here if TinyMCE is placed in a frame/iframe
             }
             // No range found then create an empty one
@@ -23226,7 +24892,7 @@
                     sel.removeAllRanges();
                     sel.addRange(rng);
                 }
-                catch (_a) {
+                catch {
                     // IE might throw errors here if the editor is within a hidden container and selection is changed
                 }
                 // Forward is set to false and we have an extend function
@@ -23238,7 +24904,7 @@
                 selectedRange = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
             }
             // WebKit edge case selecting images works better using setBaseAndExtent when the image is floated
-            if (!rng.collapsed && rng.startContainer === rng.endContainer && (sel === null || sel === void 0 ? void 0 : sel.setBaseAndExtent)) {
+            if (!rng.collapsed && rng.startContainer === rng.endContainer && sel?.setBaseAndExtent) {
                 if (rng.endOffset - rng.startOffset < 2) {
                     if (rng.startContainer.hasChildNodes()) {
                         const node = rng.startContainer.childNodes[rng.startOffset];
@@ -23284,8 +24950,8 @@
         const getSelectedBlocks$1 = (startElm, endElm) => getSelectedBlocks(dom, getRng$1(), startElm, endElm);
         const isForward = () => {
             const sel = getSel();
-            const anchorNode = sel === null || sel === void 0 ? void 0 : sel.anchorNode;
-            const focusNode = sel === null || sel === void 0 ? void 0 : sel.focusNode;
+            const anchorNode = sel?.anchorNode;
+            const focusNode = sel?.focusNode;
             // No support for selection direction then always return true
             if (!sel || !anchorNode || !focusNode || isRestrictedNode(anchorNode) || isRestrictedNode(focusNode)) {
                 return true;
@@ -23298,7 +24964,7 @@
                 focusRange.setStart(focusNode, sel.focusOffset);
                 focusRange.collapse(true);
             }
-            catch (_a) {
+            catch {
                 // Safari can generate an invalid selection and error. Silently handle it and default to forward.
                 // See https://bugs.webkit.org/show_bug.cgi?id=230594.
                 return true;
@@ -23528,7 +25194,7 @@
                 const node = nodes[i];
                 if (node.attr('data-mce-type') === 'bookmark' && !args.cleanup) {
                     // We maybe dealing with a "filled" bookmark. If so just remove the node, otherwise unwrap it
-                    const hasChildren = Optional.from(node.firstChild).exists((firstChild) => { var _a; return !isZwsp((_a = firstChild.value) !== null && _a !== void 0 ? _a : ''); });
+                    const hasChildren = Optional.from(node.firstChild).exists((firstChild) => !isZwsp(firstChild.value ?? ''));
                     if (hasChildren) {
                         node.unwrap();
                     }
@@ -23540,7 +25206,6 @@
         });
         // Force script into CDATA sections and remove the mce- prefix also add comments around styles
         htmlParser.addNodeFilter('script,style', (nodes, name) => {
-            var _a;
             const trim = (value) => {
                 /* jshint maxlen:255 */
                 /* eslint max-len:0 */
@@ -23553,7 +25218,7 @@
             while (i--) {
                 const node = nodes[i];
                 const firstChild = node.firstChild;
-                const value = (_a = firstChild === null || firstChild === void 0 ? void 0 : firstChild.value) !== null && _a !== void 0 ? _a : '';
+                const value = firstChild?.value ?? '';
                 if (name === 'script') {
                     // Remove mce- prefix from script elements and remove default type since the user specified
                     // a script element without type attribute
@@ -23572,22 +25237,16 @@
                 }
             }
         });
-        // Convert comments to cdata and handle protected comments
+        // Convert comments to cdata
         htmlParser.addNodeFilter('#comment', (nodes) => {
             let i = nodes.length;
             while (i--) {
                 const node = nodes[i];
                 const value = node.value;
-                if (settings.preserve_cdata && (value === null || value === void 0 ? void 0 : value.indexOf('[CDATA[')) === 0) {
+                if (settings.preserve_cdata && value?.indexOf('[CDATA[') === 0) {
                     node.name = '#cdata';
                     node.type = 4;
                     node.value = dom.decode(value.replace(/^\[CDATA\[|\]\]$/g, ''));
-                }
-                else if ((value === null || value === void 0 ? void 0 : value.indexOf('mce:protected ')) === 0) {
-                    node.name = '#text';
-                    node.type = 3;
-                    node.raw = true;
-                    node.value = unescape(value).substr(14);
                 }
             }
         });
@@ -23644,7 +25303,7 @@
      */
     const trimTrailingBr = (rootNode) => {
         const isBr = (node) => {
-            return (node === null || node === void 0 ? void 0 : node.name) === 'br';
+            return node?.name === 'br';
         };
         const brNode1 = rootNode.lastChild;
         if (isBr(brNode1)) {
@@ -23746,12 +25405,21 @@
         const schema = editor && editor.schema ? editor.schema : Schema(defaultedSettings);
         const htmlParser = DomParser(defaultedSettings, schema);
         register$3(htmlParser, defaultedSettings, dom);
-        const serialize = (node, parserArgs = {}) => {
-            const args = { format: 'html', ...parserArgs };
-            const targetNode = process$1(editor, node, args);
-            const html = getHtmlFromNode(dom, targetNode, args);
-            const rootNode = parseHtml(htmlParser, html, args);
-            return args.format === 'tree' ? rootNode : toHtml(editor, defaultedSettings, schema, rootNode, args);
+        const serialize = (node, domSerializerArgs = {}) => {
+            const { indent, entity_encoding, ...rest } = domSerializerArgs;
+            const parserArgs = { format: 'html', ...rest };
+            const targetNode = process$1(editor, node, parserArgs);
+            const html = getHtmlFromNode(dom, targetNode, parserArgs);
+            const rootNode = parseHtml(htmlParser, html, parserArgs);
+            if (parserArgs.format === 'tree') {
+                return rootNode;
+            }
+            const serializerSettings = {
+                ...defaultedSettings,
+                ...(isNonNullable(indent) ? { indent } : {}),
+                ...(isNonNullable(entity_encoding) ? { entity_encoding } : {}),
+            };
+            return toHtml(editor, serializerSettings, schema, rootNode, parserArgs);
         };
         return {
             schema,
@@ -23921,9 +25589,9 @@
         });
     };
 
-    const DOM$b = DOMUtils.DOM;
+    const DOM$a = DOMUtils.DOM;
     const restoreOriginalStyles = (editor) => {
-        DOM$b.setStyle(editor.id, 'display', editor.orgDisplay);
+        DOM$a.setStyle(editor.id, 'display', editor.orgDisplay);
     };
     const safeDestroy = (x) => Optional.from(x).each((x) => x.destroy());
     const clearDomReferences = (editor) => {
@@ -23944,7 +25612,7 @@
                 form.submit = form._mceOldSubmit;
                 delete form._mceOldSubmit;
             }
-            DOM$b.unbind(form, 'submit reset', editor.formEventDelegate);
+            DOM$a.unbind(form, 'submit reset', editor.formEventDelegate);
         }
     };
     const remove$1 = (editor) => {
@@ -23958,8 +25626,8 @@
             editor.removed = true;
             editor.unbindAllNativeEvents();
             // Remove any hidden input
-            if (editor.hasHiddenInput && isNonNullable(element === null || element === void 0 ? void 0 : element.nextSibling)) {
-                DOM$b.remove(element.nextSibling);
+            if (editor.hasHiddenInput && isNonNullable(element?.nextSibling)) {
+                DOM$a.remove(element.nextSibling);
             }
             fireRemove(editor);
             editor.editorManager.remove(editor);
@@ -23967,7 +25635,7 @@
                 restoreOriginalStyles(editor);
             }
             fireDetach(editor);
-            DOM$b.remove(editor.getContainer());
+            DOM$a.remove(editor.getContainer());
             safeDestroy(_selectionOverrides);
             safeDestroy(editorUpload);
             editor.destroy();
@@ -24026,7 +25694,7 @@
         const rawElm = elm.dom;
         return rawElm[propName];
     };
-    const getComputedSizeProp = (propName, elm) => parseInt(get$7(elm, propName), 10);
+    const getComputedSizeProp = (propName, elm) => parseInt(get$8(elm, propName), 10);
     const getClientWidth = curry(getProp, 'clientWidth');
     const getClientHeight = curry(getProp, 'clientHeight');
     const getMarginTop = curry(getComputedSizeProp, 'margin-top');
@@ -24166,9 +25834,8 @@
                 });
             });
             editor.on('keydown', (e) => {
-                var _a;
                 // TODO: TINY-11429 Remove this once we remove the use of keycodes
-                const isF12 = ((_a = e.key) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === 'f12' || e.keyCode === 123;
+                const isF12 = e.key?.toLowerCase() === 'f12' || e.keyCode === 123;
                 if (e.altKey && isF12) {
                     e.preventDefault();
                     getTopNotification()
@@ -24289,7 +25956,7 @@
             const windowManagerImpl = getImplementation();
             windowManagerImpl.alert(message, funcBind(scope ? scope : windowManagerImpl, () => {
                 restoreFocus(activeEl);
-                callback === null || callback === void 0 ? void 0 : callback();
+                callback?.();
             }));
         };
         const confirm = (message, callback, scope) => {
@@ -24297,7 +25964,7 @@
             const windowManagerImpl = getImplementation();
             windowManagerImpl.confirm(message, funcBind(scope ? scope : windowManagerImpl, (state) => {
                 restoreFocus(activeEl);
-                callback === null || callback === void 0 ? void 0 : callback(state);
+                callback?.(state);
             }));
         };
         const close = () => {
@@ -24411,6 +26078,9 @@
     };
     const licenseKeyManagerLoadError = (editor, url) => {
         logError(editor, 'LicenseKeyManagerLoadError', createLoadError('license key manager', url));
+    };
+    const componentLoadError = (editor, url) => {
+        logError(editor, 'ComponentLoadError', createLoadError('component', url));
     };
     const pluginInitError = (editor, name, err) => {
         const message = I18n.translate(['Failed to initialize plugin: {0}', name]);
@@ -24555,7 +26225,7 @@
             }
         });
     };
-    const reportInvalidPlugin = (editor, pluginCode) => {
+    const reportInvalidPlugin = (editor, pluginCode, hasShownPluginNotification) => {
         const baseMessage = `The "${pluginCode}" plugin requires a valid TinyMCE license key.`;
         reportMessage(editor, {
             console: {
@@ -24564,6 +26234,12 @@
                     `${baseMessage}`,
                     DOCS_URL_MESSAGE
                 ].join(' ')
+            },
+            ...hasShownPluginNotification ? {} : {
+                editor: {
+                    type: 'warning',
+                    message: `One or more premium plugins are disabled due to license key restrictions.`
+                }
             }
         });
     };
@@ -24574,8 +26250,7 @@
         return hasApiKey ? 'online' : 'offline';
     };
     const getLicenseKeyType = (editor) => {
-        var _a;
-        const licenseKey = (_a = getLicenseKey(editor)) === null || _a === void 0 ? void 0 : _a.toLowerCase();
+        const licenseKey = getLicenseKey(editor)?.toLowerCase();
         if (licenseKey === 'gpl') {
             return 'gpl';
         }
@@ -24589,7 +26264,10 @@
     const determineStrategy = (editor) => {
         const onlineStatus = getOnlineStatus(editor);
         const licenseKeyType = getLicenseKeyType(editor);
-        const forcePlugin = (new Set(getPlugins(editor))).has(PLUGIN_CODE$1);
+        const forcePlugin = new Set([
+            ...getPlugins(editor),
+            ...keys(getExternalPlugins$1(editor)),
+        ]).has(PLUGIN_CODE$1);
         if (licenseKeyType !== 'gpl' || onlineStatus === 'online' || forcePlugin) {
             return {
                 type: 'use_plugin',
@@ -24608,28 +26286,23 @@
         }
     };
 
-    const NoLicenseKeyManager = (editor) => ({
-        validate: (data) => {
-            const { plugin } = data;
-            const hasPlugin = isString(plugin);
-            // Premium plugins are not allowed
-            if (hasPlugin) {
-                reportInvalidPlugin(editor, plugin);
-            }
-            return Promise.resolve(false);
-        },
-    });
-    const GplLicenseKeyManager = (editor) => ({
-        validate: (data) => {
-            const { plugin } = data;
-            const hasPlugin = isString(plugin);
-            // Premium plugins are not allowed if 'gpl' is given as the license_key
-            if (hasPlugin) {
-                reportInvalidPlugin(editor, plugin);
-            }
-            return Promise.resolve(!hasPlugin);
-        },
-    });
+    const createFallbackLicenseKeyManager = (canValidate) => (editor) => {
+        let hasShownPluginNotification = false;
+        return {
+            validate: (data) => {
+                const { plugin } = data;
+                const hasPlugin = isString(plugin);
+                // Premium plugins are not allowed
+                if (hasPlugin) {
+                    reportInvalidPlugin(editor, plugin, hasShownPluginNotification);
+                    hasShownPluginNotification = true;
+                }
+                return Promise.resolve(canValidate && !hasPlugin);
+            },
+        };
+    };
+    const NoLicenseKeyManager = createFallbackLicenseKeyManager(false);
+    const GplLicenseKeyManager = createFallbackLicenseKeyManager(true);
     const ADDON_KEY = 'manager';
     const PLUGIN_CODE = PLUGIN_CODE$1;
     const setup$y = () => {
@@ -24640,7 +26313,8 @@
         const load = (editor, suffix) => {
             const strategy = determineStrategy(editor);
             if (strategy.type === 'use_plugin') {
-                const url = `plugins/${PLUGIN_CODE}/plugin${suffix}.js`;
+                const externalUrl = get$b(getExternalPlugins$1(editor), PLUGIN_CODE).map(trim$4).filter(isNotEmpty);
+                const url = externalUrl.getOr(`plugins/${PLUGIN_CODE}/plugin${suffix}.js`);
                 addOnManager.load(ADDON_KEY, url).catch(() => {
                     licenseKeyManagerLoadError(editor, url);
                 });
@@ -24708,7 +26382,7 @@
             // See: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Parameters
             editor.getDoc().execCommand(cmd, false, String(state));
         }
-        catch (_a) {
+        catch {
             // Ignore
         }
     };
@@ -24740,7 +26414,7 @@
         const body = SugarElement.fromDom(editor.getBody());
         toggleClass(body, 'mce-content-readonly', false);
         if (editor.hasEditableRoot()) {
-            set(body, true);
+            set$1(body, true);
         }
         setCommonEditorCommands(editor, false);
         if (hasEditorOrUiFocus(editor)) {
@@ -24754,21 +26428,21 @@
     const internalContentEditableAttr = 'data-mce-contenteditable';
     const switchOffContentEditableTrue = (elm) => {
         each$e(descendants(elm, '*[contenteditable="true"]'), (elm) => {
-            set$4(elm, internalContentEditableAttr, 'true');
-            set(elm, false);
+            set$5(elm, internalContentEditableAttr, 'true');
+            set$1(elm, false);
         });
     };
     const switchOnContentEditableTrue = (elm) => {
         each$e(descendants(elm, `*[${internalContentEditableAttr}="true"]`), (elm) => {
             remove$9(elm, internalContentEditableAttr);
-            set(elm, true);
+            set$1(elm, true);
         });
     };
     const toggleDisabled = (editor, state) => {
         const body = SugarElement.fromDom(editor.getBody());
         if (state) {
             disableEditor(editor);
-            set(body, false);
+            set$1(body, false);
             switchOffContentEditableTrue(body);
         }
         else {
@@ -24809,7 +26483,11 @@
     const isAllowedEventInDisabledMode = (e) => contains$2(allowedEvents, e.type);
     const getAnchorHrefOpt = (editor, elm) => {
         const isRoot = (elm) => eq(elm, SugarElement.fromDom(editor.getBody()));
-        return closest$3(elm, 'a', isRoot).bind((a) => getOpt(a, 'href'));
+        return closest$4(elm, 'a', isRoot).bind((a) => getOpt(a, 'href'));
+    };
+    const hasAccordion = (editor, elm) => {
+        const isRoot = (elm) => eq(elm, SugarElement.fromDom(editor.getBody()));
+        return closest$2(elm, 'details', isRoot);
     };
     const processDisabledEvents = (editor, e) => {
         /*
@@ -24820,10 +26498,15 @@
         */
         if (isClickEvent(e) && !VK.metaKeyPressed(e)) {
             const elm = SugarElement.fromDom(e.target);
-            getAnchorHrefOpt(editor, elm).each((href) => {
+            getAnchorHrefOpt(editor, elm).fold(() => {
+                if (hasAccordion(editor, elm)) {
+                    e.preventDefault();
+                }
+            }, (href) => {
                 e.preventDefault();
                 if (/^#/.test(href)) {
-                    const targetEl = editor.dom.select(`${href},[name="${removeLeading(href, '#')}"]`);
+                    const id = removeLeading(href, '#');
+                    const targetEl = editor.dom.select(`[id="${id}"],[name="${id}"]`);
                     if (targetEl.length) {
                         editor.selection.scrollIntoView(targetEl[0], true);
                     }
@@ -24856,8 +26539,8 @@
     };
 
     const isContentCssSkinName = (url) => /^[a-z0-9\-]+$/i.test(url);
-    const toContentSkinResourceName = (url) => 'content/' + url + '/content.css';
-    const isBundledCssSkinName = (url) => tinymce.Resource.has(toContentSkinResourceName(url));
+    const toContentSkinResourceName = (name) => 'content/' + name + '/content.css';
+    const isBundledCssSkinName = (name) => tinymce.Resource.has(toContentSkinResourceName(name));
     const getContentCssUrls = (editor) => {
         return transformToUrls(editor, getContentCss(editor));
     };
@@ -24870,7 +26553,7 @@
         const contentCssFile = `content${suffix}.css`;
         return map$3(cssLinks, (url) => {
             if (isBundledCssSkinName(url)) {
-                return url;
+                return toContentSkinResourceName(url);
             }
             else if (isContentCssSkinName(url) && !editor.inline) {
                 return `${skinUrl}/${url}/${contentCssFile}`;
@@ -25058,7 +26741,7 @@
             }
         };
         const toBlobInfo = (o) => {
-            if (!o.blob || !o.base64) {
+            if (isNullable(o.blob) || isNullable(o.base64) || (o.base64 === '' && !o.allowEmptyFile)) {
                 throw new Error('blob and base64 representations of the image are required for BlobInfo to be created');
             }
             const id = o.id || uuid('blobid');
@@ -25177,8 +26860,9 @@
                             progress = noop; // Once it's closed it's closed
                         }
                     };
-                    const success = (url) => {
+                    const success = (data) => {
                         closeNotification();
+                        const url = isString(data) ? data : data.url;
                         uploadStatus.markUploaded(blobInfo.blobUri(), url);
                         resolvePending(blobInfo.blobUri(), handlerSuccess(blobInfo, url));
                         resolve(handlerSuccess(blobInfo, url));
@@ -25532,7 +27216,7 @@
                     preview: 'font-family font-size'
                 },
                 {
-                    selector: '.mce-preview-object,[data-ephox-embed-iri]',
+                    selector: '.mce-preview-object,[data-ephox-embed-iri],.tiny-pageembed',
                     ceFalseOverride: true,
                     styles: {
                         float: 'left'
@@ -25584,7 +27268,7 @@
                     preview: 'font-family font-size'
                 },
                 {
-                    selector: '.mce-preview-object',
+                    selector: '.mce-preview-object,.tiny-pageembed',
                     ceFalseOverride: true,
                     styles: {
                         display: 'table', // Needs to be `table` to properly render while editing
@@ -25648,7 +27332,7 @@
                     preview: 'font-family font-size'
                 },
                 {
-                    selector: '.mce-preview-object,[data-ephox-embed-iri]',
+                    selector: '.mce-preview-object,[data-ephox-embed-iri],.tiny-pageembed',
                     ceFalseOverride: true,
                     styles: {
                         float: 'right'
@@ -25690,7 +27374,7 @@
             hilitecolor: { inline: 'span', styles: { backgroundColor: '%value' }, links: true, remove_similar: true, clear_child_styles: true },
             fontname: { inline: 'span', toggle: false, styles: { fontFamily: '%value' }, clear_child_styles: true },
             fontsize: { inline: 'span', toggle: false, styles: { fontSize: '%value' }, clear_child_styles: true },
-            lineheight: { selector: 'h1,h2,h3,h4,h5,h6,p,li,td,th,div', styles: { lineHeight: '%value' } },
+            lineheight: { selector: 'h1,h2,h3,h4,h5,h6,p,li,td,th,div', styles: { lineHeight: '%value' }, remove_similar: true },
             fontsize_class: { inline: 'span', attributes: { class: '%value' } },
             blockquote: { block: 'blockquote', wrapper: true, remove: 'all' },
             subscript: { inline: 'sub' },
@@ -25714,7 +27398,7 @@
                 remove_similar: true,
                 attributes: {
                     'lang': '%value',
-                    'data-mce-lang': (vars) => { var _a; return (_a = vars === null || vars === void 0 ? void 0 : vars.customValue) !== null && _a !== void 0 ? _a : null; }
+                    'data-mce-lang': (vars) => vars?.customValue ?? null
                 }
             },
             removeformat: [
@@ -25863,7 +27547,7 @@
         };
         const getRequiredParent = (elm, candidate) => {
             const elmRule = schema.getElementRule(elm.nodeName.toLowerCase());
-            const parentsRequired = elmRule === null || elmRule === void 0 ? void 0 : elmRule.parentsRequired;
+            const parentsRequired = elmRule?.parentsRequired;
             if (parentsRequired && parentsRequired.length) {
                 return candidate && contains$2(parentsRequired, candidate) ? candidate : parentsRequired[0];
             }
@@ -25982,7 +27666,7 @@
             return isString(val) ? val.replace(/%(\w+)/g, '') : '';
         };
         const getComputedStyle = (name, elm) => {
-            return dom.getStyle(elm !== null && elm !== void 0 ? elm : editor.getBody(), name, true);
+            return dom.getStyle(elm ?? editor.getBody(), name, true);
         };
         // Create block/inline element to use for preview
         if (isString(format)) {
@@ -26303,7 +27987,7 @@
                 editor.nodeChanged();
             }
             // Fire a TypingUndo event on the first character entered
-            if (isFirstTypedCharacter.get() && undoManager.typing && !isEq$1(createFromEditor(editor), undoManager.data[0])) {
+            if (isFirstTypedCharacter.get() && undoManager.typing && !isEq$1(editor.readonly, createFromEditor(editor), undoManager.data[0])) {
                 if (!editor.isDirty()) {
                     editor.setDirty(true);
                 }
@@ -26335,8 +28019,8 @@
                 isFirstTypedCharacter.set(true);
                 return;
             }
-            const hasOnlyMetaOrCtrlModifier = Env.os.isMacOS() ? e.metaKey : e.ctrlKey && !e.altKey;
-            if (hasOnlyMetaOrCtrlModifier) {
+            const hasMetaOrCtrlModifier = Env.os.isMacOS() ? e.metaKey : e.ctrlKey && !e.altKey;
+            if (hasMetaOrCtrlModifier && (e.key === 'Backspace' || e.key === 'Delete')) {
                 undoManager.beforeChange();
             }
         });
@@ -26400,7 +28084,7 @@
              *
              * @method add
              * @param {Object} level Optional undo level object to add.
-             * @param {DOMEvent} event Optional event responsible for the creation of the undo level.
+             * @param {EditorEvent} event Optional event responsible for the creation of the undo level.
              * @return {Object} Undo level that got added or null if a level wasn't needed.
              */
             add: (level, event) => {
@@ -26417,7 +28101,7 @@
                 level.bookmark = getUndoBookmark(editor.selection);
                 editor.dispatch('change', {
                     level,
-                    lastLevel: get$b(undoManager.data, index.get()).getOrUndefined()
+                    lastLevel: get$c(undoManager.data, index.get()).getOrUndefined()
                 });
             },
             /**
@@ -26572,10 +28256,9 @@
         }
     };
     const setup$w = (editor) => {
-        var _a;
         const dom = editor.dom;
         const rootBlock = getForcedRootBlock(editor);
-        const placeholder = (_a = getPlaceholder(editor)) !== null && _a !== void 0 ? _a : '';
+        const placeholder = getPlaceholder(editor) ?? '';
         const updatePlaceholder = (e, initial) => {
             if (isNonTypingKeyboardEvent(e)) {
                 return;
@@ -26605,6 +28288,53 @@
         }
     };
 
+    const createAndFireInputEvent = (eventType) => (editor, inputType, specifics = {}) => {
+        const target = editor.getBody();
+        const overrides = {
+            bubbles: true,
+            composed: true,
+            data: null,
+            isComposing: false,
+            detail: 0,
+            view: null,
+            target,
+            currentTarget: target,
+            eventPhase: Event.AT_TARGET,
+            originalTarget: target,
+            explicitOriginalTarget: target,
+            isTrusted: false,
+            srcElement: target,
+            cancelable: false,
+            preventDefault: noop,
+            inputType
+        };
+        const input = clone$2(new InputEvent(eventType));
+        return editor.dispatch(eventType, { ...input, ...overrides, ...specifics });
+    };
+    const fireInputEvent = createAndFireInputEvent('input');
+    const fireBeforeInputEvent = createAndFireInputEvent('beforeinput');
+
+    const symulateDelete = (editor, isForward, deleteFun) => {
+        // Some delete actions may prevent the input event from being fired. If we do not detect it, we fire it ourselves.
+        let shouldFireInput = true;
+        const inputHandler = () => shouldFireInput = false;
+        const beforeInputEvent = fireBeforeInputEvent(editor, isForward ? 'deleteContentForward' : 'deleteContentBackward');
+        if (beforeInputEvent.isDefaultPrevented()) {
+            return false;
+        }
+        editor.on('input', inputHandler);
+        try {
+            deleteFun();
+        }
+        finally {
+            editor.off('input', inputHandler);
+        }
+        if (shouldFireInput) {
+            editor.dispatch('input');
+        }
+        return true;
+    };
+
     const matchNodeName = (name) => (node) => isNonNullable(node) && node.nodeName.toLowerCase() === name;
     const matchNodeNames = (regex) => (node) => isNonNullable(node) && regex.test(node.nodeName);
     const isTextNode$1 = (node) => isNonNullable(node) && node.nodeType === 3;
@@ -26613,8 +28343,9 @@
     const isOlUlNode = matchNodeNames(/^(OL|UL)$/);
     const isListItemNode = matchNodeNames(/^(LI|DT|DD)$/);
     const isDlItemNode = matchNodeNames(/^(DT|DD)$/);
+    const isTableCellNode = matchNodeNames(/^(TH|TD)$/);
     const isBr$1 = matchNodeName('br');
-    const isFirstChild$1 = (node) => { var _a; return ((_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.firstChild) === node; };
+    const isFirstChild$1 = (node) => node.parentNode?.firstChild === node;
     const isTextBlock = (editor, node) => isNonNullable(node) && node.nodeName in editor.schema.getTextBlockElements();
     const isBlock = (node, blockElements) => isNonNullable(node) && node.nodeName in blockElements;
     const isVoid = (editor, node) => isNonNullable(node) && node.nodeName in editor.schema.getVoidElements();
@@ -26632,6 +28363,37 @@
         return empty;
     };
     const isChildOfBody = (dom, elm) => dom.isChildOf(elm, dom.getRoot());
+
+    const DOM$9 = DOMUtils.DOM;
+    const normalizeList = (dom, list) => {
+        const parentNode = list.parentElement;
+        // Move UL/OL to previous LI if it's the only child of a LI
+        if (parentNode && parentNode.nodeName === 'LI' && parentNode.firstChild === list) {
+            const sibling = parentNode.previousSibling;
+            if (sibling && sibling.nodeName === 'LI') {
+                sibling.appendChild(list);
+                if (isEmpty$1(dom, parentNode)) {
+                    DOM$9.remove(parentNode);
+                }
+            }
+            else {
+                DOM$9.setStyle(parentNode, 'listStyleType', 'none');
+            }
+        }
+        // Append OL/UL to previous LI if it's in a parent OL/UL i.e. old HTML4
+        if (isListNode(parentNode)) {
+            const sibling = parentNode.previousSibling;
+            if (sibling && sibling.nodeName === 'LI') {
+                sibling.appendChild(list);
+            }
+        }
+    };
+    const normalizeLists = (dom, element) => {
+        const lists = Tools.grep(dom.select('ol,ul', element));
+        Tools.each(lists, (list) => {
+            normalizeList(dom, list);
+        });
+    };
 
     const getNormalizedPoint = (container, offset) => {
         if (isTextNode$1(container)) {
@@ -26667,128 +28429,19 @@
         return outRng;
     };
 
-    const DOM$a = DOMUtils.DOM;
-    /**
-     * Returns a range bookmark. This will convert indexed bookmarks into temporary span elements with
-     * index 0 so that they can be restored properly after the DOM has been modified. Text bookmarks will not have spans
-     * added to them since they can be restored after a dom operation.
-     *
-     * So this: <p><b>|</b><b>|</b></p>
-     * becomes: <p><b><span data-mce-type="bookmark">|</span></b><b data-mce-type="bookmark">|</span></b></p>
-     *
-     */
-    const createBookmark = (rng) => {
-        const bookmark = {};
-        const setupEndPoint = (start) => {
-            let container = rng[start ? 'startContainer' : 'endContainer'];
-            let offset = rng[start ? 'startOffset' : 'endOffset'];
-            if (isElement$1(container)) {
-                const offsetNode = DOM$a.create('span', { 'data-mce-type': 'bookmark' });
-                if (container.hasChildNodes()) {
-                    offset = Math.min(offset, container.childNodes.length - 1);
-                    if (start) {
-                        container.insertBefore(offsetNode, container.childNodes[offset]);
-                    }
-                    else {
-                        DOM$a.insertAfter(offsetNode, container.childNodes[offset]);
-                    }
-                }
-                else {
-                    container.appendChild(offsetNode);
-                }
-                container = offsetNode;
-                offset = 0;
-            }
-            bookmark[start ? 'startContainer' : 'endContainer'] = container;
-            bookmark[start ? 'startOffset' : 'endOffset'] = offset;
-        };
-        setupEndPoint(true);
-        if (!rng.collapsed) {
-            setupEndPoint();
-        }
-        return bookmark;
-    };
-    const resolveBookmark$1 = (bookmark) => {
-        const restoreEndPoint = (start) => {
-            const nodeIndex = (container) => {
-                var _a;
-                let node = (_a = container.parentNode) === null || _a === void 0 ? void 0 : _a.firstChild;
-                let idx = 0;
-                while (node) {
-                    if (node === container) {
-                        return idx;
-                    }
-                    // Skip data-mce-type=bookmark nodes
-                    if (!isElement$1(node) || node.getAttribute('data-mce-type') !== 'bookmark') {
-                        idx++;
-                    }
-                    node = node.nextSibling;
-                }
-                return -1;
-            };
-            let container = bookmark[start ? 'startContainer' : 'endContainer'];
-            let offset = bookmark[start ? 'startOffset' : 'endOffset'];
-            if (!container) {
-                return;
-            }
-            if (isElement$1(container) && container.parentNode) {
-                const node = container;
-                offset = nodeIndex(container);
-                container = container.parentNode;
-                DOM$a.remove(node);
-                if (!container.hasChildNodes() && DOM$a.isBlock(container)) {
-                    container.appendChild(DOM$a.create('br'));
-                }
-            }
-            bookmark[start ? 'startContainer' : 'endContainer'] = container;
-            bookmark[start ? 'startOffset' : 'endOffset'] = offset;
-        };
-        restoreEndPoint(true);
-        restoreEndPoint();
-        const rng = DOM$a.createRng();
-        rng.setStart(bookmark.startContainer, bookmark.startOffset);
-        if (bookmark.endContainer) {
-            rng.setEnd(bookmark.endContainer, bookmark.endOffset);
-        }
-        return normalizeRange(rng);
-    };
-
-    const DOM$9 = DOMUtils.DOM;
-    const normalizeList = (dom, list) => {
-        const parentNode = list.parentElement;
-        // Move UL/OL to previous LI if it's the only child of a LI
-        if (parentNode && parentNode.nodeName === 'LI' && parentNode.firstChild === list) {
-            const sibling = parentNode.previousSibling;
-            if (sibling && sibling.nodeName === 'LI') {
-                sibling.appendChild(list);
-                if (isEmpty$1(dom, parentNode)) {
-                    DOM$9.remove(parentNode);
-                }
-            }
-            else {
-                DOM$9.setStyle(parentNode, 'listStyleType', 'none');
-            }
-        }
-        // Append OL/UL to previous LI if it's in a parent OL/UL i.e. old HTML4
-        if (isListNode(parentNode)) {
-            const sibling = parentNode.previousSibling;
-            if (sibling && sibling.nodeName === 'LI') {
-                sibling.appendChild(list);
-            }
-        }
-    };
-    const normalizeLists = (dom, element) => {
-        const lists = Tools.grep(dom.select('ol,ul', element));
-        Tools.each(lists, (list) => {
-            normalizeList(dom, list);
-        });
+    const isList = (el) => is$1(el, 'OL,UL');
+    const isListItem$1 = (el) => is$1(el, 'LI');
+    const hasFirstChildList = (el) => firstChild(el).exists(isList);
+    const hasLastChildList = (el) => lastChild(el).exists(isList);
+    const canIncreaseDepthOfList = (editor, amount) => {
+        return getListMaxDepth(editor).map((max) => max >= amount).getOr(true);
     };
 
     const listNames = ['OL', 'UL', 'DL'];
     const listSelector = listNames.join(',');
     const getParentList = (editor, node) => {
         const selectionStart = node || editor.selection.getStart(true);
-        return editor.dom.getParent(selectionStart, listSelector, getClosestListHost(editor, selectionStart));
+        return editor.dom.getParent(selectionStart, listSelector, getClosestListHost(editor, selectionStart, editor.selection.isCollapsed()));
     };
     const isParentListSelected = (parentList, selectedBlocks) => isNonNullable(parentList) && selectedBlocks.length === 1 && selectedBlocks[0] === parentList;
     const findSubLists = (parentList) => filter$5(parentList.querySelectorAll(listSelector), isListNode);
@@ -26804,16 +28457,16 @@
             });
         }
     };
-    const findParentListItemsNodes = (editor, elms) => {
+    const findParentListItemsNodes = (editor, elms, isCollapsed) => {
         const listItemsElms = Tools.map(elms, (elm) => {
-            const parentLi = editor.dom.getParent(elm, 'li,dd,dt', getClosestListHost(editor, elm));
+            const parentLi = editor.dom.getParent(elm, 'li,dd,dt', getClosestListHost(editor, elm, isCollapsed));
             return parentLi ? parentLi : elm;
         });
         return unique$1(listItemsElms);
     };
     const getSelectedListItems = (editor) => {
         const selectedBlocks = editor.selection.getSelectedBlocks();
-        return filter$5(findParentListItemsNodes(editor, selectedBlocks), isListItemNode);
+        return filter$5(findParentListItemsNodes(editor, selectedBlocks, editor.selection.isCollapsed()), isListItemNode);
     };
     const getSelectedDlItems = (editor) => filter$5(getSelectedListItems(editor), isDlItemNode);
     const getClosestEditingHost = (editor, elm) => {
@@ -26821,17 +28474,36 @@
         return parentTableCell.length > 0 ? parentTableCell[0] : editor.getBody();
     };
     const isListHost = (schema, node) => !isListNode(node) && !isListItemNode(node) && exists(listNames, (listName) => schema.isValidChild(node.nodeName, listName));
-    const getClosestListHost = (editor, elm) => {
+    const requireLiElementFirst = (parentBlocks) => {
+        const result = findMap(parentBlocks, (element) => {
+            if (isListItem$1(SugarElement.fromDom(element))) {
+                return Optional.some(true);
+            }
+            if (isTableCellNode(element)) {
+                return Optional.some(false);
+            }
+            return Optional.none();
+        });
+        return result.getOr(false);
+    };
+    const getClosestListHost = (editor, elm, isCollapsed) => {
         const parentBlocks = editor.dom.getParents(elm, editor.dom.isBlock);
+        let foundListBlock = !requireLiElementFirst(parentBlocks);
         const isNotForcedRootBlock = (elm) => elm.nodeName.toLowerCase() !== getForcedRootBlock(editor);
-        const parentBlock = find$2(parentBlocks, (elm) => isNotForcedRootBlock(elm) && isListHost(editor.schema, elm));
+        const checkListRequirement = (element) => {
+            if (isListItem$1(SugarElement.fromDom(element)) || isList(SugarElement.fromDom(element))) {
+                foundListBlock = true;
+            }
+            return foundListBlock;
+        };
+        const parentBlock = find$2(parentBlocks, (elm) => checkListRequirement(elm) && (!isCollapsed || isNotForcedRootBlock(elm)) && isListHost(editor.schema, elm));
         return parentBlock.getOr(editor.getBody());
     };
     const isListInsideAnLiWithFirstAndLastNotListElement = (list) => parent(list).exists((parent) => isListItemNode(parent.dom)
         && firstChild(parent).exists((firstChild) => !isListNode(firstChild.dom))
         && lastChild(parent).exists((lastChild) => !isListNode(lastChild.dom)));
     const findLastParentListNode = (editor, elm) => {
-        const parentLists = editor.dom.getParents(elm, 'ol,ul', getClosestListHost(editor, elm));
+        const parentLists = editor.dom.getParents(elm, 'ol,ul', getClosestListHost(editor, elm, true));
         return last$2(parentLists);
     };
     const getSelectedLists = (editor) => {
@@ -26841,7 +28513,7 @@
     };
     const getParentLists = (editor) => {
         const elm = editor.selection.getStart();
-        return editor.dom.getParents(elm, 'ol,ul', getClosestListHost(editor, elm));
+        return editor.dom.getParents(elm, 'ol,ul', getClosestListHost(editor, elm, editor.selection.isCollapsed()));
     };
     const getSelectedListRoots = (editor) => {
         const selectedLists = getSelectedLists(editor);
@@ -26907,21 +28579,13 @@
         return fragment;
     };
 
-    const isList = (el) => is$1(el, 'OL,UL');
-    const isListItem$1 = (el) => is$1(el, 'LI');
-    const hasFirstChildList = (el) => firstChild(el).exists(isList);
-    const hasLastChildList = (el) => lastChild(el).exists(isList);
-    const canIncreaseDepthOfList = (editor, amount) => {
-        return getListMaxDepth(editor).map((max) => max >= amount).getOr(true);
-    };
-
     const isEntryList = (entry) => 'listAttributes' in entry;
     const isEntryComment = (entry) => 'isComment' in entry;
     const isEntryFragment = (entry) => 'isFragment' in entry;
     const isIndented = (entry) => entry.depth > 0;
     const isSelected = (entry) => entry.isSelected;
     const cloneItemContent = (li) => {
-        const children = children$1(li);
+        const children = children$2(li);
         const content = hasLastChildList(li) ? children.slice(0, -1) : children;
         return map$3(content, deep);
     };
@@ -26964,7 +28628,7 @@
     };
     const populateSegments = (segments, entry) => {
         for (let i = 0; i < segments.length - 1; i++) {
-            set$2(segments[i].item, 'list-style-type', 'none');
+            set$3(segments[i].item, 'list-style-type', 'none');
         }
         last$2(segments).each((segment) => {
             if (isEntryList(entry)) {
@@ -27091,11 +28755,10 @@
     };
 
     const parseSingleItem = (depth, itemSelection, selectionState, item) => {
-        var _a;
         if (isComment$1(item)) {
             return [{
                     depth: depth + 1,
-                    content: (_a = item.dom.nodeValue) !== null && _a !== void 0 ? _a : '',
+                    content: item.dom.nodeValue ?? '',
                     dirty: false,
                     isSelected: false,
                     isComment: true
@@ -27120,7 +28783,7 @@
         return currentItemEntry.toArray().concat(childListEntries);
     };
     const parseItem = (depth, itemSelection, selectionState, item) => firstChild(item).filter(isList).fold(() => parseSingleItem(depth, itemSelection, selectionState, item), (list) => {
-        const parsedSiblings = foldl(children$1(item), (acc, liChild, i) => {
+        const parsedSiblings = foldl(children$2(item), (acc, liChild, i) => {
             if (i === 0) {
                 return acc;
             }
@@ -27143,7 +28806,7 @@
         }, []);
         return parseList(depth, itemSelection, selectionState, list).concat(parsedSiblings);
     });
-    const parseList = (depth, itemSelection, selectionState, list) => bind$3(children$1(list), (element) => {
+    const parseList = (depth, itemSelection, selectionState, list) => bind$3(children$2(list), (element) => {
         const parser = isList(element) ? parseList : parseItem;
         const newDepth = depth + 1;
         return parser(newDepth, itemSelection, selectionState, element);
@@ -27197,7 +28860,7 @@
     const canIndent$1 = (editor) => getListMaxDepth(editor).forall((max) => {
         const blocks = editor.selection.getSelectedBlocks();
         return exists(blocks, (element) => {
-            return closest$3(SugarElement.fromDom(element), 'li').forall((sugarElement) => ancestors(sugarElement, 'ol,ul').length <= max);
+            return closest$4(SugarElement.fromDom(element), 'li').forall((sugarElement) => ancestors(sugarElement, 'ol,ul').length <= max);
         });
     });
 
@@ -27339,12 +29002,11 @@
         // This way we end up including all the inline elements in the created list.
         // For more info look at #TINY-6853
         const findBetterContainer = (container, forward) => {
-            var _a;
             const walker = new DomTreeWalker(container, findBlockAncestor(container));
             const dir = forward ? 'next' : 'prev';
             let node;
             while ((node = walker[dir]())) {
-                if (!(isVoid(editor, node) || isZwsp$2(node.textContent) || ((_a = node.textContent) === null || _a === void 0 ? void 0 : _a.length) === 0)) {
+                if (!(isVoid(editor, node) || isZwsp$2(node.textContent) || node.textContent?.length === 0)) {
                     return Optional.some(node);
                 }
             }
@@ -27404,7 +29066,6 @@
             }
         }
         Tools.each(siblings, (node) => {
-            var _a;
             if (isTextBlock(editor, node)) {
                 textBlocks.push(node);
                 block = null;
@@ -27426,7 +29087,7 @@
             }
             if (!block) {
                 block = dom.create('p');
-                (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(block, node);
+                node.parentNode?.insertBefore(block, node);
                 textBlocks.push(block);
             }
             block.appendChild(node);
@@ -27457,7 +29118,7 @@
     const applyList = (editor, listName, detail) => {
         const rng = editor.selection.getRng();
         let listItemName = 'LI';
-        const root = getClosestListHost(editor, getRootSearchStart(editor, rng));
+        const root = getClosestListHost(editor, getRootSearchStart(editor, rng), rng.collapsed);
         const dom = editor.dom;
         if (dom.getContentEditable(editor.selection.getNode()) === 'false') {
             return;
@@ -27492,10 +29153,10 @@
                 mergeWithAdjacentLists(editor.dom, listBlock);
             }
         });
-        editor.selection.setRng(resolveBookmark$1(bookmark));
+        editor.selection.setRng(resolveBookmark(bookmark));
     };
     const isValidLists = (list1, list2) => {
-        return isListNode(list1) && list1.nodeName === (list2 === null || list2 === void 0 ? void 0 : list2.nodeName);
+        return isListNode(list1) && list1.nodeName === list2?.nodeName;
     };
     const hasSameListStyle = (dom, list1, list2) => {
         const targetStyle = dom.getStyle(list1, 'list-style-type', true);
@@ -27574,7 +29235,7 @@
             Tools.each(allLists, (elm) => {
                 updateFunction(editor, elm, listName, detail);
             });
-            editor.selection.setRng(resolveBookmark$1(bookmark));
+            editor.selection.setRng(resolveBookmark(bookmark));
         }
     };
     const hasListStyleDetail = (detail) => {
@@ -27603,7 +29264,7 @@
                 updateListWithDetails(editor.dom, parentList, detail);
                 const newList = editor.dom.rename(parentList, listName);
                 mergeWithAdjacentLists(editor.dom, newList);
-                editor.selection.setRng(resolveBookmark$1(bookmark));
+                editor.selection.setRng(resolveBookmark(bookmark));
                 applyList(editor, listName, detail);
                 fireListEvent(editor, listToggleActionFromListName(listName), newList);
             }
@@ -27729,13 +29390,13 @@
         else {
             const bookmark = createBookmark(rng);
             mergeLiElements(dom, fromLi, toLi);
-            editor.selection.setRng(resolveBookmark$1(bookmark));
+            editor.selection.setRng(resolveBookmark(bookmark));
         }
     };
     const mergeBackward = (editor, rng, fromLi, toLi) => {
         const bookmark = createBookmark(rng);
         mergeLiElements(editor.dom, fromLi, toLi);
-        const resolvedBookmark = resolveBookmark$1(bookmark);
+        const resolvedBookmark = resolveBookmark(bookmark);
         editor.selection.setRng(resolvedBookmark);
     };
     const backspaceDeleteFromListToListCaret = (editor, isForward) => {
@@ -27776,7 +29437,7 @@
                     const bookmark = createBookmark(rng);
                     moveChildren(dom, commonAncestorParent, otherLi);
                     commonAncestorParent.remove();
-                    const resolvedBookmark = resolveBookmark$1(bookmark);
+                    const resolvedBookmark = resolveBookmark(bookmark);
                     editor.selection.setRng(resolvedBookmark);
                 });
                 return true;
@@ -27808,11 +29469,11 @@
             const rng = normalizeRange(editor.selection.getRng());
             const nextCaretContainer = findNextCaretContainer(editor, rng, isForward, root);
             const otherLi = dom.getParent(nextCaretContainer, 'LI', root);
-            if (nextCaretContainer && otherLi) {
+            if (nextCaretContainer && otherLi && (isForward || !dom.isChildOf(nextCaretContainer, block))) {
                 const findValidElement = (element) => contains$2(['td', 'th', 'caption'], name(element));
                 const findRoot = (node) => node.dom === root;
-                const otherLiCell = closest$4(SugarElement.fromDom(otherLi), findValidElement, findRoot);
-                const caretCell = closest$4(SugarElement.fromDom(rng.startContainer), findValidElement, findRoot);
+                const otherLiCell = closest$5(SugarElement.fromDom(otherLi), findValidElement, findRoot);
+                const caretCell = closest$5(SugarElement.fromDom(rng.startContainer), findValidElement, findRoot);
                 if (!equals(otherLiCell, caretCell, eq)) {
                     return false;
                 }
@@ -27837,19 +29498,12 @@
         const startListParent = editor.dom.getParent(selectionStartElm, 'LI,DT,DD', root);
         return isNonNullable(startListParent) || getSelectedListItems(editor).length > 0;
     };
-    const backspaceDeleteRange$1 = (editor) => {
+    const backspaceDeleteRange$1 = (editor, isForward) => {
         if (hasListSelection(editor)) {
             editor.undoManager.transact(() => {
-                // Some delete actions may prevent the input event from being fired. If we do not detect it, we fire it ourselves.
-                let shouldFireInput = true;
-                const inputHandler = () => shouldFireInput = false;
-                editor.on('input', inputHandler);
-                editor.execCommand('Delete');
-                editor.off('input', inputHandler);
-                if (shouldFireInput) {
-                    editor.dispatch('input');
+                if (symulateDelete(editor, isForward, () => editor.execCommand('Delete'))) {
+                    normalizeLists(editor.dom, editor.getBody());
                 }
-                normalizeLists(editor.dom, editor.getBody());
             });
             return true;
         }
@@ -27858,7 +29512,7 @@
     const backspaceDelete$c = (editor, isForward) => {
         const selection = editor.selection;
         return !isWithinNonEditableList$1(editor, selection.getNode()) && (selection.isCollapsed() ?
-            backspaceDeleteCaret$1(editor, isForward) : backspaceDeleteRange$1(editor));
+            backspaceDeleteCaret$1(editor, isForward) : backspaceDeleteRange$1(editor, isForward));
     };
 
     const blockPosition = (block, position) => ({
@@ -27879,7 +29533,7 @@
     const getClosestHost = (root, scope) => {
         const isRoot = (node) => eq(node, root);
         const isHost = (node) => isTableCell$2(node) || isContentEditableTrue$3(node.dom);
-        return closest$4(scope, isHost, isRoot).filter(isElement$8).getOr(root);
+        return closest$5(scope, isHost, isRoot).filter(isElement$8).getOr(root);
     };
     const hasSameHost = (rootNode, blockBoundary) => {
         const root = SugarElement.fromDom(rootNode);
@@ -27913,7 +29567,7 @@
     const read$1 = (schema, rootNode, forward, rng) => rng.collapsed ? readFromRange(schema, rootNode, forward, rng) : Optional.none();
 
     const getChildrenUntilBlockBoundary = (block, schema) => {
-        const children = children$1(block);
+        const children = children$2(block);
         return findIndex$2(children, (el) => schema.isBlock(name(el))).fold(constant(children), (index) => children.slice(0, index));
     };
     const extractChildren = (block, schema) => {
@@ -28311,72 +29965,12 @@
         }
     };
 
-    const isTextEndpoint = (endpoint) => endpoint.hasOwnProperty('text');
-    const isElementEndpoint = (endpoint) => endpoint.hasOwnProperty('marker');
-    const getBookmark = (range, createMarker) => {
-        const getEndpoint = (container, offset) => {
-            if (isText$b(container)) {
-                return { text: container, offset };
-            }
-            else {
-                const marker = createMarker();
-                const children = container.childNodes;
-                if (offset < children.length) {
-                    container.insertBefore(marker, children[offset]);
-                    return { marker, before: true };
-                }
-                else {
-                    container.appendChild(marker);
-                    return { marker, before: false };
-                }
-            }
-        };
-        const end = getEndpoint(range.endContainer, range.endOffset);
-        const start = getEndpoint(range.startContainer, range.startOffset);
-        return { start, end };
-    };
-    const resolveBookmark = (bm) => {
-        var _a, _b;
-        const { start, end } = bm;
-        const rng = new window.Range();
-        if (isTextEndpoint(start)) {
-            rng.setStart(start.text, start.offset);
-        }
-        else {
-            if (isElementEndpoint(start)) {
-                if (start.before) {
-                    rng.setStartBefore(start.marker);
-                }
-                else {
-                    rng.setStartAfter(start.marker);
-                }
-                (_a = start.marker.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(start.marker);
-            }
-        }
-        if (isTextEndpoint(end)) {
-            rng.setEnd(end.text, end.offset);
-        }
-        else {
-            if (isElementEndpoint(end)) {
-                if (end.before) {
-                    rng.setEndBefore(end.marker);
-                }
-                else {
-                    rng.setEndAfter(end.marker);
-                }
-                (_b = end.marker.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(end.marker);
-            }
-        }
-        return rng;
-    };
-
     const backspaceDelete$7 = (editor, forward) => {
-        var _a;
         const dom = editor.dom;
         const startBlock = dom.getParent(editor.selection.getStart(), dom.isBlock);
         const endBlock = dom.getParent(editor.selection.getEnd(), dom.isBlock);
         const body = editor.getBody();
-        const startBlockName = (_a = startBlock === null || startBlock === void 0 ? void 0 : startBlock.nodeName) === null || _a === void 0 ? void 0 : _a.toLowerCase();
+        const startBlockName = startBlock?.nodeName?.toLowerCase();
         // Only act on single root div that is not empty
         if (startBlockName === 'div' && startBlock && endBlock && startBlock === body.firstChild && endBlock === body.lastChild && !dom.isEmpty(body)) {
             const wrapper = startBlock.cloneNode(false);
@@ -28389,7 +29983,7 @@
                 }
                 // Div was deleted by delete operation then lets restore it
                 if (body.firstChild !== startBlock) {
-                    const bookmark = getBookmark(editor.selection.getRng(), () => document.createElement('span'));
+                    const bookmark = createBookmark(editor.selection.getRng(), () => document.createElement('span'));
                     Array.from(body.childNodes).forEach((node) => wrapper.appendChild(node));
                     body.appendChild(wrapper);
                     editor.selection.setRng(resolveBookmark(bookmark));
@@ -28413,12 +30007,10 @@
     const startsWithCaretContainer = (node) => isText$2(node) && node.data[0] === ZWSP$1;
     const endsWithCaretContainer = (node) => isText$2(node) && node.data[node.data.length - 1] === ZWSP$1;
     const createZwsp = (node) => {
-        var _a;
-        const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+        const doc = node.ownerDocument ?? document;
         return doc.createTextNode(ZWSP$1);
     };
     const insertBefore$1 = (node) => {
-        var _a;
         if (isText$2(node.previousSibling)) {
             if (endsWithCaretContainer(node.previousSibling)) {
                 return node.previousSibling;
@@ -28439,12 +30031,11 @@
         }
         else {
             const newNode = createZwsp(node);
-            (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(newNode, node);
+            node.parentNode?.insertBefore(newNode, node);
             return newNode;
         }
     };
     const insertAfter$1 = (node) => {
-        var _a, _b;
         if (isText$2(node.nextSibling)) {
             if (startsWithCaretContainer(node.nextSibling)) {
                 return node.nextSibling;
@@ -28466,10 +30057,10 @@
         else {
             const newNode = createZwsp(node);
             if (node.nextSibling) {
-                (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(newNode, node.nextSibling);
+                node.parentNode?.insertBefore(newNode, node.nextSibling);
             }
             else {
-                (_b = node.parentNode) === null || _b === void 0 ? void 0 : _b.appendChild(newNode);
+                node.parentNode?.appendChild(newNode);
             }
             return newNode;
         }
@@ -28889,6 +30480,15 @@
         scrollRangeIntoView(editor, editor.selection.getRng());
     };
     const renderRangeCaretOpt = (editor, range, scrollIntoView) => Optional.some(renderRangeCaret(editor, range, scrollIntoView));
+    const getAbsPositionElement = (pos, direction) => {
+        const node = pos.getNode(direction === -1 /* HDirection.Backwards */);
+        return isNonNullable(node) && isAbsPositionedElement(node) ? Optional.some(node) : Optional.none();
+    };
+    const elementToRange = (editor, node) => {
+        const rng = editor.dom.createRng();
+        rng.selectNode(node);
+        return rng;
+    };
     const moveHorizontally = (editor, direction, range, isBefore, isAfter, isElement) => {
         const forwards = direction === 1 /* HDirection.Forwards */;
         const caretWalker = CaretWalker(editor.getBody());
@@ -28897,7 +30497,13 @@
         if (!range.collapsed) {
             const node = getSelectedNode(range);
             if (isElement(node)) {
-                return showCaret(direction, editor, node, direction === -1 /* HDirection.Backwards */, false);
+                if (isAbsPositionedElement(node)) {
+                    const caretPosition = getNormalizedRangeEndPoint(direction, editor.getBody(), range);
+                    return Optional.from(getNextPosFn(caretPosition)).map((next) => next.toRange());
+                }
+                else {
+                    return showCaret(direction, editor, node, direction === -1 /* HDirection.Backwards */, false);
+                }
             }
             else if (isCefAtEdgeSelected(editor)) {
                 const newRange = range.cloneRange();
@@ -28918,13 +30524,13 @@
             nextCaretPosition = normalizePosition(forwards, nextCaretPosition);
         }
         if (isBeforeFn(nextCaretPosition)) {
-            return showCaret(direction, editor, nextCaretPosition.getNode(!forwards), forwards, false);
+            return getAbsPositionElement(nextCaretPosition, direction).fold(() => showCaret(direction, editor, nextCaretPosition?.getNode(!forwards), forwards, false), (el) => Optional.some(elementToRange(editor, el)));
         }
         // Peek ahead for handling of ab|c<span cE=false> -> abc|<span cE=false>
         const peekCaretPosition = getNextPosFn(nextCaretPosition);
         if (peekCaretPosition && isBeforeFn(peekCaretPosition)) {
             if (isMoveInsideSameBlock(nextCaretPosition, peekCaretPosition)) {
-                return showCaret(direction, editor, peekCaretPosition.getNode(!forwards), forwards, false);
+                return getAbsPositionElement(nextCaretPosition, direction).fold(() => showCaret(direction, editor, peekCaretPosition.getNode(!forwards), forwards, false), (el) => Optional.some(elementToRange(editor, el)));
             }
         }
         if (rangeIsInContainerBlock) {
@@ -28932,7 +30538,7 @@
         }
         return Optional.none();
     };
-    const moveVertically = (editor, direction, range, isBefore, isAfter, isElement) => {
+    const moveVertically$1 = (editor, direction, range, isBefore, isAfter, isElement) => {
         const caretPosition = getNormalizedRangeEndPoint(direction, editor.getBody(), range);
         const caretClientRect = last(caretPosition.getClientRects());
         const forwards = direction === VDirection.Down;
@@ -29323,12 +30929,12 @@
     };
     const backspaceDelete$3 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret(editor, forward) : deleteRange$1(editor, forward);
 
-    const isEditable = (target) => closest$4(target, (elm) => isContentEditableTrue$3(elm.dom) || isContentEditableFalse$a(elm.dom))
+    const isEditable = (target) => closest$5(target, (elm) => isContentEditableTrue$3(elm.dom) || isContentEditableFalse$a(elm.dom))
         .exists((elm) => isContentEditableTrue$3(elm.dom));
-    const parseIndentValue = (value) => toInt(value !== null && value !== void 0 ? value : '').getOr(0);
+    const parseIndentValue = (value) => toInt(value ?? '').getOr(0);
     const getIndentStyleName = (useMargin, element) => {
         const indentStyleName = useMargin || isTable$1(element) ? 'margin' : 'padding';
-        const suffix = get$7(element, 'direction') === 'rtl' ? '-right' : '-left';
+        const suffix = get$8(element, 'direction') === 'rtl' ? '-right' : '-left';
         return indentStyleName + suffix;
     };
     const indentElement = (dom, command, useMargin, value, unit, element) => {
@@ -29356,15 +30962,18 @@
     const canIndent = (editor) => !editor.mode.isReadOnly() && canIndent$1(editor);
     const isListComponent = (el) => isList$1(el) || isListItem$2(el);
     const parentIsListComponent = (el) => parent(el).exists(isListComponent);
-    const getBlocksToIndent = (editor) => filter$5(fromDom$1(editor.selection.getSelectedBlocks()), (el) => !isListComponent(el) && !parentIsListComponent(el) && isEditable(el));
+    const getBlocksToIndent = (editor) => {
+        const selectedCells = getCellsFromEditor(editor);
+        return selectedCells.length === 0 ?
+            filter$5(fromDom$1(editor.selection.getSelectedBlocks()), (el) => !isListComponent(el) && !parentIsListComponent(el) && isEditable(el)) : selectedCells;
+    };
     const handle = (editor, command) => {
-        var _a, _b;
         if (editor.mode.isReadOnly()) {
             return;
         }
         const { dom } = editor;
         const indentation = getIndentation(editor);
-        const indentUnit = (_b = (_a = /[a-z%]+$/i.exec(indentation)) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : 'px';
+        const indentUnit = /[a-z%]+$/i.exec(indentation)?.[0] ?? 'px';
         const indentValue = parseIndentValue(indentation);
         const useMargin = shouldIndentUseMargin(editor);
         each$e(getBlocksToIndent(editor), (block) => {
@@ -29394,9 +31003,10 @@
     };
 
     const deleteRange = (editor, forward) => {
-        const rng = normalize(editor.selection.getRng());
+        const range = editor.selection.getRng();
+        const rng = normalize(range);
         return isSelectionOverWholeHTMLElement(rng)
-            ? Optional.some(() => deleteElement$2(editor, forward, SugarElement.fromDom(editor.selection.getNode())))
+            ? Optional.some(() => deleteElement$2(editor, forward, SugarElement.fromDom(range.startContainer.childNodes[range.startOffset])))
             : Optional.none();
     };
     const backspaceDelete$1 = (editor, forward) => editor.selection.isCollapsed() ? Optional.none() : deleteRange(editor, forward);
@@ -29595,7 +31205,7 @@
                 }
                 if (!rootBlockNode) {
                     if (!bm && editor.hasFocus()) {
-                        bm = getBookmark(editor.selection.getRng(), () => document.createElement('span'));
+                        bm = createBookmark(editor.selection.getRng(), () => document.createElement('span'));
                     }
                     // Firefox will remove the last BR element if you insert nodes next to it using DOM APIs like insertBefore
                     // so for that weird edge case we stop processing.
@@ -29724,6 +31334,45 @@
         });
     };
 
+    const setupInputFiltering = (editor, protect) => {
+        editor.on('BeforeSetContent', (e) => {
+            each$e(protect, (pattern) => {
+                e.content = e.content.replace(pattern, (str) => {
+                    return '<!--mce:protected ' + escape(str) + '-->';
+                });
+            });
+        });
+    };
+    const setupOutputFiltering = (editor, protect) => {
+        editor.serializer.addNodeFilter('#comment', (nodes) => {
+            let i = nodes.length;
+            while (i--) {
+                const node = nodes[i];
+                const value = node.value;
+                if (value?.indexOf('mce:protected ') === 0) {
+                    const protectedHtml = unescape(value).substr(14);
+                    const valid = exists(protect, (pattern) => {
+                        const matches = protectedHtml.match(pattern);
+                        return matches !== null && matches[0].length === protectedHtml.length;
+                    });
+                    if (valid) {
+                        node.name = '#text';
+                        node.type = 3;
+                        node.raw = true;
+                        node.value = protectedHtml;
+                    }
+                    else {
+                        node.remove();
+                    }
+                }
+            }
+        });
+    };
+    const registerProtectedHtmlFilters = (editor, protect) => {
+        setupInputFiltering(editor, protect);
+        setupOutputFiltering(editor, protect);
+    };
+
     /**
      * This module shows the invisible block that the caret is currently in when contents is added to that block.
      */
@@ -29762,7 +31411,7 @@
     const moveToCeFalseVertically = (direction, editor, range) => {
         const isBefore = (caretPosition) => isBeforeContentEditableFalse(caretPosition) || isBeforeTable(caretPosition);
         const isAfter = (caretPosition) => isAfterContentEditableFalse(caretPosition) || isAfterTable(caretPosition);
-        return moveVertically(editor, direction, range, isBefore, isAfter, isContentEditableFalse$3);
+        return moveVertically$1(editor, direction, range, isBefore, isAfter, isContentEditableFalse$3);
     };
     const createTextBlock = (editor) => {
         const textBlock = editor.dom.create(getForcedRootBlock(editor));
@@ -29815,7 +31464,7 @@
         moveToRange(editor, newRange);
         return true;
     });
-    const moveV$4 = (editor, down) => getVerticalRange(editor, down).exists((newRange) => {
+    const moveV$5 = (editor, down) => getVerticalRange(editor, down).exists((newRange) => {
         moveToRange(editor, newRange);
         return true;
     });
@@ -29840,10 +31489,43 @@
         return true;
     });
 
+    const getClosestCetBlock = (position, root) => {
+        const isRoot = (el) => eq(el, root);
+        const isCet = (el) => isContentEditableTrue$3(el.dom);
+        const startNode = SugarElement.fromDom(position.container());
+        const closestCetBlock = closest$5(startNode, isCet, isRoot);
+        return closestCetBlock.filter((b) => !isRoot(b));
+    };
+    const moveVertically = (editor, position, down) => {
+        const getNextPosition = down ? getClosestPositionBelow : getClosestPositionAbove;
+        return getNextPosition(editor.getBody(), position).map((nextPosition) => nextPosition.toRange());
+    };
+    const moveToNextOrPreviousLine = (editor, down) => {
+        const startPosition = CaretPosition.fromRangeStart(editor.selection.getRng());
+        const endPosition = CaretPosition.fromRangeEnd(editor.selection.getRng());
+        const root = SugarElement.fromDom(editor.getBody());
+        /* I wasn't able to find a way to create a selection between two different contenteditable elements.
+          However I can't rule out that it is possible. So I am checking if both positions are in the same contenteditable element.
+          This is a defensive check to ensure selection integrity.
+        */
+        const closestCetBlock = flatten(lift2(getClosestCetBlock(startPosition, root), getClosestCetBlock(endPosition, root), (c1, c2) => eq(c1, c2) ? Optional.some(c1) : Optional.none()));
+        return closestCetBlock.fold(never, (cetBlock) => {
+            if ((down && isAtLastLine(cetBlock.dom, endPosition)) ||
+                (!down && isAtFirstLine(cetBlock.dom, startPosition))) {
+                return moveVertically(editor, down ? endPosition : startPosition, down).exists((newRange) => {
+                    moveToRange(editor, newRange);
+                    return true;
+                });
+            }
+            return false;
+        });
+    };
+    const moveV$4 = (editor, down) => moveToNextOrPreviousLine(editor, down);
+
     const isTarget = (node) => contains$2(['figcaption'], name(node));
     const getClosestTargetBlock = (pos, root, schema) => {
         const isRoot = curry(eq, root);
-        return closest$4(SugarElement.fromDom(pos.container()), (el) => schema.isBlock(name(el)), isRoot).filter(isTarget);
+        return closest$5(SugarElement.fromDom(pos.container()), (el) => schema.isBlock(name(el)), isRoot).filter(isTarget);
     };
     const isAtFirstOrLastLine = (root, forward, pos) => forward ? isAtLastLine(root.dom, pos) : isAtFirstLine(root.dom, pos);
     const moveCaretToNewEmptyLine = (editor, forward) => {
@@ -29945,7 +31627,7 @@
     const moveV$1 = (editor, down) => {
         const direction = down ? 1 : -1;
         const range = editor.selection.getRng();
-        return moveVertically(editor, direction, range, isBeforeMedia, isAfterMedia, isMedia$2).exists((newRange) => {
+        return moveVertically$1(editor, direction, range, isBeforeMedia, isAfterMedia, isMedia$2).exists((newRange) => {
             moveToRange(editor, newRange);
             return true;
         });
@@ -29959,7 +31641,7 @@
         return filterFirstLayer(scope, selector, always);
     };
     const filterFirstLayer = (scope, selector, predicate) => {
-        return bind$3(children$1(scope), (x) => {
+        return bind$3(children$2(scope), (x) => {
             if (is$2(x, selector)) {
                 return predicate(x) ? [x] : [];
             }
@@ -29988,7 +31670,7 @@
      */
     const cell = (element, isRoot) => lookup$1(['td', 'th'], element, isRoot);
     const cells = (ancestor) => firstLayer(ancestor, 'th,td');
-    const table = (element, isRoot) => closest$3(element, 'table', isRoot);
+    const table = (element, isRoot) => closest$4(element, 'table', isRoot);
 
     const adt = Adt.generate([
         { none: ['current'] },
@@ -30107,7 +31789,7 @@
             }
             return contains$2(['br', 'img', 'hr', 'input'], name(element));
         };
-        const isNonEditable = (element) => isElement$8(element) && get$9(element, 'contenteditable') === 'false';
+        const isNonEditable = (element) => isElement$8(element) && get$a(element, 'contenteditable') === 'false';
         const comparePosition = (element, other) => {
             return element.dom.compareDocumentPosition(other.dom);
         };
@@ -30125,7 +31807,7 @@
         return {
             up: constant({
                 selector: ancestor$4,
-                closest: closest$3,
+                closest: closest$4,
                 predicate: ancestor$5,
                 all: parents$1
             }),
@@ -30134,14 +31816,14 @@
                 predicate: descendants$1
             }),
             styles: constant({
-                get: get$7,
+                get: get$8,
                 getRaw: getRaw$1,
-                set: set$2,
+                set: set$3,
                 remove: remove$7
             }),
             attrs: constant({
-                get: get$9,
-                set: set$4,
+                get: get$a,
+                set: set$5,
                 remove: remove$9,
                 copyTo: copyAttributesTo
             }),
@@ -30169,7 +31851,7 @@
                 nextSibling: nextSibling
             }),
             property: constant({
-                children: children$1,
+                children: children$2,
                 name: name,
                 parent: parent,
                 document,
@@ -30178,8 +31860,8 @@
                 isElement: isElement$8,
                 isSpecial,
                 getLanguage,
-                getText: get$4,
-                setText: set$1,
+                getText: get$5,
+                setText: set$2,
                 isBoundary,
                 isEmptyTag,
                 isNonEditable
@@ -30230,7 +31912,7 @@
         return toLeaf$2(universe, element, offset);
     };
 
-    const imageId = generate$1('image');
+    const imageId = generate('image');
     const getDragImage = (transfer) => {
         const dt = transfer;
         return Optional.from(dt[imageId]);
@@ -30240,7 +31922,7 @@
         dt[imageId] = imageData;
     };
 
-    const eventId = generate$1('event');
+    const eventId = generate('event');
     const getEvent = (transfer) => {
         const dt = transfer;
         return Optional.from(dt[eventId]);
@@ -30259,12 +31941,16 @@
     };
     const isInDragStartEvent = checkEvent(0 /* Event.Dragstart */);
 
-    const createEmptyFileList = () => Object.freeze({
-        length: 0,
-        item: (_) => null
-    });
+    const createEmptyFileList = () => {
+        const empty = [];
+        return Object.freeze({
+            length: 0,
+            item: (_) => null,
+            [Symbol.iterator]: () => empty[Symbol.iterator]()
+        });
+    };
 
-    const modeId = generate$1('mode');
+    const modeId = generate('mode');
     const getMode = (transfer) => {
         const dt = transfer;
         return Optional.from(dt[modeId]);
@@ -30547,7 +32233,7 @@
             return tabForward(editor, isRoot, current);
         });
     };
-    const isCellInEditableTable = (cell) => closest$4(cell, isTag('table')).exists(isEditable$2);
+    const isCellInEditableTable = (cell) => closest$5(cell, isTag('table')).exists(isEditable$2);
     const tabForward = (editor, isRoot, cell) => tabGo(editor, isRoot, next(cell, isCellEditable));
     const tabBackward = (editor, isRoot, cell) => tabGo(editor, isRoot, prev(cell, isCellEditable));
     const isCellEditable = (cell) => isEditable$2(cell) || descendant(cell, isEditableHTMLElement);
@@ -30580,11 +32266,12 @@
 
     const executeKeydownOverride$4 = (editor, caret, evt) => {
         const isMac = Env.os.isMacOS() || Env.os.isiOS();
+        const isFirefox = Env.browser.isFirefox();
         execute([
             { keyCode: VK.RIGHT, action: action(moveH$2, editor, true) },
             { keyCode: VK.LEFT, action: action(moveH$2, editor, false) },
-            { keyCode: VK.UP, action: action(moveV$4, editor, false) },
-            { keyCode: VK.DOWN, action: action(moveV$4, editor, true) },
+            { keyCode: VK.UP, action: action(moveV$5, editor, false) },
+            { keyCode: VK.DOWN, action: action(moveV$5, editor, true) },
             ...(isMac ? [
                 { keyCode: VK.UP, action: action(selectToEndPoint, editor, false), metaKey: true, shiftKey: true },
                 { keyCode: VK.DOWN, action: action(selectToEndPoint, editor, true), metaKey: true, shiftKey: true }
@@ -30605,7 +32292,11 @@
             { keyCode: VK.RIGHT, ctrlKey: !isMac, altKey: isMac, action: action(moveNextWord, editor, caret) },
             { keyCode: VK.LEFT, ctrlKey: !isMac, altKey: isMac, action: action(movePrevWord, editor, caret) },
             { keyCode: VK.UP, action: action(moveV$3, editor, false) },
-            { keyCode: VK.DOWN, action: action(moveV$3, editor, true) }
+            { keyCode: VK.DOWN, action: action(moveV$3, editor, true) },
+            ...(isFirefox ? [
+                { keyCode: VK.UP, action: action(moveV$4, editor, false) },
+                { keyCode: VK.DOWN, action: action(moveV$4, editor, true) }
+            ] : [])
         ], evt).each((_) => {
             evt.preventDefault();
         });
@@ -30761,9 +32452,8 @@
     };
 
     const isPreviousCharContent = (dom, leaf) => {
-        var _a;
         // If at the start of the range, then we need to look backwards one more place. Otherwise we just need to look at the current text
-        const root = (_a = dom.getParent(leaf.container, dom.isBlock)) !== null && _a !== void 0 ? _a : dom.getRoot();
+        const root = dom.getParent(leaf.container, dom.isBlock) ?? dom.getRoot();
         return repeatLeft(dom, leaf.container, leaf.offset, (_element, offset) => offset === 0 ? -1 : offset, root).filter((spot) => {
             const char = spot.container.data.charAt(spot.offset - 1);
             return !isWhitespace(char);
@@ -30780,10 +32470,9 @@
         return getTriggerContext(editor.dom, rng, database).bind((context) => lookupWithContext(editor, getDatabase, context));
     };
     const lookupWithContext = (editor, getDatabase, context, fetchOptions = {}) => {
-        var _a;
         const database = getDatabase();
         const rng = editor.selection.getRng();
-        const startText = (_a = rng.startContainer.nodeValue) !== null && _a !== void 0 ? _a : '';
+        const startText = rng.startContainer.nodeValue ?? '';
         const autocompleters = filter$5(database.lookupByTrigger(context.trigger), (autocompleter) => context.text.length >= autocompleter.minChars && autocompleter.matches.getOrThunk(() => isStartOfWord(editor.dom))(context.range, startText, context.text));
         if (autocompleters.length === 0) {
             return Optional.none();
@@ -30804,283 +32493,6 @@
             context
         });
     };
-
-    var SimpleResultType;
-    (function (SimpleResultType) {
-        SimpleResultType[SimpleResultType["Error"] = 0] = "Error";
-        SimpleResultType[SimpleResultType["Value"] = 1] = "Value";
-    })(SimpleResultType || (SimpleResultType = {}));
-    const fold$1 = (res, onError, onValue) => res.stype === SimpleResultType.Error ? onError(res.serror) : onValue(res.svalue);
-    const partition = (results) => {
-        const values = [];
-        const errors = [];
-        each$e(results, (obj) => {
-            fold$1(obj, (err) => errors.push(err), (val) => values.push(val));
-        });
-        return { values, errors };
-    };
-    const mapError = (res, f) => {
-        if (res.stype === SimpleResultType.Error) {
-            return { stype: SimpleResultType.Error, serror: f(res.serror) };
-        }
-        else {
-            return res;
-        }
-    };
-    const map = (res, f) => {
-        if (res.stype === SimpleResultType.Value) {
-            return { stype: SimpleResultType.Value, svalue: f(res.svalue) };
-        }
-        else {
-            return res;
-        }
-    };
-    const bind = (res, f) => {
-        if (res.stype === SimpleResultType.Value) {
-            return f(res.svalue);
-        }
-        else {
-            return res;
-        }
-    };
-    const bindError = (res, f) => {
-        if (res.stype === SimpleResultType.Error) {
-            return f(res.serror);
-        }
-        else {
-            return res;
-        }
-    };
-    const svalue = (v) => ({ stype: SimpleResultType.Value, svalue: v });
-    const serror = (e) => ({ stype: SimpleResultType.Error, serror: e });
-    const toResult = (res) => fold$1(res, Result.error, Result.value);
-    const fromResult = (res) => res.fold(serror, svalue);
-    const SimpleResult = {
-        fromResult,
-        toResult,
-        svalue,
-        partition,
-        serror,
-        bind,
-        bindError,
-        map,
-        mapError,
-        fold: fold$1
-    };
-
-    const formatObj = (input) => {
-        return isObject(input) && keys(input).length > 100 ? ' removed due to size' : JSON.stringify(input, null, 2);
-    };
-    const formatErrors = (errors) => {
-        const es = errors.length > 10 ? errors.slice(0, 10).concat([
-            {
-                path: [],
-                getErrorInfo: constant('... (only showing first ten failures)')
-            }
-        ]) : errors;
-        // TODO: Work out a better split between PrettyPrinter and SchemaError
-        return map$3(es, (e) => {
-            return 'Failed path: (' + e.path.join(' > ') + ')\n' + e.getErrorInfo();
-        });
-    };
-
-    const nu = (path, getErrorInfo) => {
-        return SimpleResult.serror([{
-                path,
-                // This is lazy so that it isn't calculated unnecessarily
-                getErrorInfo
-            }]);
-    };
-    const missingRequired = (path, key, obj) => nu(path, () => 'Could not find valid *required* value for "' + key + '" in ' + formatObj(obj));
-    const custom = (path, err) => nu(path, constant(err));
-
-    const value = (validator) => {
-        const extract = (path, val) => {
-            return SimpleResult.bindError(validator(val), (err) => custom(path, err));
-        };
-        const toString = constant('val');
-        return {
-            extract,
-            toString
-        };
-    };
-    const anyValue$1 = value(SimpleResult.svalue);
-
-    const anyValue = constant(anyValue$1);
-    const typedValue = (validator, expectedType) => value((a) => {
-        const actualType = typeof a;
-        return validator(a) ? SimpleResult.svalue(a) : SimpleResult.serror(`Expected type: ${expectedType} but got: ${actualType}`);
-    });
-    const number = typedValue(isNumber, 'number');
-    const string = typedValue(isString, 'string');
-    typedValue(isBoolean, 'boolean');
-    const functionProcessor = typedValue(isFunction, 'function');
-    // Test if a value can be copied by the structured clone algorithm and hence sendable via postMessage
-    // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm
-    // from https://stackoverflow.com/a/32673910/7377237 with adjustments for typescript
-    const isPostMessageable = (val) => {
-        if (Object(val) !== val) { // Primitive value
-            return true;
-        }
-        switch ({}.toString.call(val).slice(8, -1)) { // Class
-            case 'Boolean':
-            case 'Number':
-            case 'String':
-            case 'Date':
-            case 'RegExp':
-            case 'Blob':
-            case 'FileList':
-            case 'ImageData':
-            case 'ImageBitmap':
-            case 'ArrayBuffer':
-                return true;
-            case 'Array':
-            case 'Object':
-                return Object.keys(val).every((prop) => isPostMessageable(val[prop]));
-            default:
-                return false;
-        }
-    };
-    value((a) => {
-        if (isPostMessageable(a)) {
-            return SimpleResult.svalue(a);
-        }
-        else {
-            return SimpleResult.serror('Expected value to be acceptable for sending via postMessage');
-        }
-    });
-
-    const required$1 = () => ({ tag: "required" /* FieldPresenceTag.Required */, process: {} });
-    const defaultedThunk = (fallbackThunk) => ({ tag: "defaultedThunk" /* FieldPresenceTag.DefaultedThunk */, process: fallbackThunk });
-    const defaulted$1 = (fallback) => defaultedThunk(constant(fallback));
-    const asOption = () => ({ tag: "option" /* FieldPresenceTag.Option */, process: {} });
-
-    const field$1 = (key, newKey, presence, prop) => ({ tag: "field" /* FieldTag.Field */, key, newKey, presence, prop });
-    const fold = (value, ifField, ifCustom) => {
-        switch (value.tag) {
-            case "field" /* FieldTag.Field */:
-                return ifField(value.key, value.newKey, value.presence, value.prop);
-            case "custom" /* FieldTag.CustomField */:
-                return ifCustom(value.newKey, value.instantiator);
-        }
-    };
-
-    const mergeValues = (values, base) => {
-        return SimpleResult.svalue(deepMerge(base, merge$1.apply(undefined, values)));
-    };
-    const mergeErrors = (errors) => compose(SimpleResult.serror, flatten)(errors);
-    const consolidateObj = (objects, base) => {
-        const partition = SimpleResult.partition(objects);
-        return partition.errors.length > 0 ? mergeErrors(partition.errors) : mergeValues(partition.values, base);
-    };
-    const consolidateArr = (objects) => {
-        const partitions = SimpleResult.partition(objects);
-        return partitions.errors.length > 0 ? mergeErrors(partitions.errors) : SimpleResult.svalue(partitions.values);
-    };
-    const ResultCombine = {
-        consolidateObj,
-        consolidateArr
-    };
-
-    const requiredAccess = (path, obj, key, bundle) => 
-    // In required mode, if it is undefined, it is an error.
-    get$a(obj, key).fold(() => missingRequired(path, key, obj), bundle);
-    const fallbackAccess = (obj, key, fallback, bundle) => {
-        const v = get$a(obj, key).getOrThunk(() => fallback(obj));
-        return bundle(v);
-    };
-    const optionAccess = (obj, key, bundle) => bundle(get$a(obj, key));
-    const optionDefaultedAccess = (obj, key, fallback, bundle) => {
-        const opt = get$a(obj, key).map((val) => val === true ? fallback(obj) : val);
-        return bundle(opt);
-    };
-    const extractField = (field, path, obj, key, prop) => {
-        const bundle = (av) => prop.extract(path.concat([key]), av);
-        const bundleAsOption = (optValue) => optValue.fold(() => SimpleResult.svalue(Optional.none()), (ov) => {
-            const result = prop.extract(path.concat([key]), ov);
-            return SimpleResult.map(result, Optional.some);
-        });
-        switch (field.tag) {
-            case "required" /* FieldPresenceTag.Required */:
-                return requiredAccess(path, obj, key, bundle);
-            case "defaultedThunk" /* FieldPresenceTag.DefaultedThunk */:
-                return fallbackAccess(obj, key, field.process, bundle);
-            case "option" /* FieldPresenceTag.Option */:
-                return optionAccess(obj, key, bundleAsOption);
-            case "defaultedOptionThunk" /* FieldPresenceTag.DefaultedOptionThunk */:
-                return optionDefaultedAccess(obj, key, field.process, bundleAsOption);
-            case "mergeWithThunk" /* FieldPresenceTag.MergeWithThunk */: {
-                return fallbackAccess(obj, key, constant({}), (v) => {
-                    const result = deepMerge(field.process(obj), v);
-                    return bundle(result);
-                });
-            }
-        }
-    };
-    const extractFields = (path, obj, fields) => {
-        const success = {};
-        const errors = [];
-        // PERFORMANCE: We use a for loop here instead of Arr.each as this is a hot code path
-        for (const field of fields) {
-            fold(field, (key, newKey, presence, prop) => {
-                const result = extractField(presence, path, obj, key, prop);
-                SimpleResult.fold(result, (err) => {
-                    errors.push(...err);
-                }, (res) => {
-                    success[newKey] = res;
-                });
-            }, (newKey, instantiator) => {
-                success[newKey] = instantiator(obj);
-            });
-        }
-        return errors.length > 0 ? SimpleResult.serror(errors) : SimpleResult.svalue(success);
-    };
-    const objOf = (values) => {
-        const extract = (path, o) => extractFields(path, o, values);
-        const toString = () => {
-            const fieldStrings = map$3(values, (value) => fold(value, (key, _okey, _presence, prop) => key + ' -> ' + prop.toString(), (newKey, _instantiator) => 'state(' + newKey + ')'));
-            return 'obj{\n' + fieldStrings.join('\n') + '}';
-        };
-        return {
-            extract,
-            toString
-        };
-    };
-    const arrOf = (prop) => {
-        const extract = (path, array) => {
-            const results = map$3(array, (a, i) => prop.extract(path.concat(['[' + i + ']']), a));
-            return ResultCombine.consolidateArr(results);
-        };
-        const toString = () => 'array(' + prop.toString() + ')';
-        return {
-            extract,
-            toString
-        };
-    };
-
-    const extractValue = (label, prop, obj) => {
-        const res = prop.extract([label], obj);
-        return SimpleResult.mapError(res, (errs) => ({ input: obj, errors: errs }));
-    };
-    const asRaw = (label, prop, obj) => SimpleResult.toResult(extractValue(label, prop, obj));
-    const formatError = (errInfo) => {
-        return 'Errors: \n' + formatErrors(errInfo.errors).join('\n') +
-            '\n\nInput object: ' + formatObj(errInfo.input);
-    };
-
-    const field = field$1;
-    const required = (key) => field(key, key, required$1(), anyValue());
-    const requiredOf = (key, schema) => field(key, key, required$1(), schema);
-    const requiredString = (key) => requiredOf(key, string);
-    const requiredFunction = (key) => requiredOf(key, functionProcessor);
-    const option = (key) => field(key, key, asOption(), anyValue());
-    const optionOf = (key, schema) => field(key, key, asOption(), schema);
-    const optionString = (key) => optionOf(key, string);
-    const optionFunction = (key) => optionOf(key, functionProcessor);
-    const defaulted = (key, fallback) => field(key, key, defaulted$1(fallback), anyValue());
-    const defaultedOf = (key, fallback, schema) => field(key, key, defaulted$1(fallback), schema);
-    const defaultedNumber = (key, fallback) => defaultedOf(key, fallback, number);
-    const defaultedArrayOf = (key, fallback, schema) => defaultedOf(key, fallback, arrOf(schema));
 
     const type = requiredString('type');
     const fetch$1 = requiredFunction('fetch');
@@ -31295,7 +32707,7 @@
     const browser$1 = detect$1().browser;
     const isSafari = browser$1.isSafari();
     const emptyNodeContents = (node) => fillWithPaddingBr(SugarElement.fromDom(node));
-    const isEntireNodeSelected = (rng, node) => { var _a; return rng.startOffset === 0 && rng.endOffset === ((_a = node.textContent) === null || _a === void 0 ? void 0 : _a.length); };
+    const isEntireNodeSelected = (rng, node) => rng.startOffset === 0 && rng.endOffset === node.textContent?.length;
     const getParentDetailsElementAtPos = (dom, pos) => Optional.from(dom.getParent(pos.container(), 'details'));
     const isInDetailsElement = (dom, pos) => getParentDetailsElementAtPos(dom, pos).isSome();
     const getDetailsElements = (dom, rng) => {
@@ -31361,8 +32773,8 @@
             const parentBlock = dom.getParent(caretPos.container(), dom.isBlock);
             const parentDetailsAtCaret = getParentDetailsElementAtPos(dom, caretPos);
             const inEmptyParentBlock = parentBlock && dom.isEmpty(parentBlock);
-            const isFirstBlock = isNull(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.previousSibling);
-            const isLastBlock = isNull(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.nextSibling);
+            const isFirstBlock = isNull(parentBlock?.previousSibling);
+            const isLastBlock = isNull(parentBlock?.nextSibling);
             // Pressing backspace or delete in an first or last empty block before or after details
             if (inEmptyParentBlock) {
                 const firstOrLast = forward ? isLastBlock : isFirstBlock;
@@ -31433,17 +32845,17 @@
                 editor.undoManager.transact(() => {
                     // Wrap all summary children in a temporary container to execute Backspace/Delete there, then unwrap
                     const sel = selection.getSel();
-                    let { anchorNode, anchorOffset, focusNode, focusOffset } = sel !== null && sel !== void 0 ? sel : {};
+                    let { anchorNode, anchorOffset, focusNode, focusOffset } = sel ?? {};
                     const applySelection = () => {
                         if (isNonNullable(anchorNode) && isNonNullable(anchorOffset) && isNonNullable(focusNode) && isNonNullable(focusOffset)) {
-                            sel === null || sel === void 0 ? void 0 : sel.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+                            sel?.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
                         }
                     };
                     const updateSelection = () => {
-                        anchorNode = sel === null || sel === void 0 ? void 0 : sel.anchorNode;
-                        anchorOffset = sel === null || sel === void 0 ? void 0 : sel.anchorOffset;
-                        focusNode = sel === null || sel === void 0 ? void 0 : sel.focusNode;
-                        focusOffset = sel === null || sel === void 0 ? void 0 : sel.focusOffset;
+                        anchorNode = sel?.anchorNode;
+                        anchorOffset = sel?.anchorOffset;
+                        focusNode = sel?.focusNode;
+                        focusOffset = sel?.focusOffset;
                     };
                     const appendAllChildNodes = (from, to) => {
                         each$e(from.childNodes, (child) => {
@@ -31458,7 +32870,7 @@
                     applySelection();
                     // Manually perform deletion with modified granularities
                     if (granularity === 'word' || granularity === 'line') {
-                        sel === null || sel === void 0 ? void 0 : sel.modify('extend', forward ? 'right' : 'left', granularity);
+                        sel?.modify('extend', forward ? 'right' : 'left', granularity);
                     }
                     if (!selection.isCollapsed() && isEntireNodeSelected(selection.getRng(), container)) {
                         emptyNodeContents(node);
@@ -31480,32 +32892,6 @@
     };
     const backspaceDelete = (editor, forward, granularity) => shouldPreventDeleteAction(editor, forward, granularity) || isSafari && handleDeleteActionSafari(editor, forward, granularity)
         ? Optional.some(noop) : Optional.none();
-
-    const createAndFireInputEvent = (eventType) => (editor, inputType, specifics = {}) => {
-        const target = editor.getBody();
-        const overrides = {
-            bubbles: true,
-            composed: true,
-            data: null,
-            isComposing: false,
-            detail: 0,
-            view: null,
-            target,
-            currentTarget: target,
-            eventPhase: Event.AT_TARGET,
-            originalTarget: target,
-            explicitOriginalTarget: target,
-            isTrusted: false,
-            srcElement: target,
-            cancelable: false,
-            preventDefault: noop,
-            inputType
-        };
-        const input = clone$2(new InputEvent(eventType));
-        return editor.dispatch(eventType, { ...input, ...overrides, ...specifics });
-    };
-    const fireInputEvent = createAndFireInputEvent('input');
-    const fireBeforeInputEvent = createAndFireInputEvent('beforeinput');
 
     const platform$2 = detect$1();
     const os = platform$2.os;
@@ -31569,7 +32955,7 @@
             }
         });
     };
-    const executeKeyupOverride = (editor, evt, isBackspaceKeydown) => execute([
+    const executeKeyupOverride = (editor, evt, isBackspaceKeydown, formatNodes) => execute([
         { keyCode: VK.BACKSPACE, action: action(paddEmptyElement, editor) },
         { keyCode: VK.DELETE, action: action(paddEmptyElement, editor) },
         ...isMacOSOriOS ? [
@@ -31581,7 +32967,10 @@
             ...isBackspaceKeydown ? [{
                     // Firefox detects macOS Command key code as "Command" not "Meta"
                     keyCode: isFirefox ? 224 : 91,
-                    action: action(refreshCaret, editor)
+                    action: action(() => {
+                        updateCaretFormat(editor, formatNodes);
+                        return refreshCaret(editor);
+                    })
                 }] : []
         ] : [
             { keyCode: VK.BACKSPACE, ctrlKey: true, action: action(refreshCaret, editor) },
@@ -31591,17 +32980,22 @@
     const setup$o = (editor, caret) => {
         // track backspace keydown state for emulating Meta + Backspace keyup detection on macOS
         let isBackspaceKeydown = false;
-        editor.on('keydown', (evt) => {
-            isBackspaceKeydown = evt.keyCode === VK.BACKSPACE;
-            if (!evt.isDefaultPrevented()) {
-                executeKeydownOverride$3(editor, caret, evt);
-            }
-        });
-        editor.on('keyup', (evt) => {
-            if (!evt.isDefaultPrevented()) {
-                executeKeyupOverride(editor, evt, isBackspaceKeydown);
-            }
-            isBackspaceKeydown = false;
+        let formatNodes = [];
+        editor.on('init', () => {
+            editor.on('keydown', (evt) => {
+                isBackspaceKeydown = evt.keyCode === VK.BACKSPACE;
+                formatNodes = getFormatNodesAtStart(editor);
+                if (!evt.isDefaultPrevented()) {
+                    executeKeydownOverride$3(editor, caret, evt);
+                }
+            });
+            editor.on('keyup', (evt) => {
+                if (!evt.isDefaultPrevented()) {
+                    executeKeyupOverride(editor, evt, isBackspaceKeydown, formatNodes);
+                    formatNodes.length = 0;
+                }
+                isBackspaceKeydown = false;
+            });
         });
     };
 
@@ -31639,16 +33033,15 @@
         if (!root) {
             return;
         }
-        if (/^(LI|DT|DD)$/.test(root.nodeName)) {
-            const isList = (e) => /^(ul|ol|dl)$/.test(name(e));
-            const findFirstList = (e) => isList(e) ? Optional.from(e) : descendant$2(e, isList);
+        if (isListItem$2(SugarElement.fromDom(root))) {
+            const findFirstList = (e) => isList$1(e) ? Optional.from(e) : descendant$2(e, isList$1);
             const isEmpty = (e) => dom.isEmpty(e.dom);
             firstNonWhiteSpaceNodeSibling(root.firstChild).each((firstChild) => {
                 findFirstList(firstChild).fold(() => {
                     if (isEmpty(firstChild)) {
                         const element = toLeaf$1(firstChild, 0).element;
-                        if (!isBr$6(element)) {
-                            append$1(element, SugarElement.fromText(nbsp));
+                        if (isElement$8(element) && !isBr$6(element)) {
+                            append$1(element, SugarElement.fromHtml('<br data-mce-bogus="1" />'));
                         }
                     }
                 }, (firstList) => {
@@ -31801,7 +33194,10 @@
                     }
                 }
             } while ((node = node.parentNode) && node !== editableRoot);
-            reduceFontStyleNesting(block, caretNode);
+            // Not omitting font sizes of list items otherwise their font size doesn't match its content
+            if (block.nodeName !== 'LI') {
+                reduceFontStyleNesting(block, caretNode);
+            }
         }
         setForcedBlockAttrs(editor, block);
         emptyBlock(caretNode);
@@ -31825,7 +33221,6 @@
         editor.dom.isEmpty(element) &&
         isAtDetailsEdge(editor.getBody(), element, (el) => has$2(editor.schema.getTextBlockElements(), el.nodeName.toLowerCase()));
     const insertNewLine = (editor, createNewBlock, parentBlock) => {
-        var _a, _b, _c;
         const newBlock = createNewBlock(getForcedRootBlock(editor));
         const root = getDetailsRoot(editor, parentBlock);
         if (!root) {
@@ -31834,7 +33229,7 @@
         editor.dom.insertAfter(newBlock, root);
         moveToCaretPosition(editor, newBlock);
         // TODO: This now only works with our Accordions not details with multiple root level children should we support that
-        if (((_c = (_b = (_a = parentBlock.parentElement) === null || _a === void 0 ? void 0 : _a.childNodes) === null || _b === void 0 ? void 0 : _b.length) !== null && _c !== void 0 ? _c : 0) > 1) {
+        if ((parentBlock.parentElement?.childNodes?.length ?? 0) > 1) {
             editor.dom.remove(parentBlock);
         }
     };
@@ -31843,11 +33238,10 @@
         return elm.firstChild && elm.firstChild.nodeName === name;
     };
     const isFirstChild = (elm) => {
-        var _a;
-        return ((_a = elm.parentNode) === null || _a === void 0 ? void 0 : _a.firstChild) === elm;
+        return elm.parentNode?.firstChild === elm;
     };
     const hasParent = (elm, parentName) => {
-        const parentNode = elm === null || elm === void 0 ? void 0 : elm.parentNode;
+        const parentNode = elm?.parentNode;
         return isNonNullable(parentNode) && parentNode.nodeName === parentName;
     };
     const isListBlock = (elm) => {
@@ -31980,7 +33374,6 @@
     };
     // Remove the first empty inline element of the block so this: <p><b><em></em></b>x</p> becomes this: <p>x</p>
     const trimInlineElementsOnLeftSideOfBlock = (dom, nonEmptyElementsMap, block) => {
-        var _a;
         const firstChilds = [];
         if (!block) {
             return;
@@ -31998,7 +33391,7 @@
         let i = firstChilds.length;
         while (i--) {
             currentNode = firstChilds[i];
-            if (!currentNode.hasChildNodes() || (currentNode.firstChild === currentNode.lastChild && ((_a = currentNode.firstChild) === null || _a === void 0 ? void 0 : _a.nodeValue) === '')) {
+            if (!currentNode.hasChildNodes() || (currentNode.firstChild === currentNode.lastChild && currentNode.firstChild?.nodeValue === '')) {
                 dom.remove(currentNode);
             }
             else {
@@ -32037,9 +33430,8 @@
     };
     // Wraps any text nodes or inline elements in the specified forced root block name
     const wrapSelfAndSiblingsInDefaultBlock = (editor, newBlockName, rng, container, offset) => {
-        var _a, _b;
         const dom = editor.dom;
-        const editableRoot = (_a = getEditableRoot(dom, container)) !== null && _a !== void 0 ? _a : dom.getRoot();
+        const editableRoot = getEditableRoot(dom, container) ?? dom.getRoot();
         // Not in a block element or in a table cell or caption
         let parentBlock = dom.getParent(container, dom.isBlock);
         if (!parentBlock || !canSplitBlock(dom, parentBlock)) {
@@ -32063,7 +33455,7 @@
                 startNode = node;
                 node = node.previousSibling;
             }
-            const startNodeName = (_b = startNode === null || startNode === void 0 ? void 0 : startNode.parentElement) === null || _b === void 0 ? void 0 : _b.nodeName;
+            const startNodeName = startNode?.parentElement?.nodeName;
             if (startNode && startNodeName && editor.schema.isValidChild(startNodeName, newBlockName.toLowerCase())) {
                 // This should never be null since we check it above
                 const startNodeParent = startNode.parentNode;
@@ -32181,6 +33573,16 @@
             }
             return true;
         };
+        const isInsideLiBeforeAList = (newBlock) => {
+            const nextSibling$1 = firstChild(newBlock).bind(nextSibling);
+            return isListItem$2(newBlock) && nextSibling$1.exists(isList$1);
+        };
+        const trimEmptySpacesInLeftLeaf = (newBlock) => {
+            const leaf = toLeaf$1(SugarElement.fromDom(newBlock), 0).element;
+            if (isText$c(leaf) && dom.isEmpty(leaf.dom)) {
+                leaf.dom.remove();
+            }
+        };
         const insertNewBlockAfter = () => {
             let block;
             // If the caret is at the end of a header we produce a P tag after it similar to Word unless we are in a hgroup
@@ -32235,7 +33637,7 @@
         }
         // Find parent block and setup empty block paddings
         let parentBlock = dom.getParent(container, dom.isBlock) || dom.getRoot();
-        containerBlock = isNonNullable(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.parentNode) ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
+        containerBlock = isNonNullable(parentBlock?.parentNode) ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
         // Setup block names
         parentBlockName = parentBlock ? parentBlock.nodeName.toUpperCase() : ''; // IE < 9 & HTML5
         const containerBlockName = containerBlock ? containerBlock.nodeName.toUpperCase() : ''; // IE < 9 & HTML5
@@ -32316,8 +33718,13 @@
             else {
                 dom.insertAfter(fragment, parentBlock);
             }
-            trimInlineElementsOnLeftSideOfBlock(dom, nonEmptyElementsMap, newBlock);
-            addBrToBlockIfNeeded(dom, parentBlock);
+            if (!isInsideLiBeforeAList(SugarElement.fromDom(newBlock))) {
+                trimInlineElementsOnLeftSideOfBlock(dom, nonEmptyElementsMap, newBlock);
+                addBrToBlockIfNeeded(dom, parentBlock);
+            }
+            else {
+                trimEmptySpacesInLeftLeaf(newBlock);
+            }
             if (dom.isEmpty(parentBlock)) {
                 emptyBlock(parentBlock);
             }
@@ -32937,17 +34344,23 @@
     };
 
     const setup$e = (editor) => {
-        editor.on('keydown', (e) => {
-            if (e.keyCode === VK.BACKSPACE) {
-                if (backspaceDelete$c(editor, false)) {
-                    e.preventDefault();
+        editor.on('init', () => {
+            // Init is done after the editor's setup. This places our keydown after any keydowns registered in the setup function, so they can do default prevent.
+            editor.on('keydown', (e) => {
+                if (e.defaultPrevented) {
+                    return;
                 }
-            }
-            else if (e.keyCode === VK.DELETE) {
-                if (backspaceDelete$c(editor, true)) {
-                    e.preventDefault();
+                if (e.keyCode === VK.BACKSPACE) {
+                    if (backspaceDelete$c(editor, false)) {
+                        e.preventDefault();
+                    }
                 }
-            }
+                else if (e.keyCode === VK.DELETE) {
+                    if (backspaceDelete$c(editor, true)) {
+                        e.preventDefault();
+                    }
+                }
+            });
         });
     };
 
@@ -33021,8 +34434,9 @@
      * @private
      */
     class NodeChange {
+        editor;
+        lastPath = [];
         constructor(editor) {
-            this.lastPath = [];
             this.editor = editor;
             let lastRng;
             const self = this;
@@ -33526,7 +34940,7 @@
                 try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
                     items[contentType] = dataTransfer.getData(contentType);
                 }
-                catch (_a) {
+                catch {
                     items[contentType] = ''; // useless in general, but for consistency across browsers
                 }
             }
@@ -33548,15 +34962,20 @@
         blobCache.add(blobInfo);
         return blobInfo;
     };
-    const pasteImage = (editor, imageItem) => {
-        parseDataUri(imageItem.uri).each(({ data, type, base64Encoded }) => {
+    const pasteImage = async (editor, imageItem) => {
+        return parseDataUri(imageItem.uri).fold(() => Promise.resolve(), ({ data, type, base64Encoded }) => {
             const base64 = base64Encoded ? data : btoa(data);
             const file = imageItem.file;
             // TODO: Move the bulk of the cache logic to EditorUpload
             const blobCache = editor.editorUpload.blobCache;
             const existingBlobInfo = blobCache.getByData(base64, type);
-            const blobInfo = existingBlobInfo !== null && existingBlobInfo !== void 0 ? existingBlobInfo : createBlobInfo(editor, blobCache, file, base64);
-            pasteHtml(editor, `<img src="${blobInfo.blobUri()}">`, false, true);
+            const blobInfo = existingBlobInfo ?? createBlobInfo(editor, blobCache, file, base64);
+            const imgUrl = blobInfo.blobUri();
+            return getImageSize(imgUrl).then(({ width, height }) => {
+                pasteHtml(editor, `<img width="${width}" height="${height}" src="${imgUrl}">`, false, true);
+            }).catch(() => {
+                pasteHtml(editor, `<img src="${imgUrl}">`, false, true);
+            });
         });
     };
     const isClipboardEvent = (event) => event.type === 'paste';
@@ -33587,13 +35006,13 @@
             if (images.length > 0) {
                 e.preventDefault();
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                readFilesAsDataUris(images).then((fileResults) => {
+                readFilesAsDataUris(images).then(async (fileResults) => {
                     if (rng) {
                         editor.selection.setRng(rng);
                     }
-                    each$e(fileResults, (result) => {
-                        pasteImage(editor, result);
-                    });
+                    for (const result of fileResults) {
+                        await pasteImage(editor, result);
+                    }
                 });
                 return true;
             }
@@ -33601,7 +35020,7 @@
         return false;
     };
     // Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
-    const isBrokenAndroidClipboardEvent = (e) => { var _a, _b; return Env.os.isAndroid() && ((_b = (_a = e.clipboardData) === null || _a === void 0 ? void 0 : _a.items) === null || _b === void 0 ? void 0 : _b.length) === 0; };
+    const isBrokenAndroidClipboardEvent = (e) => Env.os.isAndroid() && e.clipboardData?.items?.length === 0;
     // Ctrl+V or Shift+Insert
     const isKeyboardPasteEvent = (e) => (VK.metaKeyPressed(e) && e.keyCode === 86) || (e.shiftKey && e.keyCode === 45);
     const insertClipboardContent = (editor, clipboardContent, html, plainTextMode, shouldSimulateInputEvent) => {
@@ -33685,7 +35104,7 @@
     const registerDataImageFilter = (editor) => {
         const isWebKitFakeUrl = (src) => startsWith(src, 'webkit-fake-url');
         const isDataUri = (src) => startsWith(src, 'data:');
-        const isPasteInsert = (args) => { var _a; return ((_a = args.data) === null || _a === void 0 ? void 0 : _a.paste) === true; };
+        const isPasteInsert = (args) => args.data?.paste === true;
         // Remove all data images from paste for example from Gecko
         // except internal images like video elements
         editor.parser.addNodeFilter('img', (nodes, name, args) => {
@@ -33761,7 +35180,7 @@
                 clipboardData.setData(internalHtmlMime(), html);
                 return true;
             }
-            catch (_a) {
+            catch {
                 return false;
             }
         }
@@ -33841,18 +35260,18 @@
         editor.on('copy', copy(editor));
     };
 
-    const getCaretRangeFromEvent = (editor, e) => { var _a, _b; 
+    const getCaretRangeFromEvent = (editor, e) => 
     // TODO: TINY-7075 Remove the "?? 0" here when agar passes valid client coords
-    return RangeUtils.getCaretRangeFromPoint((_a = e.clientX) !== null && _a !== void 0 ? _a : 0, (_b = e.clientY) !== null && _b !== void 0 ? _b : 0, editor.getDoc()); };
+    RangeUtils.getCaretRangeFromPoint(e.clientX ?? 0, e.clientY ?? 0, editor.getDoc());
     const isPlainTextFileUrl = (content) => {
         const plainTextContent = content['text/plain'];
         return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
     };
     const setFocusedRange = (editor, rng) => {
-        editor.focus();
         if (rng) {
             editor.selection.setRng(rng);
         }
+        editor.focus();
     };
     const hasImage = (dataTransfer) => exists(dataTransfer.files, (file) => /^image\//.test(file.type));
     const needsCustomInternalDrop = (dom, schema, target, dropContent) => {
@@ -34099,9 +35518,9 @@
     const isContentEditableFalse$2 = (elm) => isContentEditableFalse$a(elm.dom);
     const isContentEditableTrue = (elm) => isContentEditableTrue$3(elm.dom);
     const isRoot = (rootNode) => (elm) => eq(SugarElement.fromDom(rootNode), elm);
-    const getClosestScope = (node, rootNode, schema) => closest$4(SugarElement.fromDom(node), (elm) => isContentEditableTrue(elm) || schema.isBlock(name(elm)), isRoot(rootNode))
+    const getClosestScope = (node, rootNode, schema) => closest$5(SugarElement.fromDom(node), (elm) => isContentEditableTrue(elm) || schema.isBlock(name(elm)), isRoot(rootNode))
         .getOr(SugarElement.fromDom(rootNode)).dom;
-    const getClosestCef = (node, rootNode) => closest$4(SugarElement.fromDom(node), isContentEditableFalse$2, isRoot(rootNode));
+    const getClosestCef = (node, rootNode) => closest$5(SugarElement.fromDom(node), isContentEditableFalse$2, isRoot(rootNode));
     const findEdgeCaretCandidate = (startNode, scope, forward) => {
         const walker = new DomTreeWalker(startNode, scope);
         const next = forward ? walker.next.bind(walker) : walker.prev.bind(walker);
@@ -34255,14 +35674,13 @@
         .map((rect) => clientInfo(rect, clientX));
 
     const getAbsolutePosition = (elm) => {
-        var _a, _b;
         const clientRect = elm.getBoundingClientRect();
         const doc = elm.ownerDocument;
         const docElem = doc.documentElement;
         const win = doc.defaultView;
         return {
-            top: clientRect.top + ((_a = win === null || win === void 0 ? void 0 : win.scrollY) !== null && _a !== void 0 ? _a : 0) - docElem.clientTop,
-            left: clientRect.left + ((_b = win === null || win === void 0 ? void 0 : win.scrollX) !== null && _b !== void 0 ? _b : 0) - docElem.clientLeft
+            top: clientRect.top + (win?.scrollY ?? 0) - docElem.clientTop,
+            left: clientRect.left + (win?.scrollX ?? 0) - docElem.clientLeft
         };
     };
     const getBodyPosition = (editor) => editor.inline ? getAbsolutePosition(editor.getBody()) : { left: 0, top: 0 };
@@ -34631,11 +36049,10 @@
     };
     const drop = (state, editor) => (e) => {
         state.on((state) => {
-            var _a;
             state.intervalId.clear();
             if (state.dragging) {
                 if (isValidDropTarget(editor, getRawTarget(editor.selection), state.element)) {
-                    const dropTarget = (_a = editor.getDoc().elementFromPoint(e.clientX, e.clientY)) !== null && _a !== void 0 ? _a : editor.getBody();
+                    const dropTarget = editor.getDoc().elementFromPoint(e.clientX, e.clientY) ?? editor.getBody();
                     const args = dispatchDragEvent(editor, 'drop', dropTarget, state.dataTransfer, e);
                     if (!args.isDefaultPrevented()) {
                         editor.undoManager.transact(() => {
@@ -34897,7 +36314,10 @@
             });
             editor.on('focusin', (e) => {
                 // for medias the selection is already managed in `MediaFocus.ts`
-                if (editor.selection.isCollapsed() && !isMedia$2(e.target) && editor.getBody().contains(e.target) && e.target !== editor.getBody() && !editor.dom.isEditable(e.target.parentNode)) {
+                if (isMedia$2(e.target)) {
+                    return;
+                }
+                if (editor.getBody().contains(e.target) && e.target !== editor.getBody() && !editor.dom.isEditable(e.target.parentNode)) {
                     if (fakeCaret.isShowing()) {
                         fakeCaret.hide();
                     }
@@ -34975,7 +36395,7 @@
             const doc = editor.getDoc();
             const realSelectionContainer = descendant$1(body, '#' + realSelectionId).getOrThunk(() => {
                 const newContainer = SugarElement.fromHtml('<div data-mce-bogus="all" class="mce-offscreen-selection"></div>', doc);
-                set$4(newContainer, 'id', realSelectionId);
+                set$5(newContainer, 'id', realSelectionId);
                 append$1(body, newContainer);
                 return newContainer;
             });
@@ -34999,8 +36419,22 @@
             }
             return newRange;
         };
+        const getUcVideoClone = (ucVideo) => {
+            const newElm = editor.getDoc().createElement('div');
+            newElm.style.width = ucVideo.style.width;
+            newElm.style.height = ucVideo.style.height;
+            const ucVideoWidth = ucVideo.getAttribute('width');
+            if (ucVideoWidth) {
+                newElm.setAttribute('width', ucVideoWidth);
+            }
+            const ucVideoHeight = ucVideo.getAttribute('height');
+            if (ucVideoHeight) {
+                newElm.setAttribute('height', ucVideoHeight);
+            }
+            return newElm;
+        };
         const selectElement = (elm) => {
-            const targetClone = elm.cloneNode(true);
+            const targetClone = isUcVideo(elm) ? getUcVideoClone(elm) : elm.cloneNode(true);
             const e = editor.dispatch('ObjectSelected', { target: elm, targetClone });
             if (e.isDefaultPrevented()) {
                 return null;
@@ -35253,8 +36687,7 @@
         const startPattern = pattern.start;
         const startSpot = repeatLeft(dom, spot.container, spot.offset, matchesPattern(startPattern), block);
         return startSpot.bind((spot) => {
-            var _a, _b;
-            const startPatternIndex = (_b = (_a = block.textContent) === null || _a === void 0 ? void 0 : _a.indexOf(startPattern)) !== null && _b !== void 0 ? _b : -1;
+            const startPatternIndex = block.textContent?.indexOf(startPattern) ?? -1;
             const isCompleteMatch = startPatternIndex !== -1 && spot.offset >= startPatternIndex + startPattern.length;
             if (isCompleteMatch) {
                 // Complete match
@@ -35290,12 +36723,11 @@
         return textBefore(node, offset, block).bind((spot) => {
             const start = findPatternStartFromSpot(dom, pattern, block, spot);
             return start.bind((startRange) => {
-                var _a;
                 if (requireGap) {
                     if (startRange.endContainer === spot.container && startRange.endOffset === spot.offset) {
                         return Optional.none();
                     }
-                    else if (spot.offset === 0 && ((_a = startRange.endContainer.textContent) === null || _a === void 0 ? void 0 : _a.length) === startRange.endOffset) {
+                    else if (spot.offset === 0 && startRange.endContainer.textContent?.length === startRange.endOffset) {
                         return Optional.none();
                     }
                 }
@@ -35415,7 +36847,7 @@
         applyPattern$2(editor, pattern, patternRange);
     };
     const addMarkers = (dom, matches) => {
-        const markerPrefix = generate$1('mce_textpattern');
+        const markerPrefix = generate('mce_textpattern');
         // Add end markers
         const matchesWithEnds = foldr(matches, (acc, match) => {
             const endMarker = createMarker(dom, markerPrefix + `_end${acc.length}`, match.endRng);
@@ -35526,9 +36958,7 @@
         const nuText = text.replace(nbsp, ' ');
         return find$2(sortedPatterns, (pattern) => predicate(pattern, text, nuText));
     };
-    const createFindPatterns = (findPattern, skipFullMatch) => (editor, block, patternSet, normalizedMatches, text) => {
-        var _a;
-        if (text === void 0) { text = (_a = block.textContent) !== null && _a !== void 0 ? _a : ''; }
+    const createFindPatterns = (findPattern, skipFullMatch) => (editor, block, patternSet, normalizedMatches, text = block.textContent ?? '') => {
         const dom = editor.dom;
         const forcedRootBlock = getForcedRootBlock(editor);
         if (!dom.is(block, forcedRootBlock)) {
@@ -35557,9 +36987,9 @@
              * as it feels to be the expected behavior.
              */
             const text = SugarElement.fromDom(node);
-            const textContent = get$4(text);
+            const textContent = get$5(text);
             if (startsWithSingleSpace(textContent)) {
-                set$1(text, textContent.slice(1));
+                set$2(text, textContent.slice(1));
             }
         });
     };
@@ -35569,9 +36999,8 @@
     const getMatches$1 = (editor, patternSet) => {
         const rng = editor.selection.getRng();
         return getParentBlock(editor, rng).map((block) => {
-            var _a;
             const offset = Math.max(0, rng.startOffset);
-            const dynamicPatternSet = resolveFromDynamicPatterns(patternSet, block, (_a = block.textContent) !== null && _a !== void 0 ? _a : '');
+            const dynamicPatternSet = resolveFromDynamicPatterns(patternSet, block, block.textContent ?? '');
             // IMPORTANT: We need to get normalized match results since undoing and redoing the editor state
             // via undoManager.extra() will result in the DOM being normalized.
             const inlineMatches = findPatterns$2(editor, block, rng.startContainer, offset, dynamicPatternSet, true);
@@ -35731,6 +37160,7 @@
         const browser = Env.browser;
         const isGecko = browser.isFirefox();
         const isWebKit = browser.isChromium() || browser.isSafari();
+        const isSafari = browser.isSafari();
         const isiOS = Env.deviceType.isiPhone() || Env.deviceType.isiPad();
         const isMac = Env.os.isMacOS() || Env.os.isiOS();
         /**
@@ -35740,7 +37170,7 @@
             try {
                 editor.getDoc().execCommand(cmd, false, String(state));
             }
-            catch (_a) {
+            catch {
                 // Ignore
             }
         };
@@ -35796,14 +37226,14 @@
                     }
                     // Manually empty the editor
                     e.preventDefault();
-                    editor.setContent('');
-                    if (body.firstChild && dom.isBlock(body.firstChild)) {
-                        editor.selection.setCursorLocation(body.firstChild, 0);
+                    if (symulateDelete(editor, keyCode === DELETE, () => editor.setContent(''))) {
+                        if (body.firstChild && dom.isBlock(body.firstChild)) {
+                            editor.selection.setCursorLocation(body.firstChild, 0);
+                        }
+                        else {
+                            editor.selection.setCursorLocation(body, 0);
+                        }
                     }
-                    else {
-                        editor.selection.setCursorLocation(body, 0);
-                    }
-                    editor.nodeChanged();
                 }
             });
         };
@@ -35835,7 +37265,11 @@
                     let rng;
                     if (e.target === editor.getDoc().documentElement) {
                         rng = selection.getRng();
-                        editor.getBody().focus();
+                        // TINY-12245: this is needed to avoid the scroll back to the top when the content is scrolled, there is no selection and the user is clicking on a non selectable editor element
+                        // example content scrolled by browser search and user click on the horizontal scroll bar
+                        if (editor.getDoc().getSelection()?.anchorNode !== null) {
+                            editor.getBody().focus();
+                        }
                         if (e.type === 'mousedown') {
                             if (isCaretContainer$2(rng.startContainer)) {
                                 return;
@@ -35934,8 +37368,8 @@
             editor.on('mousedown', (e) => {
                 lift2(Optional.from(e.clientX), Optional.from(e.clientY), (clientX, clientY) => {
                     const caretPos = editor.getDoc().caretPositionFromPoint(clientX, clientY);
-                    const img = (caretPos === null || caretPos === void 0 ? void 0 : caretPos.offsetNode.childNodes[caretPos.offset - (caretPos.offset > 0 ? 1 : 0)]) || (caretPos === null || caretPos === void 0 ? void 0 : caretPos.offsetNode);
-                    if (img && isEditableImage(img)) {
+                    const img = caretPos?.offsetNode?.childNodes[caretPos.offset - (caretPos.offset > 0 ? 1 : 0)] || caretPos?.offsetNode;
+                    if (isNonNullable(img) && isEditableImage(img)) {
                         const rect = img.getBoundingClientRect();
                         e.preventDefault();
                         if (!editor.hasFocus()) {
@@ -36071,11 +37505,10 @@
                     const currentNode = SugarElement.fromDom(editor.selection.getNode());
                     if (isFigcaption(currentNode) && editor.selection.isCollapsed()) {
                         parent(currentNode).bind((parent) => {
-                            var _a;
                             if (editor.selection.getRng().startOffset === 0 && e.keyCode === VK.LEFT) {
                                 return prevSibling(parent);
                             }
-                            else if (editor.selection.getRng().endOffset === ((_a = currentNode.dom.textContent) === null || _a === void 0 ? void 0 : _a.length) && e.keyCode === VK.RIGHT) {
+                            else if (editor.selection.getRng().endOffset === currentNode.dom.textContent?.length && e.keyCode === VK.RIGHT) {
                                 return nextSibling(parent);
                             }
                             else {
@@ -36116,12 +37549,11 @@
         const addBrAfterLastLinks = () => {
             const fixLinks = () => {
                 each(dom.select('a:not([data-mce-block])'), (node) => {
-                    var _a;
                     let parentNode = node.parentNode;
                     const root = dom.getRoot();
-                    if ((parentNode === null || parentNode === void 0 ? void 0 : parentNode.lastChild) === node) {
+                    if (parentNode?.lastChild === node) {
                         while (parentNode && !dom.isBlock(parentNode)) {
-                            if (((_a = parentNode.parentNode) === null || _a === void 0 ? void 0 : _a.lastChild) !== parentNode || parentNode === root) {
+                            if (parentNode.parentNode?.lastChild !== parentNode || parentNode === root) {
                                 return;
                             }
                             parentNode = parentNode.parentNode;
@@ -36335,6 +37767,51 @@
                 }
             });
         };
+        /**
+         * this is needed to manage the difference between
+         * ```
+         * <li><span class="fake">a</span><div>b</div></li>
+         * ```
+         * and
+         * ```
+         * <li><span class="fake">a</span> <div>b</div></li>
+         * ```
+         * since if the indentation of the HTML has a new line it creates a fake child in the `li` that is an empty text
+         * it's check it trying to get the rects and if it can't it means that it's the false unwanted new line
+        **/
+        const isValidSibling = (el) => getClientRects([el.dom]).length > 0;
+        const firstBlockChildOrNewLine = (target) => child(target, (child) => isBr$6(child) || isElement$8(child) && get$8(child, 'display') === 'block');
+        const clickAfterEl = (clientX, clientY, el) => get$c(getClientRects([el.dom]), 0).exists((rect) => clientX >= rect.right && clientY >= rect.top && clientY <= rect.bottom);
+        const selectPos = (editor, e, pos) => {
+            e.preventDefault();
+            editor.focus();
+            editor.selection.setRng(pos.toRange());
+        };
+        /**
+         * In Chrome in a `LI` that contains a block element and where the first child is an inline element
+         * clicking on the right side of the first child the carret goes at the start of the element instead that in the end of it
+         * issue: https://issues.chromium.org/issues/40767343
+        **/
+        const fixInLISelection = () => {
+            editor.on('mousedown', (e) => {
+                const target = SugarElement.fromDom(e.target);
+                if (isListItem$2(target)) {
+                    firstBlockChildOrNewLine(target).fold(() => {
+                        lastChild(target).each((lastChild) => {
+                            if (clickAfterEl(e.clientX, e.clientY, lastChild)) {
+                                lastPositionIn(target.dom).each((pos) => selectPos(editor, e, pos));
+                            }
+                        });
+                    }, (firstBlock) => {
+                        findLast(prevSiblings(firstBlock), isValidSibling).each((lastInlineBeforeBlock) => {
+                            if (clickAfterEl(e.clientX, e.clientY, lastInlineBeforeBlock)) {
+                                prevPosition(target.dom, CaretPosition(firstBlock.dom, 0)).each((pos) => selectPos(editor, e, pos));
+                            }
+                        });
+                    });
+                }
+            });
+        };
         // No-op since Mozilla seems to have fixed the caret repaint issues
         const refreshContentEditable = noop;
         const isHidden = () => {
@@ -36381,6 +37858,9 @@
                 blockFormSubmitInsideEditor();
                 disableBackspaceIntoATable();
                 removeAppleInterchangeBrs();
+                if (!isSafari) {
+                    fixInLISelection();
+                }
                 // touchClickEvent();
                 // iOS
                 if (isiOS) {
@@ -36418,12 +37898,97 @@
         };
     };
 
+    class ComponentLoadError extends Error {
+        url;
+        constructor(message, url) {
+            super(message);
+            this.url = url;
+        }
+    }
+    const hostWindowComponentScripts = {};
+    const loadScript = (url, doc, extraAtts) => {
+        return new Promise((resolve, reject) => {
+            const script = SugarElement.fromTag('script');
+            setAll$1(script, {
+                type: 'text/javascript',
+                src: url,
+                ...extraAtts
+            });
+            const clean = () => {
+                remove$8(script);
+            };
+            bind$1(script, 'load', () => {
+                clean();
+                resolve();
+            });
+            bind$1(script, 'error', () => {
+                clean();
+                reject(new Error(`Failed to load script url: ${url}`));
+            });
+            append$1(getHead(doc), script);
+        });
+    };
+    const loadComponent = async (url, doc) => {
+        const extraAtts = ScriptLoader.ScriptLoader.getScriptAttributes(url);
+        await loadScript(url, doc, extraAtts).catch(() => Promise.reject(new ComponentLoadError(`Failed to load component url: ${url}`, url)));
+        return url;
+    };
+    const loadComponentsForInlineEditor = (componentUrls) => {
+        return mapToArray(componentUrls, (url, elementName) => {
+            return get$b(hostWindowComponentScripts, url).getOrThunk(() => {
+                // Only load the component if it hasn't already been loaded in inline mode the page might have already loaded it
+                if (isNullable(window.customElements.get(elementName))) {
+                    const loadPromise = loadComponent(url, getDocument());
+                    hostWindowComponentScripts[url] = loadPromise;
+                    return loadPromise;
+                }
+                else {
+                    return Promise.resolve(url);
+                }
+            }).catch((err) => {
+                // Remove from cache if the component failed to load so we can try again later
+                delete hostWindowComponentScripts[url];
+                return Promise.reject(err);
+            });
+        });
+    };
+    const loadComponentsForIframeEditor = (componentUrls, doc) => {
+        const urls = unique$1(values(componentUrls));
+        return map$3(urls, (url) => loadComponent(url, SugarElement.fromDom(doc)));
+    };
+    const loadComponentsForEditor = (editor) => {
+        const componentUrls = editor.schema.getComponentUrls();
+        if (editor.inline) {
+            return loadComponentsForInlineEditor(componentUrls);
+        }
+        else {
+            return loadComponentsForIframeEditor(componentUrls, editor.getDoc());
+        }
+    };
+    const loadComponentsAsync = async (editor) => {
+        const loadPromises = loadComponentsForEditor(editor);
+        const rejected = filter$5(await Promise.allSettled(loadPromises), (r) => r.status === 'rejected');
+        if (rejected.length > 0) {
+            each$e(rejected, (rejection) => {
+                if (rejection.reason instanceof ComponentLoadError) {
+                    const { url } = rejection.reason;
+                    componentLoadError(editor, url);
+                }
+            });
+        }
+    };
+    const loadComponents = (editor) => {
+        // Since we are handling the errors in the promise rejections inside the loadComponentsAsync we can ignore the errors here
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        loadComponentsAsync(editor);
+    };
+
     const DOM$6 = DOMUtils.DOM;
     const appendStyle = (editor, text) => {
         const body = SugarElement.fromDom(editor.getBody());
         const container = getStyleContainer(getRootNode(body));
         const style = SugarElement.fromTag('style');
-        set$4(style, 'type', 'text/css');
+        set$5(style, 'type', 'text/css');
         append$1(style, SugarElement.fromText(text));
         append$1(container, style);
         editor.on('remove', () => {
@@ -36502,6 +38067,11 @@
     };
     const createParser = (editor) => {
         const parser = DomParser(mkParserSettings(editor), editor.schema);
+        parser.addAttributeFilter('data-mce-src,data-mce-href,data-mce-style', (nodes, name) => {
+            for (let i = 0; i < nodes.length; i++) {
+                nodes[i].attr(name, null);
+            }
+        });
         // Convert src and href into data-mce-src, data-mce-href and data-mce-style
         parser.addAttributeFilter('src,href,style,tabindex', (nodes, name) => {
             const dom = editor.dom;
@@ -36547,13 +38117,12 @@
         });
         if (shouldPreserveCData(editor)) {
             parser.addNodeFilter('#cdata', (nodes) => {
-                var _a;
                 let i = nodes.length;
                 while (i--) {
                     const node = nodes[i];
                     node.type = 8;
                     node.name = '#comment';
-                    node.value = '[CDATA[' + editor.dom.encode((_a = node.value) !== null && _a !== void 0 ? _a : '') + ']]';
+                    node.value = '[CDATA[' + editor.dom.encode(node.value ?? '') + ']]';
                 }
             });
         }
@@ -36619,11 +38188,11 @@
     };
     const getStyleSheetLoader$1 = (editor) => editor.inline ? editor.ui.styleSheetLoader : editor.dom.styleSheetLoader;
     const makeStylesheetLoadingPromises = (editor, css, framedFonts) => {
-        const { pass: bundledCss, fail: normalCss } = partition$2(css, (name) => tinymce.Resource.has(toContentSkinResourceName(name)));
-        const bundledPromises = bundledCss.map((url) => {
-            const css = tinymce.Resource.get(toContentSkinResourceName(url));
+        const { pass: bundledCss, fail: normalCss } = partition$2(css, (key) => tinymce.Resource.has(key));
+        const bundledPromises = bundledCss.map((key) => {
+            const css = tinymce.Resource.get(key);
             if (isString(css)) {
-                return Promise.resolve(getStyleSheetLoader$1(editor).loadRawCss(url, css));
+                return Promise.resolve(getStyleSheetLoader$1(editor).loadRawCss(key, css));
             }
             return Promise.resolve();
         });
@@ -36689,13 +38258,7 @@
         }
         const protect = getProtect(editor);
         if (protect) {
-            editor.on('BeforeSetContent', (e) => {
-                Tools.each(protect, (pattern) => {
-                    e.content = e.content.replace(pattern, (str) => {
-                        return '<!--mce:protected ' + escape(str) + '-->';
-                    });
-                });
-            });
+            registerProtectedHtmlFilters(editor, protect);
         }
         editor.on('SetContent', () => {
             editor.addVisual(editor.getBody());
@@ -36738,6 +38301,11 @@
             editor.contentWindow = window;
             editor.bodyElement = targetElm;
             editor.contentAreaContainer = targetElm;
+        }
+        const contentLanguage = getContentLanguage(editor);
+        if (contentLanguage) {
+            const langTarget = editor.inline ? targetElm : doc.documentElement;
+            DOM$6.setAttrib(langTarget, 'lang', contentLanguage);
         }
         // It will not steal focus while setting contentEditable
         const body = editor.getBody();
@@ -36783,7 +38351,9 @@
         setup$b(editor);
         setup$u(editor);
         setup$6(editor);
-        setup$s(editor);
+        if (shouldAllowNonEditable(editor)) {
+            setup$s(editor);
+        }
         if (!isRtc(editor)) {
             setup$5(editor);
             setup$1(editor);
@@ -36795,6 +38365,7 @@
         setup$7(editor, caret);
         const setupRtcThunk = setup$z(editor);
         preInit(editor);
+        loadComponents(editor);
         setupRtcThunk.fold(() => {
             const cancelProgress = startProgress(editor);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -36823,13 +38394,13 @@
     const createIframeElement = (id, title, customAttrs, tabindex) => {
         const iframe = SugarElement.fromTag('iframe');
         // This can also be explicitly set by customAttrs, so do this first
-        tabindex.each((t) => set$4(iframe, 'tabindex', t));
+        tabindex.each((t) => set$5(iframe, 'tabindex', t));
         setAll$1(iframe, customAttrs);
         setAll$1(iframe, {
             id: id + '_ifr',
             frameBorder: '0',
             allowTransparency: 'true',
-            title
+            ...Env.browser.isFirefox() ? { title } : {}
         });
         add$2(iframe, 'tox-edit-area__iframe');
         return iframe;
@@ -36845,17 +38416,18 @@
         const bodyId = getBodyId(editor);
         const bodyClass = getBodyClass(editor);
         const translatedAriaText = editor.translate(getIframeAriaText(editor));
+        const iframeBodyAriaLabel = Env.browser.isFirefox() ? '' : `aria-label="${translatedAriaText}"`;
         if (getContentSecurityPolicy(editor)) {
             iframeHTML += '<meta http-equiv="Content-Security-Policy" content="' + getContentSecurityPolicy(editor) + '" />';
         }
         iframeHTML += '</head>' +
-            `<body id="${bodyId}" class="mce-content-body ${bodyClass}" data-id="${editor.id}" aria-label="${translatedAriaText}">` +
+            `<body id="${bodyId}" class="mce-content-body ${bodyClass}" data-id="${editor.id}" ${iframeBodyAriaLabel}>` +
             '<br>' +
             '</body></html>';
         return iframeHTML;
     };
     const createIframe = (editor, boxInfo) => {
-        const iframeTitle = Env.browser.isFirefox() ? getIframeAriaText(editor) : 'Rich Text Area';
+        const iframeTitle = getIframeAriaText(editor);
         const translatedTitle = editor.translate(iframeTitle);
         const tabindex = getOpt(SugarElement.fromDom(editor.getElement()), 'tabindex').bind(toInt);
         const ifr = createIframeElement(editor.id, translatedTitle, getIframeAttrs(editor), tabindex).dom;
@@ -36932,9 +38504,11 @@
     const initTooltipClosing = (editor) => {
         const closeTooltipsListener = (event) => {
             if (event.keyCode === VK.ESC && !event.defaultPrevented) {
-                if (fireCloseTooltips(editor).isDefaultPrevented()) {
-                    event.preventDefault();
-                }
+                each$e(editor.editorManager.get(), (ed) => {
+                    if (fireCloseTooltips(ed).isDefaultPrevented()) {
+                        event.preventDefault();
+                    }
+                });
             }
         };
         document.addEventListener('keyup', closeTooltipsListener);
@@ -37308,38 +38882,69 @@
         '#455A64', // Dark Blue Gray
     ];
     const getFirstChar = (name) => {
-        var _a;
         if (Intl.Segmenter) {
             const segmenter = new Intl.Segmenter();
             const iterator = segmenter.segment(name)[Symbol.iterator]();
-            return `${(_a = iterator.next().value) === null || _a === void 0 ? void 0 : _a.segment}`;
+            return `${iterator.next().value?.segment}`;
         }
         else {
             return name.trim()[0];
         }
     };
-    const getRandomColor = () => {
-        const colorIdx = Math.floor(random() * AvatarColors.length);
+    /* For a given string returns integer between 0 and maxValue (inclusive).
+      This function is based on the djb2 hash algorithm reported by Dan Bernstein.
+      You can find more informations here: http://www.cse.yorku.ca/~oz/hash.html
+      The hashing algorithm is using bitwise operators to multiply by 32, and later to ensure a positive integer.
+      The result is then reduced to the range of 0 to maxValue using modulo operation.
+    */
+    const djb2Hash = (key, maxValue) => {
+        let hash = 5381;
+        for (let i = 0; i < key.length; i++) {
+            // eslint-disable-next-line no-bitwise
+            hash = ((hash << 5) + hash) + key.charCodeAt(i);
+        }
+        // eslint-disable-next-line no-bitwise
+        return (hash >>> 0) % (maxValue + 1);
+    };
+    const getColor = (id) => {
+        const colorIdx = djb2Hash(id ?? '', AvatarColors.length - 1);
         return AvatarColors[colorIdx];
     };
-    const generate = (name, color, size = 36) => {
+    const generateAvatarSvg = (content, color, size) => {
         const halfSize = size / 2;
         return `<svg height="${size}" width="${size}" xmlns="http://www.w3.org/2000/svg">` +
             `<circle cx="${halfSize}" cy="${halfSize}" r="${halfSize}" fill="${color}"/>` +
             `<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" fill="#FFF" font-family="sans-serif" font-size="${halfSize}">` +
-            getFirstChar(name) +
+            content +
             `</text>` +
             '</svg>';
     };
-    const deriveAvatar = (name) => {
-        const avatarSvg = generate(name, getRandomColor());
-        return 'data:image/svg+xml,' + encodeURIComponent(avatarSvg);
-    };
+    /**
+     * Generates a data URL for an SVG avatar with the specified content, color, and size.
+     *
+     * @param content The text content to display in the avatar (typically a single character)
+     * @param color The background color of the avatar (hex color string)
+     * @param size The size of the avatar in pixels (width and height)
+     * @returns A data URL string containing the encoded SVG avatar
+     */
+    const generateAvatar = (content, color, size) => 'data:image/svg+xml,' + encodeURIComponent(generateAvatarSvg(content, color, size));
+    /**
+     * Generates a user avatar based on the user's name and ID.
+     *
+     * @param user User object containing id and name properties
+     * @param user.id Unique identifier used to determine the avatar color
+     * @param user.name User's name, first character will be displayed in the avatar
+     * @param config Configuration object for the avatar
+     * @param config.size The size of the avatar in pixels (defaults to 36)
+     * @returns A data URL string containing the encoded SVG avatar
+     */
+    const generateUserAvatar = (user, config = { size: 36 }) => generateAvatar(getFirstChar(user.name), getColor(user.id), config.size);
+
     const userSchema = objOf([
         required('id'),
         optionString('name'),
         optionString('avatar'),
-        option('custom')
+        option$1('custom')
     ]);
     const objectCat = (obj) => {
         const result = {};
@@ -37366,7 +38971,7 @@
             return {
                 id,
                 name: name.getOr(id),
-                avatar: avatar.getOr(deriveAvatar(name.getOr(id))),
+                avatar: avatar.getOr(generateUserAvatar({ id, name: name.getOr(id) })),
                 ...objectCat(rest),
             };
         });
@@ -37399,7 +39004,7 @@
                 return mapToObject(userIds, (userId) => Promise.resolve({
                     id: userId,
                     name: userId,
-                    avatar: deriveAvatar(userId)
+                    avatar: generateUserAvatar({ id: userId, name: userId })
                 }));
             }
             const uncachedIds = unique$1(filter$5((userIds), (userId) => !lookup(userId).isSome()));
@@ -37431,7 +39036,7 @@
                 acc[userId] = lookup(userId).getOr(Promise.resolve({
                     id: userId,
                     name: userId,
-                    avatar: deriveAvatar(userId)
+                    avatar: generateUserAvatar({ id: userId, name: userId })
                 }));
                 return acc;
             }, {});
@@ -37481,7 +39086,7 @@
     };
     const getSection = (sectionResult, name, defaults = {}) => {
         const sections = sectionResult.sections();
-        const sectionOptions = get$a(sections, name).getOr({});
+        const sectionOptions = get$b(sections, name).getOr({});
         return Tools.extend({}, defaults, sectionOptions);
     };
     const hasSection = (sectionResult, name) => {
@@ -37496,7 +39101,7 @@
             table_grid: false, // Table grid relies on hover, which isn't available for touch devices so use the dialog instead
             object_resizing: false, // No nice way to do object resizing at this stage
             resize: false, // Editor resize doesn't make sense on mobile
-            toolbar_mode: get$a(mobileOptions, 'toolbar_mode').getOr('scrolling'), // Use the default side-scrolling toolbar for tablets/phones
+            toolbar_mode: get$b(mobileOptions, 'toolbar_mode').getOr('scrolling'), // Use the default side-scrolling toolbar for tablets/phones
             toolbar_sticky: false // Only enable sticky toolbar on desktop by default
         };
         const defaultPhoneOptions = {
@@ -37508,8 +39113,7 @@
         };
     };
     const getExternalPlugins = (overrideOptions, options) => {
-        var _a;
-        const userDefinedExternalPlugins = (_a = options.external_plugins) !== null && _a !== void 0 ? _a : {};
+        const userDefinedExternalPlugins = options.external_plugins ?? {};
         if (overrideOptions && overrideOptions.external_plugins) {
             return Tools.extend({}, overrideOptions.external_plugins, userDefinedExternalPlugins);
         }
@@ -37547,9 +39151,8 @@
         return isMobileDevice && hasSection(sectionResult, 'mobile');
     };
     const combineOptions = (isMobileDevice, isPhone, defaultOptions, defaultOverrideOptions, options) => {
-        var _a;
         // Use mobile mode by default on phones, so patch in the mobile override options
-        const deviceOverrideOptions = isMobileDevice ? { mobile: getMobileOverrideOptions((_a = options.mobile) !== null && _a !== void 0 ? _a : {}, isPhone) } : {};
+        const deviceOverrideOptions = isMobileDevice ? { mobile: getMobileOverrideOptions(options.mobile ?? {}, isPhone) } : {};
         const sectionResult = extractSections(['mobile'], deepMerge(deviceOverrideOptions, options));
         const extendedOptions = Tools.extend(
         // Default options
@@ -37624,7 +39227,7 @@
                 try {
                     doc.execCommand(command);
                 }
-                catch (_a) {
+                catch {
                     // Command failed
                     failed = true;
                 }
@@ -37746,7 +39349,7 @@
     const getSpecifiedFontProp = (propName, rootElm, elm) => {
         const getProperty = (elm) => getRaw$1(elm, propName).orThunk(() => {
             if (isFont(elm)) {
-                return get$a(legacyPropNames, propName).bind((legacyPropName) => getOpt(elm, legacyPropName));
+                return get$b(legacyPropNames, propName).bind((legacyPropName) => getOpt(elm, legacyPropName));
             }
             else {
                 return Optional.none();
@@ -37837,8 +39440,8 @@
         const specifiedStyle = closest$1(elm, (elm) => getRaw$1(elm, 'line-height'), curry(eq, root));
         const computedStyle = () => {
             // Css.get returns computed values (in px), and parseFloat will strip any non-number suffix
-            const lineHeight = parseFloat(get$7(elm, 'line-height'));
-            const fontSize = parseFloat(get$7(elm, 'font-size'));
+            const lineHeight = parseFloat(get$8(elm, 'line-height'));
+            const fontSize = parseFloat(get$8(elm, 'font-size'));
             return String(lineHeight / fontSize);
         };
         return specifiedStyle.getOrThunk(computedStyle);
@@ -37873,8 +39476,7 @@
                 lineHeightAction(editor, value);
             },
             'Lang': (command, _ui, lang) => {
-                var _a;
-                toggleFormat(command, { value: lang.code, customValue: (_a = lang.customCode) !== null && _a !== void 0 ? _a : null });
+                toggleFormat(command, { value: lang.code, customValue: lang.customCode ?? null });
             },
             'RemoveFormat': (command) => {
                 editor.formatter.remove(command);
@@ -37946,7 +39548,7 @@
             const anchor = editor.dom.getParent(editor.selection.getNode(), 'a');
             if (isObject(linkDetails) && isString(linkDetails.href)) {
                 // Spaces are never valid in URLs and it's a very common mistake for people to make so we fix it here.
-                linkDetails.href = linkDetails.href.replace(/ /g, '%20');
+                linkDetails.href = linkDetails.href.replace(/ /g, '%20').replace(/&amp;/g, '&');
                 // Remove existing links if there could be child links or that the href isn't specified
                 if (!anchor || !linkDetails.href) {
                     editor.formatter.remove('link');
@@ -38062,7 +39664,7 @@
     const registerExecCommands = (editor) => {
         editor.editorCommands.addCommands({
             mceRemoveNode: (_command, _ui, value) => {
-                const node = value !== null && value !== void 0 ? value : editor.selection.getNode();
+                const node = value ?? editor.selection.getNode();
                 // Make sure that the body node isn't removed
                 if (node !== editor.getBody()) {
                     const bm = editor.selection.getBookmark();
@@ -38074,7 +39676,7 @@
                 editor.getWin().print();
             },
             mceFocus: (_command, _ui, value) => {
-                focus(editor, value === true);
+                focus(editor, value);
             },
             mceToggleVisualAid: () => {
                 editor.hasVisual = !editor.hasVisual;
@@ -38100,8 +39702,9 @@
     const selectionSafeCommands = ['toggleview'];
     const isSelectionSafeCommand = (command) => contains$2(selectionSafeCommands, command.toLowerCase());
     class EditorCommands {
+        editor;
+        commands = { state: {}, exec: {}, value: {} };
         constructor(editor) {
-            this.commands = { state: {}, exec: {}, value: {} };
             this.editor = editor;
         }
         /**
@@ -38118,7 +39721,7 @@
         execCommand(command, ui = false, value, args) {
             const editor = this.editor;
             const lowerCaseCommand = command.toLowerCase();
-            const skipFocus = args === null || args === void 0 ? void 0 : args.skip_focus;
+            const skipFocus = args?.skip_focus;
             if (editor.removed) {
                 return false;
             }
@@ -38188,7 +39791,25 @@
         }
         addCommand(command, callback, scope) {
             const lowerCaseCommand = command.toLowerCase();
-            this.commands.exec[lowerCaseCommand] = (_command, ui, value, args) => callback.call(scope !== null && scope !== void 0 ? scope : this.editor, ui, value, args);
+            this.commands.exec[lowerCaseCommand] = (_command, ui, value, args) => callback.call(scope ?? this.editor, ui, value, args);
+        }
+        /**
+         * Removes a command from the command collection.
+         *
+         * @method removeCommand
+         * @param {String} command Command name to remove.
+         * @param {String} type Optional type to remove, defaults to removing all types. Can be 'exec', 'state', 'value', or omitted for all.
+         */
+        removeCommand(command, type) {
+            const lowerCaseCommand = command.toLowerCase();
+            if (type) {
+                delete this.commands[type][lowerCaseCommand];
+            }
+            else {
+                delete this.commands.exec[lowerCaseCommand];
+                delete this.commands.state[lowerCaseCommand];
+                delete this.commands.value[lowerCaseCommand];
+            }
         }
         /**
          * Returns true/false if the command is supported or not.
@@ -38207,10 +39828,10 @@
             }
         }
         addQueryStateHandler(command, callback, scope) {
-            this.commands.state[command.toLowerCase()] = () => callback.call(scope !== null && scope !== void 0 ? scope : this.editor);
+            this.commands.state[command.toLowerCase()] = () => callback.call(scope ?? this.editor);
         }
         addQueryValueHandler(command, callback, scope) {
-            this.commands.value[command.toLowerCase()] = () => callback.call(scope !== null && scope !== void 0 ? scope : this.editor);
+            this.commands.value[command.toLowerCase()] = () => callback.call(scope ?? this.editor);
         }
     }
 
@@ -38241,8 +39862,11 @@
         static isNative(name) {
             return !!nativeEvents[name.toLowerCase()];
         }
+        settings;
+        scope;
+        toggleEvent;
+        bindings = {};
         constructor(settings) {
-            this.bindings = {};
             this.settings = settings || {};
             this.scope = this.settings.scope || this;
             this.toggleEvent = this.settings.toggleEvent || never;
@@ -38275,7 +39899,7 @@
          */
         dispatch(name, args) {
             const lcName = name.toLowerCase();
-            const event = normalize$3(lcName, args !== null && args !== void 0 ? args : {}, this.scope);
+            const event = normalize$3(lcName, args ?? {}, this.scope);
             if (this.settings.beforeFire) {
                 this.settings.beforeFire(event);
             }
@@ -38500,7 +40124,7 @@
             const self = this;
             // Prevent all events except the remove/detach event after the instance has been removed
             if (self.removed && name !== 'remove' && name !== 'detach') {
-                return normalize$3(name.toLowerCase(), args !== null && args !== void 0 ? args : {}, self);
+                return normalize$3(name.toLowerCase(), args ?? {}, self);
             }
             const dispatcherArgs = getEventDispatcher(self).dispatch(name, args);
             // Bubble event up to parents
@@ -38845,12 +40469,12 @@
                 processor
             };
             // Setup the initial values
-            const initValue = get$a(values, name).orThunk(() => get$a(initialOptions, name));
+            const initValue = get$b(values, name).orThunk(() => get$b(initialOptions, name));
             initValue.each((value) => setValue(name, value, processor));
         };
         const isRegistered = (name) => has$2(registry, name);
-        const get = (name) => get$a(values, name)
-            .orThunk(() => get$a(registry, name).map((spec) => spec.default))
+        const get = (name) => get$b(values, name)
+            .orThunk(() => get$b(registry, name).map((spec) => spec.default))
             .getOrUndefined();
         const set = (name, value) => {
             if (!isRegistered(name)) {
@@ -39144,9 +40768,10 @@
         return shortcut;
     };
     class Shortcuts {
+        editor;
+        shortcuts = {};
+        pendingPatterns = [];
         constructor(editor) {
-            this.shortcuts = {};
-            this.pendingPatterns = [];
             this.editor = editor;
             const self = this;
             editor.on('keyup keypress keydown', (e) => {
@@ -39508,6 +41133,172 @@
      * @include ../../../../../tools/docs/tinymce.Editor.js
      */
     class Editor {
+        baseUri;
+        /**
+         * Editor instance id, normally the same as the div/textarea that was replaced.
+         *
+         * @property id
+         * @type String
+         */
+        id;
+        /**
+         * A uuid string to uniquely identify an editor across any page.
+         *
+         * @property editorUid
+         * @type String
+         */
+        editorUid;
+        /**
+         * Name/Value object containing plugin instances.
+         *
+         * @property plugins
+         * @type Object
+         * @example
+         * // Execute a method inside a plugin directly
+         * tinymce.activeEditor.plugins.someplugin.someMethod();
+         */
+        plugins = {};
+        /**
+         * URI object to document configured for the TinyMCE instance.
+         *
+         * @property documentBaseURI
+         * @type tinymce.util.URI
+         * @example
+         * // Get relative URL from the location of document_base_url
+         * tinymce.activeEditor.documentBaseURI.toRelative('/somedir/somefile.htm');
+         *
+         * // Get absolute URL from the location of document_base_url
+         * tinymce.activeEditor.documentBaseURI.toAbsolute('somefile.htm');
+         */
+        documentBaseURI;
+        /**
+         * URI object to current document that holds the TinyMCE editor instance.
+         *
+         * @property baseURI
+         * @type tinymce.util.URI
+         * @example
+         * // Get relative URL from the location of the API
+         * tinymce.activeEditor.baseURI.toRelative('/somedir/somefile.htm');
+         *
+         * // Get absolute URL from the location of the API
+         * tinymce.activeEditor.baseURI.toAbsolute('somefile.htm');
+         */
+        baseURI;
+        /**
+         * Array with CSS files to load into the iframe.
+         *
+         * @property contentCSS
+         * @type Array
+         */
+        contentCSS = [];
+        /**
+         * Array of CSS styles to add to head of document when the editor loads.
+         *
+         * @property contentStyles
+         * @type Array
+         */
+        contentStyles = [];
+        /**
+         * Editor ui components
+         *
+         * @property ui
+         * @type tinymce.editor.ui.Ui
+         */
+        ui;
+        /**
+         * Editor mode API
+         *
+         * @property mode
+         * @type tinymce.EditorMode
+         */
+        mode;
+        /**
+         * Editor options API
+         *
+         * @property options
+         * @type tinymce.EditorOptions
+         */
+        options;
+        /**
+         * Editor upload API
+         *
+         * @property editorUpload
+         * @type tinymce.EditorUpload
+         */
+        editorUpload;
+        /**
+         * Editor user lookup API
+         *
+         * @property userLookup
+         * @type tinymce.UserLookup
+         */
+        userLookup;
+        shortcuts;
+        loadedCSS = {};
+        editorCommands;
+        suffix;
+        editorManager;
+        hidden;
+        inline;
+        hasVisual;
+        isNotDirty = false;
+        // Arguments set later, for example by InitContentBody.ts
+        // Note that these may technically be undefined up until PreInit (or similar) has fired,
+        // however the types are aimed at an initialised editor for ease of use.
+        annotator;
+        bodyElement;
+        bookmark; // Note: Intentionally any so as to not expose Optional
+        composing = false;
+        container;
+        contentAreaContainer;
+        contentDocument;
+        contentWindow;
+        delegates;
+        destroyed = false;
+        dom;
+        editorContainer;
+        eventRoot;
+        formatter;
+        formElement;
+        formEventDelegate;
+        hasHiddenInput = false;
+        iframeElement = null;
+        iframeHTML;
+        initialized = false;
+        notificationManager;
+        orgDisplay;
+        orgVisibility;
+        parser;
+        quirks;
+        readonly = false;
+        removed = false;
+        schema;
+        selection;
+        serializer;
+        startContent = '';
+        targetElm;
+        theme;
+        model;
+        undoManager;
+        windowManager;
+        licenseKeyManager;
+        _beforeUnload;
+        _eventDispatcher;
+        _nodeChangeDispatcher;
+        _pendingNativeEvents = [];
+        _selectionOverrides;
+        _skinLoaded = false;
+        _editableRoot = true;
+        // EditorObservable patches
+        bindPendingEventDelegates;
+        toggleNativeEvent;
+        unbindAllNativeEvents;
+        fire;
+        dispatch;
+        on;
+        off;
+        once;
+        hasEventListeners;
         /**
          * Constructs a editor instance by id.
          *
@@ -39518,43 +41309,6 @@
          * @param {tinymce.EditorManager} editorManager EditorManager instance.
          */
         constructor(id, options, editorManager) {
-            /**
-             * Name/Value object containing plugin instances.
-             *
-             * @property plugins
-             * @type Object
-             * @example
-             * // Execute a method inside a plugin directly
-             * tinymce.activeEditor.plugins.someplugin.someMethod();
-             */
-            this.plugins = {};
-            /**
-             * Array with CSS files to load into the iframe.
-             *
-             * @property contentCSS
-             * @type Array
-             */
-            this.contentCSS = [];
-            /**
-             * Array of CSS styles to add to head of document when the editor loads.
-             *
-             * @property contentStyles
-             * @type Array
-             */
-            this.contentStyles = [];
-            this.loadedCSS = {};
-            this.isNotDirty = false;
-            this.composing = false;
-            this.destroyed = false;
-            this.hasHiddenInput = false;
-            this.iframeElement = null;
-            this.initialized = false;
-            this.readonly = false;
-            this.removed = false;
-            this.startContent = '';
-            this._pendingNativeEvents = [];
-            this._skinLoaded = false;
-            this._editableRoot = true;
             this.editorManager = editorManager;
             // Patch in the EditorObservable functions
             extend(this, EditorObservable);
@@ -39648,7 +41402,12 @@
          * it will also place DOM focus inside the editor.
          *
          * @method focus
-         * @param {Boolean} skipFocus Skip DOM focus. Just set is as the active editor.
+         * @param {Boolean/Object} skipFocus If true, skip DOM focus and only set this editor as the active editor. If an object, focus the editor and optionally control scrolling.
+         * @param {Boolean} skipFocus.scrollToSelection If false, focuses the editor without scrolling the selection into view. Defaults to true.
+         * @example
+         * tinymce.activeEditor.focus();
+         * tinymce.activeEditor.focus(true);
+         * tinymce.activeEditor.focus({ scrollToSelection: false });
          */
         focus(skipFocus) {
             this.execCommand('mceFocus', false, skipFocus);
@@ -40137,9 +41896,8 @@
          * @return {Element} The root element of the editable area.
          */
         getBody() {
-            var _a, _b;
             const doc = this.getDoc();
-            return (_b = (_a = this.bodyElement) !== null && _a !== void 0 ? _a : doc === null || doc === void 0 ? void 0 : doc.body) !== null && _b !== void 0 ? _b : null;
+            return this.bodyElement ?? doc?.body ?? null;
         }
         /**
          * URL converter function this gets executed each time a user adds an img, a or
@@ -40205,6 +41963,21 @@
          */
         hasEditableRoot() {
             return hasEditableRoot(this);
+        }
+        /**
+         * Announces a message to screen readers via the page-wide aria-live region, without shifting focus.
+         * Delegates to {@link tinymce.dom.AriaAnnouncer#announce}.
+         *
+         * @method announce
+         * @param {String} message The message to announce to screen readers.
+         * @param {Object} options Optional settings.
+         * @param {Boolean} options.assertive If true, uses aria-live="assertive" (role="alert") instead of polite.
+         * @example
+         * tinymce.activeEditor.announce('Bold on');
+         * tinymce.activeEditor.announce('Error occurred', { assertive: true });
+         */
+        announce(message, options) {
+            AriaAnnouncer.announce(message, options);
         }
         /**
          * Removes the editor from the dom and tinymce collection.
@@ -40330,14 +42103,14 @@
          * @property minorVersion
          * @type String
          */
-        minorVersion: '0.2',
+        minorVersion: '9.1',
         /**
          * Release date of TinyMCE build.
          *
          * @property releaseDate
          * @type String
          */
-        releaseDate: '2025-08-14',
+        releaseDate: '2026-09-09',
         /**
          * Collection of language pack data.
          *
@@ -40509,7 +42282,7 @@
             const createId = (elm) => {
                 let id = elm.id;
                 if (!id) {
-                    id = get$a(elm, 'name').filter((name) => !DOM.get(name)).getOrThunk(DOM.uniqueId);
+                    id = get$b(elm, 'name').filter((name) => !DOM.get(name)).getOrThunk(DOM.uniqueId);
                     elm.setAttribute('id', id);
                 }
                 return id;
@@ -40747,9 +42520,8 @@
          * @return {Boolean} true/false if the command was executed or not.
          */
         execCommand(cmd, ui, value) {
-            var _a;
             const self = this;
-            const editorId = isObject(value) ? (_a = value.id) !== null && _a !== void 0 ? _a : value.index : value;
+            const editorId = isObject(value) ? value.id ?? value.index : value;
             // Manager commands
             switch (cmd) {
                 case 'mceAddEditor': {
@@ -40850,7 +42622,7 @@
         const FakeClipboardItem = (items) => ({
             items,
             types: keys(items),
-            getType: (type) => get$a(items, type).getOrUndefined()
+            getType: (type) => get$b(items, type).getOrUndefined()
         });
         const write = (data) => {
             dataValue.set(data);
@@ -41155,7 +42927,7 @@
         localStorage.setItem(test, test);
         localStorage.removeItem(test);
     }
-    catch (_a) {
+    catch {
         localStorage = create();
     }
     var LocalStorage = localStorage;
@@ -41196,6 +42968,7 @@
             ControlSelection,
             BookmarkManager,
             Selection: EditorSelection,
+            AriaAnnouncer,
             Event: EventUtils.Event
         },
         html: {
@@ -41252,9 +43025,9 @@
             try {
                 module.exports = tinymce;
             }
-            catch (_a) {
+            catch {
                 // It will thrown an error when running this module
-                // within webpack where the module.exports object is sealed
+                // within rspack where the module.exports object is sealed
             }
         }
     };

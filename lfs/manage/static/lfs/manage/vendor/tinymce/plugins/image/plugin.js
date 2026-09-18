@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -10,13 +10,12 @@
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const getPrototypeOf = Object.getPrototypeOf;
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -78,6 +77,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -245,7 +249,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -309,9 +313,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativeSlice = Array.prototype.slice;
     const nativePush = Array.prototype.push;
@@ -461,6 +462,20 @@
         element.dom.removeAttribute(key);
     };
 
+    const getImageSize = (url) => new Promise((resolve, reject) => {
+        const img = document.createElement('img');
+        img.addEventListener('load', () => {
+            resolve({
+                width: img.naturalWidth,
+                height: img.naturalHeight
+            });
+        });
+        img.addEventListener('error', () => {
+            reject(`Failed to get image dimensions for: ${url}`);
+        });
+        img.src = url;
+    });
+
     var global$3 = tinymce.util.Tools.resolve('tinymce.dom.DOMUtils');
 
     var global$2 = tinymce.util.Tools.resolve('tinymce.util.URI');
@@ -521,33 +536,6 @@
     const hasUploadUrl = (editor) => isNotEmpty(editor.options.get('images_upload_url'));
     const hasUploadHandler = (editor) => isNonNullable(editor.options.get('images_upload_handler'));
 
-    // TODO: Figure out if these would ever be something other than numbers. This was added in: #TINY-1350
-    const parseIntAndGetMax = (val1, val2) => Math.max(parseInt(val1, 10), parseInt(val2, 10));
-    const getImageSize = (url) => new Promise((callback) => {
-        const img = document.createElement('img');
-        const done = (dimensions) => {
-            if (img.parentNode) {
-                img.parentNode.removeChild(img);
-            }
-            callback(dimensions);
-        };
-        img.addEventListener('load', () => {
-            const width = parseIntAndGetMax(img.width, img.clientWidth);
-            const height = parseIntAndGetMax(img.height, img.clientHeight);
-            const dimensions = { width, height };
-            done(Promise.resolve(dimensions));
-        });
-        img.addEventListener('error', () => {
-            done(Promise.reject(`Failed to get image dimensions for: ${url}`));
-        });
-        const style = img.style;
-        style.visibility = 'hidden';
-        style.position = 'fixed';
-        style.bottom = style.left = '0px';
-        style.width = style.height = 'auto';
-        document.body.appendChild(img);
-        img.src = url;
-    });
     const removePixelSuffix = (value) => {
         if (value) {
             value = value.replace(/px$/, '');
@@ -637,8 +625,7 @@
             resolve(reader.result);
         };
         reader.onerror = () => {
-            var _a;
-            reject((_a = reader.error) === null || _a === void 0 ? void 0 : _a.message);
+            reject(reader.error?.message);
         };
         reader.readAsDataURL(blob);
     });
@@ -678,9 +665,8 @@
         }
     };
     const getAttrib = (image, name) => {
-        var _a;
         if (image.hasAttribute(name)) {
-            return (_a = image.getAttribute(name)) !== null && _a !== void 0 ? _a : '';
+            return image.getAttribute(name) ?? '';
         }
         else {
             return '';
@@ -763,7 +749,7 @@
     const setBorderStyle = (image, value) => {
         image.style.borderStyle = value;
     };
-    const getBorderStyle = (image) => { var _a; return (_a = image.style.borderStyle) !== null && _a !== void 0 ? _a : ''; };
+    const getBorderStyle = (image) => image.style.borderStyle ?? '';
     const isFigure = (elm) => isNonNullable(elm) && elm.nodeName === 'FIGURE';
     const isImage = (elm) => elm.nodeName === 'IMG';
     const getIsDecorative = (image) => {
@@ -802,7 +788,6 @@
         isDecorative: false
     });
     const getStyleValue = (normalizeCss, data) => {
-        var _a;
         const image = document.createElement('img');
         updateAttrib(image, 'style', data.style);
         if (getHspace(image) || data.hspace !== '') {
@@ -817,7 +802,7 @@
         if (getBorderStyle(image) || data.borderStyle !== '') {
             setBorderStyle(image, data.borderStyle);
         }
-        return normalizeCss((_a = image.getAttribute('style')) !== null && _a !== void 0 ? _a : '');
+        return normalizeCss(image.getAttribute('style') ?? '');
     };
     const create = (normalizeCss, data) => {
         const image = document.createElement('img');
@@ -920,12 +905,11 @@
         return imgElm;
     };
     const splitTextBlock = (editor, figure) => {
-        var _a;
         const dom = editor.dom;
         const textBlockElements = filter(editor.schema.getTextBlockElements(), (_, parentElm) => !editor.schema.isValidChild(parentElm, 'figure'));
         const textBlock = dom.getParent(figure.parentNode, (node) => hasNonNullableKey(textBlockElements, node.nodeName), editor.getBody());
         if (textBlock) {
-            return (_a = dom.split(textBlock, figure)) !== null && _a !== void 0 ? _a : figure;
+            return dom.split(textBlock, figure) ?? figure;
         }
         else {
             return figure;
@@ -1129,6 +1113,9 @@
                 ])));
             });
         });
+        const alertErr = (message, callback) => {
+            editor.windowManager.alert(message, callback);
+        };
         const classList = ListUtils.sanitize(getClassList(editor));
         const hasAdvTab$1 = hasAdvTab(editor);
         const hasUploadTab$1 = hasUploadTab(editor);
@@ -1143,6 +1130,7 @@
         const automaticUploads = isAutomaticUploadsEnabled(editor);
         const prependURL = Optional.some(getPrependUrl(editor)).filter((preUrl) => isString(preUrl) && preUrl.length > 0);
         return futureImageList.then((imageList) => ({
+            alertErr,
             image,
             imageList,
             classList,
@@ -1243,11 +1231,12 @@
         makeItems
     };
 
-    const makeTab = (_info) => {
+    const makeTab = (_info, onInvalidFiles) => {
         const items = [
             {
                 type: 'dropzone',
-                name: 'fileinput'
+                name: 'fileinput',
+                onInvalidFiles
             }
         ];
         return {
@@ -1454,7 +1443,7 @@
                         finalize();
                     }).catch((err) => {
                         finalize();
-                        helpers.alertErr(err, () => {
+                        info.alertErr(err, () => {
                             api.focus('fileinput');
                         });
                     });
@@ -1494,7 +1483,7 @@
                 tabs: flatten([
                     [MainTab.makeTab(info)],
                     info.hasAdvTab ? [AdvTab.makeTab(info)] : [],
-                    info.hasUploadTab && (info.hasUploadUrl || info.hasUploadHandler) ? [UploadTab.makeTab(info)] : []
+                    info.hasUploadTab && (info.hasUploadUrl || info.hasUploadHandler) ? [UploadTab.makeTab(info, () => new Promise((r) => info.alertErr('Selected images do not have allowed extensions', r)))] : []
                 ])
             };
             return tabPanel;
@@ -1513,6 +1502,7 @@
         // Since the style field was removed that process must be simulated on submit.
         const finalData = {
             ...data,
+            isDecorative: info.hasAccessibilityOptions && data.isDecorative,
             style: getStyleValue(helpers.normalizeCss, toImageData(data, false))
         };
         editor.execCommand('mceUpdateImage', false, toImageData(finalData, info.hasAccessibilityOptions));
@@ -1532,32 +1522,25 @@
             }));
         }
     };
-    const createBlobCache = (editor) => (file, blobUri, dataUrl) => {
-        var _a;
-        return editor.editorUpload.blobCache.create({
-            blob: file,
-            blobUri,
-            name: (_a = file.name) === null || _a === void 0 ? void 0 : _a.replace(/\.[^\.]+$/, ''),
-            filename: file.name,
-            base64: dataUrl.split(',')[1]
-        });
-    };
+    const createBlobCache = (editor) => (file, blobUri, dataUrl) => editor.editorUpload.blobCache.create({
+        blob: file,
+        blobUri,
+        name: file.name?.replace(/\.[^\.]+$/, ''),
+        filename: file.name,
+        base64: dataUrl.split(',')[1]
+    });
     const addToBlobCache = (editor) => (blobInfo) => {
         editor.editorUpload.blobCache.add(blobInfo);
-    };
-    const alertErr = (editor) => (message, callback) => {
-        editor.windowManager.alert(message, callback);
     };
     const normalizeCss = (editor) => (cssText) => normalizeCss$1(editor, cssText);
     const parseStyle = (editor) => (cssText) => editor.dom.parseStyle(cssText);
     const serializeStyle = (editor) => (stylesArg, name) => editor.dom.serializeStyle(stylesArg, name);
     const uploadImage = (editor) => (blobInfo) => global$1(editor).upload([blobInfo], false).then((results) => {
-        var _a;
         if (results.length === 0) {
             return Promise.reject('Failed to upload image');
         }
         else if (results[0].status === false) {
-            return Promise.reject((_a = results[0].error) === null || _a === void 0 ? void 0 : _a.message);
+            return Promise.reject(results[0].error?.message);
         }
         else {
             return results[0];
@@ -1568,7 +1551,6 @@
             imageSize: imageSize(editor),
             addToBlobCache: addToBlobCache(editor),
             createBlobCache: createBlobCache(editor),
-            alertErr: alertErr(editor),
             normalizeCss: normalizeCss(editor),
             parseStyle: parseStyle(editor),
             serializeStyle: serializeStyle(editor),
@@ -1679,12 +1661,16 @@
         });
     };
 
+    const PLUGIN_CODE = 'image';
     var Plugin = () => {
-        global$4.add('image', (editor) => {
+        global$4.add(PLUGIN_CODE, (editor) => {
             register$2(editor);
             setup(editor);
             register(editor);
             register$1(editor);
+            return {
+                getMetadata: () => ({ name: 'Image', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -9,13 +9,12 @@
 
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -62,6 +61,9 @@
             return value;
         };
     };
+    const identity = (x) => {
+        return x;
+    };
     const tripleEquals = (a, b) => {
         return a === b;
     };
@@ -82,6 +84,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -249,7 +256,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -313,9 +320,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativeSlice = Array.prototype.slice;
     const nativeIndexOf = Array.prototype.indexOf;
@@ -364,6 +368,8 @@
         return r;
     };
     const bind = (xs, f) => flatten(map(xs, f));
+    const get = (xs, i) => i >= 0 && i < xs.length ? Optional.some(xs[i]) : Optional.none();
+    const head = (xs) => get(xs, 0);
     isFunction(Array.from) ? Array.from : (x) => nativeSlice.call(x);
     const findMap = (arr, f) => {
         for (let i = 0; i < arr.length; i++) {
@@ -546,6 +552,13 @@
         registerOption('link_attributes_postprocess', {
             processor: 'function',
         });
+        registerOption('files_upload_handler', {
+            processor: 'function'
+        });
+        registerOption('link_uploadtab', {
+            processor: 'boolean',
+            default: true
+        });
     };
     const assumeExternalTargets = option('link_assume_external_targets');
     const hasContextToolbar = option('link_context_toolbar');
@@ -559,6 +572,11 @@
     const allowUnsafeLinkTarget = option('allow_unsafe_link_target');
     const useQuickLink = option('link_quicklink');
     const attributesPostProcess = option('link_attributes_postprocess');
+    const getFilesUploadHandler = option('files_upload_handler');
+    const hasLinkUploadtab = option('link_uploadtab');
+    const getDocumentsFileTypes = option('documents_file_types');
+    const hasFilesUploadHandler = (editor) => isNonNullable(editor.options.get('files_upload_handler'));
+    const hasDocumentsFileTypes = (editor) => isNonNullable(editor.options.get('documents_file_types'));
 
     var global$4 = tinymce.util.Tools.resolve('tinymce.util.URI');
 
@@ -588,9 +606,8 @@
     };
     const hasProtocol = (url) => /^\w+:/i.test(url);
     const getHref = (elm) => {
-        var _a, _b;
         // Returns the real href value not the resolved a.href value
-        return (_b = (_a = elm.getAttribute('data-mce-href')) !== null && _a !== void 0 ? _a : elm.getAttribute('href')) !== null && _b !== void 0 ? _b : '';
+        return elm.getAttribute('data-mce-href') ?? elm.getAttribute('href') ?? '';
     };
     const applyRelTargetRules = (rel, isUnsafe) => {
         const rules = ['noopener'];
@@ -644,6 +661,16 @@
         }
     };
     const isImageFigure = (elm) => isNonNullable(elm) && elm.nodeName === 'FIGURE' && /\bimage\b/i.test(elm.className);
+    const blobToDataUri = (blob) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = () => {
+            reject(new Error(reader.error?.message ?? 'Failed to convert blob to a data url'));
+        };
+        reader.readAsDataURL(blob);
+    });
 
     const getLinkAttrs = (data) => {
         const attrs = ['title', 'rel', 'class', 'target'];
@@ -735,8 +762,8 @@
     };
     const unlinkSelection = (editor) => {
         const dom = editor.dom, selection = editor.selection;
-        const bookmark = selection.getBookmark();
         const rng = selection.getRng().cloneRange();
+        const bookmark = selection.getBookmark();
         // Extend the selection out to the entire anchor element
         const startAnchorElm = dom.getParent(rng.startContainer, 'a[href]', editor.getBody());
         const endAnchorElm = dom.getParent(rng.endContainer, 'a[href]', editor.getBody());
@@ -801,22 +828,20 @@
         editor.hasPlugin('rtc', true) ? editor.execCommand('unlink') : unlinkDomMutation(editor);
     };
     const unlinkImageFigure = (editor, fig) => {
-        var _a;
         const img = editor.dom.select('img', fig)[0];
         if (img) {
             const a = editor.dom.getParents(img, 'a[href]', fig)[0];
             if (a) {
-                (_a = a.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(img, a);
+                a.parentNode?.insertBefore(img, a);
                 editor.dom.remove(a);
             }
         }
     };
     const linkImageFigure = (dom, fig, attrs) => {
-        var _a;
         const img = dom.select('img', fig)[0];
         if (img) {
             const a = dom.create('a', attrs);
-            (_a = img.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(a, img);
+            img.parentNode?.insertBefore(a, img);
             a.appendChild(img);
         }
     };
@@ -903,8 +928,8 @@
             text: initialData.text,
             title: initialData.title
         };
-        const getTitleFromUrlChange = (url) => { var _a; return someIf(persistentData.title.length <= 0, Optional.from((_a = url.meta) === null || _a === void 0 ? void 0 : _a.title).getOr('')); };
-        const getTextFromUrlChange = (url) => { var _a; return someIf(persistentData.text.length <= 0, Optional.from((_a = url.meta) === null || _a === void 0 ? void 0 : _a.text).getOr(url.value)); };
+        const getTitleFromUrlChange = (url) => someIf(persistentData.title.length <= 0, Optional.from(url.meta?.title).getOr(''));
+        const getTextFromUrlChange = (url) => someIf(persistentData.text.length <= 0, Optional.from(url.meta?.text).getOr(url.value));
         const onUrlChange = (data) => {
             const text = getTextFromUrlChange(data.url);
             const title = getTitleFromUrlChange(data.url);
@@ -1018,7 +1043,7 @@
         try {
             return Optional.some(JSON.parse(text));
         }
-        catch (_a) {
+        catch {
             return Optional.none();
         }
     };
@@ -1110,6 +1135,7 @@
         };
     };
     const collect = (editor, linkNode) => LinkListOptions.getLinks(editor).then((links) => {
+        const hasUploadPanel = hasFilesUploadHandler(editor) && hasDocumentsFileTypes(editor) && hasLinkUploadtab(editor);
         const anchor = extractFromAnchor(editor, linkNode);
         return {
             anchor,
@@ -1121,6 +1147,7 @@
                 anchor: AnchorListOptions.getAnchors(editor),
                 link: links
             },
+            hasUploadPanel,
             optNode: linkNode,
             flags: {
                 titleEnabled: shouldShowLinkTitle(editor)
@@ -1129,6 +1156,28 @@
     });
     const DialogInfo = {
         collect
+    };
+
+    const makeTab = (fileTypes, onInvalidFiles) => {
+        const items = [
+            {
+                type: 'dropzone',
+                name: 'fileinput',
+                buttonLabel: 'Browse for a file',
+                dropAreaLabel: 'Drop a file here',
+                allowedFileTypes: fileTypes.map((e) => e.mimeType).join(','),
+                allowedFileExtensions: flatten(fileTypes.map((e) => e.extensions)),
+                onInvalidFiles
+            }
+        ];
+        return {
+            title: 'Upload',
+            name: 'upload',
+            items
+        };
+    };
+    const UploadTab = {
+        makeTab
     };
 
     const handleSubmit = (editor, info) => (api) => {
@@ -1160,6 +1209,61 @@
         });
         api.close();
     };
+    const uploadFile = (editor) => (blobInfo, progress) => {
+        const fileUploadHandler = getFilesUploadHandler(editor);
+        return fileUploadHandler(blobInfo, progress);
+    };
+    const dataUrlToBase64 = (dataUrl) => Optional.from(dataUrl.split(',')[1]).getOr('');
+    const changeFileInput = (helpers, api) => {
+        const data = api.getData();
+        api.block('Uploading file');
+        head(data.fileinput)
+            .fold(() => {
+            api.unblock();
+        }, (file) => {
+            const blobUri = URL.createObjectURL(file);
+            const updateUrlAndSwitchTab = ({ url, fileName }) => {
+                api.setData({ text: fileName, title: fileName, url: { value: url, meta: {} } });
+                api.showTab('general');
+                api.focus('url');
+            };
+            const finalize = () => {
+                api.unblock();
+                URL.revokeObjectURL(blobUri);
+            };
+            blobToDataUri(file).then((dataUrl) => {
+                const existingBlobInfo = helpers.getExistingBlobInfo(dataUrlToBase64(dataUrl), file.type);
+                const blobInfo = existingBlobInfo && existingBlobInfo.filename() === file.name ? existingBlobInfo : helpers.createBlobCache(file, blobUri, dataUrl);
+                helpers.addToBlobCache(blobInfo);
+                return helpers.uploadFile(blobInfo, identity);
+            }).then((result) => {
+                updateUrlAndSwitchTab(result);
+                finalize();
+            }).catch((err) => {
+                finalize();
+                helpers.alertErr(err, () => {
+                    api.focus('fileinput');
+                });
+            });
+        });
+    };
+    const createBlobCache = (editor) => (file, blobUri, dataUrl) => editor.editorUpload.blobCache.create({
+        blob: file,
+        blobUri,
+        name: file.name?.replace(/\.[^\.]+$/, ''),
+        filename: file.name,
+        base64: dataUrl.split(',')[1],
+        allowEmptyFile: true
+    });
+    const addToBlobCache = (editor) => (blobInfo) => {
+        editor.editorUpload.blobCache.add(blobInfo);
+    };
+    const getExistingBlobInfo = (editor) => (base64, type) => {
+        return editor.editorUpload.blobCache.getByData(base64, type);
+    };
+    const alertErr = (editor) => (message, callback) => {
+        editor.windowManager.alert(message, callback);
+    };
     const collectData = (editor) => {
         const anchorNode = getAnchorElement(editor);
         return DialogInfo.collect(editor, anchorNode);
@@ -1182,8 +1286,43 @@
             link: url,
             rel: anchor.rel.getOr(''),
             target: anchor.target.or(defaultTarget).getOr(''),
-            linkClass: anchor.linkClass.getOr('')
+            linkClass: anchor.linkClass.getOr(''),
+            fileinput: []
         };
+    };
+    const makeDialogBody = (urlInput, displayText, titleText, catalogs, hasUploadPanel, fileTypes, onInvalidFiles) => {
+        const generalPanelItems = flatten([
+            urlInput,
+            displayText,
+            titleText,
+            cat([
+                catalogs.anchor.map(ListOptions.createUi('anchor', 'Anchors')),
+                catalogs.rels.map(ListOptions.createUi('rel', 'Rel')),
+                catalogs.targets.map(ListOptions.createUi('target', 'Open link in...')),
+                catalogs.link.map(ListOptions.createUi('link', 'Link list')),
+                catalogs.classes.map(ListOptions.createUi('linkClass', 'Class'))
+            ])
+        ]);
+        if (hasUploadPanel) {
+            const tabPanel = {
+                type: 'tabpanel',
+                tabs: flatten([
+                    [{
+                            title: 'General',
+                            name: 'general',
+                            items: generalPanelItems
+                        }],
+                    [UploadTab.makeTab(fileTypes, onInvalidFiles)]
+                ])
+            };
+            return tabPanel;
+        }
+        else {
+            return {
+                type: 'panel',
+                items: generalPanelItems
+            };
+        }
     };
     const makeDialog = (settings, onSubmit, editor) => {
         const urlInput = [
@@ -1211,21 +1350,14 @@
         const initialData = getInitialData(settings, defaultTarget);
         const catalogs = settings.catalogs;
         const dialogDelta = DialogChanges.init(initialData, catalogs);
-        const body = {
-            type: 'panel',
-            items: flatten([
-                urlInput,
-                displayText,
-                titleText,
-                cat([
-                    catalogs.anchor.map(ListOptions.createUi('anchor', 'Anchors')),
-                    catalogs.rels.map(ListOptions.createUi('rel', 'Rel')),
-                    catalogs.targets.map(ListOptions.createUi('target', 'Open link in...')),
-                    catalogs.link.map(ListOptions.createUi('link', 'Link list')),
-                    catalogs.classes.map(ListOptions.createUi('linkClass', 'Class'))
-                ])
-            ])
+        const helpers = {
+            addToBlobCache: addToBlobCache(editor),
+            createBlobCache: createBlobCache(editor),
+            alertErr: alertErr(editor),
+            uploadFile: uploadFile(editor),
+            getExistingBlobInfo: getExistingBlobInfo(editor)
         };
+        const body = makeDialogBody(urlInput, displayText, titleText, catalogs, settings.hasUploadPanel, getDocumentsFileTypes(editor), () => new Promise((r) => helpers.alertErr('Selected files do not have allowed extensions', r)));
         return {
             title: 'Insert/Edit Link',
             size: 'normal',
@@ -1245,9 +1377,14 @@
             ],
             initialData,
             onChange: (api, { name }) => {
-                dialogDelta.onChange(api.getData, { name }).each((newData) => {
-                    api.setData(newData);
-                });
+                if (name === 'fileinput') {
+                    changeFileInput(helpers, api);
+                }
+                else {
+                    dialogDelta.onChange(api.getData, { name }).each((newData) => {
+                        api.setData(newData);
+                    });
+                }
             },
             onSubmit
         };
@@ -1265,7 +1402,7 @@
 
     const register = (editor) => {
         editor.addCommand('mceLink', (_ui, value) => {
-            if ((value === null || value === void 0 ? void 0 : value.dialog) === true || !useQuickLink(editor)) {
+            if (value?.dialog === true || !useQuickLink(editor)) {
                 open(editor);
             }
             else {
@@ -1309,7 +1446,8 @@
         if (a) {
             const href = getHref(a);
             if (/^#/.test(href)) {
-                const targetEl = editor.dom.select(`${href},[name="${removeLeading(href, '#')}"]`);
+                const id = removeLeading(href, '#');
+                const targetEl = editor.dom.select(`[id="${id}"],[name="${id}"]`);
                 if (targetEl.length) {
                     editor.selection.scrollIntoView(targetEl[0], true);
                 }
@@ -1555,12 +1693,16 @@
         setupContextToolbars(editor, openLink);
     };
 
+    const PLUGIN_CODE = 'link';
     var Plugin = () => {
-        global$5.add('link', (editor) => {
+        global$5.add(PLUGIN_CODE, (editor) => {
             register$1(editor);
             register(editor);
             setup(editor);
             setup$2(editor);
+            return {
+                getMetadata: () => ({ name: 'Link', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

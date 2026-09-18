@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -7,13 +7,12 @@
 
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -64,6 +63,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -231,7 +235,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -295,9 +299,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativeSlice = Array.prototype.slice;
     const nativePush = Array.prototype.push;
@@ -656,12 +657,11 @@
         }
     };
     const collectTextToBoundary = (dom, section, node, rootNode, forwards) => {
-        var _a;
         // Don't bother collecting text nodes if we're already at a boundary
         if (isBoundary(dom, node)) {
             return;
         }
-        const rootBlock = (_a = dom.getParent(rootNode, dom.isBlock)) !== null && _a !== void 0 ? _a : dom.getRoot();
+        const rootBlock = dom.getParent(rootNode, dom.isBlock) ?? dom.getRoot();
         const walker = new global(node, rootBlock);
         const walkerFn = forwards ? walker.next.bind(walker) : walker.prev.bind(walker);
         // Walk over and add text nodes to the section and increase the offsets
@@ -869,12 +869,11 @@
         }
     };
     const unwrap = (node) => {
-        var _a;
         const parentNode = node.parentNode;
         if (node.firstChild) {
             parentNode.insertBefore(node.firstChild, node);
         }
-        (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(node);
+        node.parentNode?.removeChild(node);
     };
     const findSpansByIndex = (editor, index) => {
         const spans = [];
@@ -1342,8 +1341,9 @@
         editor.shortcuts.add('Meta+F', '', showDialog(editor, currentSearchState));
     };
 
+    const PLUGIN_CODE = 'searchreplace';
     var Plugin = () => {
-        global$3.add('searchreplace', (editor) => {
+        global$3.add(PLUGIN_CODE, (editor) => {
             const currentSearchState = Cell({
                 index: -1,
                 count: 0,
@@ -1354,7 +1354,10 @@
             });
             register$1(editor, currentSearchState);
             register(editor, currentSearchState);
-            return get(editor, currentSearchState);
+            return {
+                ...get(editor, currentSearchState),
+                getMetadata: () => ({ name: 'Search and Replace', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

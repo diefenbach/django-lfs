@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -9,13 +9,12 @@
 
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -64,6 +63,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -231,7 +235,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -295,9 +299,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     /**
      * Adds two numbers, and wrap to a range.
@@ -360,9 +361,8 @@
         fileInput.style.opacity = '0.001';
         document.body.appendChild(fileInput);
         const resolveFileInput = (value) => {
-            var _a;
             if (!resolved) {
-                (_a = fileInput.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(fileInput);
+                fileInput.parentNode?.removeChild(fileInput);
                 resolved = true;
                 resolve(value);
             }
@@ -634,13 +634,17 @@
         }
     };
 
+    const PLUGIN_CODE = 'quickbars';
     var Plugin = () => {
-        global$1.add('quickbars', (editor) => {
+        global$1.add(PLUGIN_CODE, (editor) => {
             register(editor);
             register$1(editor);
             setupButtons(editor);
             addToEditor$1(editor);
             addToEditor(editor);
+            return {
+                getMetadata: () => ({ name: 'Quick Toolbars', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

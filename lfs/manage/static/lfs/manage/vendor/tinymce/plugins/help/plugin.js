@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -7,13 +7,12 @@
 
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -33,19 +32,11 @@
     };
     const isType = (type) => (value) => typeOf(value) === type;
     const isSimpleType = (type) => (value) => typeof value === type;
-    const eq = (t) => (a) => t === a;
     const isString = isType('string');
-    const isUndefined = eq(undefined);
+    const isObject = isType('object');
     const isNullable = (a) => a === null || a === undefined;
     const isNonNullable = (a) => !isNullable(a);
     const isFunction = isSimpleType('function');
-
-    const constant = (value) => {
-        return () => {
-            return value;
-        };
-    };
-    const never = constant(false);
 
     /**
      * The `Optional` type represents a value (of any type) that potentially does
@@ -63,6 +54,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -230,7 +226,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -294,9 +290,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativeSlice = Array.prototype.slice;
     const nativeIndexOf = Array.prototype.indexOf;
@@ -322,21 +315,6 @@
             }
         }
         return r;
-    };
-    const findUntil = (xs, pred, until) => {
-        for (let i = 0, len = xs.length; i < len; i++) {
-            const x = xs[i];
-            if (pred(x, i)) {
-                return Optional.some(x);
-            }
-            else if (until(x, i)) {
-                break;
-            }
-        }
-        return Optional.none();
-    };
-    const find = (xs, pred) => {
-        return findUntil(xs, pred, never);
     };
     const sort = (xs, comparator) => {
         const copy = nativeSlice.call(xs, 0);
@@ -413,8 +391,7 @@
 
     const get = (customTabs) => {
         const addTab = (spec) => {
-            var _a;
-            const name = (_a = spec.name) !== null && _a !== void 0 ? _a : generate('tab-name');
+            const name = spec.name ?? generate('tab-name');
             const currentCustomTabs = customTabs.get();
             currentCustomTabs[name] = spec;
             customTabs.set(currentCustomTabs);
@@ -557,150 +534,67 @@
         };
     };
 
-    // These lists are automatically sorted when generating the dialog.
-    const urls = map([
-        { key: 'accordion', name: 'Accordion' },
-        { key: 'anchor', name: 'Anchor' },
-        { key: 'autolink', name: 'Autolink' },
-        { key: 'autoresize', name: 'Autoresize' },
-        { key: 'autosave', name: 'Autosave' },
-        { key: 'charmap', name: 'Character Map' },
-        { key: 'code', name: 'Code' },
-        { key: 'codesample', name: 'Code Sample' },
-        { key: 'colorpicker', name: 'Color Picker' },
-        { key: 'directionality', name: 'Directionality' },
-        { key: 'emoticons', name: 'Emoticons' },
-        { key: 'fullscreen', name: 'Full Screen' },
-        { key: 'help', name: 'Help' },
-        { key: 'image', name: 'Image' },
-        { key: 'importcss', name: 'Import CSS' },
-        { key: 'insertdatetime', name: 'Insert Date/Time' },
-        { key: 'link', name: 'Link' },
-        { key: 'lists', name: 'Lists' },
-        { key: 'advlist', name: 'List Styles' },
-        { key: 'media', name: 'Media' },
-        { key: 'nonbreaking', name: 'Nonbreaking' },
-        { key: 'pagebreak', name: 'Page Break' },
-        { key: 'preview', name: 'Preview' },
-        { key: 'quickbars', name: 'Quick Toolbars' },
-        { key: 'save', name: 'Save' },
-        { key: 'searchreplace', name: 'Search and Replace' },
-        { key: 'table', name: 'Table' },
-        { key: 'textcolor', name: 'Text Color' },
-        { key: 'visualblocks', name: 'Visual Blocks' },
-        { key: 'visualchars', name: 'Visual Characters' },
-        { key: 'wordcount', name: 'Word Count' },
-        // TODO: Add other premium plugins when they are included in the website
-        { key: 'a11ychecker', name: 'Accessibility Checker', type: "premium" /* PluginType.Premium */ },
-        { key: 'typography', name: 'Advanced Typography', type: "premium" /* PluginType.Premium */, slug: 'advanced-typography' },
-        { key: 'ai', name: 'AI Assistant', type: "premium" /* PluginType.Premium */ },
-        { key: 'casechange', name: 'Case Change', type: "premium" /* PluginType.Premium */ },
-        { key: 'checklist', name: 'Checklist', type: "premium" /* PluginType.Premium */ },
-        { key: 'advcode', name: 'Enhanced Code Editor', type: "premium" /* PluginType.Premium */ },
-        { key: 'mediaembed', name: 'Enhanced Media Embed', type: "premium" /* PluginType.Premium */, slug: 'introduction-to-mediaembed' },
-        { key: 'advtable', name: 'Enhanced Tables', type: "premium" /* PluginType.Premium */ },
-        { key: 'exportpdf', name: 'Export to PDF', type: "premium" /* PluginType.Premium */ },
-        { key: 'exportword', name: 'Export to Word', type: "premium" /* PluginType.Premium */ },
-        { key: 'footnotes', name: 'Footnotes', type: "premium" /* PluginType.Premium */ },
-        { key: 'formatpainter', name: 'Format Painter', type: "premium" /* PluginType.Premium */ },
-        { key: 'editimage', name: 'Image Editing', type: "premium" /* PluginType.Premium */ },
-        { key: 'uploadcare', name: 'Image Optimizer Powered by Uploadcare', type: "premium" /* PluginType.Premium */ },
-        { key: 'importword', name: 'Import from Word', type: "premium" /* PluginType.Premium */ },
-        { key: 'inlinecss', name: 'Inline CSS', type: "premium" /* PluginType.Premium */, slug: 'inline-css' },
-        { key: 'linkchecker', name: 'Link Checker', type: "premium" /* PluginType.Premium */ },
-        { key: 'math', name: 'Math', type: "premium" /* PluginType.Premium */ },
-        { key: 'markdown', name: 'Markdown', type: "premium" /* PluginType.Premium */ },
-        { key: 'mentions', name: 'Mentions', type: "premium" /* PluginType.Premium */ },
-        { key: 'mergetags', name: 'Merge Tags', type: "premium" /* PluginType.Premium */ },
-        { key: 'pageembed', name: 'Page Embed', type: "premium" /* PluginType.Premium */ },
-        { key: 'permanentpen', name: 'Permanent Pen', type: "premium" /* PluginType.Premium */ },
-        { key: 'powerpaste', name: 'PowerPaste', type: "premium" /* PluginType.Premium */, slug: 'introduction-to-powerpaste' },
-        { key: 'revisionhistory', name: 'Revision History', type: "premium" /* PluginType.Premium */ },
-        { key: 'tinymcespellchecker', name: 'Spell Checker', type: "premium" /* PluginType.Premium */, slug: 'introduction-to-tiny-spellchecker' },
-        { key: 'suggestededits', name: 'Suggested Edits', type: "premium" /* PluginType.Premium */ },
-        { key: 'autocorrect', name: 'Spelling Autocorrect', type: "premium" /* PluginType.Premium */ },
-        { key: 'tableofcontents', name: 'Table of Contents', type: "premium" /* PluginType.Premium */ },
-        { key: 'advtemplate', name: 'Templates', type: "premium" /* PluginType.Premium */, slug: 'advanced-templates' },
-        { key: 'tinycomments', name: 'Tiny Comments', type: "premium" /* PluginType.Premium */, slug: 'introduction-to-tiny-comments' },
-        { key: 'tinydrive', name: 'Tiny Drive', type: "premium" /* PluginType.Premium */, slug: 'tinydrive-introduction' },
-    ], (item) => ({
-        ...item,
-        // Set the defaults/fallbacks for the plugin urls
-        type: item.type || "opensource" /* PluginType.OpenSource */,
-        slug: item.slug || item.key
-    }));
-
+    const pricingUrl = 'https://www.tiny.cloud/pricing/?utm_campaign=help_dialog_plugin_tab&utm_source=tiny&utm_medium=referral&utm_term=read_more&utm_content=premium_plugin_heading';
+    const withPremiumMarker = (name) => `${name}<sup>*</sup>`;
+    const buildLink = (name, url) => `<a data-alloy-tabstop="true" tabindex="-1" href="${url}" target="_blank" rel="noopener">${name}</a>`;
+    const buildDocsUrl = (slug) => `https://www.tiny.cloud/docs/tinymce/${tinymce.majorVersion}/${slug}/`;
+    const isUsableMetadata = (metadata) => isObject(metadata) && 'name' in metadata && isString(metadata.name);
+    const getUsableMetadata = (getMetadata) => {
+        try {
+            return Optional.from(getMetadata()).filter(isUsableMetadata);
+        }
+        catch {
+            return Optional.none();
+        }
+    };
+    const readPluginMetadata = (editor, key) => get$1(editor.plugins, key)
+        .bind((plugin) => Optional.from(plugin.getMetadata))
+        .filter(isFunction)
+        .bind(getUsableMetadata);
+    const isTypedMetadata = (metadata) => 'slug' in metadata &&
+        isString(metadata.slug) &&
+        (metadata.type === 'premium' || metadata.type === 'opensource');
+    const isUrlMetadata = (metadata) => 'url' in metadata && isString(metadata.url);
+    const toEntry = (metadata) => {
+        const name = metadata.name;
+        if (isTypedMetadata(metadata)) {
+            const displayName = metadata.type === 'premium' ? withPremiumMarker(name) : name;
+            return { name, html: buildLink(displayName, buildDocsUrl(metadata.slug)) };
+        }
+        else if (isUrlMetadata(metadata)) {
+            return { name, html: buildLink(name, metadata.url) };
+        }
+        else {
+            return { name, html: name };
+        }
+    };
+    const buildPluginEntry = (editor, key) => readPluginMetadata(editor, key).fold(() => Optional.some({ name: key, html: key }), (metadata) => metadata.hidden === true ? Optional.none() : Optional.some(toEntry(metadata)));
+    const getVisiblePluginKeys = (editor) => {
+        const keys$1 = keys(editor.plugins);
+        const forced = Optional.from(getForcedPlugins(editor)).getOr([]);
+        return filter(keys$1, (k) => !contains(forced, k));
+    };
+    const renderPremiumFooter = () => {
+        const learnMoreLink = `<a href="${pricingUrl}" rel="noopener" target="_blank" data-alloy-tabstop="true" tabindex="-1">` +
+            global$2.translate('Learn more...') +
+            '</a>';
+        return '<p class="tox-help__more-link">' +
+            global$2.translate(['* indicates a premium plugin. {0}', learnMoreLink]) +
+            '</p>';
+    };
+    const renderPluginList = (editor) => {
+        const keys = getVisiblePluginKeys(editor);
+        const entries = cat(map(keys, (k) => buildPluginEntry(editor, k)));
+        const sorted = sort(entries, (a, b) => a.name.localeCompare(b.name));
+        const pluginLis = map(sorted, (entry) => '<li>' + entry.html + '</li>').join('');
+        const heading = '<h1>' + global$2.translate(['Plugins installed ({0}):', sorted.length]) + '</h1>';
+        return heading + '<ul>' + pluginLis + '</ul>' + renderPremiumFooter();
+    };
     const tab$1 = (editor) => {
-        const availablePlugins = () => {
-            const premiumPlugins = filter(urls, ({ type }) => {
-                return type === "premium" /* PluginUrls.PluginType.Premium */;
-            });
-            const sortedPremiumPlugins = sort(map(premiumPlugins, (p) => p.name), (s1, s2) => s1.localeCompare(s2));
-            const premiumPluginList = map(sortedPremiumPlugins, (pluginName) => `<li>${pluginName}</li>`).join('');
-            return '<div>' +
-                '<p><b>' + global$2.translate('Premium plugins:') + '</b></p>' +
-                '<ul>' +
-                premiumPluginList +
-                '<li class="tox-help__more-link" ">' +
-                '<a href="https://www.tiny.cloud/pricing/?utm_campaign=help_dialog_plugin_tab&utm_source=tiny&utm_medium=referral&utm_term=read_more&utm_content=premium_plugin_heading" rel="noopener" target="_blank"' +
-                ' data-alloy-tabstop="true" tabindex="-1">' + global$2.translate('Learn more...') + '</a></li>' +
-                '</ul>' +
-                '</div>';
-        };
-        const makeLink = (p) => `<a data-alloy-tabstop="true" tabindex="-1" href="${p.url}" target="_blank" rel="noopener">${p.name}</a>`;
-        const identifyUnknownPlugin = (editor, key) => {
-            const getMetadata = editor.plugins[key].getMetadata;
-            if (isFunction(getMetadata)) {
-                const metadata = getMetadata();
-                return { name: metadata.name, html: makeLink(metadata) };
-            }
-            else {
-                return { name: key, html: key };
-            }
-        };
-        const getPluginData = (editor, key) => find(urls, (x) => {
-            return x.key === key;
-        }).fold(() => {
-            return identifyUnknownPlugin(editor, key);
-        }, (x) => {
-            // We know this plugin, so use our stored details.
-            const name = x.type === "premium" /* PluginUrls.PluginType.Premium */ ? `${x.name}*` : x.name;
-            const html = makeLink({ name, url: `https://www.tiny.cloud/docs/tinymce/${tinymce.majorVersion}/${x.slug}/` });
-            return { name, html };
-        });
-        const getPluginKeys = (editor) => {
-            const keys$1 = keys(editor.plugins);
-            const forcedPlugins = getForcedPlugins(editor);
-            const hiddenPlugins = isUndefined(forcedPlugins) ? ['onboarding'] : forcedPlugins.concat(['onboarding']);
-            return filter(keys$1, (k) => !contains(hiddenPlugins, k));
-        };
-        const pluginLister = (editor) => {
-            const pluginKeys = getPluginKeys(editor);
-            const sortedPluginData = sort(map(pluginKeys, (k) => getPluginData(editor, k)), (pd1, pd2) => pd1.name.localeCompare(pd2.name));
-            const pluginLis = map(sortedPluginData, (key) => {
-                return '<li>' + key.html + '</li>';
-            });
-            const count = pluginLis.length;
-            const pluginsString = pluginLis.join('');
-            const html = '<p><b>' + global$2.translate(['Plugins installed ({0}):', count]) + '</b></p>' +
-                '<ul>' + pluginsString + '</ul>';
-            return html;
-        };
-        const installedPlugins = (editor) => {
-            if (editor == null) {
-                return '';
-            }
-            return '<div>' +
-                pluginLister(editor) +
-                '</div>';
-        };
         const htmlPanel = {
             type: 'htmlpanel',
             presets: 'document',
-            html: [
-                installedPlugins(editor),
-                availablePlugins()
-            ].join('')
+            html: editor == null ? '' : '<div>' + renderPluginList(editor) + '</div>'
         };
         return {
             name: 'plugins',
@@ -734,7 +628,6 @@
     const parseHelpTabsSetting = (tabsFromSettings, tabs) => {
         const newTabs = {};
         const names = map(tabsFromSettings, (t) => {
-            var _a;
             if (isString(t)) {
                 // Code below shouldn't care if a tab name doesn't have a spec.
                 // If we find it does, we'll need to make this smarter.
@@ -745,7 +638,7 @@
                 return t;
             }
             else {
-                const name = (_a = t.name) !== null && _a !== void 0 ? _a : generate('tab-name');
+                const name = t.name ?? generate('tab-name');
                 newTabs[name] = t;
                 return name;
             }
@@ -802,8 +695,9 @@
         });
     };
 
+    const PLUGIN_CODE = 'help';
     var Plugin = () => {
-        global$4.add('help', (editor, pluginUrl) => {
+        global$4.add(PLUGIN_CODE, (editor, pluginUrl) => {
             const customTabs = Cell({});
             const api = get(customTabs);
             register$1(editor);
@@ -812,7 +706,10 @@
             register$2(editor, dialogOpener);
             editor.shortcuts.add('Alt+0', 'Open help dialog', 'mceHelp');
             initI18nLoad(editor, pluginUrl);
-            return api;
+            return {
+                ...api,
+                getMetadata: () => ({ name: 'Help', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

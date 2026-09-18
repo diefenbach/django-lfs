@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -7,13 +7,12 @@
 
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -84,6 +83,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -251,7 +255,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -315,9 +319,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativePush = Array.prototype.push;
     const map = (xs, f) => {
@@ -676,7 +677,7 @@
     const detectBrowser$1 = (browsers, userAgentData) => {
         return findMap(userAgentData.brands, (uaBrand) => {
             const lcBrand = uaBrand.brand.toLowerCase();
-            return find$1(browsers, (browser) => { var _a; return lcBrand === ((_a = browser.brand) === null || _a === void 0 ? void 0 : _a.toLowerCase()); })
+            return find$1(browsers, (browser) => lcBrand === browser.brand?.toLowerCase())
                 .map((info) => ({
                 current: info.name,
                 version: Version.nu(parseInt(uaBrand.version, 10), 0)
@@ -1458,7 +1459,7 @@
         const isTouch = global$1.deviceType.isTouch();
         const editorContainerStyle = editorContainer.style;
         const iframe = editor.iframeElement;
-        const iframeStyle = iframe === null || iframe === void 0 ? void 0 : iframe.style;
+        const iframeStyle = iframe?.style;
         const handleClasses = (handler) => {
             handler(body, 'tox-fullscreen');
             handler(documentElement, 'tox-fullscreen');
@@ -1581,18 +1582,25 @@
         });
     };
 
+    const PLUGIN_CODE = 'fullscreen';
     var Plugin = () => {
-        global$3.add('fullscreen', (editor) => {
+        global$3.add(PLUGIN_CODE, (editor) => {
             const fullscreenState = Cell(null);
             if (editor.inline) {
-                return get$4(fullscreenState);
+                return {
+                    ...get$4(fullscreenState),
+                    getMetadata: () => ({ name: 'Full Screen', type: 'opensource', slug: PLUGIN_CODE })
+                };
             }
             register$2(editor);
             register$1(editor, fullscreenState);
             register(editor, fullscreenState);
             setup(editor, fullscreenState);
             editor.addShortcut('Meta+Shift+F', '', 'mceFullScreen');
-            return get$4(fullscreenState);
+            return {
+                ...get$4(fullscreenState),
+                getMetadata: () => ({ name: 'Full Screen', type: 'opensource', slug: PLUGIN_CODE })
+            };
         });
     };
 

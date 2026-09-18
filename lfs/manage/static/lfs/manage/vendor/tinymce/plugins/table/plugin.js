@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.0.2 (2025-08-14)
+ * TinyMCE version 8.9.1 (2026-09-09)
  */
 
 (function () {
@@ -9,13 +9,12 @@
 
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
-        var _a;
         if (predicate(v, constructor.prototype)) {
             return true;
         }
         else {
             // String-based fallback time
-            return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+            return v.constructor?.name === constructor.name;
         }
     };
     const typeOf = (x) => {
@@ -87,6 +86,11 @@
      * strict-null-checks
      */
     class Optional {
+        tag;
+        value;
+        // Sneaky optimisation: every instance of Optional.none is identical, so just
+        // reuse the same object
+        static singletonNone = new Optional(false);
         // The internal representation has a `tag` and a `value`, but both are
         // private: able to be console.logged, but not able to be accessed by code
         constructor(tag, value) {
@@ -254,7 +258,7 @@
          */
         getOrDie(message) {
             if (!this.tag) {
-                throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+                throw new Error(message ?? 'Called getOrDie on None');
             }
             else {
                 return this.value;
@@ -318,9 +322,6 @@
             return this.tag ? `some(${this.value})` : 'none()';
         }
     }
-    // Sneaky optimisation: every instance of Optional.none is identical, so just
-    // reuse the same object
-    Optional.singletonNone = new Optional(false);
 
     const nativeSlice = Array.prototype.slice;
     const nativeIndexOf = Array.prototype.indexOf;
@@ -2015,10 +2016,9 @@
     // Note: This is also contained in the core Options.ts file
     const defaultWidth = '100%';
     const getPixelForcedWidth = (editor) => {
-        var _a;
         // Determine the inner size of the parent block element where the table will be inserted
         const dom = editor.dom;
-        const parentBlock = (_a = dom.getParent(editor.selection.getStart(), dom.isBlock)) !== null && _a !== void 0 ? _a : editor.getBody();
+        const parentBlock = dom.getParent(editor.selection.getStart(), dom.isBlock) ?? editor.getBody();
         return getInner(SugarElement.fromDom(parentBlock)) + 'px';
     };
     // Note: This is also contained in the core Options.ts file
@@ -2650,8 +2650,8 @@
         return {
             width: dom.getStyle(elm, 'width') || dom.getAttrib(elm, 'width'),
             height: dom.getStyle(elm, 'height') || dom.getAttrib(elm, 'height'),
-            cellspacing: cellspacing !== null && cellspacing !== void 0 ? cellspacing : '',
-            cellpadding: cellpadding !== null && cellpadding !== void 0 ? cellpadding : '',
+            cellspacing: cellspacing ?? '',
+            cellpadding: cellpadding ?? '',
             border: getBorder(dom, elm),
             caption: !!dom.select('caption', elm)[0],
             class: dom.getAttrib(elm, 'class', ''),
@@ -3103,11 +3103,14 @@
             attrs.class = data.class;
         }
         styles.height = addPxSuffix(data.height);
+        // TINY-12797: Make sure only CSS width or attribute is applied based on `table_style_by_css` option
         if (shouldStyleWithCss$1) {
             styles.width = addPxSuffix(data.width);
+            attrs.width = null;
         }
-        else if (dom.getAttrib(tableElm, 'width')) {
+        else {
             attrs.width = removePxSuffix(data.width);
+            styles.width = '';
         }
         if (shouldStyleWithCss$1) {
             if (borderIsZero) {
@@ -3196,7 +3199,6 @@
         });
     };
     const open = (editor, insertNewTable) => {
-        const dom = editor.dom;
         let tableElm;
         let data = extractDataFromSettings(editor, hasAdvancedTableTab(editor));
         // Cases for creation/update of tables:
@@ -3215,7 +3217,10 @@
             }
         }
         else {
-            tableElm = dom.getParent(editor.selection.getStart(), 'table', editor.getBody());
+            tableElm = getSelectionCellOrCaption(getSelectionStart(editor), getIsRoot(editor))
+                .bind((cellOrCaption) => table(cellOrCaption, getIsRoot(editor)))
+                .map((table) => table.dom)
+                .getOrNull();
             if (tableElm) {
                 // Case 2 - isNew == false && table parent
                 data = extractDataFromTableElement(editor, tableElm, hasAdvancedTableTab(editor));
@@ -3432,8 +3437,7 @@
     const tableTypeRow = tableTypeBase + 'rows';
     const tableTypeColumn = tableTypeBase + 'columns';
     const getData = (type) => {
-        var _a;
-        const items = (_a = global.read()) !== null && _a !== void 0 ? _a : [];
+        const items = global.read() ?? [];
         return findMap(items, (item) => Optional.from(item.getType(type)));
     };
     const getRows = () => getData(tableTypeRow);
@@ -3987,19 +3991,22 @@
         });
     };
 
-    const Plugin = (editor) => {
-        const selectionTargets = getSelectionTargets(editor);
-        register(editor);
-        registerCommands(editor);
-        addMenuItems(editor, selectionTargets);
-        addButtons(editor, selectionTargets);
-        addToolbars(editor);
-    };
-    var Plugin$1 = () => {
-        global$3.add('table', Plugin);
+    const PLUGIN_CODE = 'table';
+    var Plugin = () => {
+        global$3.add(PLUGIN_CODE, (editor) => {
+            const selectionTargets = getSelectionTargets(editor);
+            register(editor);
+            registerCommands(editor);
+            addMenuItems(editor, selectionTargets);
+            addButtons(editor, selectionTargets);
+            addToolbars(editor);
+            return {
+                getMetadata: () => ({ name: 'Table', type: 'opensource', slug: PLUGIN_CODE })
+            };
+        });
     };
 
-    Plugin$1();
+    Plugin();
     /** *****
      * DO NOT EXPORT ANYTHING
      *

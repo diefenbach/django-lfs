@@ -7,3 +7,8 @@
 # How to download vendor apps (for now, we'll bundle later)
 - cd src/lfs/lfs/manage
 - npm run setup
+
+
+# How to update
+npm update
+npm run vendor:update
