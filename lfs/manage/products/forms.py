@@ -37,7 +37,7 @@ class ProductFilterForm(forms.Form):
     )
     sub_type = forms.ChoiceField(
         required=False,
-        choices=[("", _("All Types"))] + list(PRODUCT_TYPE_FORM_CHOICES),
+        choices=[("", _("All Producttypes"))] + list(PRODUCT_TYPE_FORM_CHOICES),
         widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
         label=_("Product Type"),
     )

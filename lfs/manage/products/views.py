@@ -207,6 +207,27 @@ class ProductTabMixin:
 
         return tabs
 
+    def _get_product_filters(self) -> Dict[str, Any]:
+        session = getattr(self.request, "session", None) or {}
+        product_filters = session.get("product-filters", {})
+        if not isinstance(product_filters, dict):
+            return {}
+        return product_filters
+
+    def _get_filter_form(self, product_filters: Dict[str, Any]) -> ProductFilterForm:
+        try:
+            return ProductFilterForm(
+                initial={
+                    "name": product_filters.get("name", ""),
+                    "sku": product_filters.get("sku", ""),
+                    "sub_type": product_filters.get("sub_type", ""),
+                    "price_calculator": product_filters.get("price_calculator", ""),
+                    "status": product_filters.get("status", ""),
+                }
+            )
+        except Exception:
+            return ProductFilterForm()
+
     def _get_products_queryset(self):
         q = self.request.GET.get("q", "").strip()
         # Get all non-variant products (standard, product_with_variants, configurable)
@@ -216,11 +237,14 @@ class ProductTabMixin:
             from django.db.models import Q
 
             qs = qs.filter(Q(name__icontains=q) | Q(sku__icontains=q))
-        return qs
+
+        filter_service = ProductFilterService()
+        return filter_service.filter_products(qs, self._get_product_filters())
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         ctx = super().get_context_data(**kwargs)
         product = getattr(self, "object", None) or self.get_product()
+        product_filters = self._get_product_filters()
         ctx.update(
             {
                 "product": product,
@@ -228,6 +252,7 @@ class ProductTabMixin:
                 "tabs": self._get_tabs(product),
                 "products": self._get_products_queryset(),
                 "search_query": self.request.GET.get("q", ""),
+                "filter_form": self._get_filter_form(product_filters),
             }
         )
         return ctx
@@ -1659,45 +1684,61 @@ class ProductDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequir
         return reverse("lfs_manage_products_list")
 
 
+def _url_with_search_query(request, url: str) -> str:
+    """Append the live search query `q` from GET, POST, or referer."""
+    q = request.GET.get("q", "").strip()
+    if not q:
+        q = request.POST.get("q", "").strip()
+    if not q:
+        referer = request.META.get("HTTP_REFERER", "")
+        if referer:
+            q = parse_qs(urlparse(referer).query).get("q", [""])[0].strip()
+    if q:
+        return f"{url}?{urlencode({'q': q})}"
+    return url
+
+
 class ApplyProductFiltersView(PermissionRequiredMixin, FormView):
     """Handles filter form submissions and redirects back to product view."""
 
     permission_required = "core.manage_shop"
     form_class = ProductFilterForm
 
-    def form_valid(self, form):
-        """Save filters to session and redirect."""
-        filters = {}
+    FILTER_KEYS = ("name", "sku", "sub_type", "price_calculator", "status")
 
-        # Text filters
-        if form.cleaned_data.get("name"):
-            filters["name"] = form.cleaned_data["name"]
-        if form.cleaned_data.get("sku"):
-            filters["sku"] = form.cleaned_data["sku"]
-        if form.cleaned_data.get("sub_type"):
-            filters["sub_type"] = form.cleaned_data["sub_type"]
-        if form.cleaned_data.get("price_calculator"):
-            filters["price_calculator"] = form.cleaned_data["price_calculator"]
-        if form.cleaned_data.get("status"):
-            filters["status"] = form.cleaned_data["status"]
+    def form_valid(self, form):
+        """Save submitted filters to session and redirect."""
+        filters = dict(self.request.session.get("product-filters") or {})
+        submitted_data = getattr(form, "data", None)
+
+        for key in self.FILTER_KEYS:
+            if submitted_data is not None and key not in submitted_data:
+                continue
+            value = form.cleaned_data.get(key) or ""
+            if isinstance(value, str):
+                value = value.strip()
+            if value:
+                filters[key] = value
+            else:
+                filters.pop(key, None)
 
         self.request.session["product-filters"] = filters
 
         # Determine redirect URL based on current context
         if "id" in self.kwargs:
-            # We're in a product detail view
-            return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]}))
+            url = reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]})
         else:
-            # We're in the product list view
-            return HttpResponseRedirect(reverse("lfs_manage_products_list"))
+            url = reverse("lfs_manage_products_list")
+        return HttpResponseRedirect(_url_with_search_query(self.request, url))
 
     def form_invalid(self, form):
         """Handle invalid form - redirect back with error."""
         messages.error(self.request, _("Invalid filter data."))
         if "id" in self.kwargs:
-            return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]}))
+            url = reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]})
         else:
-            return HttpResponseRedirect(reverse("lfs_manage_products_list"))
+            url = reverse("lfs_manage_products_list")
+        return HttpResponseRedirect(_url_with_search_query(self.request, url))
 
 
 class ResetProductFiltersView(PermissionRequiredMixin, RedirectView):
@@ -1712,6 +1753,7 @@ class ResetProductFiltersView(PermissionRequiredMixin, RedirectView):
 
         # Determine redirect URL based on current context
         if "id" in self.kwargs:
-            return reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]})
+            url = reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]})
         else:
-            return reverse("lfs_manage_products_list")
+            url = reverse("lfs_manage_products_list")
+        return _url_with_search_query(self.request, url)

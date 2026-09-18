@@ -4360,6 +4360,15 @@ msgstr "Preis netto"
 msgid "Price includes tax"
 msgstr "Preis brutto"
 
+msgid "Bulk prices calculator"
+msgstr "Staffelpreise"
+
+msgid "All Calculators"
+msgstr "Alle Preiskalkulatoren"
+
+msgid "All Producttypes"
+msgstr "Alle Produkttypen"
+
 #: other_translations.py:5
 msgid "Street"
 msgstr "Straße/Haus-Nr."

@@ -4,6 +4,9 @@ def _():
 
 _("Price excludes tax")
 _("Price includes tax")
+_("Bulk prices calculator")
+_("All Calculators")
+_("All Producttypes")
 _("Street / No")
 _("Left")
 _("Right")

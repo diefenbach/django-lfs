@@ -10,9 +10,50 @@
             <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
                 <div class="padding-bottom-100">
                     <div class="mb-3 fw-semibold">{% trans "Products" %}</div>
+                    <div class="card shadow mb-3">
+                        <div class="card-header bg-primary-subtle p-2">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-funnel me-1"></i>{% trans "Filter" %}
+                            </h6>
+                        </div>
+                        <div class="card-body py-2">
+                            <form method="post" action="{% url 'lfs_apply_product_filters' product.id %}"
+                                  onsubmit="var s=document.getElementById('product-search'); var h=this.querySelector('input[name=q][type=hidden]'); if (s && h) h.value=s.value;">
+                                {% csrf_token %}
+                                <input type="hidden" name="q" value="{{ search_query }}">
+                                <div class="mb-2">
+                                    {{ filter_form.sub_type }}
+                                    {% if filter_form.sub_type.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ filter_form.sub_type.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-2">
+                                    {{ filter_form.price_calculator }}
+                                    {% if filter_form.price_calculator.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ filter_form.price_calculator.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="btn-group d-flex mt-2">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}
+                                    </button>
+                                    <a href="{% url 'lfs_reset_product_filters' product.id %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}"
+                                       class="btn btn-outline-secondary btn-sm"
+                                       onclick="var s=document.getElementById('product-search'); this.href=this.pathname+(s && s.value ? '?q='+encodeURIComponent(s.value) : '');">
+                                        <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset" %}
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                         <input type="search"
+                            id="product-search"
                             class="form-control"
                             placeholder="{% trans 'Search' %}"
                             name="q"

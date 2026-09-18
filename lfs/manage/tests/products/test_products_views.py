@@ -1255,6 +1255,145 @@ class TestApplyProductFiltersView:
         assert isinstance(response, HttpResponseRedirect)
         assert response.url == "/manage/products/list/"
 
+    def test_form_valid_merges_submitted_fields_without_clearing_others(self, rf, admin_user, product):
+        """Should update only submitted fields and keep other session filters."""
+        from unittest.mock import MagicMock
+
+        from lfs.manage.products.forms import ProductFilterForm
+
+        factory = RequestFactory()
+        request = factory.post(
+            "/",
+            {
+                "sub_type": "0",
+                "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
+            },
+        )
+        request.user = admin_user
+        request.session = {
+            "product-filters": {
+                "name": "Apple",
+                "sku": "APP001",
+                "status": "active",
+            }
+        }
+
+        view = ApplyProductFiltersView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        mock_form = MagicMock(spec=ProductFilterForm)
+        mock_form.data = {
+            "sub_type": "0",
+            "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
+        }
+        mock_form.cleaned_data = {
+            "name": "",
+            "sku": "",
+            "sub_type": "0",
+            "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
+            "status": "",
+        }
+
+        response = view.form_valid(mock_form)
+
+        assert request.session["product-filters"] == {
+            "name": "Apple",
+            "sku": "APP001",
+            "status": "active",
+            "sub_type": "0",
+            "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
+        }
+        assert isinstance(response, HttpResponseRedirect)
+        assert f"/manage/product/{product.id}/data/" in response.url
+
+    def test_form_valid_clears_submitted_empty_field_from_session(self, rf, admin_user, product):
+        """Should remove a submitted empty field from session without touching others."""
+        from unittest.mock import MagicMock
+
+        from lfs.manage.products.forms import ProductFilterForm
+
+        factory = RequestFactory()
+        request = factory.post("/", {"sub_type": "", "price_calculator": ""})
+        request.user = admin_user
+        request.session = {
+            "product-filters": {
+                "name": "Apple",
+                "sub_type": "0",
+                "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
+            }
+        }
+
+        view = ApplyProductFiltersView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        mock_form = MagicMock(spec=ProductFilterForm)
+        mock_form.data = {"sub_type": "", "price_calculator": ""}
+        mock_form.cleaned_data = {
+            "name": "",
+            "sku": "",
+            "sub_type": "",
+            "price_calculator": "",
+            "status": "",
+        }
+
+        view.form_valid(mock_form)
+
+        assert request.session["product-filters"] == {"name": "Apple"}
+
+    def test_form_valid_preserves_search_query_on_redirect(self, rf, admin_user, product):
+        """Should keep the live search query on the product detail redirect."""
+        from unittest.mock import MagicMock
+        from urllib.parse import parse_qs, urlparse
+
+        from lfs.manage.products.forms import ProductFilterForm
+
+        factory = RequestFactory()
+        request = factory.post("/", {"sub_type": "0", "q": "Apple"})
+        request.user = admin_user
+        request.session = {}
+
+        view = ApplyProductFiltersView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        mock_form = MagicMock(spec=ProductFilterForm)
+        mock_form.data = {"sub_type": "0", "q": "Apple"}
+        mock_form.cleaned_data = {"sub_type": "0"}
+
+        response = view.form_valid(mock_form)
+
+        parsed = urlparse(response.url)
+        assert parsed.path == f"/manage/product/{product.id}/data/"
+        assert parse_qs(parsed.query) == {"q": ["Apple"]}
+
+    def test_form_valid_redirect_without_search_query_has_no_query(self, rf, admin_user, product):
+        """Should omit q from the redirect when no search query is present."""
+        from unittest.mock import MagicMock
+        from urllib.parse import urlparse
+
+        from lfs.manage.products.forms import ProductFilterForm
+
+        factory = RequestFactory()
+        request = factory.post("/", {"sub_type": "0"})
+        request.user = admin_user
+        request.session = {}
+
+        view = ApplyProductFiltersView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        mock_form = MagicMock(spec=ProductFilterForm)
+        mock_form.data = {"sub_type": "0"}
+        mock_form.cleaned_data = {"sub_type": "0"}
+
+        response = view.form_valid(mock_form)
+
+        parsed = urlparse(response.url)
+        assert parsed.path == f"/manage/product/{product.id}/data/"
+        assert parsed.query == ""
+
 
 class TestResetProductFiltersView:
     """Test the ResetProductFiltersView class-based view."""
@@ -1304,6 +1443,26 @@ class TestResetProductFiltersView:
 
         # Should redirect to product detail
         assert url == f"/manage/product/{product.id}/data/"
+
+    def test_get_redirect_url_preserves_search_query(self, rf, admin_user, product):
+        """Should keep the live search query on the product detail redirect."""
+        from urllib.parse import parse_qs, urlparse
+
+        factory = RequestFactory()
+        request = factory.get("/?q=Apple")
+        request.user = admin_user
+        request.session = {"product-filters": {"sub_type": "0"}}
+
+        view = ResetProductFiltersView()
+        view.request = request
+        view.kwargs = {"id": product.id}
+
+        url = view.get_redirect_url()
+
+        parsed = urlparse(url)
+        assert parsed.path == f"/manage/product/{product.id}/data/"
+        assert parse_qs(parsed.query) == {"q": ["Apple"]}
+        assert "product-filters" not in request.session
 
     def test_get_redirect_url_handles_missing_session_filters(self, rf, admin_user):
         """Should handle case when product-filters doesn't exist in session."""
@@ -2302,6 +2461,7 @@ class TestProductTabMixin:
         """Should filter products by search query."""
         factory = RequestFactory()
         request = factory.get("/?q=test")
+        request.session = {}
 
         view = ProductDataView()
         view.request = request
@@ -2312,10 +2472,108 @@ class TestProductTabMixin:
         assert hasattr(queryset, "filter")
         assert hasattr(queryset, "order_by")
 
+    def test_get_products_queryset_filters_by_session_sub_type(self, product, shop):
+        """Should filter sidebar products by session sub_type."""
+        from lfs.catalog.settings import CONFIGURABLE_PRODUCT, PRODUCT_WITH_VARIANTS, STANDARD_PRODUCT
+
+        standard = product
+        with_variants = Product.objects.create(
+            name="Variant Parent",
+            slug="variant-parent-sidebar",
+            sku="VAR-PARENT",
+            price=10.0,
+            sub_type=PRODUCT_WITH_VARIANTS,
+        )
+        configurable = Product.objects.create(
+            name="Configurable Product",
+            slug="configurable-sidebar",
+            sku="CONF001",
+            price=15.0,
+            sub_type=CONFIGURABLE_PRODUCT,
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/")
+        request.session = {"product-filters": {"sub_type": STANDARD_PRODUCT}}
+
+        view = ProductDataView()
+        view.request = request
+
+        names = list(view._get_products_queryset().values_list("name", flat=True))
+        assert standard.name in names
+        assert with_variants.name not in names
+        assert configurable.name not in names
+
+        request.session = {"product-filters": {"sub_type": PRODUCT_WITH_VARIANTS}}
+        names = list(view._get_products_queryset().values_list("name", flat=True))
+        assert names == [with_variants.name]
+
+        request.session = {"product-filters": {"sub_type": CONFIGURABLE_PRODUCT}}
+        names = list(view._get_products_queryset().values_list("name", flat=True))
+        assert names == [configurable.name]
+
+    def test_get_products_queryset_filters_by_session_bulkprice_calculator(self, product, shop):
+        """Should filter sidebar products by bulk prices calculator."""
+        bulk_product = Product.objects.create(
+            name="Bulk Product",
+            slug="bulk-product-sidebar",
+            sku="BULK001",
+            price=12.0,
+            price_calculator="lfs_bulk_prices.calculator.BulkPricesCalculator",
+        )
+        Product.objects.create(
+            name="Gross Product",
+            slug="gross-product-sidebar",
+            sku="GROSS001",
+            price=8.0,
+            price_calculator="lfs.gross_price.calculator.GrossPriceCalculator",
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/")
+        request.session = {
+            "product-filters": {"price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator"}
+        }
+
+        view = ProductDataView()
+        view.request = request
+
+        names = list(view._get_products_queryset().values_list("name", flat=True))
+        assert names == [bulk_product.name]
+
+    def test_get_products_queryset_combines_search_and_session_filters(self, shop):
+        """Should apply search query and session filters together."""
+        from lfs.catalog.settings import CONFIGURABLE_PRODUCT, STANDARD_PRODUCT
+
+        apple_standard = Product.objects.create(
+            name="Apple Standard", slug="apple-standard-sidebar", sku="APP-STD", price=10.0, sub_type=STANDARD_PRODUCT
+        )
+        Product.objects.create(
+            name="Banana Standard", slug="banana-standard-sidebar", sku="BAN-STD", price=11.0, sub_type=STANDARD_PRODUCT
+        )
+        Product.objects.create(
+            name="Apple Configurable",
+            slug="apple-configurable-sidebar",
+            sku="APP-CONF",
+            price=12.0,
+            sub_type=CONFIGURABLE_PRODUCT,
+        )
+
+        factory = RequestFactory()
+        request = factory.get("/?q=Apple")
+        request.session = {"product-filters": {"sub_type": STANDARD_PRODUCT}}
+
+        view = ProductDataView()
+        view.request = request
+
+        names = list(view._get_products_queryset().values_list("name", flat=True))
+        assert names == [apple_standard.name]
+
     def test_get_context_data_includes_required_context(self, product):
         """Should include required context variables."""
         factory = RequestFactory()
         request = factory.get("/")
+        request.session = {}
 
         view = ProductDataView()
         view.request = request
@@ -2329,6 +2587,32 @@ class TestProductTabMixin:
         assert "tabs" in context
         assert "products" in context
         assert "search_query" in context
+        assert "filter_form" in context
+
+    def test_get_context_data_filter_form_uses_session_initial(self, product):
+        """Should initialize sidebar filter form from session filters."""
+        from lfs.manage.products.forms import ProductFilterForm
+
+        factory = RequestFactory()
+        request = factory.get("/")
+        request.session = {
+            "product-filters": {
+                "sub_type": "0",
+                "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
+            }
+        }
+
+        view = ProductDataView()
+        view.request = request
+        view.object = product
+        view.kwargs = {"id": product.id}
+
+        context = view.get_context_data()
+
+        filter_form = context["filter_form"]
+        assert isinstance(filter_form, ProductFilterForm)
+        assert filter_form.initial["sub_type"] == "0"
+        assert filter_form.initial["price_calculator"] == "lfs_bulk_prices.calculator.BulkPricesCalculator"
 
 
 class TestProductListView:
