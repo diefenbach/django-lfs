@@ -3,6 +3,7 @@ from typing import Dict, List, Tuple, Any, Optional
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import permission_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -471,6 +472,7 @@ def _udpate_positions(group_id):
         gp.save()
 
 
+@permission_required("core.manage_shop")
 def sort_property_groups(request):
     """Sort property groups"""
     property_group_list = request.POST.get("serialized", "").split("&")
@@ -494,6 +496,7 @@ def sort_property_groups(request):
     return HttpResponse(result, content_type="application/json")
 
 
+@permission_required("core.manage_shop")
 @csrf_exempt
 @require_http_methods(["POST"])
 def sort_property_group_properties(request, id):
