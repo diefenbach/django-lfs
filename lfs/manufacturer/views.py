@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import ngettext
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.manufacturer.models import Manufacturer
-from lfs.core.utils import lfs_pagination
+from lfs.core.utils import lfs_pagination, paginated_canonical_url
 
 
 def manufacturers(request, template_name="lfs/manufacturers/manufacturers.html"):
@@ -40,6 +40,7 @@ def manufacturers(request, template_name="lfs/manufacturers/manufacturers.html")
         request,
         template_name,
         {
+            "canonical_url": paginated_canonical_url(request, pagination_data["url"], pagination_data),
             "pagination": pagination_data,
             "manufacturers": current_page.object_list,
             "all_manufacturers": manufacturers,  # pass it if someone doesn't want pagination
@@ -51,17 +52,29 @@ def manufacturer_view(request, slug, template_name="lfs/manufacturers/manufactur
     """Display manufacturer details and products"""
     start = (request.POST if request.method == "POST" else request.GET).get("start", 1)
     manufacturer = lfs_get_object_or_404(Manufacturer, slug=slug)
-    inline = manufacturer_products(request, slug, start)
+    products = _manufacturer_products(request, slug, start)
 
     # Set last visited manufacturer for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_manufacturer"] = manufacturer.id
 
-    return render(request, template_name, {"manufacturer": manufacturer, "manufacturer_inline": inline})
+    return render(
+        request,
+        template_name,
+        {
+            "manufacturer": manufacturer,
+            "manufacturer_inline": products["html"],
+            "canonical_url": paginated_canonical_url(request, manufacturer.get_absolute_url(), products["pagination"]),
+        },
+    )
 
 
 def manufacturer_products(request, slug, start=1, template_name="lfs/manufacturers/products.html"):
     """Displays the products of the manufacturer with passed slug."""
+    return _manufacturer_products(request, slug, start, template_name)["html"]
+
+
+def _manufacturer_products(request, slug, start=1, template_name="lfs/manufacturers/products.html"):
     # Resets the product filters if the user navigates to another manufacturer.
     # TODO: Is this what a customer would expect?
     last_manufacturer_id = request.session.get("last_manufacturer")
@@ -82,7 +95,7 @@ def manufacturer_products(request, slug, start=1, template_name="lfs/manufacture
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 
-    cache_key = "%s-manufacturer-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    cache_key = "%s-manufacturer-products-with-pagination-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
     sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
@@ -164,7 +177,7 @@ def manufacturer_products(request, slug, start=1, template_name="lfs/manufacture
         "count": amount_of_products
     }
 
-    result = render_to_string(
+    html = render_to_string(
         template_name,
         request=request,
         context={
@@ -176,6 +189,7 @@ def manufacturer_products(request, slug, start=1, template_name="lfs/manufacture
         },
     )
 
+    result = {"html": html, "pagination": pagination_data}
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)
     return result

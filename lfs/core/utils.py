@@ -405,6 +405,13 @@ def define_page_range(current_page, total_pages, window=6):
     return list(page_range)
 
 
+def paginated_canonical_url(request, path, pagination):
+    """Build the URL for the page selected by the paginator."""
+    if pagination["current_page"] > 1:
+        path += "?" + urllib.parse.urlencode({pagination["getparam"]: pagination["current_page"]})
+    return request.build_absolute_uri(path)
+
+
 def lfs_pagination(request, current_page, url="", getparam="start"):
     """Prepare data for pagination
 

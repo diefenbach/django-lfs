@@ -417,6 +417,9 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
         template_name,
         {
             "category": category,
+            "canonical_url": lfs.core.utils.paginated_canonical_url(
+                request, category.get_absolute_url(), pagination_data
+            ),
             "category_inline": inline,
             "top_category": lfs.catalog.utils.get_current_top_category(request, category),
             "pagination": (request.POST if request.method == "POST" else request.GET).get("start", 0),
@@ -636,8 +639,11 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         recent = recent[: settings.LFS_RECENT_PRODUCTS_LIMIT + 1]
     request.session["RECENT_PRODUCTS"] = recent
 
+    product_page_url = request.build_absolute_uri(product.get_absolute_url())
+    canonical_url = product_page_url
     if product.is_variant():
         variant_canonical = product.parent.get_variant_for_category(request)
+        canonical_url = request.build_absolute_uri(product.parent.get_absolute_url())
     else:
         variant_canonical = product
 
@@ -652,7 +658,8 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
             "product_inline": product_inline(request, product),
             "variant_canonical": variant_canonical,
             "product": product,
-            "product_page_url": request.build_absolute_uri(product.get_absolute_url()),
+            "canonical_url": canonical_url,
+            "product_page_url": product_page_url,
             "product_image_url": request.build_absolute_uri(product_image_url) if product_image_url else None,
             "product_tracking": lfs.catalog.utils.product_to_tracking_snapshot(request, display_product),
         },
