@@ -14,7 +14,6 @@ from lfs.manage.images.views import (
     ImagesListAjaxView,
     DeleteImagesView,
     AddImagesView,
-    ImageBrowserView,
 )
 from lfs.manage.images.forms import (
     ImageUploadForm,
@@ -242,83 +241,6 @@ class TestAddImagesView:
 
 
 @pytest.mark.django_db
-class TestImageBrowserView:
-    """Test cases for ImageBrowserView."""
-
-    def test_get_selected_image_data_with_valid_url(self, image_instance):
-        """Test parsing valid URL returns image and size."""
-        view = ImageBrowserView()
-        url = f"/media/images/test.100x100.jpg"
-
-        # Mock the Image.objects.get to return our test image
-        with patch("lfs.catalog.models.Image.objects.get", return_value=image_instance):
-            image, size = view.get_selected_image_data(url)
-
-        assert image == image_instance
-        assert size == "100x100"
-
-    def test_get_selected_image_data_with_invalid_url(self):
-        """Test parsing invalid URL returns None values."""
-        view = ImageBrowserView()
-
-        image, size = view.get_selected_image_data("invalid_url")
-        assert image is None
-        assert size is None
-
-    def test_get_size_options(self):
-        """Test size options generation."""
-        view = ImageBrowserView()
-
-        # Test with actual THUMBNAIL_SIZES from settings
-        sizes = view.get_size_options("100x100")
-
-        # Check that we get some sizes and the selected one is correct
-        assert len(sizes) > 0
-        selected_sizes = [s for s in sizes if s["selected"]]
-        assert len(selected_sizes) == 1
-        assert selected_sizes[0]["value"] == "100x100"
-
-    def test_get_class_options(self):
-        """Test CSS class options generation."""
-        view = ImageBrowserView()
-
-        classes = view.get_class_options("left")
-
-        assert len(classes) == 3
-        left_option = next(c for c in classes if c["value"] == "left")
-        assert left_option["selected"] is True
-
-    def test_get_images_data(self, image_instance):
-        """Test images data formatting."""
-        view = ImageBrowserView()
-
-        # Create a mock page object
-        mock_page = Mock()
-        mock_page.object_list = [image_instance]
-
-        images_data = view.get_images_data(mock_page, image_instance)
-
-        assert len(images_data) == 1
-        assert images_data[0]["id"] == image_instance.id
-        assert images_data[0]["title"] == image_instance.title
-        assert images_data[0]["checked"] is True
-
-    def test_get_request_returns_json(self, request_factory, admin_user, image_instance):
-        """Test GET request returns JSON response."""
-        request = request_factory.get("/images/browser/")
-        request.user = admin_user
-
-        view = ImageBrowserView()
-        response = view.get(request)
-
-        assert response.status_code == 200
-        assert response["Content-Type"] == "application/json"
-
-        data = json.loads(response.content)
-        assert "html" in data
-        assert "message" in data
-
-
 class TestImageUploadForm:
     """Test cases for ImageUploadForm."""
 

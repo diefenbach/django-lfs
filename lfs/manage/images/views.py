@@ -1,6 +1,4 @@
 from typing import Dict, List, Tuple, Any, Optional
-import re
-from urllib import parse
 import logging
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -15,8 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 from lfs.catalog.models import Image
-from lfs.catalog.settings import THUMBNAIL_SIZES
-from lfs.core.utils import LazyEncoder, lfs_pagination
+from lfs.core.utils import lfs_pagination
 
 logger = logging.getLogger(__name__)
 
@@ -238,131 +235,6 @@ class AddImagesView(PermissionRequiredMixin, View):
                 results.append({"name": file_content.name, "error": str(e), "success": False})
 
         return JsonResponse({"results": results})
-
-
-class ImageBrowserView(PermissionRequiredMixin, View):
-    """Display image browser for selection."""
-
-    permission_required = "core.manage_shop"
-    template_name = "manage/images/filebrowser_images.html"
-    paginate_by = 25
-
-    def get_selected_image_data(self, url: Optional[str]) -> Tuple[Optional[Image], Optional[str]]:
-        """Parse URL to extract selected image and size."""
-        if not url:
-            return None, None
-
-        try:
-            parsed_url = parse.urlparse(url)
-            temp_url = "/".join(parsed_url.path.split("/")[2:])
-            result = re.search(r"(.*)(\.)(\d+x\d+)(.*)", temp_url)
-
-            if result:
-                temp_url = result.groups()[0] + result.groups()[3]
-                selected_image = Image.objects.get(image=temp_url)
-                selected_size = result.groups()[2]
-                return selected_image, selected_size
-        except (IndexError, Image.DoesNotExist):
-            pass
-
-        return None, None
-
-    def get_size_options(self, selected_size: Optional[str]) -> List[Dict[str, Any]]:
-        """Get available size options."""
-        sizes = []
-        for size in THUMBNAIL_SIZES:
-            size_str = f"{size[0]}x{size[1]}"
-            sizes.append(
-                {
-                    "value": size_str,
-                    "title": size_str,
-                    "selected": size_str == selected_size,
-                }
-            )
-        return sizes
-
-    def get_class_options(self, selected_class: Optional[str]) -> List[Dict[str, Any]]:
-        """Get available CSS class options."""
-        return [
-            {"value": "inline", "title": _("inline"), "selected": "inline" == selected_class},
-            {"value": "left", "title": _("left"), "selected": "left" == selected_class},
-            {"value": "right", "title": _("right"), "selected": "right" == selected_class},
-        ]
-
-    def get_images_data(self, current_page, selected_image: Optional[Image]) -> List[Dict[str, Any]]:
-        """Format images data for template."""
-        images = []
-        for image in current_page.object_list:
-            images.append(
-                {
-                    "id": image.id,
-                    "title": image.title,
-                    "checked": image == selected_image,
-                    "url": image.image.url_100x100,
-                }
-            )
-        return images
-
-    def get(self, request: HttpRequest) -> JsonResponse:
-        """Handle GET request for image browser."""
-        # Parse request parameters
-        selected_class = request.GET.get("class")
-        url = request.GET.get("url")
-        query = request.GET.get("q", "")
-
-        try:
-            start = int(request.GET.get("start", 1))
-        except (ValueError, TypeError):
-            start = 1
-
-        # Get selected image data
-        selected_image, selected_size = self.get_selected_image_data(url)
-
-        # Prepare options
-        sizes = self.get_size_options(selected_size)
-        classes = self.get_class_options(selected_class)
-
-        # Setup pagination
-        if query:
-            images_qs = Image.objects.filter(content_id=None, title__istartswith=query)
-        else:
-            images_qs = Image.objects.filter(content_id=None)
-
-        paginator = Paginator(images_qs, self.paginate_by)
-        try:
-            current_page = paginator.page(start)
-        except (EmptyPage, InvalidPage):
-            current_page = paginator.page(paginator.num_pages)
-
-        # Calculate pagination data
-        pagination_data = lfs_pagination(request, current_page, url=request.path)
-        pagination_data["total_text"] = ngettext("%(count)d image", "%(count)d images", images_qs.count()) % {
-            "count": images_qs.count()
-        }
-
-        # Format images data
-        images = self.get_images_data(current_page, selected_image)
-
-        # Render template
-        html = render_to_string(
-            self.template_name,
-            {
-                "sizes": sizes,
-                "classes": classes,
-                "images": images,
-                "query": query,
-                "pagination": pagination_data,
-            },
-            request=request,
-        )
-
-        return JsonResponse(
-            {
-                "html": html,
-                "message": "msg",
-            },
-            encoder=LazyEncoder,
-        )
 
 
 class ImagesUploadView(PermissionRequiredMixin, ImagesTabMixin, TemplateView):

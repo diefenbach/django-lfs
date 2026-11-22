@@ -1084,7 +1084,7 @@ class TestProductDeleteView:
         view.request = request
 
         url = view.get_success_url()
-        assert url == "/manage/products/list/"
+        assert url == "/manage/products/"
 
     def test_delete_standard_request_redirects(self, rf, admin_user, product, mocker):
         """Should redirect normally for standard requests."""
@@ -1104,7 +1104,7 @@ class TestProductDeleteView:
 
         # Should be HttpResponseRedirect for standard requests
         assert isinstance(response, HttpResponseRedirect)
-        assert response.url == "/manage/products/list/"
+        assert response.url == "/manage/products/"
 
         # Should have called messages.success
         mock_messages_success.assert_called_once_with(request, "Product has been deleted.")
@@ -1131,7 +1131,7 @@ class TestProductDeleteView:
 
         # Should be HttpResponse with HX-Redirect header for HTMX
         assert isinstance(response, HttpResponse)
-        assert response["HX-Redirect"] == "/manage/products/list/"
+        assert response["HX-Redirect"] == "/manage/products/"
 
         # Should have called messages.success
         mock_messages_success.assert_called_once_with(request, "Product has been deleted.")
@@ -1205,7 +1205,7 @@ class TestApplyProductFiltersView:
 
         # Should redirect to products list (no id in kwargs)
         assert isinstance(response, HttpResponseRedirect)
-        assert response.url == "/manage/products/list/"
+        assert response.url == "/manage/products/"
 
     def test_form_valid_redirects_to_product_detail_with_id(self, rf, admin_user, product, mocker):
         """Should redirect to product detail when id is provided."""
@@ -1253,7 +1253,7 @@ class TestApplyProductFiltersView:
 
         # Should redirect to products list
         assert isinstance(response, HttpResponseRedirect)
-        assert response.url == "/manage/products/list/"
+        assert response.url == "/manage/products/"
 
     def test_form_valid_merges_submitted_fields_without_clearing_others(self, rf, admin_user, product):
         """Should update only submitted fields and keep other session filters."""
@@ -1426,7 +1426,7 @@ class TestResetProductFiltersView:
         assert "product-filters" not in request.session
 
         # Should redirect to products list
-        assert url == "/manage/products/list/"
+        assert url == "/manage/products/"
 
     def test_get_redirect_url_redirects_to_product_detail_with_id(self, rf, admin_user, product):
         """Should redirect to product detail when id is provided."""
@@ -1478,7 +1478,7 @@ class TestResetProductFiltersView:
         url = view.get_redirect_url()
 
         # Should not raise error and redirect to products list
-        assert url == "/manage/products/list/"
+        assert url == "/manage/products/"
 
 
 class TestProductBulkPricesView:

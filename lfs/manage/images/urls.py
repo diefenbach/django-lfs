@@ -7,7 +7,6 @@ from .views import (
     DeleteImagesConfirmView,
     DeleteImagesView,
     AddImagesView,
-    ImageBrowserView,
 )
 
 urlpatterns = [
@@ -17,5 +16,4 @@ urlpatterns = [
     path("images/delete/confirm/", DeleteImagesConfirmView.as_view(), name="lfs_manage_images_delete_confirm"),
     path("images/add/", AddImagesView.as_view(), name="lfs_manage_images_add"),
     path("images/delete/", DeleteImagesView.as_view(), name="lfs_manage_images_delete"),
-    path("images/browser/", ImageBrowserView.as_view(), name="lfs_manage_imagebrowser"),
 ]

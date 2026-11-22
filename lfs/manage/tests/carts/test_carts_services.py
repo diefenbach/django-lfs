@@ -481,26 +481,29 @@ class TestCartFilterServiceIntegration:
     def test_filter_carts_with_end_date_only_integration(self, cart_filter_service, sample_carts):
         """Test filtering carts with only end date using real database."""
         # Use a date in the future since our test carts are created with current dates
-        filters = {"end": "2025-12-31"}
+        end = timezone.localdate() + timedelta(days=365)
+        filters = {"end": end.isoformat()}
 
         queryset = cart_filter_service.filter_carts(Cart.objects.all(), filters)
 
         # Should return carts modified before end date
         assert queryset.count() > 0
         for cart in queryset:
-            assert cart.modification_date <= timezone.make_aware(datetime(2025, 12, 31, 23, 59, 59))
+            assert cart.modification_date <= timezone.make_aware(datetime.combine(end, time(23, 59, 59)))
 
     def test_filter_carts_with_date_range_integration(self, cart_filter_service, sample_carts):
         """Test filtering carts with both start and end dates using real database."""
         # Use a date range that includes our test carts
-        filters = {"start": "2025-01-01", "end": "2025-12-31"}
+        start = timezone.localdate() - timedelta(days=365)
+        end = timezone.localdate() + timedelta(days=365)
+        filters = {"start": start.isoformat(), "end": end.isoformat()}
         queryset = cart_filter_service.filter_carts(Cart.objects.all(), filters)
 
         # Should return carts within the date range
         assert queryset.count() > 0
         for cart in queryset:
-            assert timezone.make_aware(datetime(2025, 1, 1, 0, 0, 0)) <= cart.modification_date
-            assert cart.modification_date <= timezone.make_aware(datetime(2025, 12, 31, 23, 59, 59))
+            assert timezone.make_aware(datetime.combine(start, time(0, 0, 0))) <= cart.modification_date
+            assert cart.modification_date <= timezone.make_aware(datetime.combine(end, time(23, 59, 59)))
 
     def test_filter_carts_with_no_filters_integration(self, cart_filter_service, sample_carts):
         """Test filtering carts with no filters applied using real database."""

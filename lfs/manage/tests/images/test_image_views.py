@@ -11,7 +11,6 @@ from lfs.manage.images.views import (
     DeleteImagesConfirmView,
     DeleteImagesView,
     AddImagesView,
-    ImageBrowserView,
     ImagesUploadView,
     ImagesTabMixin,
 )
@@ -364,78 +363,6 @@ class TestAddImagesView:
 
         view = AddImagesView()
         response = view.post(request)
-
-        assert isinstance(response, JsonResponse)
-        assert response.status_code == 200
-
-
-class TestImageBrowserView:
-    """Test the ImageBrowserView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
-
-        assert issubclass(ImageBrowserView, PermissionRequiredMixin)
-        assert issubclass(ImageBrowserView, View)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ImageBrowserView.permission_required == "core.manage_shop"
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ImageBrowserView.template_name == "manage/images/filebrowser_images.html"
-
-    def test_paginate_by(self):
-        """Should have correct pagination setting."""
-        assert ImageBrowserView.paginate_by == 25
-
-    def test_get_selected_image_data_method_exists(self):
-        """Should have get_selected_image_data method."""
-        assert hasattr(ImageBrowserView, "get_selected_image_data")
-        assert callable(getattr(ImageBrowserView, "get_selected_image_data"))
-
-    def test_get_size_options_method_exists(self):
-        """Should have get_size_options method."""
-        assert hasattr(ImageBrowserView, "get_size_options")
-        assert callable(getattr(ImageBrowserView, "get_size_options"))
-
-    def test_get_class_options_method_exists(self):
-        """Should have get_class_options method."""
-        assert hasattr(ImageBrowserView, "get_class_options")
-        assert callable(getattr(ImageBrowserView, "get_class_options"))
-
-    def test_get_images_data_method_exists(self):
-        """Should have get_images_data method."""
-        assert hasattr(ImageBrowserView, "get_images_data")
-        assert callable(getattr(ImageBrowserView, "get_images_data"))
-
-    @pytest.mark.django_db
-    def test_get_returns_json_response(self, admin_user, multiple_images, mock_session):
-        """Should return JSON response with HTML content."""
-        factory = RequestFactory()
-        request = factory.get("/images/browser/")
-        request.user = admin_user
-        request.session = mock_session
-
-        view = ImageBrowserView()
-        response = view.get(request)
-
-        assert isinstance(response, JsonResponse)
-        assert response.status_code == 200
-
-    @pytest.mark.django_db
-    def test_get_with_search_query(self, admin_user, multiple_images, mock_session):
-        """Should filter images by search query."""
-        factory = RequestFactory()
-        request = factory.get("/images/browser/?q=Image")
-        request.user = admin_user
-        request.session = mock_session
-
-        view = ImageBrowserView()
-        response = view.get(request)
 
         assert isinstance(response, JsonResponse)
         assert response.status_code == 200
