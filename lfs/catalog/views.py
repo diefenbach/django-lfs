@@ -649,7 +649,7 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
 
     display_product = lfs.catalog.utils.get_display_product(request, product)
     product_image = display_product.get_image()
-    product_image_url = product_image.image.url_400x400 if product_image and product_image.image else None
+    product_image_url = product_image.image.url if product_image and product_image.image else None
 
     result = render(
         request,
