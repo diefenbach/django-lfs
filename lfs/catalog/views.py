@@ -642,6 +642,8 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         variant_canonical = product
 
     display_product = lfs.catalog.utils.get_display_product(request, product)
+    product_image = display_product.get_image()
+    product_image_url = product_image.image.url_400x400 if product_image and product_image.image else None
 
     result = render(
         request,
@@ -650,6 +652,8 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
             "product_inline": product_inline(request, product),
             "variant_canonical": variant_canonical,
             "product": product,
+            "product_page_url": request.build_absolute_uri(product.get_absolute_url()),
+            "product_image_url": request.build_absolute_uri(product_image_url) if product_image_url else None,
             "product_tracking": lfs.catalog.utils.product_to_tracking_snapshot(request, display_product),
         },
     )
