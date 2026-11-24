@@ -1,10 +1,12 @@
 from django.conf import settings
 from django.contrib.sitemaps import Sitemap
+from django.urls import reverse
 from django.utils import timezone
 
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.core.models import Shop
+from lfs.manufacturer.models import Manufacturer
 from lfs.page.models import Page
 
 
@@ -65,3 +67,31 @@ class ShopSitemap(Sitemap):
 
     def location(self, obj):
         return "/"
+
+
+class ManufacturerSitemap(Sitemap):
+    """Google's XML sitemap for manufacturers.
+
+    No lastmod: manufacturers have no modification date, and Google uses lastmod only if it is accurate.
+    """
+
+    changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("manufacturer", {}).get("changefreq", "weekly")
+    priority = getattr(settings, "LFS_SITEMAPS", {}).get("manufacturer", {}).get("priority", 0.5)
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("manufacturer", {}).get("protocol", None)
+
+    def items(self):
+        return Manufacturer.objects.all()
+
+
+class ViewSitemap(Sitemap):
+    """Google's XML sitemap for shop views without a model: the manufacturer list and the contact form."""
+
+    changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("view", {}).get("changefreq", "monthly")
+    priority = getattr(settings, "LFS_SITEMAPS", {}).get("view", {}).get("priority", 0.5)
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("view", {}).get("protocol", None)
+
+    def items(self):
+        return ["lfs_manufacturers", "lfs_contact_form"]
+
+    def location(self, obj):
+        return reverse(obj)

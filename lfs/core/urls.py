@@ -63,6 +63,20 @@ except (AttributeError, KeyError, ImportError):
 
     shop_sitemap = ShopSitemap
 
+try:
+    manufacturer_sitemap = import_symbol(settings.LFS_SITEMAPS["manufacturer"]["sitemap"])
+except (AttributeError, KeyError, ImportError):
+    from .sitemaps import ManufacturerSitemap
+
+    manufacturer_sitemap = ManufacturerSitemap
+
+try:
+    view_sitemap = import_symbol(settings.LFS_SITEMAPS["view"]["sitemap"])
+except (AttributeError, KeyError, ImportError):
+    from .sitemaps import ViewSitemap
+
+    view_sitemap = ViewSitemap
+
 urlpatterns += [
     re_path(
         r"^sitemap.xml$",
@@ -73,6 +87,8 @@ urlpatterns += [
                 "categories": category_sitemap,
                 "pages": page_sitemap,
                 "shop": shop_sitemap,
+                "manufacturers": manufacturer_sitemap,
+                "views": view_sitemap,
             }
         },
     ),
