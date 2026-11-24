@@ -285,12 +285,20 @@ class SiteMapsTestCase(TestCase):
         self.assertContains(result, "<changefreq>weekly</changefreq>")
         self.assertContains(result, "http://")
 
-    def test_sitemap_lists_manufacturers_their_list_and_the_contact_form(self):
+    def test_sitemap_lists_manufacturers_with_products_their_list_and_the_contact_form(self):
         from lfs.manufacturer.models import Manufacturer
 
-        Manufacturer.objects.create(name="auma", slug="auma")
+        from lfs.catalog.models import Product
+
+        auma = Manufacturer.objects.create(name="auma", slug="auma")
+        Product.objects.create(name="Zaun", slug="zaun", active=True, manufacturer=auma)
+        remmers = Manufacturer.objects.create(name="Remmers", slug="remmers")
+        Product.objects.create(name="Lasur", slug="lasur", active=False, manufacturer=remmers)
+        Manufacturer.objects.create(name="menz", slug="menz")
         result = self.client.get("/sitemap.xml")
-        self.assertContains(result, "/manufacturer-auma/</loc>")
+        self.assertContains(result, "/manufacturer-auma/</loc>", count=1)
+        self.assertNotContains(result, "/manufacturer-remmers/")
+        self.assertNotContains(result, "/manufacturer-menz/")
         self.assertContains(result, "/manufacturers/</loc>")
         self.assertContains(result, "/contact</loc>")
 

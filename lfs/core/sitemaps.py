@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
+from lfs.catalog.settings import VARIANT
 from lfs.core.models import Shop
 from lfs.manufacturer.models import Manufacturer
 from lfs.page.models import Page
@@ -70,8 +71,9 @@ class ShopSitemap(Sitemap):
 
 
 class ManufacturerSitemap(Sitemap):
-    """Google's XML sitemap for manufacturers.
+    """Google's XML sitemap for manufacturers that have active products.
 
+    A manufacturer without them has an empty page, which should not be offered for search results.
     No lastmod: manufacturers have no modification date, and Google uses lastmod only if it is accurate.
     """
 
@@ -80,7 +82,9 @@ class ManufacturerSitemap(Sitemap):
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("manufacturer", {}).get("protocol", None)
 
     def items(self):
-        return Manufacturer.objects.all()
+        # The products a manufacturer page shows (Manufacturer.get_all_products).
+        shown = Product.objects.filter(active=True).exclude(sub_type=VARIANT)
+        return Manufacturer.objects.filter(products__in=shown).distinct()
 
 
 class ViewSitemap(Sitemap):
