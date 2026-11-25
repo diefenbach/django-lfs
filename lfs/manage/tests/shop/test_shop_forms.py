@@ -5,6 +5,10 @@ from lfs.core.models import Shop
 from lfs.manage.shop.forms import ShopDataForm, ShopDefaultValuesForm
 
 
+# The return policy fields of ShopDefaultValuesForm, as the form posts them.
+RETURNS = {"return_days": 14, "return_fees": "FreeReturn", "return_method": "ReturnByMail", "return_policy_url": ""}
+
+
 class TestShopDataForm:
     """Test ShopDataForm validation and behavior."""
 
@@ -273,6 +277,10 @@ class TestShopDefaultValuesForm:
             "invoice_countries",
             "shipping_countries",
             "delivery_time",
+            "return_days",
+            "return_fees",
+            "return_method",
+            "return_policy_url",
         )
         assert ShopDefaultValuesForm.Meta.fields == expected_fields
 
@@ -299,6 +307,7 @@ class TestShopDefaultValuesForm:
             "delivery_time": None,
             "invoice_countries": [countries[0].id, countries[1].id],
             "shipping_countries": [countries[0].id, countries[2].id],
+            **RETURNS,
         }
 
         form = ShopDefaultValuesForm(data=data, instance=shop)
@@ -312,6 +321,7 @@ class TestShopDefaultValuesForm:
             "price_calculator": "lfs.gross_price.calculator.GrossPriceCalculator",
             "invoice_countries": [countries[0].id],
             "shipping_countries": [countries[0].id],
+            **RETURNS,
         }
 
         form = ShopDefaultValuesForm(data=data, instance=shop)
@@ -323,6 +333,7 @@ class TestShopDefaultValuesForm:
             "price_calculator": "lfs.gross_price.calculator.GrossPriceCalculator",
             "invoice_countries": [countries[0].id],
             "shipping_countries": [countries[0].id],
+            **RETURNS,
         }
 
         form = ShopDefaultValuesForm(data=data)
@@ -338,6 +349,7 @@ class TestShopDefaultValuesForm:
             "price_calculator": "lfs.net_price.calculator.NetPriceCalculator",
             "invoice_countries": [countries[0].id],
             "shipping_countries": [countries[0].id],
+            **RETURNS,
         }
 
         form = ShopDefaultValuesForm(data=data, instance=shop)
@@ -353,6 +365,7 @@ class TestShopDefaultValuesForm:
             "price_calculator": "lfs.gross_price.calculator.GrossPriceCalculator",
             "invoice_countries": [countries[0].id, countries[1].id, countries[2].id],
             "shipping_countries": [countries[0].id, countries[1].id],
+            **RETURNS,
         }
 
         form = ShopDefaultValuesForm(data=data)

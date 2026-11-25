@@ -12,7 +12,17 @@ from PIL import Image as PILImage
 
 from lfs.catalog.models import Image, Product, ProductPropertyValue, Property, PropertyGroup, PropertyOption
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, PROPERTY_SELECT_FIELD, PROPERTY_VALUE_TYPE_VARIANT, VARIANT
-from lfs.core.templatetags.lfs_seo_tags import image_size, own_sku, thumbnail_size, variant_aspect, variant_name
+from lfs.core.models import Country
+from lfs.core.templatetags.lfs_seo_tags import (
+    image_size,
+    merchant_return_policy,
+    own_sku,
+    thumbnail_size,
+    variant_aspect,
+    variant_name,
+)
+from lfs.core.utils import get_default_shop
+from lfs.manufacturer.models import Manufacturer
 
 
 def png(width, height):
@@ -107,3 +117,68 @@ def test_other_variants_show_the_parent_image_without_an_own_one(parent, setting
     first, _ = parent.get_variants()
     other = json.loads(render("{% product_group_json product %}", product=first))["hasVariant"][1]
     assert other["image"].startswith("https://testserver/media/") and ".400x400." in other["image"]
+
+
+def test_other_variants_show_the_parent_short_description_without_an_own_one(parent):
+    parent.short_description = "<p>Lärche, <b>glatt</b></p>"
+    parent.save()
+    first, _ = parent.get_variants()
+    other = json.loads(render("{% product_group_json product %}", product=first))["hasVariant"][1]
+    assert other["description"] == "Lärche, glatt"
+
+
+def test_other_variants_have_the_brand_of_the_parent_manufacturer(parent):
+    parent.manufacturer = Manufacturer.objects.create(name="Holzmüller", slug="holzmueller")
+    parent.save()
+    first, _ = parent.get_variants()
+    other = json.loads(render("{% product_group_json product %}", product=first))["hasVariant"][1]
+    assert other["brand"] == {"@type": "Brand", "name": "Holzmüller"}
+
+
+@pytest.fixture
+def returns(shop):
+    """The shop ships to Germany and Austria and takes products back by mail within 14 days for free."""
+    shop = get_default_shop()
+    shop.shipping_countries.set(
+        [Country.objects.get_or_create(code=code, defaults={"name": code})[0] for code in ("de", "at")]
+    )
+    shop.return_policy_url = "/page/widerrufsbelehrung/"
+    shop.save()
+    return shop
+
+
+def test_return_policy_comes_from_the_shop(returns):
+    policy = merchant_return_policy(RequestFactory().get("/"))
+    assert policy == {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": ["AT", "DE"],
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 14,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn",
+        "refundType": "https://schema.org/FullRefund",
+        "merchantReturnLink": "https://testserver/page/widerrufsbelehrung/",
+    }
+
+
+def test_shop_without_returns_says_so(returns):
+    returns.return_days = 0
+    returns.return_policy_url = ""
+    returns.save()
+    policy = merchant_return_policy(RequestFactory().get("/"))
+    assert policy == {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": ["AT", "DE"],
+        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+    }
+
+
+def test_other_variants_offer_the_shop_return_policy(parent, returns):
+    first, _ = parent.get_variants()
+    other = json.loads(render("{% product_group_json product %}", product=first))["hasVariant"][1]
+    assert other["offers"]["hasMerchantReturnPolicy"]["merchantReturnDays"] == 14
+
+
+def test_return_policy_tag_renders_json_for_the_themes(returns):
+    policy = json.loads(render("{% merchant_return_policy_json %}"))
+    assert policy["returnFees"] == "https://schema.org/FreeReturn"

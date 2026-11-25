@@ -87,6 +87,13 @@ class ShopDefaultValuesForm(forms.ModelForm):
                 "invoice_countries",
                 "shipping_countries",
             ),
+            Fieldset(
+                _("Returns"),
+                "return_days",
+                "return_fees",
+                "return_method",
+                "return_policy_url",
+            ),
         )
 
     class Meta:
@@ -97,4 +104,8 @@ class ShopDefaultValuesForm(forms.ModelForm):
             "invoice_countries",
             "shipping_countries",
             "delivery_time",
+            "return_days",
+            "return_fees",
+            "return_method",
+            "return_policy_url",
         )

@@ -4762,3 +4762,47 @@ msgstr "Bestseller"
 
 msgid "Quantity Sold"
 msgstr "Verkaufte Menge"
+
+#: core/models.py
+msgid "Free return"
+msgstr "Kostenlose Rücksendung"
+
+#: core/models.py
+msgid "Customer pays the return"
+msgstr "Kunde trägt die Rücksendekosten"
+
+#: core/models.py
+msgid "By mail"
+msgstr "Per Post"
+
+#: core/models.py
+msgid "In store"
+msgstr "Im Laden"
+
+#: core/models.py
+msgid "Return days"
+msgstr "Rückgabefrist in Tagen"
+
+#: core/models.py
+msgid "Days to return a product; 0 means no returns."
+msgstr "Tage, in denen ein Produkt zurückgegeben werden kann; 0 heißt keine Rückgabe."
+
+#: core/models.py
+msgid "Return fees"
+msgstr "Rücksendekosten"
+
+#: core/models.py
+msgid "Return method"
+msgstr "Rückgabeweg"
+
+#: core/models.py
+msgid "Return policy page"
+msgstr "Seite mit der Widerrufsbelehrung"
+
+#: core/models.py
+msgid "Path or URL of the page with the return policy, e.g. /page/widerrufsbelehrung/."
+msgstr "Pfad oder URL der Seite mit der Widerrufsbelehrung, z. B. /page/widerrufsbelehrung/."
+
+#: manage/shop/forms.py
+msgid "Returns"
+msgstr "Rückgabe"

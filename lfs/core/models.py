@@ -11,6 +11,15 @@ from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import StaticBlock
 
+# schema.org values of MerchantReturnPolicy.returnFees and .returnMethod
+RETURN_FEES_CHOICES = [
+    ("FreeReturn", _("Free return")),
+    ("ReturnFeesCustomerResponsibility", _("Customer pays the return")),
+]
+RETURN_METHOD_CHOICES = [
+    ("ReturnByMail", _("By mail")),
+    ("ReturnInStore", _("In store")),
+]
 
 class Country(models.Model):
     """Holds country relevant data for the shop."""
@@ -209,6 +218,21 @@ class Shop(models.Model):
     meta_title = models.CharField(_("Meta title"), blank=True, default="<name>", max_length=80)
     meta_keywords = models.TextField(_("Meta keywords"), blank=True)
     meta_description = models.TextField(_("Meta description"), blank=True)
+
+    # Return policy, written as schema.org MerchantReturnPolicy into every product offer.
+    return_days = models.PositiveSmallIntegerField(
+        _("Return days"), default=14, help_text=_("Days to return a product; 0 means no returns.")
+    )
+    return_fees = models.CharField(_("Return fees"), choices=RETURN_FEES_CHOICES, default="FreeReturn", max_length=40)
+    return_method = models.CharField(
+        _("Return method"), choices=RETURN_METHOD_CHOICES, default="ReturnByMail", max_length=40
+    )
+    return_policy_url = models.CharField(
+        _("Return policy page"),
+        blank=True,
+        max_length=255,
+        help_text=_("Path or URL of the page with the return policy, e.g. /page/widerrufsbelehrung/."),
+    )
 
     class Meta:
         permissions = (("manage_shop", "Manage shop"),)

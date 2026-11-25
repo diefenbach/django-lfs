@@ -8,7 +8,10 @@ import json
 from django.core.files.images import get_image_dimensions
 from django.template import Library
 from django.templatetags.static import static
+from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
+
+from lfs.core.utils import get_default_shop
 
 register = Library()
 
@@ -116,6 +119,46 @@ def _aspects(variant):
     return aspects
 
 
+def _json(data):
+    """Return ``data`` as JSON for a script element; "<" is escaped so that no value can close it."""
+    return mark_safe(json.dumps(data, ensure_ascii=False, indent=4).replace("<", "\\u003c"))
+
+
+def merchant_return_policy(request):
+    """Return the shop's schema.org MerchantReturnPolicy for product offers.
+
+    Google expects it in every offer of a merchant listing, including the variants of a ProductGroup.
+    The countries are the shop's shipping countries.
+    """
+    shop = get_default_shop(request)
+    policy = {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": sorted(country.code.upper() for country in shop.shipping_countries.all()),
+    }
+    if not shop.return_days:
+        policy["returnPolicyCategory"] = "https://schema.org/MerchantReturnNotPermitted"
+        return policy
+    policy.update({
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": shop.return_days,
+        "returnMethod": f"https://schema.org/{shop.return_method}",
+        "returnFees": f"https://schema.org/{shop.return_fees}",
+        # The statutory right of withdrawal refunds the full price.
+        "refundType": "https://schema.org/FullRefund",
+    })
+    link = shop.return_policy_url
+    if link:
+        # Like the other URLs here always https, which request.build_absolute_uri behind a proxy is not.
+        policy["merchantReturnLink"] = f"https://{request.get_host()}{link}" if link.startswith("/") else link
+    return policy
+
+
+@register.simple_tag(takes_context=True)
+def merchant_return_policy_json(context):
+    """Return the shop's MerchantReturnPolicy as JSON, for the offer of a theme's Product block."""
+    return _json(merchant_return_policy(context["request"]))
+
+
 @register.simple_tag(takes_context=True)
 def product_group_json(context, product):
     """Return the JSON-LD ProductGroup of a variant's parent with all its variants, or "" for other products.
@@ -130,6 +173,7 @@ def product_group_json(context, product):
     base = f"https://{request.get_host()}"
     parent = product.parent
     variants = list(parent.get_variants())
+    return_policy = merchant_return_policy(request)
     entries = []
     aspects_seen = []
     for variant in variants:
@@ -145,6 +189,11 @@ def product_group_json(context, product):
         image = variant.get_image()
         if image and image.image:
             entry["image"] = f"{base}{image.image.url_400x400}"
+        description = strip_tags(variant.get_short_description() or "").strip()
+        if description:
+            entry["description"] = description
+        if variant.get_manufacturer():
+            entry["brand"] = {"@type": "Brand", "name": variant.get_manufacturer().name}
         if own_sku(variant):
             entry["sku"] = own_sku(variant)
         entry.update(aspects)
@@ -154,6 +203,7 @@ def product_group_json(context, product):
             "priceCurrency": "EUR",
             "price": f"{price:.2f}",
             "availability": f"https://schema.org/{'InStock' if variant.is_deliverable() else 'OutOfStock'}",
+            "hasMerchantReturnPolicy": return_policy,
         }
         entries.append(entry)
     group = {
@@ -169,5 +219,4 @@ def product_group_json(context, product):
     if aspects_seen:
         group["variesBy"] = [f"https://schema.org/{aspect}" for aspect in aspects_seen]
     group["hasVariant"] = entries
-    # "<" escaped so that no value can close the script element.
-    return mark_safe(json.dumps(group, ensure_ascii=False, indent=4).replace("<", "\\u003c"))
+    return _json(group)
