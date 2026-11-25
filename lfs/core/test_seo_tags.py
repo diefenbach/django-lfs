@@ -98,3 +98,12 @@ def test_product_group_lists_all_variants_and_references_the_shown_one(parent):
 
 def test_product_without_variants_has_no_group(parent):
     assert render("{% product_group_json product %}", product=parent) == ""
+
+
+def test_other_variants_show_the_parent_image_without_an_own_one(parent, settings, tmp_path):
+    # Google rejects a variant Product with an offer but without image as invalid.
+    settings.MEDIA_ROOT = tmp_path
+    Image(content=parent, title="Diele", position=0).image.save("diele.png", png(800, 600))
+    first, _ = parent.get_variants()
+    other = json.loads(render("{% product_group_json product %}", product=first))["hasVariant"][1]
+    assert other["image"].startswith("https://testserver/media/") and ".400x400." in other["image"]

@@ -141,6 +141,10 @@ def product_group_json(context, product):
             continue
         price = variant.get_for_sale_price(request) if variant.get_for_sale() else variant.get_price(request)
         entry = {"@type": "Product", "@id": f"{url}#product", "name": variant_name(variant), "url": url}
+        # Google rejects a Product with an offer but without image; variants without own images show the parent's.
+        image = variant.get_image()
+        if image and image.image:
+            entry["image"] = f"{base}{image.image.url_400x400}"
         if own_sku(variant):
             entry["sku"] = own_sku(variant)
         entry.update(aspects)
