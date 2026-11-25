@@ -182,3 +182,11 @@ def test_other_variants_offer_the_shop_return_policy(parent, returns):
 def test_return_policy_tag_renders_json_for_the_themes(returns):
     policy = json.loads(render("{% merchant_return_policy_json %}"))
     assert policy["returnFees"] == "https://schema.org/FreeReturn"
+
+
+def test_product_group_has_the_parent_short_description(parent):
+    parent.short_description = "<p>Lärche, <b>glatt</b></p>"
+    parent.save()
+    first, _ = parent.get_variants()
+    group = json.loads(render("{% product_group_json product %}", product=first))
+    assert group["description"] == "Lärche, glatt"

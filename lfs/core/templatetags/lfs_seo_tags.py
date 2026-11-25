@@ -124,6 +124,11 @@ def _json(data):
     return mark_safe(json.dumps(data, ensure_ascii=False, indent=4).replace("<", "\\u003c"))
 
 
+def _description(product):
+    """Return the product's short description as plain text; a variant without its own gets the parent's."""
+    return strip_tags(product.get_short_description() or "").strip()
+
+
 def merchant_return_policy(request):
     """Return the shop's schema.org MerchantReturnPolicy for product offers.
 
@@ -189,9 +194,8 @@ def product_group_json(context, product):
         image = variant.get_image()
         if image and image.image:
             entry["image"] = f"{base}{image.image.url_400x400}"
-        description = strip_tags(variant.get_short_description() or "").strip()
-        if description:
-            entry["description"] = description
+        if _description(variant):
+            entry["description"] = _description(variant)
         if variant.get_manufacturer():
             entry["brand"] = {"@type": "Brand", "name": variant.get_manufacturer().name}
         if own_sku(variant):
@@ -214,6 +218,8 @@ def product_group_json(context, product):
         "url": f"{base}{parent.get_absolute_url()}",
         "productGroupID": parent.get_sku() or str(parent.pk),
     }
+    if _description(parent):
+        group["description"] = _description(parent)
     if parent.get_manufacturer():
         group["brand"] = {"@type": "Brand", "name": parent.get_manufacturer().name}
     if aspects_seen:
