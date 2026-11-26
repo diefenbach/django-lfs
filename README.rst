@@ -41,7 +41,8 @@ The management interface bundles third-party libraries in
 
 * TinyMCE: GPL-2.0-or-later (``tinymce/license.md``); LFS configures it with
   ``license_key: 'gpl'``. A shop that distributes LFS with TinyMCE must follow
-  the GPL, or use a commercial TinyMCE license.
+  the GPL, or use a commercial TinyMCE license. The source code of the bundled
+  version (8.9.3) is at https://github.com/tinymce/tinymce/tree/8.9.3.
 * Bootstrap, Bootstrap Icons, flatpickr, SortableJS: MIT
 * htmx: 0BSD
 
