@@ -66,6 +66,7 @@ from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
 
 from reviews import utils as reviews_utils
+from lfs.settings import lfs_setting
 
 
 PRODUCT_TEMPLATES_CHOICES = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
@@ -77,19 +78,19 @@ def get_unique_id_str():
 
 
 LFS_UNITS = []
-for u in settings.LFS_UNITS:
+for u in lfs_setting("LFS_UNITS"):
     LFS_UNITS.append([u, u])
 
 LFS_PRICE_UNITS = []
-for u in settings.LFS_PRICE_UNITS:
+for u in lfs_setting("LFS_PRICE_UNITS"):
     LFS_PRICE_UNITS.append([u, u])
 
 LFS_BASE_PRICE_UNITS = []
-for u in settings.LFS_BASE_PRICE_UNITS:
+for u in lfs_setting("LFS_BASE_PRICE_UNITS"):
     LFS_BASE_PRICE_UNITS.append([u, u])
 
 LFS_PACKING_UNITS = []
-for u in settings.LFS_PACKING_UNITS:
+for u in lfs_setting("LFS_PACKING_UNITS"):
     LFS_PACKING_UNITS.append([u, u])
 
 
@@ -639,7 +640,7 @@ class Product(models.Model):
     )
     price = models.FloatField(_("Price"), default=0.0)
     price_calculator = models.CharField(
-        _("Price calculator"), null=True, blank=True, choices=settings.LFS_PRICE_CALCULATORS, max_length=255
+        _("Price calculator"), null=True, blank=True, choices=lfs_setting("LFS_PRICE_CALCULATORS"), max_length=255
     )
     effective_price = models.FloatField(_("Price"), blank=True)
     price_unit = models.CharField(_("Price unit"), blank=True, max_length=20, choices=LFS_PRICE_UNITS)

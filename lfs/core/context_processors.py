@@ -4,6 +4,7 @@ from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.core.utils import get_default_shop
 from django.conf import settings
 from django.urls import reverse
+from lfs.settings import lfs_setting
 
 
 def main(request):
@@ -14,7 +15,7 @@ def main(request):
         "SHOP": shop,
         "CART": cart,
         "ANON_ONLY": shop.checkout_type == CHECKOUT_TYPE_ANON,
-        "LFS_DOCS": settings.LFS_DOCS,
+        "LFS_DOCS": lfs_setting("LFS_DOCS"),
     }
     match = request.resolver_match
     if match and match.url_name in {"lfs_shop_view", "lfs_page_view", "lfs_pages", "lfs_contact_form"}:

@@ -31,6 +31,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
+from lfs.settings import lfs_setting
 
 
 def cart(request, template_name="lfs/cart/cart.html"):
@@ -410,7 +411,7 @@ def add_to_cart(request, product_id=None):
     cart.save()
 
     try:
-        url_name = settings.LFS_AFTER_ADD_TO_CART
+        url_name = lfs_setting("LFS_AFTER_ADD_TO_CART")
     except AttributeError:
         url_name = "lfs_added_to_cart"
 

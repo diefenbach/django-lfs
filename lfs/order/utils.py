@@ -13,6 +13,7 @@ from lfs.order.models import Order, OrderDeliveryTime
 from lfs.order.models import OrderItem
 from lfs.order.models import OrderItemPropertyValue
 from lfs.voucher.utils import delete_current_voucher_number
+from lfs.settings import lfs_setting
 
 
 def order_to_tracking_snapshot(order):
@@ -209,7 +210,7 @@ def add_order(request):
     # removed from the session if the thank you page has been called.
     request.session["order"] = order
 
-    ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+    ong = import_symbol(lfs_setting("LFS_ORDER_NUMBER_GENERATOR"))
     try:
         order_numbers = ong.objects.get(id="order_number")
     except ong.DoesNotExist:

@@ -30,6 +30,7 @@ from lfs.core.utils import LazyEncoder, atof, lfs_pagination
 from lfs.core.templatetags import lfs_tags
 from lfs.manufacturer.models import Manufacturer
 from lfs.shipping.utils import get_product_delivery_time
+from lfs.settings import lfs_setting
 
 
 def file_download(request, language=None, file_id=None):
@@ -635,8 +636,8 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     if slug in recent:
         recent.remove(slug)
     recent.insert(0, slug)
-    if len(recent) > settings.LFS_RECENT_PRODUCTS_LIMIT:
-        recent = recent[: settings.LFS_RECENT_PRODUCTS_LIMIT + 1]
+    if len(recent) > lfs_setting("LFS_RECENT_PRODUCTS_LIMIT"):
+        recent = recent[: lfs_setting("LFS_RECENT_PRODUCTS_LIMIT") + 1]
     request.session["RECENT_PRODUCTS"] = recent
 
     product_page_url = request.build_absolute_uri(product.get_absolute_url())

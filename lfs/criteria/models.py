@@ -14,6 +14,7 @@ from lfs import shipping
 from lfs.core.models import Country
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
+from lfs.settings import lfs_setting
 
 
 class Criterion(models.Model):
@@ -201,7 +202,7 @@ class Criterion(models.Model):
         Returns the name of the criterion as string.
         """
         klass = "%s.%s" % (self.__class__.__module__, self.__class__.__name__)
-        for x in settings.LFS_CRITERIA:
+        for x in lfs_setting("LFS_CRITERIA"):
             if x[0] == klass:
                 return x[1]
         return self.__class__.__name__
@@ -323,7 +324,7 @@ class Criterion(models.Model):
             )
 
         criteria = []
-        for criterion in settings.LFS_CRITERIA:
+        for criterion in lfs_setting("LFS_CRITERIA"):
             klass = criterion[0].split(".")[-1]
             if self.__class__.__name__ == klass:
                 selected = True

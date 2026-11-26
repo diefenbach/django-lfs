@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from lfs.settings import lfs_setting
 
 SHOP_DESCRIPTION = """
 <h1 class="first-heading">Welcome to LFS!</h1>
@@ -119,7 +120,7 @@ class Command(BaseCommand):
         p.save()
 
         # Order Numbers
-        ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+        ong = import_symbol(lfs_setting("LFS_ORDER_NUMBER_GENERATOR"))
         ong.objects.create(id="order_number")
 
         # Application object
