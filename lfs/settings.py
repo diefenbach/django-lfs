@@ -59,7 +59,6 @@ LFS_APPS = [
     "lfs.voucher",
     "lfs_contact",
     "lfs_order_numbers",
-    "lfs_paypal",
 ]
 
 _UNITS = ["l", "m", "qm", "cm", "lfm", "kg", "pcs."]
