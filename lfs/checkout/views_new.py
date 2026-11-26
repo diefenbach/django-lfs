@@ -7,7 +7,7 @@ from django.urls import reverse
 import lfs
 from lfs.addresses.utils import AddressManagement
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH, ONE_PAGE_CHECKOUT_FORM
-from lfs.checkout.views import cart_inline, payment_inline, shipping_inline, voucher_inline
+from lfs.checkout.views import cart_inline, payment_inline, shipping_inline, terms_confirmed, voucher_inline
 from lfs.voucher.models import Voucher
 from lfs.voucher.utils import set_current_voucher_number
 
@@ -124,7 +124,8 @@ def check_and_pay(request, template_name="lfs/checkout/new_check_and_pay.html"):
 
     if request.method == "POST":
         checkout_form = CheckoutFormClass(request.POST)
-        if checkout_form.is_valid():
+        form_valid = checkout_form.is_valid()
+        if terms_confirmed(request, checkout_form) and form_valid:
             return lfs.payment.utils.process_payment(request)
     else:
         checkout_form = CheckoutFormClass()
