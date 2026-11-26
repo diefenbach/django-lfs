@@ -1,9 +1,10 @@
 from typing import Dict, List, Tuple, Any, Optional
 
+from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, TemplateView
@@ -48,8 +49,9 @@ class ShopTabMixin:
             ("order_numbers", reverse("lfs_manage_shop_order_numbers")),
             ("seo", reverse("lfs_manage_shop_seo")),
             ("portlets", reverse("lfs_manage_shop_portlets")),
-            ("carousel", reverse("lfs_manage_shop_carousel")),
         ]
+        if apps.is_installed("lfs_carousel"):
+            tabs.append(("carousel", reverse("lfs_manage_shop_carousel")))
         return tabs
 
 
@@ -185,10 +187,16 @@ class ShopPortletsView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
 
 
 class ShopCarouselView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
-    """View for carousel tab of Shop."""
+    """View for carousel tab of Shop; 404 unless the optional lfs_carousel add-on is installed."""
 
     tab_name = "carousel"
     permission_required = "core.manage_shop"
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Renders the tab, or raises Http404 when lfs_carousel is not installed."""
+        if not apps.is_installed("lfs_carousel"):
+            raise Http404
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with carousel management."""
