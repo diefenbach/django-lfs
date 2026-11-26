@@ -41,9 +41,9 @@ def test_shop_works_without_lfs_settings(client, shop, without_lfs_settings):
 
 
 def test_management_works_without_lfs_settings(admin_client, shop, without_lfs_settings):
-    assert admin_client.get(reverse("lfs_manage_shop_order_numbers")).status_code == 200
+    order_numbers_page = admin_client.get(reverse("lfs_manage_shop_order_numbers")).content.decode()
+    assert 'name="format"' in order_numbers_page
     assert "CartPriceCriterion" in admin_client.get(reverse("lfs_manage_add_criterion")).content.decode()
-
 
 
 def test_management_has_no_help_link_without_lfs_docs(admin_client, shop, without_lfs_settings):
