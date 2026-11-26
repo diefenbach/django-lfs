@@ -1,11 +1,11 @@
 # django imports
-from django.conf import settings
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
 from django.views import View
 
 # lfs imports
 from lfs.core.utils import import_symbol
+from lfs.settings import lfs_setting
 
 
 class AddCriterionView(PermissionRequiredMixin, View):
@@ -17,13 +17,13 @@ class AddCriterionView(PermissionRequiredMixin, View):
 
     def get(self, request):
         try:
-            default_criterion = settings.LFS_CRITERIA[0]
+            default_criterion = lfs_setting("LFS_CRITERIA")[0]
             default_criterion = import_symbol(default_criterion[0])
             result = default_criterion().render(request, 10)
         except:
             result = ""
 
-        default_criterion = settings.LFS_CRITERIA[0]
+        default_criterion = lfs_setting("LFS_CRITERIA")[0]
         default_criterion = import_symbol(default_criterion[0])
         result = default_criterion().render(request, 10)
 

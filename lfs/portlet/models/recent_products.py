@@ -1,6 +1,5 @@
 # django imports
 from django import forms
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 
@@ -10,6 +9,7 @@ from portlets.models import Portlet
 # lfs imports
 from lfs.catalog.models import Product
 from lfs.caching.utils import lfs_get_object
+from lfs.settings import lfs_setting
 
 
 class RecentProductsPortlet(Portlet):
@@ -25,12 +25,12 @@ class RecentProductsPortlet(Portlet):
         """Renders the portlet as html."""
         object = context.get("product")
         slug_not_to_display = ""
-        limit = settings.LFS_RECENT_PRODUCTS_LIMIT
+        limit = lfs_setting("LFS_RECENT_PRODUCTS_LIMIT")
         if object:
             ctype = ContentType.objects.get_for_model(object)
             if ctype.name == "product":
                 slug_not_to_display = object.slug
-                limit = settings.LFS_RECENT_PRODUCTS_LIMIT + 1
+                limit = lfs_setting("LFS_RECENT_PRODUCTS_LIMIT") + 1
 
         request = context.get("request")
 

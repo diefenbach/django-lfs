@@ -4,7 +4,6 @@ from django.forms.utils import ErrorList
 from django.forms.widgets import Select, HiddenInput
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, Div
@@ -20,6 +19,7 @@ from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.core.widgets.checkbox import LFSCheckboxInput
 from lfs.utils.widgets import SelectImage
+from lfs.settings import lfs_setting
 
 
 class ProductFilterForm(forms.Form):
@@ -72,7 +72,7 @@ class ProductFilterForm(forms.Form):
 
         # Build price calculator choices with default indicator
         calc_choices = [("", _("All Calculators"))]
-        for calc in settings.LFS_PRICE_CALCULATORS:
+        for calc in lfs_setting("LFS_PRICE_CALCULATORS"):
             if calc[0] == default_calc:
                 label = f"{calc[1]} (Default)"
             else:

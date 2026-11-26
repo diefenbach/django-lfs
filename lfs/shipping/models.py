@@ -1,5 +1,4 @@
 # django imports
-from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -11,6 +10,7 @@ from lfs.tax.models import Tax
 
 # Load logger
 import logging
+from lfs.settings import lfs_setting
 
 logger = logging.getLogger(__name__)
 
@@ -82,8 +82,8 @@ class ShippingMethod(models.Model, Criteria):
     price_calculator = models.CharField(
         _("Price Calculator"),
         max_length=200,
-        choices=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS,
-        default=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS[0][0],
+        choices=lfs_setting("LFS_SHIPPING_METHOD_PRICE_CALCULATORS"),
+        default=lfs_setting("LFS_SHIPPING_METHOD_PRICE_CALCULATORS")[0][0],
     )
 
     objects = ActiveShippingMethodManager()

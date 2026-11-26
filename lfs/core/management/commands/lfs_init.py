@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.conf import settings
+from lfs.settings import lfs_setting
 
 SHOP_DESCRIPTION = """
 <h1 class="first-heading">Welcome to LFS!</h1>
@@ -32,11 +32,7 @@ class Command(BaseCommand):
         from lfs.core.utils import import_symbol
 
         from portlets.models import Slot
-        from portlets.models import PortletAssignment
 
-        from lfs.portlet.models import CartPortlet
-        from lfs.portlet.models import CategoriesPortlet
-        from lfs.portlet.models import PagesPortlet
         from lfs.payment.models import PaymentMethod
         from lfs.payment.settings import PM_BANK
         from lfs.page.models import Page
@@ -70,18 +66,9 @@ class Command(BaseCommand):
         )
         Action.objects.create(group=footer, title="Imprint", link="/page/imprint", active=True, position=2)
 
-        # Portlets
-        left_slot = Slot.objects.create(name="Left")
-        right_slot = Slot.objects.create(name="Right")
-
-        cart_portlet = CartPortlet.objects.create(title="Cart")
-        PortletAssignment.objects.create(slot=right_slot, content=shop, portlet=cart_portlet)
-
-        categories_portlet = CategoriesPortlet.objects.create(title="Categories")
-        PortletAssignment.objects.create(slot=left_slot, content=shop, portlet=categories_portlet)
-
-        pages_portlet = PagesPortlet.objects.create(title="Information")
-        PortletAssignment.objects.create(slot=left_slot, content=shop, portlet=pages_portlet)
+        # Slots for portlets. The default theme navigates with menus, so no portlets are assigned.
+        Slot.objects.create(name="Left")
+        Slot.objects.create(name="Right")
 
         # Payment methods
         pm = PaymentMethod.objects.create(name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
@@ -119,7 +106,7 @@ class Command(BaseCommand):
         p.save()
 
         # Order Numbers
-        ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+        ong = import_symbol(lfs_setting("LFS_ORDER_NUMBER_GENERATOR"))
         ong.objects.create(id="order_number")
 
         # Application object

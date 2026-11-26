@@ -26,7 +26,7 @@ class TestAddCriterion:
         assert AddCriterionView.permission_required == "core.manage_shop"
 
     @patch(
-        "lfs.manage.criteria.views.settings.LFS_CRITERIA",
+        "django.conf.settings.LFS_CRITERIA",
         [
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
             ["lfs.criteria.models.CountryCriterion", "Country"],
@@ -52,7 +52,7 @@ class TestAddCriterion:
         assert mock_import_symbol.call_count == 2
         mock_criterion_instance.render.assert_called_with(mock_request, 10)
 
-    @patch("lfs.manage.criteria.views.settings.LFS_CRITERIA", [])
+    @patch("django.conf.settings.LFS_CRITERIA", [])
     def test_add_criterion_returns_empty_when_no_criteria_configured(self, mock_request):
         """Should return empty response when LFS_CRITERIA is empty."""
         # Act
@@ -60,7 +60,7 @@ class TestAddCriterion:
             add_criterion(mock_request)
 
     @patch(
-        "lfs.manage.criteria.views.settings.LFS_CRITERIA",
+        "django.conf.settings.LFS_CRITERIA",
         [
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
         ],
@@ -76,7 +76,7 @@ class TestAddCriterion:
             add_criterion(mock_request)
 
     @patch(
-        "lfs.manage.criteria.views.settings.LFS_CRITERIA",
+        "django.conf.settings.LFS_CRITERIA",
         [
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
         ],
@@ -251,7 +251,7 @@ class TestCriteriaViewsIntegration:
     """Integration tests for criteria views."""
 
     @patch(
-        "lfs.manage.criteria.views.settings.LFS_CRITERIA",
+        "django.conf.settings.LFS_CRITERIA",
         [
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
             ["lfs.criteria.models.CountryCriterion", "Country"],
@@ -326,7 +326,7 @@ class TestCriteriaViewsIntegration:
 class TestCriteriaViewsErrorHandling:
     """Test error handling in criteria views."""
 
-    @patch("lfs.manage.criteria.views.settings.LFS_CRITERIA", None)
+    @patch("django.conf.settings.LFS_CRITERIA", None)
     def test_add_criterion_handles_none_criteria_setting(self, mock_request):
         """Should handle None LFS_CRITERIA setting gracefully."""
         # Act
@@ -334,7 +334,7 @@ class TestCriteriaViewsErrorHandling:
             add_criterion(mock_request)
 
     @patch(
-        "lfs.manage.criteria.views.settings.LFS_CRITERIA",
+        "django.conf.settings.LFS_CRITERIA",
         [
             ["invalid.module.Class", "Invalid Criterion"],
         ],

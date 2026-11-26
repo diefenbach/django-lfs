@@ -1,7 +1,6 @@
 from typing import Dict, List, Tuple, Any, Optional
 
 from django.apps import apps
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
@@ -15,6 +14,7 @@ from lfs.core.signals import shop_changed
 from lfs.core.utils import import_symbol
 from lfs.manage.portlets.views import PortletsInlineView
 from lfs.manage.shop.forms import ShopDataForm, ShopDefaultValuesForm
+from lfs.settings import lfs_setting
 
 
 class ShopTabMixin:
@@ -120,7 +120,7 @@ class ShopOrderNumbersView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         shop = self.get_shop()
 
-        ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+        ong = import_symbol(lfs_setting("LFS_ORDER_NUMBER_GENERATOR"))
         try:
             order_number = ong.objects.get(id="order_number")
         except ong.DoesNotExist:
@@ -134,7 +134,7 @@ class ShopOrderNumbersView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
         """Handles order numbers form submission."""
         shop = self.get_shop()
 
-        ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+        ong = import_symbol(lfs_setting("LFS_ORDER_NUMBER_GENERATOR"))
         order_number = ong.objects.get(id="order_number")
         form = order_number.get_form(instance=order_number, data=request.POST)
 
