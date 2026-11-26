@@ -7,7 +7,7 @@ SHOP_DESCRIPTION = """
 <a href="https://www.djangoproject.com/">Django</a>.</p>
 
 <h2>Get started</h2>
-<p>Go to the <a href="/manage/">management interface</a> to add categories, products, and pages.
+<p>Go to the <a href="/manage/dashboard/">management interface</a> to add categories, products, and pages.
 This text is the shop's description; you can change it there under Shop.</p>
 
 <h2>Information &amp; help</h2>
