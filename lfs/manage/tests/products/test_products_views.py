@@ -1,3 +1,6 @@
+import importlib.util
+
+import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -30,6 +33,11 @@ from lfs.manage.products.views import (
     ApplyProductFiltersView,
     ResetProductFiltersView,
     ProductTabMixin,
+)
+
+# The bulk prices tab uses the optional lfs_bulk_prices add-on; these tests need it installed.
+requires_bulk_prices = pytest.mark.skipif(
+    importlib.util.find_spec("lfs_bulk_prices") is None, reason="needs the lfs_bulk_prices add-on"
 )
 
 User = get_user_model()
@@ -1499,6 +1507,7 @@ class TestProductBulkPricesView:
         """Should use 'bulk_prices' as tab name."""
         assert ProductBulkPricesView.tab_name == "bulk_prices"
 
+    @requires_bulk_prices
     def test_get_context_data_basic_structure(self, rf, product):
         """Should return context with basic structure."""
         factory = RequestFactory()
@@ -1518,6 +1527,7 @@ class TestProductBulkPricesView:
         # Currency can be different depending on settings
         assert isinstance(context["currency"], str)
 
+    @requires_bulk_prices
     def test_get_context_data_with_bulk_prices(self, rf, product):
         """Should return existing bulk prices."""
         from lfs_bulk_prices.models import BulkPrice
@@ -1541,6 +1551,7 @@ class TestProductBulkPricesView:
         assert context["prices"][0] == bulk_price1
         assert context["prices"][1] == bulk_price2
 
+    @requires_bulk_prices
     def test_post_save_bulk_prices(self, rf, product, mocker):
         """Should save bulk prices from form data."""
         factory = RequestFactory()
@@ -1574,6 +1585,7 @@ class TestProductBulkPricesView:
         # Should add success message
         mock_messages_success.assert_called_once_with(request, "Bulk prices have been saved.")
 
+    @requires_bulk_prices
     def test_post_handles_invalid_amount(self, rf, product, mocker):
         """Should handle invalid amount values gracefully."""
         factory = RequestFactory()
@@ -1595,6 +1607,7 @@ class TestProductBulkPricesView:
         assert isinstance(response, HttpResponseRedirect)
         mock_messages_success.assert_called_once_with(request, "Bulk prices have been saved.")
 
+    @requires_bulk_prices
     def test_post_handles_invalid_prices(self, rf, product, mocker):
         """Should handle invalid price values gracefully."""
         factory = RequestFactory()
@@ -2512,6 +2525,7 @@ class TestProductTabMixin:
         names = list(view._get_products_queryset().values_list("name", flat=True))
         assert names == [configurable.name]
 
+    @requires_bulk_prices
     def test_get_products_queryset_filters_by_session_bulkprice_calculator(self, product, shop):
         """Should filter sidebar products by bulk prices calculator."""
         bulk_product = Product.objects.create(
