@@ -56,6 +56,12 @@ Contributors
 
   Added south migrations to LFS.
 
+* Peter Wilfahrt (p-w, https://pw.is)
+
+  Contributor.
+
+  Reported and fixed missing permission checks on the property group sort endpoints.
+
 Ressources
 ----------
 
