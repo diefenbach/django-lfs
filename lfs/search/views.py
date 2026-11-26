@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db import connection
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ngettext
@@ -34,8 +34,8 @@ def product_search_query(q: str) -> Q:
     return Q(active=True) & matches
 
 
-def livesearch(request, template_name="lfs/search/livesearch_results.html"):
-    """ """
+def livesearch(request: HttpRequest, template_name: str = "lfs/search/livesearch_results.html") -> HttpResponse:
+    """Return the first five active products matching GET ``q`` as rendered HTML inside JSON, for the search box."""
     q = request.GET.get("q", "")
 
     if q == "":
@@ -69,7 +69,7 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     return HttpResponse(result, content_type="application/json")
 
 
-def search(request, template_name="lfs/search/search_results.html"):
+def search(request: HttpRequest, template_name: str = "lfs/search/search_results.html") -> HttpResponse:
     """Returns the search result according to given query (via get request)
     ordered by the globally set sorting.
     """

@@ -1,13 +1,16 @@
+"""Context processor that gives every template the shop, the cart, and LFS settings."""
+
 # lfs imports
 from lfs.cart.utils import get_cart
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.core.utils import get_default_shop
+from django.http import HttpRequest
 from django.urls import reverse
 from lfs.settings import lfs_setting
 
 
-def main(request):
-    """context processor for lfs"""
+def main(request: HttpRequest) -> dict[str, object]:
+    """Add the shop, the cart, and LFS_DOCS to every template context, and the canonical URL on some shop pages."""
     shop = get_default_shop(request)
     cart = get_cart(request)
     context = {
