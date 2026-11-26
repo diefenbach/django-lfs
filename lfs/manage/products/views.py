@@ -32,6 +32,7 @@ from lfs.catalog.settings import (
 from lfs.manage.portlets.views import PortletsInlineView
 from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.products.services import ProductFilterService, ProductDataService
+from lfs.manage.products.tabs import get_product_tab, product_tabs
 
 from .forms import (
     ProductFilterForm,
@@ -154,6 +155,21 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
         return response
 
 
+CORE_TAB_LABELS = {
+    "data": _("Data"),
+    "categories": _("Categories"),
+    "images": _("Images"),
+    "attachments": _("Attachments"),
+    "variants": _("Variants"),
+    "properties": _("Properties"),
+    "accessories": _("Accessories"),
+    "related": _("Related products"),
+    "stock": _("Stock"),
+    "seo": _("SEO"),
+    "portlets": _("Portlets"),
+}
+
+
 class ProductTabMixin:
     """Mixin for tab navigation in Product views (Bootstrap shell)."""
 
@@ -163,48 +179,32 @@ class ProductTabMixin:
     def get_product(self) -> Product:
         return get_object_or_404(Product, pk=self.kwargs["id"])
 
-    def _get_tabs(self, product: Product) -> List[Tuple[str, str]]:
-        # Get search query parameter to preserve it in tab URLs
+    def _get_tabs(self, product: Product) -> List[Tuple[str, str, str]]:
+        """Return the product's tabs as (key, label, url): the core tabs, then those of add-ons that apply.
+
+        The search query is kept in the URLs, so the product list stays filtered.
+        """
         search_query = self.request.GET.get("q", "").strip()
         query_param = f"?q={search_query}" if search_query else ""
 
-        tabs: List[Tuple[str, str]] = [
-            ("data", reverse("lfs_manage_product_data", args=[product.pk]) + query_param),
-            ("images", reverse("lfs_manage_product_images", args=[product.pk]) + query_param),
-            ("attachments", reverse("lfs_manage_product_attachments", args=[product.pk]) + query_param),
-        ]
-
+        keys = ["data"]
         # Only include categories tab for non-variant products
         if product.sub_type != PRODUCT_VARIANT:
-            tabs.insert(1, ("categories", reverse("lfs_manage_product_categories", args=[product.pk]) + query_param))
+            keys.append("categories")
+        keys += ["images", "attachments"]
         if product.is_product_with_variants():
-            tabs.append(("variants", reverse("lfs_manage_product_variants", args=[product.pk]) + query_param))
-        tabs.extend(
-            [
-                ("properties", reverse("lfs_manage_product_properties", args=[product.pk]) + query_param),
-                ("accessories", reverse("lfs_manage_product_accessories", args=[product.pk]) + query_param),
-                ("related", reverse("lfs_manage_product_related", args=[product.pk]) + query_param),
-            ]
-        )
+            keys.append("variants")
+        keys += ["properties", "accessories", "related", "stock", "seo", "portlets"]
 
-        # Only show bulk prices tab if price calculator is set to bulk prices
-        if product.get_price_calculator(self.request).__class__.__name__ == "BulkPricesCalculator":
-            tabs.append(("bulk_prices", reverse("lfs_manage_product_bulk_prices", args=[product.pk]) + query_param))
-
-        tabs.extend(
-            [
-                ("stock", reverse("lfs_manage_product_stock", args=[product.pk]) + query_param),
-                ("seo", reverse("lfs_manage_product_seo", args=[product.pk]) + query_param),
-                ("portlets", reverse("lfs_manage_product_portlets", args=[product.pk]) + query_param),
-            ]
-        )
-
-        # Optional add-on: samples tab (provided by lfs_samples)
-        from django.apps import apps
-
-        if apps.is_installed("lfs_samples"):
-            tabs.append(("samples", reverse("lfs_manage_product_samples", args=[product.pk]) + query_param))
-
+        tabs = [
+            (key, CORE_TAB_LABELS[key], reverse(f"lfs_manage_product_{key}", args=[product.pk]) + query_param)
+            for key in keys
+        ]
+        tabs += [
+            (tab.key, tab.label, reverse(tab.url_name, args=[product.pk]) + query_param)
+            for tab in product_tabs()
+            if tab.show(self.request, product)
+        ]
         return tabs
 
     def _get_product_filters(self) -> Dict[str, Any]:
@@ -250,6 +250,7 @@ class ProductTabMixin:
                 "product": product,
                 "active_tab": self.tab_name,
                 "tabs": self._get_tabs(product),
+                "addon_tab": get_product_tab(self.tab_name),
                 "products": self._get_products_queryset(),
                 "search_query": self.request.GET.get("q", ""),
                 "filter_form": self._get_filter_form(product_filters),
@@ -532,70 +533,6 @@ class ProductAttachmentsView(PermissionRequiredMixin, ProductTabMixin, TemplateV
             messages.success(self.request, _("Attachment has been updated."))
 
         return self.get(request, *args, **kwargs)
-
-
-class ProductBulkPricesView(PermissionRequiredMixin, ProductTabMixin, TemplateView):
-    """Bulk prices tab (Bootstrap, non-AJAX)."""
-
-    tab_name = "bulk_prices"
-    permission_required = "core.manage_shop"
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        from lfs_bulk_prices.models import BulkPrice
-        from django.conf import settings
-
-        ctx = super().get_context_data(**kwargs)
-        product = self.get_product()
-        prices = list(BulkPrice.objects.filter(product=product).order_by("amount"))
-        ctx.update(
-            {
-                "prices": prices,
-                "currency": getattr(settings, "LFS_CURRENCY", "EUR"),
-            }
-        )
-        return ctx
-
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        from django.utils.formats import sanitize_separators
-        from django.db import IntegrityError
-        from lfs_bulk_prices.models import BulkPrice
-
-        product = self.get_product()
-
-        # delete all bulk prices then re-create from POST (mirrors plugin)
-        BulkPrice.objects.filter(product=product).delete()
-
-        message = None
-        for price_id in request.POST.getlist("price_id"):
-            try:
-                amount = float(sanitize_separators(request.POST.get(f"amount-{price_id}")))
-            except (TypeError, ValueError):
-                amount = 1.0
-
-            try:
-                price_absolute = float(sanitize_separators(request.POST.get(f"price_absolute-{price_id}")))
-            except (TypeError, ValueError):
-                price_absolute = 0.0
-
-            try:
-                price_percentual = float(sanitize_separators(request.POST.get(f"price_percentual-{price_id}")))
-            except (TypeError, ValueError):
-                price_percentual = 0.0
-
-            try:
-                BulkPrice.objects.create(
-                    product_id=product.id,
-                    amount=amount,
-                    price_absolute=price_absolute,
-                    price_percentual=price_percentual,
-                )
-            except IntegrityError:
-                message = _("Duplicated prices have been removed.")
-
-        if message:
-            messages.info(self.request, message)
-        messages.success(self.request, _("Bulk prices have been saved."))
-        return HttpResponseRedirect(reverse("lfs_manage_product_bulk_prices", kwargs={"id": product.pk}))
 
 
 class ProductVariantsView(PermissionRequiredMixin, ProductTabMixin, TemplateView):
