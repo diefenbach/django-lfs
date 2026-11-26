@@ -2,17 +2,17 @@
 host = http://www.transifex.net
 
 [lfs.lfs-07]
-source_file = lfs/locale/en/LC_MESSAGES/django.po
+source_file = lfs/core/locale/en/LC_MESSAGES/django.po
 source_lang = en
-trans.de = lfs/locale/de/LC_MESSAGES/django.po
-trans.es = lfs/locale/es/LC_MESSAGES/django.po
-trans.es_MX = lfs/locale/es_MX/LC_MESSAGES/django.po
-trans.fr = lfs/locale/fr/LC_MESSAGES/django.po
-trans.it = lfs/locale/it/LC_MESSAGES/django.po
-trans.nl = lfs/locale/nl/LC_MESSAGES/django.po
-trans.pl = lfs/locale/pl/LC_MESSAGES/django.po
-trans.ro = lfs/locale/ro/LC_MESSAGES/django.po
-trans.ru = lfs/locale/ru/LC_MESSAGES/django.po
-trans.zh_CN = lfs/locale/zh_CN/LC_MESSAGES/django.po
-trans.zh_TW = lfs/locale/zh_TW/LC_MESSAGES/django.po
+trans.de = lfs/core/locale/de/LC_MESSAGES/django.po
+trans.es = lfs/core/locale/es/LC_MESSAGES/django.po
+trans.es_MX = lfs/core/locale/es_MX/LC_MESSAGES/django.po
+trans.fr = lfs/core/locale/fr/LC_MESSAGES/django.po
+trans.it = lfs/core/locale/it/LC_MESSAGES/django.po
+trans.nl = lfs/core/locale/nl/LC_MESSAGES/django.po
+trans.pl = lfs/core/locale/pl/LC_MESSAGES/django.po
+trans.ro = lfs/core/locale/ro/LC_MESSAGES/django.po
+trans.ru = lfs/core/locale/ru/LC_MESSAGES/django.po
+trans.zh_CN = lfs/core/locale/zh_CN/LC_MESSAGES/django.po
+trans.zh_TW = lfs/core/locale/zh_TW/LC_MESSAGES/django.po
 
