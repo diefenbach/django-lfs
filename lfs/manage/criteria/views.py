@@ -1,6 +1,6 @@
 # django imports
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.views import View
 
 # lfs imports
@@ -15,14 +15,8 @@ class AddCriterionView(PermissionRequiredMixin, View):
 
     permission_required = "core.manage_shop"
 
-    def get(self, request):
-        try:
-            default_criterion = lfs_setting("LFS_CRITERIA")[0]
-            default_criterion = import_symbol(default_criterion[0])
-            result = default_criterion().render(request, 10)
-        except:
-            result = ""
-
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """Return the form of the first criterion in LFS_CRITERIA, for a new criterion row."""
         default_criterion = lfs_setting("LFS_CRITERIA")[0]
         default_criterion = import_symbol(default_criterion[0])
         result = default_criterion().render(request, 10)

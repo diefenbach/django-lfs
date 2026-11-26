@@ -399,6 +399,14 @@ def do_cheapest_variant(parser, token):
     return CheapestVariantNode(bits[1])
 
 
+def _link_matches_path(link: str, path: str) -> bool:
+    """Return whether a tab with ``link`` belongs to the page at ``path``: the same page or one below it.
+
+    "/" belongs only to the home page; "/page" belongs to "/page/imprint" but not to "/pages-archive".
+    """
+    return path == link or (link != "/" and path.startswith(link.rstrip("/") + "/"))
+
+
 @register.inclusion_tag("lfs/shop/tabs.html", takes_context=True)
 def tabs(context, obj=None):
     """ """
@@ -411,12 +419,12 @@ def tabs(context, obj=None):
         top_category = lfs.catalog.utils.get_current_top_category(request, obj)
         if top_category:
             for tab in tabs:
-                if top_category.get_absolute_url().find(tab.link) != -1:
+                if _link_matches_path(tab.link, top_category.get_absolute_url()):
                     tab.selected = True
                     break
     else:
         for tab in tabs:
-            if request.path.find(tab.link) != -1:
+            if _link_matches_path(tab.link, request.path):
                 tab.selected = True
                 break
 

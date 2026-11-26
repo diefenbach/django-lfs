@@ -129,9 +129,9 @@ LFS_DELETE_FILES
     value is ``True``.
 
 LFS_DOCS
-    Base URL to the LFS docs. This is used for the context aware help link
-    within the management interface. Defaults to
-    http://docs.getlfs.com/en/latest/.
+    Base URL to the LFS docs, ending with a slash. This is used for the
+    context aware help link within the management interface. Optional; without
+    it the management interface shows no help link.
 
 LFS_LOG_FILE
     Absolute path to LFS' log file.

@@ -1,3 +1,5 @@
+"""Management command lfs_init: fill an empty database with a working shop."""
+
 from django.core.management.base import BaseCommand
 from lfs.settings import lfs_setting
 
@@ -18,10 +20,17 @@ This text is the shop's description; you can change it there under Shop.</p>
 
 
 class Command(BaseCommand):
+    """Set up a fresh shop: ``python manage.py lfs_init``."""
+
     args = ""
     help = "Initializes LFS"
 
-    def handle(self, *args, **options):
+    def handle(self, *args: str, **options: object) -> None:
+        """Create the shop with its default data in the database.
+
+        Creates the shop, countries, delivery times, the action groups with their actions, the portlet slots (without
+        portlets), payment and shipping methods, pages, and the order number generator.
+        """
         from lfs.catalog.models import DeliveryTime
         from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
         from lfs.core.models import ActionGroup

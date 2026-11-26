@@ -31,6 +31,7 @@ class TestAddCriterion:
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
             ["lfs.criteria.models.CountryCriterion", "Country"],
         ],
+        create=True,
     )
     @patch("lfs.manage.criteria.views.import_symbol")
     def test_add_criterion_returns_default_criterion_html(self, mock_import_symbol, mock_request):
@@ -48,11 +49,9 @@ class TestAddCriterion:
         # Assert
         assert isinstance(response, HttpResponse)
         assert response.content.decode() == "<div>Test Criterion HTML</div>"
-        # The function calls import_symbol twice due to the try/except and then again
-        assert mock_import_symbol.call_count == 2
         mock_criterion_instance.render.assert_called_with(mock_request, 10)
 
-    @patch("django.conf.settings.LFS_CRITERIA", [])
+    @patch("django.conf.settings.LFS_CRITERIA", [], create=True)
     def test_add_criterion_returns_empty_when_no_criteria_configured(self, mock_request):
         """Should return empty response when LFS_CRITERIA is empty."""
         # Act
@@ -64,6 +63,7 @@ class TestAddCriterion:
         [
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
         ],
+        create=True,
     )
     @patch("lfs.manage.criteria.views.import_symbol")
     def test_add_criterion_handles_import_error_gracefully(self, mock_import_symbol, mock_request):
@@ -80,6 +80,7 @@ class TestAddCriterion:
         [
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
         ],
+        create=True,
     )
     @patch("lfs.manage.criteria.views.import_symbol")
     def test_add_criterion_handles_render_error_gracefully(self, mock_import_symbol, mock_request):
@@ -256,6 +257,7 @@ class TestCriteriaViewsIntegration:
             ["lfs.criteria.models.CartPriceCriterion", "Cart Price"],
             ["lfs.criteria.models.CountryCriterion", "Country"],
         ],
+        create=True,
     )
     @patch("lfs.manage.criteria.views.import_symbol")
     def test_add_criterion_with_real_criterion_class(self, mock_import_symbol, request_factory, manage_user):
@@ -277,8 +279,6 @@ class TestCriteriaViewsIntegration:
         # Assert
         assert isinstance(response, HttpResponse)
         assert response.content.decode() == "<div>Real Criterion HTML</div>"
-        # The function calls import_symbol twice due to the try/except and then again
-        assert mock_import_symbol.call_count == 2
 
     def test_change_criterion_form_with_different_types(self, request_factory, manage_user):
         """Should handle different criterion types correctly."""
@@ -326,7 +326,7 @@ class TestCriteriaViewsIntegration:
 class TestCriteriaViewsErrorHandling:
     """Test error handling in criteria views."""
 
-    @patch("django.conf.settings.LFS_CRITERIA", None)
+    @patch("django.conf.settings.LFS_CRITERIA", None, create=True)
     def test_add_criterion_handles_none_criteria_setting(self, mock_request):
         """Should handle None LFS_CRITERIA setting gracefully."""
         # Act
@@ -338,6 +338,7 @@ class TestCriteriaViewsErrorHandling:
         [
             ["invalid.module.Class", "Invalid Criterion"],
         ],
+        create=True,
     )
     @patch("lfs.manage.criteria.views.import_symbol")
     def test_add_criterion_handles_invalid_criterion_class(self, mock_import_symbol, mock_request):
