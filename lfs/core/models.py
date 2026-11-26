@@ -12,6 +12,7 @@ from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import StaticBlock
 from lfs.settings import lfs_setting
 from lfs.core.fields.settings_choices import SettingsChoicesCharField
+from lfs.core.validators import validate_link
 
 # schema.org values of MerchantReturnPolicy.returnFees and .returnMethod
 RETURN_FEES_CHOICES = [
@@ -88,7 +89,7 @@ class Action(models.Model):
 
     active = models.BooleanField(_("Active"), default=False)
     title = models.CharField(_("Title"), max_length=40)
-    link = models.URLField(_("Link"), max_length=100)
+    link = models.CharField(_("Link"), max_length=100, validators=[validate_link])
     group = models.ForeignKey(ActionGroup, models.CASCADE, verbose_name=_("Group"), related_name="actions")
     position = models.IntegerField(_("Position"), default=999)
     parent = models.ForeignKey("self", models.SET_NULL, verbose_name=_("Parent"), blank=True, null=True)
