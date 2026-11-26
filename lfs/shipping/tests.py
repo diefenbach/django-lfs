@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
-from django.conf import settings
+from lfs.settings import lfs_setting
 from django.urls import reverse
 
 from lfs.core.models import Country
@@ -346,7 +346,7 @@ class ShippingMethodTestCase(TestCase):
         cc.value.add(self.us)
 
         self.sm1.price = 10
-        self.sm1.price_calculator = settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS[1][0]
+        self.sm1.price_calculator = lfs_setting("LFS_SHIPPING_METHOD_PRICE_CALCULATORS")[1][0]
         self.sm1.save()
 
         costs = utils.get_shipping_costs(self.request, self.sm1)
