@@ -409,10 +409,7 @@ def add_to_cart(request, product_id=None):
     # Save the cart to update modification date
     cart.save()
 
-    try:
-        url_name = lfs_setting("LFS_AFTER_ADD_TO_CART")
-    except AttributeError:
-        url_name = "lfs_added_to_cart"
+    url_name = lfs_setting("LFS_AFTER_ADD_TO_CART")
 
     if message:
         return lfs.core.utils.set_message_cookie(reverse(url_name), message)
