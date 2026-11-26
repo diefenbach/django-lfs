@@ -67,6 +67,7 @@ from lfs.manufacturer.models import Manufacturer
 
 from reviews import utils as reviews_utils
 from lfs.settings import lfs_setting
+from lfs.core.fields.settings_choices import SettingsChoicesCharField, SettingsChoicesPositiveSmallIntegerField
 
 
 PRODUCT_TEMPLATES_CHOICES = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
@@ -201,7 +202,7 @@ class Category(models.Model):
         on_delete=models.SET_NULL,
     )
 
-    template = models.PositiveSmallIntegerField(
+    template = SettingsChoicesPositiveSmallIntegerField(
         _("Category template"), blank=True, null=True, choices=CATEGORY_TEMPLATES_CHOICES
     )
     active_formats = models.BooleanField(_("Active formats"), default=False)
@@ -639,12 +640,12 @@ class Product(models.Model):
         _("SKU"), help_text=_("Your unique article number of the product."), blank=True, max_length=40
     )
     price = models.FloatField(_("Price"), default=0.0)
-    price_calculator = models.CharField(
+    price_calculator = SettingsChoicesCharField(
         _("Price calculator"), null=True, blank=True, choices=lfs_setting("LFS_PRICE_CALCULATORS"), max_length=255
     )
     effective_price = models.FloatField(_("Price"), blank=True)
-    price_unit = models.CharField(_("Price unit"), blank=True, max_length=20, choices=LFS_PRICE_UNITS)
-    unit = models.CharField(_("Quantity field unit"), blank=True, max_length=20, choices=LFS_UNITS)
+    price_unit = SettingsChoicesCharField(_("Price unit"), blank=True, max_length=20, choices=LFS_PRICE_UNITS)
+    unit = SettingsChoicesCharField(_("Quantity field unit"), blank=True, max_length=20, choices=LFS_UNITS)
     short_description = models.TextField(_("Short description"), blank=True)
     description = models.TextField(_("Description"), blank=True)
     images = GenericRelation(
@@ -704,7 +705,7 @@ class Product(models.Model):
 
     active_packing_unit = models.PositiveSmallIntegerField(_("Active packing"), default=0, blank=True)
     packing_unit = models.FloatField(_("Amount per packing"), blank=True, null=True)
-    packing_unit_unit = models.CharField(
+    packing_unit_unit = SettingsChoicesCharField(
         _("Packing unit"), blank=True, default="", max_length=30, choices=LFS_PACKING_UNITS
     )
 
@@ -756,7 +757,7 @@ class Product(models.Model):
     active_meta_description = models.BooleanField(_("Active meta description"), default=False)
     active_meta_keywords = models.BooleanField(_("Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_("Active dimensions"), default=False)
-    template = models.PositiveSmallIntegerField(
+    template = SettingsChoicesPositiveSmallIntegerField(
         _("Product template"), blank=True, null=True, choices=PRODUCT_TEMPLATES_CHOICES
     )
 
@@ -766,7 +767,7 @@ class Product(models.Model):
 
     # Base price
     active_base_price = models.PositiveSmallIntegerField(_("Active base price"), default=0)
-    base_price_unit = models.CharField(
+    base_price_unit = SettingsChoicesCharField(
         _("Base price unit"), blank=True, default="", max_length=30, choices=LFS_BASE_PRICE_UNITS
     )
     base_price_amount = models.FloatField(_("Base price amount"), default=0.0, blank=True, null=True)

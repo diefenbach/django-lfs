@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from lfs.criteria.base import Criteria
 import lfs.payment.settings
 from lfs.tax.models import Tax
+from lfs.core.fields.settings_choices import SettingsChoicesCharField
 
 
 class ActivePaymentMethodManager(models.Manager):
@@ -74,7 +75,7 @@ class PaymentMethod(models.Model, Criteria):
     tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_("Tax"), blank=True, null=True)
     price = models.FloatField(_("Price"), default=0.0)
     deletable = models.BooleanField(default=True)
-    module = models.CharField(
+    module = SettingsChoicesCharField(
         _("Module"), blank=True, max_length=100, choices=getattr(settings, "LFS_PAYMENT_METHOD_PROCESSORS", [])
     )
     type = models.PositiveSmallIntegerField(

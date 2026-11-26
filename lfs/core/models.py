@@ -11,6 +11,7 @@ from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import StaticBlock
 from lfs.settings import lfs_setting
+from lfs.core.fields.settings_choices import SettingsChoicesCharField
 
 # schema.org values of MerchantReturnPolicy.returnFees and .returnMethod
 RETURN_FEES_CHOICES = [
@@ -204,7 +205,7 @@ class Shop(models.Model):
     )
 
     use_international_currency_code = models.BooleanField(_("Use international currency codes"), default=False)
-    price_calculator = models.CharField(
+    price_calculator = SettingsChoicesCharField(
         choices=lfs_setting("LFS_PRICE_CALCULATORS"),
         max_length=255,
         default=lfs_setting("LFS_PRICE_CALCULATORS")[0][0],

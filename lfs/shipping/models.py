@@ -11,6 +11,7 @@ from lfs.tax.models import Tax
 # Load logger
 import logging
 from lfs.settings import lfs_setting
+from lfs.core.fields.settings_choices import SettingsChoicesCharField
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +80,7 @@ class ShippingMethod(models.Model, Criteria):
     delivery_time = models.ForeignKey(
         DeliveryTime, models.SET_NULL, verbose_name=_("Delivery time"), blank=True, null=True
     )
-    price_calculator = models.CharField(
+    price_calculator = SettingsChoicesCharField(
         _("Price Calculator"),
         max_length=200,
         choices=lfs_setting("LFS_SHIPPING_METHOD_PRICE_CALCULATORS"),

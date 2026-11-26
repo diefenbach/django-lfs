@@ -19,6 +19,7 @@ from lfs.catalog.models import DeliveryTimeBase
 from lfs.order.settings import ORDER_STATES, SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
+from lfs.core.fields.settings_choices import SettingsChoicesPositiveSmallIntegerField
 
 
 def get_unique_id_str():
@@ -65,7 +66,7 @@ class Order(models.Model):
 
     created = models.DateTimeField(_("Created"), auto_now_add=True)
 
-    state = models.PositiveSmallIntegerField(_("State"), choices=ORDER_STATES, default=SUBMITTED)
+    state = SettingsChoicesPositiveSmallIntegerField(_("State"), choices=ORDER_STATES, default=SUBMITTED)
     state_modified = models.DateTimeField(_("State modified"), auto_now_add=True)
 
     price = models.FloatField(_("Price"), default=0.0)
