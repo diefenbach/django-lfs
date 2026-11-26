@@ -4,7 +4,8 @@ import json
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.http import HttpResponse
+from django import forms
+from django.http import HttpRequest, HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -241,6 +242,18 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     )
 
 
+def terms_confirmed(request: HttpRequest, checkout_form: forms.Form) -> bool:
+    """Return whether the customer may order as far as the terms and conditions are concerned.
+
+    True if the shop does not ask for a confirmation or the POST data contains ``confirm_toc``. Otherwise adds the
+    error ``confirm_toc`` to ``checkout_form``, which the checkout templates show next to the checkbox.
+    """
+    if not lfs.core.utils.get_default_shop(request).confirm_toc or "confirm_toc" in request.POST:
+        return True
+    checkout_form.errors["confirm_toc"] = _("Please confirm our terms and conditions")
+    return False
+
+
 def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.html"):
     """
     One page checkout form.
@@ -273,13 +286,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         bank_account_form = BankAccountForm(instance=bank_account, data=request.POST)
         credit_card_form = CreditCardForm(instance=credit_card, data=request.POST, prefix="credit_card")
 
-        if shop.confirm_toc and ("confirm_toc" not in request.POST):
-            toc = False
-            if checkout_form.errors is None:
-                checkout_form._errors = {}
-            checkout_form.errors["confirm_toc"] = _("Please confirm our terms and conditions")
-        else:
-            toc = True
+        toc = terms_confirmed(request, checkout_form)
 
         # Prevent checkout if voucher is not valid (any more)
         voucher_number = request.POST.get("voucher")
