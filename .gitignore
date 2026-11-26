@@ -11,9 +11,11 @@ lfs.db
 *bin/
 *downloads/
 *sitestatic/
-*media/
+/media/
 .idea/
 *build/
 *dist/
 *build/
 *docs/_build/
+# TinyMCE ships a "media" plugin; keep it even when a global ignore excludes media folders.
+!/lfs/manage/static/lfs/manage/vendor/tinymce/plugins/media/
