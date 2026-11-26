@@ -40,6 +40,9 @@ def test_valid_link_is_stored(admin_client, action, link):
     [
         "javascript:alert(1)",  # runs script on click
         "//evil.example.com/",  # browsers treat it as another site
+        "/\\evil.example.com/",  # browsers read the backslash as a slash: another site
+        "/\t/evil.example.com/",  # browsers drop the tab: another site
+        "/page/imp rint",  # whitespace inside a link
         "page/imprint",  # relative to the current page, breaks on every other page
         "mailto:",  # no address
         "mailto:not-an-address",

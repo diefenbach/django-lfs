@@ -12,9 +12,12 @@ def validate_link(value: str) -> None:
     """Accept an absolute http(s) URL, a path within the shop ("/page/imprint"), or "mailto:" with an address.
 
     Raises ValidationError for anything else, for example "javascript:", "//other-site", or a path without a leading
-    slash, which would point somewhere else on every page.
+    slash, which would point somewhere else on every page. Browsers read a backslash as a slash and drop tabs and line
+    breaks, so "/\\other-site" and links with whitespace or control characters are rejected too.
     """
-    if value.startswith("/") and not value.startswith("//"):
+    if any(char.isspace() or not char.isprintable() for char in value):
+        raise ValidationError(_("Enter a link without spaces or control characters."), code="invalid")
+    if value.startswith("/") and value[1:2] not in ("/", "\\"):
         return
     if value.startswith("mailto:"):
         address = value.removeprefix("mailto:").split("?", 1)[0]
