@@ -7,8 +7,10 @@ name = "django-lfs"
 dynamic = ["version"]
 description = "LFS - Lightning Fast Shop"
 readme = "README.rst"
-license = "BSD-3-Clause"
-license-files = ["LICENSE.txt"]
+# LFS itself is BSD; the management interface bundles TinyMCE (GPL-2.0-or-later), Bootstrap, Bootstrap Icons,
+# flatpickr, SortableJS (MIT), and htmx (0BSD) under lfs/manage/static/lfs/manage/vendor/.
+license = "BSD-3-Clause AND GPL-2.0-or-later AND MIT AND 0BSD"
+license-files = ["LICENSE.txt", "lfs/manage/static/lfs/manage/vendor/tinymce/license.md"]
 authors = [{ name = "Kai Diefenbach" }]
 keywords = ["django", "e-commerce", "online-shop"]
 classifiers = [
