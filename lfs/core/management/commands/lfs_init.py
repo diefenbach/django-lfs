@@ -1,5 +1,6 @@
 """Management command lfs_init: fill an empty database with a working shop."""
 
+from django.apps import apps
 from django.core.management.base import BaseCommand
 from lfs.settings import lfs_setting
 
@@ -29,7 +30,8 @@ class Command(BaseCommand):
         """Create the shop with its default data in the database.
 
         Creates the shop, countries, delivery times, the action groups with their actions, the portlet slots (without
-        portlets), payment and shipping methods, pages, and the order number generator.
+        portlets), payment methods (PayPal only when lfs_paypal is installed), shipping methods, pages, and the order
+        number generator.
         """
         from lfs.catalog.models import DeliveryTime
         from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
@@ -86,11 +88,12 @@ class Command(BaseCommand):
         pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
         pm.id = 2
         pm.save()
-        pm = PaymentMethod.objects.create(
-            name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.PayPalProcessor"
-        )
-        pm.id = 3
-        pm.save()
+        if apps.is_installed("lfs_paypal"):
+            pm = PaymentMethod.objects.create(
+                name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.processor.PayPalProcessor"
+            )
+            pm.id = 3
+            pm.save()
         pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
         pm.id = 4
         pm.save()

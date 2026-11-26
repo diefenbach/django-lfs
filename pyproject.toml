@@ -37,7 +37,6 @@ dependencies = [
     "lfs-postal>=1.0,<2",
     "lfs-contact>=2.0,<3",
     "lfs-order-numbers>=2.0,<3",
-    "lfs-paypal>=2.0,<3",
 ]
 
 [project.urls]
