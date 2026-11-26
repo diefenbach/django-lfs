@@ -24,7 +24,6 @@ from lfs.manage.products.views import (
     ProductImagesView,
     ProductAttachmentsView,
     ProductAccessoriesView,
-    ProductBulkPricesView,
     ProductVariantsView,
     ProductRelatedProductsView,
     ProductPropertiesView,
@@ -1489,147 +1488,6 @@ class TestResetProductFiltersView:
         assert url == "/manage/products/"
 
 
-class TestProductBulkPricesView:
-    """Test the ProductBulkPricesView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductBulkPricesView, ProductTabMixin)
-        assert issubclass(ProductBulkPricesView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductBulkPricesView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'bulk_prices' as tab name."""
-        assert ProductBulkPricesView.tab_name == "bulk_prices"
-
-    @requires_bulk_prices
-    def test_get_context_data_basic_structure(self, rf, product):
-        """Should return context with basic structure."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductBulkPricesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Check required context keys
-        assert "prices" in context
-        assert "currency" in context
-        assert isinstance(context["prices"], list)
-        # Currency can be different depending on settings
-        assert isinstance(context["currency"], str)
-
-    @requires_bulk_prices
-    def test_get_context_data_with_bulk_prices(self, rf, product):
-        """Should return existing bulk prices."""
-        from lfs_bulk_prices.models import BulkPrice
-
-        # Create test bulk prices
-        bulk_price1 = BulkPrice.objects.create(product=product, amount=10, price_absolute=5.0, price_percentual=0.0)
-        bulk_price2 = BulkPrice.objects.create(product=product, amount=20, price_absolute=8.0, price_percentual=0.0)
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductBulkPricesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Should return bulk prices ordered by amount
-        assert len(context["prices"]) == 2
-        assert context["prices"][0] == bulk_price1
-        assert context["prices"][1] == bulk_price2
-
-    @requires_bulk_prices
-    def test_post_save_bulk_prices(self, rf, product, mocker):
-        """Should save bulk prices from form data."""
-        factory = RequestFactory()
-        request = factory.post(
-            "/",
-            {
-                "price_id": ["1", "2"],
-                "amount-1": "10",
-                "price_absolute-1": "5.0",
-                "price_percentual-1": "0.0",
-                "amount-2": "20",
-                "price_absolute-2": "8.0",
-                "price_percentual-2": "0.0",
-            },
-        )
-        request.session = {}
-
-        view = ProductBulkPricesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should redirect to bulk prices page
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/manage/product/{product.id}/bulk-prices/" in response.url
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Bulk prices have been saved.")
-
-    @requires_bulk_prices
-    def test_post_handles_invalid_amount(self, rf, product, mocker):
-        """Should handle invalid amount values gracefully."""
-        factory = RequestFactory()
-        request = factory.post(
-            "/", {"price_id": ["1"], "amount-1": "invalid", "price_absolute-1": "5.0", "price_percentual-1": "0.0"}
-        )
-        request.session = {}
-
-        view = ProductBulkPricesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should redirect and save with default amount (1.0)
-        assert isinstance(response, HttpResponseRedirect)
-        mock_messages_success.assert_called_once_with(request, "Bulk prices have been saved.")
-
-    @requires_bulk_prices
-    def test_post_handles_invalid_prices(self, rf, product, mocker):
-        """Should handle invalid price values gracefully."""
-        factory = RequestFactory()
-        request = factory.post(
-            "/", {"price_id": ["1"], "amount-1": "10", "price_absolute-1": "invalid", "price_percentual-1": "invalid"}
-        )
-        request.session = {}
-
-        view = ProductBulkPricesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should redirect and save with default prices (0.0)
-        assert isinstance(response, HttpResponseRedirect)
-        mock_messages_success.assert_called_once_with(request, "Bulk prices have been saved.")
-
-
 class TestProductVariantsView:
     """Test the ProductVariantsView class-based view."""
 
@@ -2468,7 +2326,7 @@ class TestProductTabMixin:
         # Verify tabs structure
         assert isinstance(tabs, list)
         assert len(tabs) > 0
-        assert all(isinstance(tab, tuple) and len(tab) == 2 for tab in tabs)
+        assert all(isinstance(tab, tuple) and len(tab) == 3 for tab in tabs)
 
     def test_get_products_queryset_filters_by_search(self, product):
         """Should filter products by search query."""

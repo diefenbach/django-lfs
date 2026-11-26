@@ -12,7 +12,6 @@ from .views import (
     ProductCategoriesView,
     ProductImagesView,
     ProductAttachmentsView,
-    ProductBulkPricesView,
     ProductPortletsView,
     ProductVariantsView,
     ProductAccessoriesView,
@@ -63,11 +62,6 @@ urlpatterns = [
         "product/<int:id>/attachments/",
         ProductAttachmentsView.as_view(),
         name="lfs_manage_product_attachments",
-    ),
-    path(
-        "product/<int:id>/bulk-prices/",
-        ProductBulkPricesView.as_view(),
-        name="lfs_manage_product_bulk_prices",
     ),
     path(
         "product/<int:id>/variants/",
