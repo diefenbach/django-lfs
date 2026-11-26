@@ -31,6 +31,21 @@ For development environment please visit:
 
 * https://github.com/diefenbach/lfs-buildout-development
 
+License
+=======
+
+LFS is licensed under the BSD license (see LICENSE.txt).
+
+The management interface bundles third-party libraries in
+``lfs/manage/static/lfs/manage/vendor/``:
+
+* TinyMCE: GPL-2.0-or-later (``tinymce/license.md``); LFS configures it with
+  ``license_key: 'gpl'``. A shop that distributes LFS with TinyMCE must follow
+  the GPL, or use a commercial TinyMCE license. The source code of the bundled
+  version (8.9.3) is at https://github.com/tinymce/tinymce/tree/8.9.3.
+* Bootstrap, Bootstrap Icons, flatpickr, SortableJS: MIT
+* htmx: 0BSD
+
 Changes
 =======
 
