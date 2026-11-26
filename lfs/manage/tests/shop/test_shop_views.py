@@ -1,5 +1,6 @@
 from unittest.mock import Mock, patch
 
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -56,10 +57,11 @@ class TestShopTabMixin:
         tabs = mixin._get_tabs(shop=None)
 
         assert isinstance(tabs, list)
-        assert len(tabs) == 6
 
         tab_names = [tab[0] for tab in tabs]
-        expected_tabs = ["data", "default_values", "order_numbers", "seo", "portlets", "carousel"]
+        expected_tabs = ["data", "default_values", "order_numbers", "seo", "portlets"]
+        if apps.is_installed("lfs_carousel"):
+            expected_tabs.append("carousel")
         assert tab_names == expected_tabs
 
     def test_get_context_data_includes_shop_and_tabs(self, shop):
