@@ -3,23 +3,16 @@ from django.conf import settings
 
 SHOP_DESCRIPTION = """
 <h1 class="first-heading">Welcome to LFS!</h1>
-<p>LFS is an online shop based on <a href="http://www.python.org/" target="_blank">Python</a>,
-<a href="http://www.djangoproject.com/" target="_blank">Django</a> and
-<a href="http://jquery.com/" target="_blank">jQuery</a>.</p>
+<p>LFS is an online shop based on <a href="https://www.python.org/">Python</a> and
+<a href="https://www.djangoproject.com/">Django</a>.</p>
 
-<h1>Login</h1>
-<p>Go to the <a href="/manage">management interface</a> to start to add content.</p>
+<h2>Get started</h2>
+<p>Go to the <a href="/manage/dashboard/">management interface</a> to add categories, products, and pages.
+This text is the shop's description; you can change it there under Shop.</p>
 
-<h1>Information &amp; Help</h1>
-<p>You can find more information and help on following places:</p>
+<h2>Information &amp; help</h2>
 <ul>
-<li><a href="http://www.getlfs.com" target="_blank">Official page</a></li>
-<li><a href="http://packages.python.org/django-lfs/index.html" target="_blank">Documentation on PyPI</a></li>
-<li><a href="http://pypi.python.org/pypi/django-lfs" target="_blank">Releases on PyPI</a></li>
-<li><a href="http://bitbucket.org/diefenbach/django-lfs" target="_blank">Source code on bitbucket.org</a></li>
-<li><a href="http://groups.google.com/group/django-lfs" target="_blank">Google Group</a></li>
-<li><a href="http://twitter.com/lfsproject" target="_blank">lfsproject on Twitter</a></li>
-<li><a href="irc://irc.freenode.net/django-lfs" target="_blank">IRC</a></li>
+<li><a href="https://github.com/diefenbach/django-lfs">Source code and issues on GitHub</a></li>
 </ul>
 """
 

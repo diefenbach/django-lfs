@@ -1,9 +1,11 @@
 import json
 
+from django.apps import apps
 from django.core.paginator import EmptyPage
 from django.core.paginator import InvalidPage
 from django.core.paginator import Paginator
 from django.urls import reverse
+from django.db import connection
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -14,7 +16,22 @@ import lfs.catalog.utils
 from lfs.catalog.models import Product
 from lfs.core.utils import lfs_pagination
 
-from django.db.models import Q
+SEARCH_FIELDS = ("name", "short_description", "description", "manufacturer__name", "sku_manufacturer")
+
+
+def product_search_query(q: str) -> Q:
+    """Return the filter for active products whose text fields contain ``q``, ignoring case.
+
+    On PostgreSQL with django.contrib.postgres accents are ignored too (unaccent); other databases have no unaccent.
+    """
+    if connection.vendor == "postgresql" and apps.is_installed("django.contrib.postgres"):
+        lookup = "unaccent__icontains"
+    else:
+        lookup = "icontains"
+    matches = Q()
+    for field in SEARCH_FIELDS:
+        matches |= Q(**{f"{field}__{lookup}": q})
+    return Q(active=True) & matches
 
 
 def livesearch(request, template_name="lfs/search/livesearch_results.html"):
@@ -29,15 +46,7 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
         )
     else:
         # Products
-        query = Q(active=True) & (
-            Q(name__unaccent__icontains=q)
-            | Q(short_description__unaccent__icontains=q)
-            | Q(description__unaccent__icontains=q)
-            | Q(manufacturer__name__unaccent__icontains=q)
-            | Q(sku_manufacturer__unaccent__icontains=q)
-        )
-
-        temp = Product.objects.filter(query)
+        temp = Product.objects.filter(product_search_query(q))
         total = temp.count()
         products = temp[0:5]
 
@@ -80,15 +89,7 @@ def search(request, template_name="lfs/search/search_results.html"):
     start = request.GET.get("start", 1)
 
     # Products
-    query = Q(active=True) & (
-        Q(name__unaccent__icontains=q)
-        | Q(short_description__unaccent__icontains=q)
-        | Q(description__unaccent__icontains=q)
-        | Q(manufacturer__name__unaccent__icontains=q)
-        | Q(sku_manufacturer__unaccent__icontains=q)
-    )
-
-    products = Product.objects.filter(query)
+    products = Product.objects.filter(product_search_query(q))
     amount_of_products = products.count()
 
     # Sorting
