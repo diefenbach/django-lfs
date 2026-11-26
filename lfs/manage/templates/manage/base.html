@@ -118,11 +118,13 @@
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_environment' %}">{% trans 'Environment' %}</a></li>
                         </ul>
                     </li>
+                    {% if LFS_DOCS %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ LFS_DOCS }}{% block help_link %}{% endblock %}" target="_blank">
                             {% trans "Help" %}
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">

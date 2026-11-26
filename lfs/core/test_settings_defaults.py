@@ -44,3 +44,17 @@ def test_management_works_without_lfs_settings(admin_client, shop, without_lfs_s
     assert admin_client.get(reverse("lfs_manage_shop_order_numbers")).status_code == 200
     assert "CartPriceCriterion" in admin_client.get(reverse("lfs_manage_add_criterion")).content.decode()
 
+
+
+def test_management_has_no_help_link_without_lfs_docs(admin_client, shop, without_lfs_settings):
+    content = admin_client.get(reverse("lfs_manage_customers")).content.decode()
+
+    assert "user/management/customer/customers.html" not in content
+
+
+def test_management_help_link_points_into_lfs_docs(admin_client, shop, settings):
+    settings.LFS_DOCS = "https://docs.example.com/lfs/"
+
+    content = admin_client.get(reverse("lfs_manage_customers")).content.decode()
+
+    assert 'href="https://docs.example.com/lfs/user/management/customer/customers.html"' in content

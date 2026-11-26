@@ -66,7 +66,7 @@ _UNITS = ["l", "m", "qm", "cm", "lfm", "kg", "pcs."]
 
 DEFAULTS: dict[str, Any] = {
     "LFS_AFTER_ADD_TO_CART": "lfs_added_to_cart",
-    "LFS_DOCS": "https://github.com/diefenbach/django-lfs",
+    "LFS_DOCS": "",
     "LFS_RECENT_PRODUCTS_LIMIT": 5,
     "LFS_ORDER_NUMBER_GENERATOR": "lfs_order_numbers.models.OrderNumberGenerator",
     "LFS_PRICE_CALCULATORS": [
