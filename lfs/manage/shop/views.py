@@ -1,7 +1,6 @@
 from typing import Dict, List, Tuple, Any, Optional
 
 from django.apps import apps
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect

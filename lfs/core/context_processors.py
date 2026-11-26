@@ -2,7 +2,6 @@
 from lfs.cart.utils import get_cart
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.core.utils import get_default_shop
-from django.conf import settings
 from django.urls import reverse
 from lfs.settings import lfs_setting
 

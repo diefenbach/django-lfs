@@ -1,5 +1,4 @@
 # django imports
-from django.conf import settings
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
 from django.views import View
