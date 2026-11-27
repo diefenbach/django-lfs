@@ -23,6 +23,7 @@ Management interface
 Shop
 * The search works without PostgreSQL.
 * Action links may be shop paths and ``mailto:`` links.
+* New top-level categories get level 1, so they show in the category tree right away.
 
 Security
 * The sort endpoints of the management interface require the ``manage_shop`` permission.
