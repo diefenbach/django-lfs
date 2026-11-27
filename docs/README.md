@@ -36,10 +36,13 @@ The built documentation will be available in `_build/html/index.html`.
 
 ## Requirements
 
-- Python 3.7+
-- Sphinx 7.0+
+- Python 3.12+
+- Sphinx 8.2+
 - sphinx-rtd-theme (optional, for modern theme)
 - sphinxcontrib-spelling (optional, for spell checking)
+
+`make html` must finish without warnings; `sphinx-build -W` checks that. The site at https://docs.django-lfs.com is
+built from this folder.
 
 ## Theme
 
