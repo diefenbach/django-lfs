@@ -80,7 +80,7 @@ Requirements
 Installation
 ============
 
-The quickest start is `lfs-project <https://github.com/diefenbach/lfs-project>`_:
+The quickest start is `lfs-starter <https://github.com/diefenbach/lfs-starter>`_:
 a ready Django project with LFS, the default theme and the standard add-ons,
 configured through environment variables.
 
@@ -115,7 +115,7 @@ Related packages
 
 Themes and add-ons live in their own repositories:
 
-* `lfs-project <https://github.com/diefenbach/lfs-project>`_: a new shop, ready to run
+* `lfs-starter <https://github.com/diefenbach/lfs-starter>`_: a new shop, ready to run
 * `lfs-theme <https://github.com/diefenbach/lfs-theme>`_: the default shop theme
 * `lfs-paypal <https://github.com/diefenbach/lfs-paypal>`_ and
   `lfs-stripe <https://github.com/diefenbach/lfs-stripe>`_: payment providers
