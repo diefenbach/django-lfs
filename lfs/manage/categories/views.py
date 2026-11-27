@@ -417,7 +417,8 @@ class CategoryCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateVie
             category.level = parent.level + 1
         else:
             category.parent = None
-            category.level = 0
+            # Top-level categories are level 1, as in set_category_levels and the category tree.
+            category.level = 1
 
         category.position = 999
         category.save()
