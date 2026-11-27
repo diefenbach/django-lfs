@@ -135,7 +135,7 @@ execute following steps:
     ]
 
     # LFS
-    # see http://docs.getlfs.com/en/latest/developer/settings.html for more
+    # see https://docs.django-lfs.com/developer/settings.html for more
     LFS_AFTER_ADD_TO_CART = "lfs_added_to_cart"
     LFS_RECENT_PRODUCTS_LIMIT = 5
 

@@ -9,8 +9,6 @@ the installation process please refer to :doc:`/introduction/installation`. If
 you want to know more about single data fields within the forms below, you can
 just click on the ``Help`` menu, which opens the context aware help.
 
-.. include:: /includes/demo_shop.rst
-
 Enter Shop Preferences
 ======================
 

@@ -356,7 +356,7 @@ PayPal
 ======
 
 PAYPAL_RECEIVER_EMAIL
-    Your PayPal id, e.g. info@getlfs.com.
+    Your PayPal id, e.g. shop@example.com.
 
 PAYPAL_IDENTITY_TOKEN
     PayPal's PDT identity token.

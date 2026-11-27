@@ -9,8 +9,6 @@ In this how-to you will learn how to create a product with filters. At the end
 of it you will have added a property group a property, a category with three
 products and a filter portlet.
 
-.. include:: /includes/demo_shop.rst
-
 Steps
 =====
 

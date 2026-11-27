@@ -12,8 +12,6 @@ Overview
 In this how-to you will learn how to add and edit payment methods and how to
 add criteria and prices for them.
 
-.. include:: /includes/demo_shop.rst
-
 Get started
 ===========
 

@@ -7,8 +7,6 @@ Overview
 
 In this how-to you will learn how to add a configurable product.
 
-.. include:: /includes/demo_shop.rst
-
 Steps
 =====
 
