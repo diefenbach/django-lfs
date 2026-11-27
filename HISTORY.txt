@@ -1,6 +1,70 @@
 HISTORY
 =======
 
+1.0.0 (unreleased)
+==================
+
+Requirements
+* Python 3.12 or newer and Django 5.2 (LTS).
+
+Packaging
+* django-lfs is an installable package (``pip install django-lfs``) that declares its dependencies.
+* ``lfs.settings.LFS_APPS`` lists the apps a shop puts into ``INSTALLED_APPS``; LFS has defaults for its own
+  settings, so a project sets only what differs.
+* The shop theme is a package of its own (lfs-theme). PayPal (lfs-paypal) and bulk prices (lfs-bulk-prices) are
+  optional add-ons; add-ons register their own product tabs in the management interface.
+* portlets, reviews, postal, contact form and order numbers are re-released as django-portlets 2, django-reviews 2,
+  lfs-postal 1, lfs-contact 2 and lfs-order-numbers 2.
+* Migrations no longer depend on a shop's settings.
+
+Management interface
+* Rewritten with Bootstrap 5 and htmx; TinyMCE 8.9.3 (GPL-2.0-or-later, see README).
+
+Shop
+* The search works without PostgreSQL.
+* Action links may be shop paths and ``mailto:`` links.
+* New top-level categories get level 1, so they show in the category tree right away.
+
+Security
+* The sort endpoints of the management interface require the ``manage_shop`` permission.
+* Check-and-pay refuses an order until the customer has confirmed the terms.
+* The cached product page no longer hands one visitor's CSRF token to the next.
+* Selecting a priced property option no longer breaks the price calculation.
+
+Upgrading from 0.x
+* Back up the database and try the upgrade on a copy first.
+* Put ``*LFS_APPS`` into ``INSTALLED_APPS`` and remove the LFS settings that match the defaults.
+* Install a theme (lfs-theme, or your own) and the add-ons the shop uses, then run ``python manage.py migrate``.
+* Review templates that override LFS templates, above all those of the management interface.
+
+0.11.0 (2017-03-09)
+===================
+* Adds Django 1.10 support
+* Excludes variants from sitemap
+* Add appending slash to all urls
+* Use F() expressions to update stock amount (#203)
+* Use F() expression to increase use_amount for vouchers (#202)
+* Removes django-pagination (use Django's default one instead)
+* remove STATIC_URL (user static_url tag instead)
+* fix saving properties and variant prices [pigletto]
+
+0.10.2 (2015-04-25)
+===================
+* Updates lfs-paypal to 1.3
+* Fixes all tests
+
+0.10.1 (2015-04-23)
+===================
+* Fixes MANIFEST.in
+* Fixes adding and display of reviews when L10N is turned on
+
+0.10.0 (2015-04-22)
+===================
+* Adds Django 1.8 support
+* Moves static files to lfs.manage
+* Moves manage templates to lfs.manage
+
+
 0.9.0 (2015-04-14)
 ==================
 
