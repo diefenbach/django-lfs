@@ -1,6 +1,41 @@
 HISTORY
 =======
 
+1.0.0 (unreleased)
+==================
+
+Requirements
+* Python 3.12 or newer and Django 5.2 (LTS).
+
+Packaging
+* django-lfs is an installable package (``pip install django-lfs``) that declares its dependencies.
+* ``lfs.settings.LFS_APPS`` lists the apps a shop puts into ``INSTALLED_APPS``; LFS has defaults for its own
+  settings, so a project sets only what differs.
+* The shop theme is a package of its own (lfs-theme). PayPal (lfs-paypal) and bulk prices (lfs-bulk-prices) are
+  optional add-ons; add-ons register their own product tabs in the management interface.
+* portlets, reviews, postal, contact form and order numbers are re-released as django-portlets 2, django-reviews 2,
+  lfs-postal 1, lfs-contact 2 and lfs-order-numbers 2.
+* Migrations no longer depend on a shop's settings.
+
+Management interface
+* Rewritten with Bootstrap 5 and htmx; TinyMCE 8.9.3 (GPL-2.0-or-later, see README).
+
+Shop
+* The search works without PostgreSQL.
+* Action links may be shop paths and ``mailto:`` links.
+
+Security
+* The sort endpoints of the management interface require the ``manage_shop`` permission.
+* Check-and-pay refuses an order until the customer has confirmed the terms.
+* The cached product page no longer hands one visitor's CSRF token to the next.
+* Selecting a priced property option no longer breaks the price calculation.
+
+Upgrading from 0.x
+* Back up the database and try the upgrade on a copy first.
+* Put ``*LFS_APPS`` into ``INSTALLED_APPS`` and remove the LFS settings that match the defaults.
+* Install a theme (lfs-theme, or your own) and the add-ons the shop uses, then run ``python manage.py migrate``.
+* Review templates that override LFS templates, above all those of the management interface.
+
 0.11.0 (2017-03-09)
 ===================
 * Adds Django 1.10 support
