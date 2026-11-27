@@ -112,36 +112,21 @@ todo_include_todos = True
 
 # -- Options for HTML output ---------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.
-# Try to use sphinx_rtd_theme if available, otherwise fall back to custom theme
-try:
-    import sphinx_rtd_theme
-
-    html_theme = "sphinx_rtd_theme"
-    html_theme_options = {
-        "logo_only": False,
-        "version_selector": False,
-        "prev_next_buttons_location": "bottom",
-        "style_external_links": False,
-        "vcs_pageview_mode": "",
-        "style_nav_header_background": "white",
-        "collapse_navigation": True,
-        "sticky_navigation": True,
-        "navigation_depth": 4,
-        "includehidden": True,
-        "titles_only": False,
-    }
-except ImportError:
-    # Use the custom theme
-    html_theme = "lfstheme"
-    html_theme_path = ["."]
-    html_theme_options = {
-        "collapse_navigation": True,
-        "sticky_navigation": True,
-        "navigation_depth": 4,
-        "includehidden": True,
-        "titles_only": False,
-    }
+# The theme to use for HTML and HTML Help pages. _templates/layout.html and _static/custom.css give it the look of
+# https://django-lfs.com.
+html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+    "logo_only": False,
+    "version_selector": False,
+    "prev_next_buttons_location": "bottom",
+    "style_external_links": False,
+    "vcs_pageview_mode": "",
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
+    "includehidden": True,
+    "titles_only": False,
+}
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

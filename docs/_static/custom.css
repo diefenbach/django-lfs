@@ -1,54 +1,101 @@
-/* Custom styles for django-lfs documentation */
+/* sphinx_rtd_theme in the look of the LFS website (django-lfs.com): colours, fonts, and the sidebar header. */
+@import url("fonts/fonts.css");
 
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
+:root {
+  --pine: #12332e;
+  --pine-deep: #0f2925;
+  --pine-soft: #4d625c;
+  --sage: #e9eee8;
+  --sage-line: #c9d3cb;
+  --paper: #ffffff;
+  --bolt: #f2c230;
+  --link: #1b6355;
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
 
-.header img {
-    max-width: 100%;
-    height: auto;
+/* Type */
+body, .wy-body-for-nav, input, button, select, textarea,
+.rst-content .admonition-title, .wy-menu-vertical, .btn {
+  font-family: var(--font-body);
 }
+h1, h2, h3, h4, h5, h6, .rst-content .toctree-wrapper > p.caption, legend {
+  font-family: var(--font-display);
+  color: var(--pine);
+  letter-spacing: -0.01em;
+}
+.rst-content h1 { font-weight: 800; letter-spacing: -0.025em; }
+code, kbd, pre, samp, .rst-content pre, .rst-content code, .rst-content tt, .rst-content .linenodiv pre,
+.rst-content div[class^="highlight"] pre {
+  font-family: var(--font-mono);
+}
+.wy-nav-content { color: var(--pine); }
+.rst-content p, .rst-content li { line-height: 1.65; }
 
-/* Ensure proper spacing for code blocks */
-.highlight {
-    margin: 1em 0;
-}
+/* Page and content */
+.wy-body-for-nav, .wy-nav-content-wrap { background: var(--sage); }
+.wy-nav-content { background: var(--paper); max-width: 860px; }
 
-/* Style for todo items */
-.todo {
-    background-color: #fff3cd;
-    border: 1px solid #ffeaa7;
-    border-radius: 4px;
-    padding: 10px;
-    margin: 10px 0;
-}
+/* Links */
+a, a:visited { color: var(--link); }
+a:hover { color: var(--pine); }
+.rst-content a:not(.headerlink):not(.btn) { text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+:focus-visible { outline: 3px solid var(--bolt); outline-offset: 2px; }
 
-/* Improve table styling */
-table.docutils {
-    border-collapse: collapse;
-    border-spacing: 0;
-    empty-cells: show;
-    border: 1px solid #ddd;
+/* Inline code and code blocks */
+.rst-content code.literal, .rst-content tt.literal {
+  color: var(--pine); background: #eef2ed; border: 1px solid var(--sage-line); border-radius: 3px; padding: 1px 5px;
 }
+.rst-content div[class^="highlight"] { border: 1px solid var(--sage-line); border-radius: 6px; }
+.highlight { background: #f6f8f5; }
 
-table.docutils th {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
+/* Admonitions */
+.rst-content .note, .rst-content .seealso, .rst-content .hint, .rst-content .tip { background: #eef3ef; }
+.rst-content .note .admonition-title, .rst-content .seealso .admonition-title,
+.rst-content .hint .admonition-title, .rst-content .tip .admonition-title { background: var(--pine); color: var(--sage); }
+.rst-content .warning, .rst-content .caution, .rst-content .attention, .rst-content .important { background: #fbf5e0; }
+.rst-content .warning .admonition-title, .rst-content .caution .admonition-title,
+.rst-content .attention .admonition-title, .rst-content .important .admonition-title { background: #c9961a; color: var(--pine-deep); }
 
-table.docutils td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
+/* Tables */
+.rst-content table.docutils { border: 1px solid var(--sage-line); }
+.rst-content table.docutils thead th { background: #eef2ed; border-color: var(--sage-line); }
+.rst-content table.docutils td { border-color: var(--sage-line); }
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td { background: #f7f9f6; }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .header img {
-        height: 80px;
-    }
+/* Sidebar */
+.wy-nav-side { background: var(--pine-deep); }
+.wy-side-nav-search { background: var(--pine) !important; padding: 18px 16px 16px; text-align: left; }
+.lfs-brand { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; color: var(--sage) !important; text-decoration: none; }
+.lfs-brand:hover { background: transparent !important; }
+.lfs-bolt { width: 22px; height: 22px; fill: var(--bolt); stroke: var(--pine-deep); stroke-width: 1.4; stroke-linejoin: round; }
+.lfs-brand-name { font: 800 1.45rem/1 var(--font-display); letter-spacing: -0.02em; }
+.lfs-brand-docs { flex-basis: 100%; font-size: 0.85rem; color: #c3d0c8; margin-top: 4px; }
+.lfs-site-link { display: inline-block; margin: 6px 0 12px; font-size: 0.85rem; color: var(--bolt) !important; }
+.wy-side-nav-search input[type="text"] { border: 1px solid transparent; border-radius: 999px; padding: 6px 14px; box-shadow: none; }
+.wy-side-nav-search input[type="text"]:focus { border-color: var(--bolt); }
+
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+  color: var(--bolt); font-family: var(--font-display); font-weight: 700; font-size: 0.95rem;
+  text-transform: none; letter-spacing: 0; margin-top: 18px;
 }
+.wy-menu-vertical a { color: #c3d0c8; }
+.wy-menu-vertical a:hover { background: rgba(233, 238, 232, 0.08); color: var(--paper); }
+.wy-menu-vertical li.current { background: var(--sage); }
+.wy-menu-vertical li.current > a, .wy-menu-vertical li.on a {
+  background: var(--paper); color: var(--pine); border: none; font-weight: 600;
+}
+.wy-menu-vertical li.current a { color: var(--pine-soft); border-right: none; }
+.wy-menu-vertical li.current a:hover { background: #dfe6e0; color: var(--pine); }
+.wy-menu-vertical li.toctree-l2.current > a, .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a { background: #eef2ed; }
+.wy-menu-vertical li.toctree-l3.current > a, .wy-menu-vertical li.toctree-l3.current li.toctree-l4 > a { background: #e4eae3; }
+
+/* Mobile top bar */
+.wy-nav-top { background: var(--pine); }
+.wy-nav-top a { color: var(--sage); font-family: var(--font-display); }
+
+/* Footer and buttons */
+footer { color: var(--pine-soft); }
+.btn-neutral { background: var(--sage) !important; color: var(--pine) !important; border-radius: 999px; box-shadow: none; }
+.btn-neutral:hover { background: var(--pine) !important; color: var(--sage) !important; }

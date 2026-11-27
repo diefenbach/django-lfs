@@ -38,7 +38,7 @@ The built documentation will be available in `_build/html/index.html`.
 
 - Python 3.12+
 - Sphinx 8.2+
-- sphinx-rtd-theme (optional, for modern theme)
+- sphinx-rtd-theme 3
 - sphinxcontrib-spelling (optional, for spell checking)
 
 `make html` must finish without warnings; `sphinx-build -W` checks that. The site at https://docs.django-lfs.com is
@@ -46,7 +46,7 @@ built from this folder.
 
 ## Theme
 
-The documentation uses a custom theme (`lfstheme`) with fallback to `sphinx-rtd-theme` if available. The custom theme is located in the `lfstheme/` directory.
+The documentation uses `sphinx-rtd-theme`. `_templates/layout.html` (sidebar header) and `_static/custom.css` (colours, fonts) give it the look of https://django-lfs.com; the fonts are self-hosted in `_static/fonts/`.
 
 ## Structure
 
@@ -56,4 +56,4 @@ The documentation uses a custom theme (`lfstheme`) with fallback to `sphinx-rtd-
 - `Makefile` - Build commands
 - `build_docs.py` - Python build script
 - `_static/` - Static files (CSS, images)
-- `lfstheme/` - Custom theme files
+- `_templates/` - Template overrides for the theme
