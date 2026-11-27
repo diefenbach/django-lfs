@@ -32,6 +32,9 @@ dependencies = [
     "django-crispy-forms>=2.7,<3",
     "crispy-bootstrap5>=2026.9,<2028",
     "django-simple-captcha>=0.7,<1",
+    # In LFS_APPS: LFS needs them itself, not only through lfs-postal.
+    "django-countries>=9.1,<10",
+    "django-localflavor>=5.1,<6",
     "django-portlets>=2.0,<3",
     "django-reviews>=2.0,<3",
     "lfs-postal>=1.0,<2",
