@@ -26,6 +26,8 @@ from lfs.catalog.models import Category
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
+from lfs.catalog.models import Property
+from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
