@@ -1,0 +1,7 @@
+{# Adds a link back to the website next to the breadcrumbs, visible on phones too. #}
+{% extends "!breadcrumbs.html" %}
+
+{%- block breadcrumbs_aside %}
+  <li class="wy-breadcrumbs-aside lfs-backlink"><a href="https://django-lfs.com/">django-lfs.com</a></li>
+  {{ super() }}
+{%- endblock %}

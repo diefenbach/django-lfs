@@ -99,3 +99,8 @@ a:hover { color: var(--pine); }
 footer { color: var(--pine-soft); }
 .btn-neutral { background: var(--sage) !important; color: var(--pine) !important; border-radius: 999px; box-shadow: none; }
 .btn-neutral:hover { background: var(--pine) !important; color: var(--sage) !important; }
+
+/* Links back to the website: next to the breadcrumbs and in the footer */
+.wy-breadcrumbs-aside.lfs-backlink { margin-left: 16px; }
+.wy-breadcrumbs-aside.lfs-backlink a { font-weight: 600; color: var(--pine); }
+.lfs-footer-links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; }
