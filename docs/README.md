@@ -37,7 +37,7 @@ The built documentation will be available in `_build/html/index.html`.
 ## Requirements
 
 - Python 3.12+
-- Sphinx 9.2+
+- Sphinx 8.2+
 - sphinx-rtd-theme (optional, for modern theme)
 - sphinxcontrib-spelling (optional, for spell checking)
 

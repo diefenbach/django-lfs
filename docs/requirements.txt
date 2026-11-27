@@ -1,4 +1,4 @@
 # Sphinx documentation requirements
-sphinx>=9.2,<10
+sphinx>=8.2,<10
 sphinx-rtd-theme>=3.1,<4
 sphinxcontrib-spelling>=8.0,<9
