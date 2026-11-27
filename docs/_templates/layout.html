@@ -1,0 +1,17 @@
+{# The sidebar header of sphinx_rtd_theme in the look of https://django-lfs.com. #}
+{% extends "!layout.html" %}
+
+{%- block extrahead %}
+  <link rel="icon" href="{{ pathto('_static/favicon.svg', 1) }}" type="image/svg+xml">
+{%- endblock %}
+
+{%- block sidebartitle %}
+  {%- set _root_doc = root_doc|default(master_doc) %}
+  <a class="lfs-brand" href="{{ pathto(_root_doc) }}">
+    <svg class="lfs-bolt" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2 4 13.5h6.5L9 22l10-12.5h-6.6z"/></svg>
+    <span class="lfs-brand-name">LFS</span>
+    <span class="lfs-brand-docs">Documentation {{ release }}</span>
+  </a>
+  <a class="lfs-site-link" href="https://django-lfs.com/">django-lfs.com</a>
+  {%- include "searchbox.html" %}
+{%- endblock %}
