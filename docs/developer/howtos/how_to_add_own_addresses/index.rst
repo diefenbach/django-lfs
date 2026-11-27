@@ -7,9 +7,6 @@ How to add own addresses
 In this how-to you will learn how to add own addresses to LFS, or better yet,
 how to adapt the address fields to your needs.
 
-You can :download:`download the example application
-<my_addresses.tar.gz>` here.
-
 Create an Application
 =====================
 

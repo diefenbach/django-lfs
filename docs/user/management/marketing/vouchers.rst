@@ -62,9 +62,10 @@ Limit
 Sums up
     Determine if Voucher can be summed up with discounts.
     To calculate final discount on order:
-         * value of discounts/voucher able to sum up is calculated
-         * value of highest discount/voucher that cannot be summed up is calculated
-         * higher of two above values is used
+
+    * value of discounts/voucher able to sum up is calculated
+    * value of highest discount/voucher that cannot be summed up is calculated
+    * higher of two above values is used
 
 Add Vouchers
 ^^^^^^^^^^^^
