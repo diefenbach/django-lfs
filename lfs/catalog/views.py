@@ -6,11 +6,14 @@ from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.urls import reverse
 from django.http import Http404
+from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.utils.safestring import SafeString, mark_safe
 from django.utils.translation import gettext_lazy as _, ngettext_lazy as __
+from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
 import lfs.catalog.utils
@@ -669,12 +672,28 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     return result
 
 
-def product_inline(request, product, template_name="lfs/catalog/products/product_inline.html"):
+# Rendered in place of the CSRF token into the cached product inline and replaced per request, so the cache never
+# holds one visitor's token for the next one.
+CSRF_TOKEN_PLACEHOLDER = "__lfs_csrf_token__"
+
+
+def _insert_csrf_token(request: HttpRequest, html: str) -> SafeString:
+    """Replace the CSRF placeholder in the rendered (safe) ``html`` with the token of ``request``.
+
+    ``get_token`` also makes the CSRF middleware set the matching cookie on the response.
+    """
+    return mark_safe(html.replace(CSRF_TOKEN_PLACEHOLDER, get_token(request)))
+
+
+def product_inline(
+    request: HttpRequest, product: Product, template_name: str = "lfs/catalog/products/product_inline.html"
+) -> SafeString:
     """
     Part of the product view, which displays the actual data of the product.
 
     This is factored out to be able to better cached and in might in future used
-    used to be updated via ajax requests.
+    used to be updated via ajax requests. The HTML is cached with a placeholder instead of the CSRF token, which is
+    inserted per request.
     """
     pid = product.get_parent().pk
     properties_version = get_cache_group_id("global-properties-version")
@@ -687,7 +706,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     )
     result = cache.get(cache_key)
     if result is not None:
-        return result
+        return _insert_csrf_token(request, result)
 
     product = lfs.catalog.utils.get_display_product(request, product)
 
@@ -782,11 +801,12 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
             "average_rating": average_rating,
             "review_count": review_count,
             "delivery_time": delivery_time,
+            "csrf_token": CSRF_TOKEN_PLACEHOLDER,
         },
     )
 
     cache.set(cache_key, result)
-    return result
+    return _insert_csrf_token(request, result)
 
 
 def product_form_dispatcher(request):
