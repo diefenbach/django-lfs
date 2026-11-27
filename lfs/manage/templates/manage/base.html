@@ -7,7 +7,7 @@
         <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/ico" />
 
         <script type="text/javascript">
-            var STATIC_URL = '{% static '' %}';
+            var STATIC_URL = '{% get_static_prefix %}';
         </script>
         
         <link rel="stylesheet" href="{% static 'lfs/manage/vendor/bootstrap/bootstrap.min.css' %}">
