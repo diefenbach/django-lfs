@@ -1,12 +1,15 @@
 HISTORY
 =======
 
-1.0.1 (2026-11-28)
+1.1.0 (2026-11-28)
 ==================
 
 Security
 * Requires Pillow 13, which fixes the open advisories of Pillow 12.
 * The management interface deletes only on POST.
+* The registration (login page and checkout) keeps bots out with a honeypot and a signed start time instead of an
+  image captcha; refused registrations are logged. ``captcha`` stays in ``LFS_APPS`` for now, so existing
+  ``include("captcha.urls")`` keeps working.
 
 Management interface
 * /manage/ redirects to the dashboard; the product list has its own path and is in the catalog menu again.
@@ -18,10 +21,17 @@ Management interface
 Shop
 * The return policy is published only once the shop has set its page.
 * The order detail page no longer shows Höhne-specific rows; add-ons can use the block ``order_extra_info``.
-* ``lfs_init`` creates Prepayment when lfs_paypal is not installed.
+* ``lfs_init`` creates Prepayment once when lfs_paypal is not installed.
+* Registering in the checkout no longer fails with several authentication backends.
+* Variants of local properties can be added again; the product form dispatcher shows the product instead of an
+  error for products without variants; topsellers from the cache respect their limit.
 
 Docs
-* Rewritten for 1.0, published at docs.django-lfs.com; the README leads with the demo Docker image.
+* Rewritten for 1.0, published at docs.django-lfs.com, with screenshots, a page per add-on and a production
+  guide; the README leads with the demo Docker image.
+
+Tests
+* The test suite runs on its own (``uv sync``, ``pytest``) and passes.
 
 1.0.0 (2026-11-27)
 ==================
