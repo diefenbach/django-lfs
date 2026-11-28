@@ -116,7 +116,6 @@ class ImagesListView(PermissionRequiredMixin, ImagesTabMixin, TemplateView):
             # Return just the files-list div content for HTMX
             html = render_to_string("manage/images/tabs/_list.html", context, request=self.request)
             # Extract just the files-list div content
-            from django.utils.html import strip_tags
             import re
 
             match = re.search(r'<div id="files-list".*?</div>(?=\s*</div>)', html, re.DOTALL)
