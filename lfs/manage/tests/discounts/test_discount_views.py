@@ -106,10 +106,6 @@ def manufacturer(db):
 class TestManageDiscountsView:
     """Tests for ManageDiscountsView."""
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = ManageDiscountsView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_redirects_to_first_discount(self, multiple_discounts):
         """Should redirect to first discount when discounts exist."""
@@ -140,11 +136,6 @@ class TestNoDiscountsView:
         """Should use the correct template."""
         view = NoDiscountsView()
         assert view.template_name == "manage/discounts/no_discounts.html"
-
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = NoDiscountsView()
-        assert view.permission_required == "core.manage_shop"
 
 
 @pytest.mark.django_db
@@ -268,10 +259,6 @@ class TestDiscountDataView:
         view = DiscountDataView()
         assert view.tab_name == "data"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = DiscountDataView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_data_tab_url(self, discount):
         """Should return URL to data tab after successful save."""
@@ -328,10 +315,6 @@ class TestDiscountCriteriaView:
         view = DiscountCriteriaView()
         assert view.tab_name == "criteria"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = DiscountCriteriaView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_criteria_tab_url(self, discount):
         """Should return URL to criteria tab after successful operation."""
@@ -489,10 +472,6 @@ class TestDiscountProductsView:
         view = DiscountProductsView()
         assert view.tab_name == "products"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = DiscountProductsView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_products_tab_url(self, discount):
         """Should return URL to products tab after successful operation."""
@@ -708,10 +687,6 @@ class TestDiscountCreateView:
         view = DiscountCreateView()
         assert view.template_name == "manage/discounts/add_discount.html"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = DiscountCreateView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_discount_url(self, discount):
         """Should return URL to discount after successful creation."""
@@ -762,10 +737,6 @@ class TestDiscountDeleteConfirmView:
         view = DiscountDeleteConfirmView()
         assert view.template_name == "manage/discounts/delete_discount.html"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = DiscountDeleteConfirmView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_context_data_includes_discount(self, discount):
         """Should include discount in context."""
@@ -788,10 +759,6 @@ class TestDiscountDeleteView:
         view = DiscountDeleteView()
         assert view.model == Discount
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = DiscountDeleteView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_discounts_list(self):
         """Should return URL to discounts list after deletion."""

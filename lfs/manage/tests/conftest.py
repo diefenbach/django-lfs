@@ -95,7 +95,6 @@ def authenticated_request(request_factory, manage_user):
         # Add messages framework support for testing
         from django.contrib.messages.storage.fallback import FallbackStorage
         from django.contrib.sessions.backends.db import SessionStore
-        from django.contrib.sessions.models import Session
 
         # Create a session store
         session = SessionStore()
@@ -581,7 +580,6 @@ def inactive_page(db):
 @pytest.fixture
 def page_with_file(db, tmp_path):
     """Page with attached file for testing."""
-    from django.core.files.uploadedfile import SimpleUploadedFile
 
     # Create a temporary file
 
@@ -620,7 +618,6 @@ def portlet_registration(db):
 @pytest.fixture
 def portlet_assignment(db, page, slot, text_portlet, shop_for_portlets):
     """Sample PortletAssignment for testing."""
-    from django.contrib.contenttypes.models import ContentType
 
     return PortletAssignment.objects.create(slot=slot, content=page, portlet=text_portlet, position=10)
 
@@ -638,7 +635,6 @@ def portlet_blocking(db, page, slot):
 @pytest.fixture
 def multiple_portlet_assignments(db, page, multiple_slots, shop_for_portlets):
     """Multiple PortletAssignments for testing."""
-    from django.contrib.contenttypes.models import ContentType
 
     assignments = []
     for i, slot in enumerate(multiple_slots):

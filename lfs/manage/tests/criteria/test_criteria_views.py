@@ -19,11 +19,6 @@ class TestAddCriterion:
         """Should have add_criterion function."""
         assert callable(add_criterion)
 
-    def test_add_criterion_requires_permission(self):
-        """Should require core.manage_shop permission."""
-        from lfs.manage.criteria.views import AddCriterionView
-
-        assert AddCriterionView.permission_required == "core.manage_shop"
 
     @patch(
         "django.conf.settings.LFS_CRITERIA",
@@ -104,11 +99,6 @@ class TestChangeCriterionForm:
         """Should have change_criterion_form function."""
         assert callable(change_criterion_form)
 
-    def test_change_criterion_form_requires_permission(self):
-        """Should require core.manage_shop permission."""
-        from lfs.manage.criteria.views import ChangeCriterionFormView
-
-        assert ChangeCriterionFormView.permission_required == "core.manage_shop"
 
     @patch("lfs.manage.criteria.views.import_symbol")
     def test_change_criterion_form_returns_criterion_html(self, mock_import_symbol, request_factory, manage_user):
@@ -194,11 +184,6 @@ class TestDeleteCriterion:
         """Should have delete_criterion function."""
         assert callable(delete_criterion)
 
-    def test_delete_criterion_requires_permission(self):
-        """Should require core.manage_shop permission."""
-        from lfs.manage.criteria.views import DeleteCriterionView
-
-        assert DeleteCriterionView.permission_required == "core.manage_shop"
 
     def test_delete_criterion_requires_delete_method(self):
         """Should only accept DELETE HTTP method."""

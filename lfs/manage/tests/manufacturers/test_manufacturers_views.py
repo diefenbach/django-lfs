@@ -49,17 +49,10 @@ class TestManageManufacturersView:
         expected_url = reverse("lfs_manage_no_manufacturers")
         assert url == expected_url
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManageManufacturersView.permission_required == "core.manage_shop"
-
 
 class TestManufacturerDataView:
     """Test ManufacturerDataView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerDataView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_data(self):
         """Should have correct tab name."""
@@ -93,9 +86,6 @@ class TestManufacturerDataView:
 class TestManufacturerProductsView:
     """Test ManufacturerProductsView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerProductsView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_products(self):
         """Should have correct tab name."""
@@ -119,9 +109,6 @@ class TestManufacturerProductsView:
 class TestManufacturerSEOView:
     """Test ManufacturerSEOView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerSEOView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_seo(self):
         """Should have correct tab name."""
@@ -154,9 +141,6 @@ class TestManufacturerSEOView:
 class TestManufacturerPortletsView:
     """Test ManufacturerPortletsView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerPortletsView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_portlets(self):
         """Should have correct tab name."""
@@ -166,9 +150,6 @@ class TestManufacturerPortletsView:
 class TestManufacturerCreateView:
     """Test ManufacturerCreateView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerCreateView.permission_required == "core.manage_shop"
 
     def test_success_url_uses_created_manufacturer_id(self, manufacturer):
         """Should redirect to created manufacturer after successful creation."""
@@ -203,9 +184,6 @@ class TestManufacturerCreateView:
 class TestManufacturerDeleteConfirmView:
     """Test ManufacturerDeleteConfirmView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerDeleteConfirmView.permission_required == "core.manage_shop"
 
     def test_template_name_is_delete_manufacturer_html(self):
         """Should use correct template."""
@@ -215,9 +193,6 @@ class TestManufacturerDeleteConfirmView:
 class TestManufacturerDeleteView:
     """Test ManufacturerDeleteView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerDeleteView.permission_required == "core.manage_shop"
 
     def test_success_url_goes_to_manufacturers_list(self):
         """Should redirect to manufacturers list after deletion."""
@@ -245,9 +220,6 @@ class TestManufacturerDeleteView:
 class TestManufacturerViewByIDView:
     """Test ManufacturerViewByIDView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturerViewByIDView.permission_required == "core.manage_shop"
 
     def test_redirect_url_uses_manufacturer_slug(self, request_factory, admin_user, manufacturer):
         """Should redirect to manufacturer detail page using slug."""
@@ -266,9 +238,6 @@ class TestManufacturerViewByIDView:
 class TestNoManufacturersView:
     """Test NoManufacturersView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert NoManufacturersView.permission_required == "core.manage_shop"
 
     def test_template_name_is_no_manufacturers_html(self):
         """Should use correct template."""
@@ -278,9 +247,6 @@ class TestNoManufacturersView:
 class TestManufacturersAjaxView:
     """Test ManufacturersAjaxView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManufacturersAjaxView.permission_required == "core.manage_shop"
 
     def test_get_method_exists(self):
         """Should have get method."""

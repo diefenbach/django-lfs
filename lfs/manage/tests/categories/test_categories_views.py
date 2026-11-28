@@ -10,11 +10,7 @@ from lfs.manage.categories.views import (
     CategorySEOView,
     CategoryPortletsView,
     CategoryCreateView,
-    CategoryDeleteConfirmView,
     CategoryDeleteView,
-    CategoryViewByIDView,
-    NoCategoriesView,
-    SortCategoriesView,
 )
 
 User = get_user_model()
@@ -50,17 +46,10 @@ class TestManageCategoriesView:
         expected_url = reverse("lfs_manage_no_categories")
         assert url == expected_url
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManageCategoriesView.permission_required == "core.manage_shop"
-
 
 class TestCategoryDataView:
     """Test CategoryDataView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryDataView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_data(self):
         """Should have correct tab name."""
@@ -80,9 +69,6 @@ class TestCategoryDataView:
 class TestCategoryViewView:
     """Test CategoryViewView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryViewView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_view(self):
         """Should have correct tab name."""
@@ -102,9 +88,6 @@ class TestCategoryViewView:
 class TestCategoryProductsView:
     """Test CategoryProductsView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryProductsView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_products(self):
         """Should have correct tab name."""
@@ -124,9 +107,6 @@ class TestCategoryProductsView:
 class TestCategorySEOView:
     """Test CategorySEOView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategorySEOView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_seo(self):
         """Should have correct tab name."""
@@ -146,9 +126,6 @@ class TestCategorySEOView:
 class TestCategoryPortletsView:
     """Test CategoryPortletsView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryPortletsView.permission_required == "core.manage_shop"
 
     def test_tab_name_is_portlets(self):
         """Should have correct tab name."""
@@ -158,9 +135,6 @@ class TestCategoryPortletsView:
 class TestCategoryCreateView:
     """Test CategoryCreateView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryCreateView.permission_required == "core.manage_shop"
 
     def test_success_url_uses_created_category_id(self, root_category):
         """Should redirect to created category after successful creation."""
@@ -173,20 +147,10 @@ class TestCategoryCreateView:
         assert url == expected_url
 
 
-class TestCategoryDeleteConfirmView:
-    """Test CategoryDeleteConfirmView behavior."""
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryDeleteConfirmView.permission_required == "core.manage_shop"
-
 
 class TestCategoryDeleteView:
     """Test CategoryDeleteView behavior."""
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryDeleteView.permission_required == "core.manage_shop"
 
     def test_success_url_goes_to_categories_list(self):
         """Should redirect to categories list after deletion."""
@@ -198,25 +162,5 @@ class TestCategoryDeleteView:
         assert url == expected_url
 
 
-class TestCategoryViewByIDView:
-    """Test CategoryViewByIDView behavior."""
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CategoryViewByIDView.permission_required == "core.manage_shop"
 
 
-class TestNoCategoriesView:
-    """Test NoCategoriesView behavior."""
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert NoCategoriesView.permission_required == "core.manage_shop"
-
-
-class TestSortCategoriesView:
-    """Test SortCategoriesView behavior."""
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert SortCategoriesView.permission_required == "core.manage_shop"

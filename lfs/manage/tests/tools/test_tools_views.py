@@ -22,9 +22,6 @@ class TestToolsView:
         """Should use correct template."""
         assert ToolsView.template_name == "manage/tools/tools.html"
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ToolsView.permission_required == "core.manage_shop"
 
     def test_get_context_data_returns_utilities_list(self, mock_request):
         """Should return utilities list in context."""

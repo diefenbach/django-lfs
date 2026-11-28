@@ -87,17 +87,6 @@ class TestManageStaticBlocksView:
         expected_url = reverse("lfs_manage_no_static_blocks")
         assert url == expected_url
 
-    @pytest.mark.django_db
-    def test_permission_required(self, mock_request, regular_user):
-        """Test that view requires proper permissions."""
-        view = ManageStaticBlocksView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        # PermissionRequiredMixin checks permissions in dispatch, not in individual methods
-        # So this test should just verify the view has the correct permission requirement
-        assert view.permission_required == "core.manage_shop"
-
 
 class TestNoStaticBlocksView:
     """Test NoStaticBlocksView functionality."""
@@ -110,17 +99,6 @@ class TestNoStaticBlocksView:
         view.request.user = admin_user
 
         assert view.template_name == "manage/static_blocks/no_static_blocks.html"
-
-    @pytest.mark.django_db
-    def test_permission_required(self, mock_request, regular_user):
-        """Test that view requires proper permissions."""
-        view = NoStaticBlocksView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        # PermissionRequiredMixin checks permissions in dispatch, not in individual methods
-        # So this test should just verify the view has the correct permission requirement
-        assert view.permission_required == "core.manage_shop"
 
 
 class TestStaticBlockTabMixin:

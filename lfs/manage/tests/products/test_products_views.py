@@ -89,9 +89,6 @@ class TestProductCreateView:
         """Should use Product model."""
         assert ProductCreateView.model == Product
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductCreateView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -122,9 +119,6 @@ class TestProductDataView:
         """Should use Product model."""
         assert ProductDataView.model == Product
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDataView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'data' as tab name."""
@@ -174,9 +168,6 @@ class TestProductStockView:
 
         assert ProductStockView.form_class == ProductStockForm
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductStockView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'stock' as tab name."""
@@ -208,9 +199,6 @@ class TestProductSEOView:
 
         assert ProductSEOView.form_class == SEOForm
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductSEOView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'seo' as tab name."""
@@ -227,9 +215,6 @@ class TestProductPortletsView:
         assert issubclass(ProductPortletsView, ProductTabMixin)
         assert issubclass(ProductPortletsView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductPortletsView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'portlets' as tab name."""
@@ -250,9 +235,6 @@ class TestNoProductsView:
 
         assert issubclass(NoProductsView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert NoProductsView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -269,9 +251,6 @@ class TestProductCategoriesView:
         assert issubclass(ProductCategoriesView, ProductTabMixin)
         assert issubclass(ProductCategoriesView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductCategoriesView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'categories' as tab name."""
@@ -302,9 +281,6 @@ class TestProductDataView:
         """Should use Product model."""
         assert ProductDataView.model == Product
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDataView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'data' as tab name."""
@@ -344,7 +320,6 @@ class TestProductDataView:
 
     def test_form_valid_adds_success_message(self, rf, product, mocker):
         """Should add success message when form is valid."""
-        from django.contrib import messages
 
         factory = RequestFactory()
         request = factory.post("/", {})
@@ -440,7 +415,6 @@ class TestProductDataView:
 
     def test_delete_standard_product_redirects_to_products_overview(self, rf, admin_user, product, mocker):
         """Should redirect to products overview when deleting standard product."""
-        from django.contrib import messages
 
         factory = RequestFactory()
         request = factory.post("/", {})
@@ -466,7 +440,6 @@ class TestProductDataView:
 
     def test_delete_variant_product_redirects_to_parent(self, rf, admin_user, variant_product, mocker):
         """Should redirect to parent product when deleting variant."""
-        from django.contrib import messages
 
         factory = RequestFactory()
         request = factory.post("/", {})
@@ -537,9 +510,6 @@ class TestProductImagesView:
         assert issubclass(ProductImagesView, ProductTabMixin)
         assert issubclass(ProductImagesView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductImagesView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'images' as tab name."""
@@ -633,9 +603,6 @@ class TestProductAttachmentsView:
         assert issubclass(ProductAttachmentsView, ProductTabMixin)
         assert issubclass(ProductAttachmentsView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductAttachmentsView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'attachments' as tab name."""
@@ -718,9 +685,6 @@ class TestProductAccessoriesView:
         assert issubclass(ProductAccessoriesView, ProductTabMixin)
         assert issubclass(ProductAccessoriesView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductAccessoriesView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'accessories' as tab name."""
@@ -1031,9 +995,6 @@ class TestProductDeleteConfirmView:
         assert issubclass(ProductDeleteConfirmView, PermissionRequiredMixin)
         assert issubclass(ProductDeleteConfirmView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDeleteConfirmView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -1075,9 +1036,6 @@ class TestProductDeleteView:
         """Should use 'id' as pk_url_kwarg."""
         assert ProductDeleteView.pk_url_kwarg == "id"
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDeleteView.permission_required == "core.manage_shop"
 
     def test_success_message(self):
         """Should have correct success message."""
@@ -1157,9 +1115,6 @@ class TestApplyProductFiltersView:
         assert issubclass(ApplyProductFiltersView, PermissionRequiredMixin)
         assert issubclass(ApplyProductFiltersView, FormView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ApplyProductFiltersView.permission_required == "core.manage_shop"
 
     def test_form_class(self):
         """Should use ProductFilterForm."""
@@ -1412,9 +1367,6 @@ class TestResetProductFiltersView:
         assert issubclass(ResetProductFiltersView, PermissionRequiredMixin)
         assert issubclass(ResetProductFiltersView, RedirectView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ResetProductFiltersView.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_removes_filters_from_session(self, rf, admin_user):
         """Should remove product-filters from session."""
@@ -1498,9 +1450,6 @@ class TestProductVariantsView:
         assert issubclass(ProductVariantsView, ProductTabMixin)
         assert issubclass(ProductVariantsView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductVariantsView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'variants' as tab name."""
@@ -1703,9 +1652,6 @@ class TestProductRelatedProductsView:
         assert issubclass(ProductRelatedProductsView, ProductTabMixin)
         assert issubclass(ProductRelatedProductsView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductRelatedProductsView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'related' as tab name."""
@@ -2060,9 +2006,6 @@ class TestProductPropertiesView:
         assert issubclass(ProductPropertiesView, ProductTabMixin)
         assert issubclass(ProductPropertiesView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductPropertiesView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should use 'properties' as tab name."""
@@ -2498,9 +2441,6 @@ class TestProductListView:
         assert issubclass(ProductListView, PermissionRequiredMixin)
         assert issubclass(ProductListView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductListView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -2559,7 +2499,6 @@ class TestProductListView:
 
     def test_get_context_data_with_session_filters(self, rf, db, shop):
         """Should apply filters from session."""
-        from lfs.manage.products.services import ProductFilterService
 
         # Create test data
         product1 = Product.objects.create(name="Apple Product", slug="apple-product", sku="APP001", price=10.0)

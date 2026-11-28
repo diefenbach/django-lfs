@@ -1,6 +1,5 @@
 import pytest
 from django.test import RequestFactory
-from django.utils.translation import gettext_lazy as _
 
 
 @pytest.fixture
@@ -52,7 +51,6 @@ class TestTopsellerForms:
     def test_views_use_csrf_exempt_for_ajax(self):
         """Test that AJAX views use csrf_exempt decorator."""
         from lfs.manage.topsellers.views import SortTopsellerView
-        from django.views.decorators.csrf import csrf_exempt
 
         # The SortTopsellerView should handle AJAX requests
         # This is a documentation test showing the current approach
@@ -61,7 +59,6 @@ class TestTopsellerForms:
     def test_views_use_http_method_decorators(self):
         """Test that views use appropriate HTTP method decorators."""
         from lfs.manage.topsellers.views import SortTopsellerView
-        from django.views.decorators.http import require_http_methods
 
         # The SortTopsellerView should handle POST requests
         # This is a documentation test showing the current approach
@@ -70,7 +67,6 @@ class TestTopsellerForms:
     def test_views_handle_permission_checks(self):
         """Test that views handle permission checks appropriately."""
         from lfs.manage.topsellers.views import ManageTopsellerView
-        from django.contrib.auth.decorators import permission_required
 
         # The ManageTopsellerView should use PermissionRequiredMixin
         # Other views should use permission_required decorator
@@ -79,7 +75,6 @@ class TestTopsellerForms:
     def test_views_use_template_rendering(self):
         """Test that views use appropriate template rendering."""
         from lfs.manage.topsellers.views import ManageTopsellerView
-        from django.template.loader import render_to_string
 
         # The view class should use template rendering
         view = ManageTopsellerView()
@@ -89,7 +84,6 @@ class TestTopsellerForms:
     def test_views_handle_pagination_directly(self):
         """Test that views handle pagination without forms."""
         from lfs.manage.topsellers.views import ManageTopsellerView
-        from django.core.paginator import Paginator
 
         # The view should use Paginator directly
         view = ManageTopsellerView()
@@ -98,7 +92,6 @@ class TestTopsellerForms:
     def test_views_handle_filtering_directly(self):
         """Test that views handle filtering without forms."""
         from lfs.manage.topsellers.views import ManageTopsellerView
-        from django.db.models import Q
 
         # The view should use Q objects for filtering
         view = ManageTopsellerView()
@@ -109,7 +102,6 @@ class TestTopsellerForms:
         # Note: The inline functionality has been removed in the class-based refactor
         # This test documents that inline views are not currently available
         from lfs.manage.topsellers.views import ManageTopsellerView
-        from django.http import HttpResponse
 
         # AJAX responses are handled by SortTopsellerView
         view = ManageTopsellerView()
@@ -118,7 +110,6 @@ class TestTopsellerForms:
     def test_views_handle_json_parsing(self):
         """Test that views handle JSON parsing for AJAX requests."""
         from lfs.manage.topsellers.views import SortTopsellerView
-        import json
 
         # The SortTopsellerView should parse JSON
         assert hasattr(SortTopsellerView, "post")
@@ -134,7 +125,6 @@ class TestTopsellerForms:
     def test_views_use_signals_appropriately(self):
         """Test that views use signals appropriately."""
         from lfs.manage.topsellers.views import RemoveTopsellerView
-        from lfs.core.signals import topseller_changed
 
         # The RemoveTopsellerView should send signals
         assert hasattr(RemoveTopsellerView, "post")
@@ -189,7 +179,6 @@ class TestTopsellerForms:
     def test_views_handle_csrf_exempt_decorator(self):
         """Test that views use csrf_exempt decorator appropriately."""
         from lfs.manage.topsellers.views import SortTopsellerView
-        from django.views.decorators.csrf import csrf_exempt
 
         # The SortTopsellerView should handle AJAX requests without CSRF
         assert hasattr(SortTopsellerView, "post")
@@ -197,7 +186,6 @@ class TestTopsellerForms:
     def test_views_handle_http_methods_decorator(self):
         """Test that views use require_http_methods decorator appropriately."""
         from lfs.manage.topsellers.views import SortTopsellerView
-        from django.views.decorators.http import require_http_methods
 
         # The SortTopsellerView should handle POST requests
         assert hasattr(SortTopsellerView, "post")

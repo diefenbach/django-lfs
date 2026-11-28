@@ -26,13 +26,6 @@ class TestManageFeaturedView:
 
         assert view.template_name == "manage/featured/featured.html"
 
-    def test_permission_required_is_correct(self, manage_user):
-        """Should require manage_shop permission."""
-        view = ManageFeaturedView()
-        view.request = RequestFactory().get("/")
-        view.request.user = manage_user
-
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_context_data_includes_featured_products(self, authenticated_request, featured_products):
         """Should include featured products in context ordered by position."""

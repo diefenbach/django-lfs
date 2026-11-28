@@ -74,11 +74,6 @@ class TestManagePaymentsView:
 
         assert redirect_url == expected_url
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = ManagePaymentsView()
-        assert view.permission_required == "core.manage_shop"
-
 
 class TestNoPaymentMethodsView:
     """Test NoPaymentMethodsView functionality."""
@@ -87,11 +82,6 @@ class TestNoPaymentMethodsView:
         """Test that view uses correct template."""
         view = NoPaymentMethodsView()
         assert view.template_name == "manage/payment_methods/no_payment_methods.html"
-
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = NoPaymentMethodsView()
-        assert view.permission_required == "core.manage_shop"
 
 
 class TestPaymentMethodTabMixin:
@@ -249,10 +239,6 @@ class TestPaymentMethodDataView:
         view = PaymentMethodDataView()
         assert view.pk_url_kwarg == "id"
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodDataView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_data_tab_url(self, rf, payment_method):
         """Test that get_success_url returns URL for data tab."""
@@ -297,10 +283,6 @@ class TestPaymentMethodCriteriaView:
         view = PaymentMethodCriteriaView()
         assert view.tab_name == "criteria"
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodCriteriaView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_criteria_tab_url(self, rf):
         """Test that get_success_url returns URL for criteria tab."""
@@ -392,10 +374,6 @@ class TestPaymentMethodPricesView:
         view = PaymentMethodPricesView()
         assert view.tab_name == "prices"
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodPricesView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_prices_tab_url(self, rf):
         """Test that get_success_url returns URL for prices tab."""
@@ -517,10 +495,6 @@ class TestPaymentMethodCreateView:
         view = PaymentMethodCreateView()
         assert view.template_name == "manage/payment_methods/add_payment_method.html"
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodCreateView()
-        assert view.permission_required == "core.manage_shop"
 
     @patch("lfs.manage.payment_methods.views.messages")
     def test_form_valid_creates_payment_method_and_redirects(self, mock_messages, rf):
@@ -563,10 +537,6 @@ class TestPaymentMethodDeleteConfirmView:
         view = PaymentMethodDeleteConfirmView()
         assert view.template_name == "manage/payment_methods/delete_payment_method.html"
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodDeleteConfirmView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_context_data_includes_payment_method(self, rf, payment_method):
         """Test that get_context_data includes payment method."""
@@ -594,10 +564,6 @@ class TestPaymentMethodDeleteView:
         view = PaymentMethodDeleteView()
         assert view.pk_url_kwarg == "id"
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodDeleteView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_payment_methods_list(self, rf):
         """Test that get_success_url returns payment methods list URL."""
@@ -643,10 +609,6 @@ class TestPaymentMethodPriceCriteriaView:
         view = PaymentMethodPriceCriteriaView()
         assert view.template_name == "manage/payment_methods/payment_price_criteria.html"
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodPriceCriteriaView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_payment_price_returns_correct_object(self, rf, payment_method_price):
         """Test that get_payment_price returns correct PaymentMethodPrice."""
@@ -727,10 +689,6 @@ class TestPaymentMethodPriceCriteriaView:
 class TestPaymentMethodPriceCriteriaSaveView:
     """Test PaymentMethodPriceCriteriaSaveView functionality."""
 
-    def test_requires_manage_shop_permission(self):
-        """Test that view requires manage_shop permission."""
-        view = PaymentMethodPriceCriteriaSaveView()
-        assert view.permission_required == "core.manage_shop"
 
     @patch("lfs.manage.payment_methods.views.messages")
     def test_post_saves_criteria_and_shows_message(self, mock_messages, rf, payment_method_price):

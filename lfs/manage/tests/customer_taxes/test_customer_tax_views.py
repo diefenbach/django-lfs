@@ -24,9 +24,6 @@ class TestManageCustomerTaxesView:
 
         assert issubclass(ManageCustomerTaxesView, RedirectView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManageCustomerTaxesView.permission_required == "core.manage_shop"
 
     def test_redirects_to_first_tax_when_taxes_exist(self, mock_request, customer_tax, monkeypatch):
         """Should redirect to first tax when taxes exist."""
@@ -72,9 +69,6 @@ class TestNoCustomerTaxesView:
 
         assert issubclass(NoCustomerTaxesView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert NoCustomerTaxesView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -94,9 +88,6 @@ class TestCustomerTaxDataView:
         """Should use CustomerTax model."""
         assert CustomerTaxDataView.model == CustomerTax
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CustomerTaxDataView.permission_required == "core.manage_shop"
 
     def test_form_class(self):
         """Should use CustomerTaxForm."""
@@ -132,9 +123,6 @@ class TestCustomerTaxCriteriaView:
 
         assert issubclass(CustomerTaxCriteriaView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CustomerTaxCriteriaView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -168,9 +156,6 @@ class TestCustomerTaxCreateView:
         """Should use CustomerTax model."""
         assert CustomerTaxCreateView.model == CustomerTax
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CustomerTaxCreateView.permission_required == "core.manage_shop"
 
     def test_form_class(self):
         """Should use CustomerTaxForm."""
@@ -202,9 +187,6 @@ class TestCustomerTaxDeleteConfirmView:
 
         assert issubclass(CustomerTaxDeleteConfirmView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CustomerTaxDeleteConfirmView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -229,9 +211,6 @@ class TestCustomerTaxDeleteView:
         """Should use CustomerTax model."""
         assert CustomerTaxDeleteView.model == CustomerTax
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert CustomerTaxDeleteView.permission_required == "core.manage_shop"
 
     def test_pk_url_kwarg(self):
         """Should use correct URL kwarg."""

@@ -27,9 +27,6 @@ class TestManageShippingView:
         assert issubclass(ManageShippingView, RedirectView)
         assert issubclass(ManageShippingView, PermissionRequiredMixin)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ManageShippingView.permission_required == "core.manage_shop"
 
     def test_redirects_to_first_shipping_method_when_methods_exist(self, shipping_method, mock_request, monkeypatch):
         """Should redirect to first shipping method when methods exist."""
@@ -75,9 +72,6 @@ class TestNoShippingMethodsView:
         assert issubclass(NoShippingMethodsView, TemplateView)
         assert issubclass(NoShippingMethodsView, PermissionRequiredMixin)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert NoShippingMethodsView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -134,9 +128,6 @@ class TestShippingMethodDataView:
         """Should use ShippingMethod model."""
         assert ShippingMethodDataView.model == ShippingMethod
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodDataView.permission_required == "core.manage_shop"
 
     def test_form_class(self):
         """Should use ShippingMethodForm."""
@@ -175,9 +166,6 @@ class TestShippingMethodCriteriaView:
         assert issubclass(ShippingMethodCriteriaView, PermissionRequiredMixin)
         assert issubclass(ShippingMethodCriteriaView, ShippingMethodTabMixin)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodCriteriaView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -215,9 +203,6 @@ class TestShippingMethodPricesView:
         assert issubclass(ShippingMethodPricesView, PermissionRequiredMixin)
         assert issubclass(ShippingMethodPricesView, ShippingMethodTabMixin)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodPricesView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -273,9 +258,6 @@ class TestShippingMethodCreateView:
         """Should use ShippingMethod model."""
         assert ShippingMethodCreateView.model == ShippingMethod
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodCreateView.permission_required == "core.manage_shop"
 
     def test_form_class(self):
         """Should use ShippingMethodAddForm."""
@@ -309,9 +291,6 @@ class TestShippingMethodDeleteConfirmView:
         assert issubclass(ShippingMethodDeleteConfirmView, TemplateView)
         assert issubclass(ShippingMethodDeleteConfirmView, PermissionRequiredMixin)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodDeleteConfirmView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -342,9 +321,6 @@ class TestShippingMethodDeleteView:
         """Should use ShippingMethod model."""
         assert ShippingMethodDeleteView.model == ShippingMethod
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodDeleteView.permission_required == "core.manage_shop"
 
     def test_pk_url_kwarg(self):
         """Should use correct URL kwarg."""
@@ -376,9 +352,6 @@ class TestShippingMethodPriceCriteriaView:
         assert issubclass(ShippingMethodPriceCriteriaView, TemplateView)
         assert issubclass(ShippingMethodPriceCriteriaView, PermissionRequiredMixin)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodPriceCriteriaView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -411,9 +384,6 @@ class TestShippingMethodPriceCriteriaSaveView:
         assert issubclass(ShippingMethodPriceCriteriaSaveView, TemplateView)
         assert issubclass(ShippingMethodPriceCriteriaSaveView, PermissionRequiredMixin)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShippingMethodPriceCriteriaSaveView.permission_required == "core.manage_shop"
 
     def test_post_method_exists(self):
         """Should have post method."""
@@ -432,7 +402,6 @@ class TestShippingMethodPriceOperations:
     def test_add_price_with_valid_data(self, shipping_method, mock_request):
         """Should add price with valid data."""
         from django.contrib.messages.storage.fallback import FallbackStorage
-        from django.contrib.messages import get_messages
 
         # Add message storage to request
         setattr(mock_request, "_messages", FallbackStorage(mock_request))

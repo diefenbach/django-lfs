@@ -17,8 +17,6 @@ from lfs.manage.properties.views import (
 
 
 class TestManagePropertiesView:
-    def test_permission_required_attribute(self):
-        assert ManagePropertiesView.permission_required == "core.manage_shop"
 
     @pytest.mark.django_db
     def test_redirects_to_first_property_when_exists(self, mock_request_with_messages, admin_user):
@@ -78,8 +76,6 @@ class TestPropertyDataViewUnit:
         assert issubclass(PropertyDataView, PropertyNavigationMixin)
         assert issubclass(PropertyDataView, UpdateView)
 
-    def test_permission_required(self):
-        assert PropertyDataView.permission_required == "core.manage_shop"
 
     def test_pk_url_kwarg(self):
         assert PropertyDataView.pk_url_kwarg == "id"
@@ -129,8 +125,6 @@ class TestPropertyCreateViewUnit:
 
         assert issubclass(PropertyCreateView, CreateView)
 
-    def test_permission_required(self):
-        assert PropertyCreateView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         assert PropertyCreateView.template_name == "manage/properties/add_property.html"

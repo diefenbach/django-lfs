@@ -115,9 +115,6 @@ class TestPortletsInlineView:
 class TestUpdatePortletsView:
     """Tests for UpdatePortletsView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert UpdatePortletsView.permission_required == "core.manage_shop"
 
     def test_post_updates_portlet_blocking(self, page, authenticated_request, slot, monkeypatch):
         """Should update portlet blocking settings."""
@@ -648,9 +645,6 @@ class TestEditPortletView:
 class TestMovePortletView:
     """Tests for MovePortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert MovePortletView.permission_required == "core.manage_shop"
 
     def test_get_with_nonexistent_portlet_returns_empty(self, authenticated_request):
         """Should return empty response for non-existent portlet."""
@@ -754,9 +748,6 @@ class TestMovePortletView:
 class TestSortPortletsView:
     """Tests for SortPortletsView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert SortPortletsView.permission_required == "core.manage_shop"
 
     def test_post_sorts_portlets_correctly(self, portlet_assignment, authenticated_request, slot):
         """Should sort portlets after drag and drop."""

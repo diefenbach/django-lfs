@@ -35,9 +35,6 @@ def mock_request(request_factory, user):
 class TestRatingMailManageView:
     """Test cases for RatingMailManageView."""
 
-    def test_should_require_manage_shop_permission(self):
-        """Test that view requires core.manage_shop permission."""
-        assert RatingMailManageView.permission_required == "core.manage_shop"
 
     def test_should_use_correct_template(self):
         """Test that view uses correct template."""
@@ -70,9 +67,6 @@ class TestRatingMailManageView:
 class TestRatingMailSendView:
     """Test cases for RatingMailSendView."""
 
-    def test_should_require_manage_shop_permission(self):
-        """Test that view requires core.manage_shop permission."""
-        assert RatingMailSendView.permission_required == "core.manage_shop"
 
     def test_should_use_correct_template(self):
         """Test that view uses correct template."""

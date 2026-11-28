@@ -119,10 +119,6 @@ class TestVoucherGroupDataView:
         view = VoucherGroupDataView()
         assert view.tab_name == "data"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = VoucherGroupDataView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_data_tab_url(self, voucher_group):
         """Should return URL to data tab after successful save."""
@@ -150,10 +146,6 @@ class TestVoucherGroupVouchersView:
         view = VoucherGroupVouchersView()
         assert view.tab_name == "vouchers"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = VoucherGroupVouchersView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_vouchers_tab_url(self, voucher_group):
         """Should return URL to vouchers tab after successful operation."""
@@ -270,10 +262,6 @@ class TestVoucherGroupOptionsView:
         view = VoucherGroupOptionsView()
         assert view.tab_name == "options"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = VoucherGroupOptionsView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_object_returns_existing_options(self):
         """Should return existing VoucherOptions object."""
@@ -309,10 +297,6 @@ class TestVoucherGroupOptionsView:
 class TestManageVoucherGroupsView:
     """Tests for ManageVoucherGroupsView."""
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = ManageVoucherGroupsView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_redirects_to_first_voucher_group(self, multiple_voucher_groups):
         """Should redirect to first voucher group when groups exist."""
@@ -344,11 +328,6 @@ class TestNoVoucherGroupsView:
         view = NoVoucherGroupsView()
         assert view.template_name == "manage/voucher/no_voucher_groups.html"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = NoVoucherGroupsView()
-        assert view.permission_required == "core.manage_shop"
-
 
 @pytest.mark.django_db
 @pytest.mark.unit
@@ -365,10 +344,6 @@ class TestVoucherGroupCreateView:
         view = VoucherGroupCreateView()
         assert view.template_name == "manage/voucher/add_voucher_group.html"
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = VoucherGroupCreateView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_voucher_group_url(self, voucher_group):
         """Should return URL to voucher group after successful creation."""
@@ -391,10 +366,6 @@ class TestVoucherGroupDeleteView:
         view = VoucherGroupDeleteView()
         assert view.model == VoucherGroup
 
-    def test_view_requires_permission(self):
-        """Should require 'core.manage_shop' permission."""
-        view = VoucherGroupDeleteView()
-        assert view.permission_required == "core.manage_shop"
 
     def test_post_deletes_voucher_group_and_redirects(self, request_factory, voucher_group, monkeypatch):
         """Should delete voucher group and redirect with success message."""

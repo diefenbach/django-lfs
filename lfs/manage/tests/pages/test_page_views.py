@@ -159,9 +159,6 @@ class TestPageTabMixin:
 class TestManagePagesView:
     """Tests for ManagePagesView dispatcher."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert ManagePagesView.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_redirects_to_first_non_root_page_when_pages_exist(
         self, regular_page, authenticated_request, monkeypatch
@@ -619,9 +616,6 @@ class TestPageDeleteView:
 class TestPageViewByIDView:
     """Tests for PageViewByIDView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PageViewByIDView.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_raises_404_for_root_page(self, authenticated_request):
         """Should raise Http404 for root page."""

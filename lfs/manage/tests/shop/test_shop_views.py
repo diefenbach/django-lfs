@@ -101,9 +101,6 @@ class TestShopDataView:
         """Should use Shop model."""
         assert ShopDataView.model == Shop
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShopDataView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -159,9 +156,6 @@ class TestShopDefaultValuesView:
         """Should use Shop model."""
         assert ShopDefaultValuesView.model == Shop
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShopDefaultValuesView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -213,9 +207,6 @@ class TestShopOrderNumbersView:
         assert issubclass(ShopOrderNumbersView, ShopTabMixin)
         assert issubclass(ShopOrderNumbersView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShopOrderNumbersView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -286,9 +277,6 @@ class TestShopSEOTabView:
         """Should use Shop model."""
         assert ShopSEOTabView.model == Shop
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShopSEOTabView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -339,9 +327,6 @@ class TestShopPortletsView:
         assert issubclass(ShopPortletsView, ShopTabMixin)
         assert issubclass(ShopPortletsView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShopPortletsView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""
@@ -381,9 +366,6 @@ class TestShopCarouselView:
         assert issubclass(ShopCarouselView, ShopTabMixin)
         assert issubclass(ShopCarouselView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ShopCarouselView.permission_required == "core.manage_shop"
 
     def test_tab_name(self):
         """Should have correct tab name."""

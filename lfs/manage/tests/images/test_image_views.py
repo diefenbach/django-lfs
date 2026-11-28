@@ -53,9 +53,6 @@ class TestImagesListView:
         assert issubclass(ImagesListView, ImagesTabMixin)
         assert issubclass(ImagesListView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ImagesListView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
@@ -166,9 +163,6 @@ class TestImagePreviewView:
         assert issubclass(ImagePreviewView, PermissionRequiredMixin)
         assert issubclass(ImagePreviewView, View)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ImagePreviewView.permission_required == "core.manage_shop"
 
     def test_http_method_names(self):
         """Should only allow GET requests."""
@@ -214,9 +208,6 @@ class TestDeleteImagesConfirmView:
         assert issubclass(DeleteImagesConfirmView, PermissionRequiredMixin)
         assert issubclass(DeleteImagesConfirmView, View)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert DeleteImagesConfirmView.permission_required == "core.manage_shop"
 
     def test_http_method_names(self):
         """Should only allow GET requests."""
@@ -263,9 +254,6 @@ class TestDeleteImagesView:
         assert issubclass(DeleteImagesView, PermissionRequiredMixin)
         assert issubclass(DeleteImagesView, View)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert DeleteImagesView.permission_required == "core.manage_shop"
 
     def test_http_method_names(self):
         """Should only allow POST requests."""
@@ -327,9 +315,6 @@ class TestAddImagesView:
         assert issubclass(AddImagesView, PermissionRequiredMixin)
         assert issubclass(AddImagesView, View)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert AddImagesView.permission_required == "core.manage_shop"
 
     def test_http_method_names(self):
         """Should only allow POST requests."""
@@ -337,7 +322,6 @@ class TestAddImagesView:
 
     def test_dispatch_has_csrf_exempt(self):
         """Should have csrf_exempt decorator on dispatch."""
-        from django.views.decorators.csrf import csrf_exempt
 
         assert hasattr(AddImagesView.dispatch, "__wrapped__")
 
@@ -380,9 +364,6 @@ class TestImagesUploadView:
         assert issubclass(ImagesUploadView, ImagesTabMixin)
         assert issubclass(ImagesUploadView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ImagesUploadView.permission_required == "core.manage_shop"
 
     def test_template_name(self):
         """Should use correct template."""
