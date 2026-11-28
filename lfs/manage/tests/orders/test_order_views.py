@@ -219,6 +219,32 @@ class TestState:
 
 
 class TestSendAndDelete:
+    def test_resending_mails_the_order_to_the_customer(self, manager):
+        jane = order()
+
+        response = manager.post(reverse("lfs_manage_send_order", kwargs={"order_id": jane.id}))
+
+        assert [(m.to, m.bcc) for m in mail.outbox] == [(["jane@example.com"], ["owner@example.com"])]
+        assert response["Location"] == reverse("lfs_manage_order", kwargs={"order_id": jane.id})
+        assert messages_of(response) == ["Order has been sent."]
+
+    def test_resending_needs_a_post(self, manager):
+        """A link or an image on another site must not mail the customer again."""
+        jane = order()
+
+        response = manager.get(reverse("lfs_manage_send_order", kwargs={"order_id": jane.id}))
+
+        assert response.status_code == 405
+        assert mail.outbox == []
+
+    def test_the_order_page_resends_with_a_form(self, manager):
+        jane = order()
+        url = reverse("lfs_manage_send_order", kwargs={"order_id": jane.id})
+
+        page = manager.get(reverse("lfs_manage_order", kwargs={"order_id": jane.id})).content.decode()
+
+        assert f'<form method="post" action="{url}"' in page
+
     def test_confirmation_names_the_order(self, manager):
         jane = order()
 

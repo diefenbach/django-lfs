@@ -326,9 +326,10 @@ class SendOrderView(PermissionRequiredMixin, View):
     """Sends order with passed order id to the customer of this order."""
 
     permission_required = "core.manage_shop"
+    http_method_names = ["post"]
 
-    def get(self, request, *args, **kwargs):
-        """Send order email and redirect to order detail."""
+    def post(self, request, *args, **kwargs):
+        """Send order email and redirect to order detail; only POST, so that a link elsewhere cannot send it."""
         order_id = kwargs.get("order_id")
         order = lfs_get_object_or_404(Order, pk=order_id)
         mail_utils.send_order_received_mail(request, order)
