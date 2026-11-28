@@ -241,7 +241,7 @@ class PaymentMethodPricesView(PermissionRequiredMixin, PaymentMethodTabMixin, Te
                         id = parts[1]
                         if not id.isdigit():
                             continue
-                        price = get_object_or_404(PaymentMethodPrice, pk=id)
+                        price = get_object_or_404(payment_method.prices, pk=id)
                         price.delete()
                     except (IndexError, ObjectDoesNotExist, ValueError):
                         continue
@@ -256,7 +256,7 @@ class PaymentMethodPricesView(PermissionRequiredMixin, PaymentMethodTabMixin, Te
                         id = parts[1]
                         if not id.isdigit():
                             continue
-                        price = get_object_or_404(PaymentMethodPrice, pk=id)
+                        price = get_object_or_404(payment_method.prices, pk=id)
                         try:
                             value = float(value)
                             if value < 0:

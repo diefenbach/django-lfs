@@ -454,7 +454,7 @@ class ProductImagesView(PermissionRequiredMixin, ProductTabMixin, TemplateView):
                 if key.startswith("delete-"):
                     img_id = key.split("-", 1)[1]
                     try:
-                        Image.objects.get(pk=img_id).delete()
+                        product.images.get(pk=img_id).delete()
                         deleted += 1
                     except Image.DoesNotExist:
                         pass
@@ -465,7 +465,7 @@ class ProductImagesView(PermissionRequiredMixin, ProductTabMixin, TemplateView):
                 if key.startswith("title-") or key.startswith("alt-") or key.startswith("position-"):
                     field, img_id = key.split("-", 1)
                     try:
-                        img = Image.objects.get(pk=img_id)
+                        img = product.images.get(pk=img_id)
                     except Image.DoesNotExist:
                         continue
                     if field == "title":
@@ -513,7 +513,7 @@ class ProductAttachmentsView(PermissionRequiredMixin, ProductTabMixin, TemplateV
                 if key.startswith("delete-"):
                     att_id = key.split("-", 1)[1]
                     try:
-                        ProductAttachment.objects.get(pk=att_id).delete()
+                        product.attachments.get(pk=att_id).delete()
                         deleted += 1
                     except ProductAttachment.DoesNotExist:
                         pass
