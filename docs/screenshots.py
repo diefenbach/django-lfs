@@ -205,7 +205,9 @@ def create_demo_data() -> None:
     CartPriceCriterion.objects.create(
         content=free, operator=CartPriceCriterion.GREATER_THAN_EQUAL, value=50, position=10
     )
-    colour_property = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, filterable=True)
+    colour_property = Property.objects.create(
+        name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, filterable=True
+    )
     for position, option in enumerate(["Sage", "Charcoal", "Natural"]):
         PropertyOption.objects.create(property=colour_property, name=option, position=(position + 1) * 10)
     Page.objects.filter(slug="imprint").update(
