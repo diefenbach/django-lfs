@@ -94,7 +94,6 @@ Developing
 
    developer/developing.rst
    developer/testing.rst
-   developer/benchmarking.rst
    developer/changing_models.rst
    misc/contributing_translations.rst
 
