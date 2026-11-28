@@ -9,11 +9,16 @@ import os
 import sys
 import tempfile
 import threading
+from datetime import UTC, datetime, timedelta
 from collections.abc import Callable
+from typing import TYPE_CHECKING
 from decimal import Decimal
 from io import BytesIO
 from pathlib import Path
 from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server
+
+if TYPE_CHECKING:
+    from playwright.sync_api import Page
 
 ROOT = Path(__file__).resolve().parent.parent
 IMAGES = ROOT / "docs" / "images"
@@ -70,7 +75,8 @@ from lfs.marketing.models import FeaturedProduct  # noqa: E402
 from lfs.manufacturer.models import Manufacturer  # noqa: E402
 from lfs.page.models import Page  # noqa: E402
 from lfs.payment.models import PaymentMethod  # noqa: E402
-from lfs.shipping.models import ShippingMethod  # noqa: E402
+from lfs.shipping.models import ShippingMethod, ShippingMethodPrice  # noqa: E402
+from lfs.criteria.models import CartPriceCriterion, CountryCriterion, WeightCriterion  # noqa: E402
 from lfs.tax.models import Tax  # noqa: E402
 
 PASSWORD = "screenshots-only"
@@ -79,20 +85,61 @@ CATEGORIES = [("Kitchen textiles", "kitchen-textiles"), ("Knives", "knives"), ("
 
 # name, slug, SKU, price, category slug, colour of the generated product image, short description
 PRODUCTS = [
-    ("Linen apron, sage", "linen-apron-sage", "AP-1042-SG", "29.90", "kitchen-textiles", (156, 175, 136),
-     "Washed linen, adjustable neck strap, two front pockets."),
-    ("Linen apron, charcoal", "linen-apron-charcoal", "AP-1042-CH", "29.90", "kitchen-textiles", (70, 72, 76),
-     "Washed linen in charcoal."),
-    ("Tea towel, set of 3", "tea-towel-set", "TT-0310", "19.50", "kitchen-textiles", (214, 196, 160),
-     "Half linen, 50 × 70 cm."),
-    ("Bread knife 21 cm", "bread-knife-21", "KN-2100", "34.90", "knives", (160, 120, 84),
-     "Serrated blade, beech handle."),
-    ("Chef's knife 20 cm", "chefs-knife-20", "KN-2000", "79.00", "knives", (120, 92, 70),
-     "Forged steel, full tang."),
-    ("Stoneware plate, 27 cm", "stoneware-plate-27", "TW-2700", "14.90", "tableware", (198, 206, 210),
-     "Reactive glaze, dishwasher safe."),
-    ("Stoneware bowl, 15 cm", "stoneware-bowl-15", "TW-1500", "11.90", "tableware", (176, 190, 196),
-     "Reactive glaze, dishwasher safe."),
+    (
+        "Linen apron, sage",
+        "linen-apron-sage",
+        "AP-1042-SG",
+        "29.90",
+        "kitchen-textiles",
+        (156, 175, 136),
+        "Washed linen, adjustable neck strap, two front pockets.",
+    ),
+    (
+        "Linen apron, charcoal",
+        "linen-apron-charcoal",
+        "AP-1042-CH",
+        "29.90",
+        "kitchen-textiles",
+        (70, 72, 76),
+        "Washed linen in charcoal.",
+    ),
+    (
+        "Tea towel, set of 3",
+        "tea-towel-set",
+        "TT-0310",
+        "19.50",
+        "kitchen-textiles",
+        (214, 196, 160),
+        "Half linen, 50 × 70 cm.",
+    ),
+    (
+        "Bread knife 21 cm",
+        "bread-knife-21",
+        "KN-2100",
+        "34.90",
+        "knives",
+        (160, 120, 84),
+        "Serrated blade, beech handle.",
+    ),
+    ("Chef's knife 20 cm", "chefs-knife-20", "KN-2000", "79.00", "knives", (120, 92, 70), "Forged steel, full tang."),
+    (
+        "Stoneware plate, 27 cm",
+        "stoneware-plate-27",
+        "TW-2700",
+        "14.90",
+        "tableware",
+        (198, 206, 210),
+        "Reactive glaze, dishwasher safe.",
+    ),
+    (
+        "Stoneware bowl, 15 cm",
+        "stoneware-bowl-15",
+        "TW-1500",
+        "11.90",
+        "tableware",
+        (176, 190, 196),
+        "Reactive glaze, dishwasher safe.",
+    ),
 ]
 
 DESCRIPTION = (
@@ -133,12 +180,26 @@ def create_demo_data() -> None:
     ShippingMethod.objects.filter(name="Standard").update(
         tax=tax, price=Decimal("4.90"), description="<p>DHL parcel, 1–2 working days</p>"
     )
+    # Parcels up to 30 kg; free shipping from a cart price of 50 (the examples of the shipping how-to).
+    standard = ShippingMethod.objects.get(name="Standard")
+    WeightCriterion.objects.create(content=standard, operator=WeightCriterion.LESS_THAN_EQUAL, value=30, position=10)
+    free = ShippingMethodPrice.objects.create(shipping_method=standard, price=0, priority=10, active=True)
+    CartPriceCriterion.objects.create(
+        content=free, operator=CartPriceCriterion.GREATER_THAN_EQUAL, value=50, position=10
+    )
     colour = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, filterable=True)
     for position, option in enumerate(["Sage", "Charcoal", "Natural"]):
         PropertyOption.objects.create(property=colour, name=option, position=(position + 1) * 10)
     Page.objects.filter(slug="imprint").update(
         short_text="Who runs this shop.",
         body="<p>Kitchen &amp; Table GmbH<br>Example Street 1<br>12345 Example Town</p>",
+    )
+    # Cash on delivery only within Germany, for a fee of 3.50 (the example of the payment how-to).
+    cash = PaymentMethod.objects.get(name="Cash on delivery")
+    cash.price, cash.tax = 3.5, tax
+    cash.save()
+    CountryCriterion.objects.create(content=cash, operator=CountryCriterion.IS_SELECTED, position=10).value.set(
+        [germany]
     )
     PaymentMethod.objects.filter(name="Prepayment").update(
         description="<p>Pay by bank transfer; we ship when the money has arrived.</p>"
@@ -151,8 +212,15 @@ def create_demo_data() -> None:
         )
     for name, slug, sku, price, category, colour, short in PRODUCTS:
         product = Product.objects.create(
-            name=name, slug=slug, sku=sku, price=Decimal(price), tax=tax, active=True, manufacturer=manufacturer,
-            sku_manufacturer=f"NL-{sku}", short_description=f"<p>{short}</p>",
+            name=name,
+            slug=slug,
+            sku=sku,
+            price=Decimal(price),
+            tax=tax,
+            active=True,
+            manufacturer=manufacturer,
+            sku_manufacturer=f"NL-{sku}",
+            short_description=f"<p>{short}</p>",
             description=DESCRIPTION if slug == "linen-apron-sage" else f"<p>{short}</p>",
         )
         product.categories.add(categories[category])
@@ -166,11 +234,23 @@ def create_demo_data() -> None:
 
 # first name, last name, e-mail, city, order state, products with amounts
 CUSTOMERS = [
-    ("Anna", "Becker", "anna.becker@example.com", "Hamburg", SUBMITTED,
-     [("linen-apron-sage", 1), ("tea-towel-set", 2)]),
+    (
+        "Anna",
+        "Becker",
+        "anna.becker@example.com",
+        "Hamburg",
+        SUBMITTED,
+        [("linen-apron-sage", 1), ("tea-towel-set", 2)],
+    ),
     ("Jonas", "Weber", "jonas.weber@example.com", "Leipzig", PAID, [("bread-knife-21", 1)]),
-    ("Lena", "Hoffmann", "lena.hoffmann@example.com", "Freiburg", SENT,
-     [("stoneware-plate-27", 6), ("stoneware-bowl-15", 6)]),
+    (
+        "Lena",
+        "Hoffmann",
+        "lena.hoffmann@example.com",
+        "Freiburg",
+        SENT,
+        [("stoneware-plate-27", 6), ("stoneware-bowl-15", 6)],
+    ),
 ]
 
 
@@ -183,8 +263,14 @@ def create_customers_and_orders(country: Country, tax: Tax) -> None:
         user = User.objects.create_user(email.split("@")[0], email, PASSWORD, first_name=first, last_name=last)
         customer = Customer.objects.create(user=user, session=f"session-{number}")
         address = Address.objects.create(
-            customer=customer, firstname=first, lastname=last, line1=f"Example Street {number}", city=city,
-            zip_code=f"2{number}000", country=country, email=email,
+            customer=customer,
+            firstname=first,
+            lastname=last,
+            line1=f"Example Street {number}",
+            city=city,
+            zip_code=f"2{number}000",
+            country=country,
+            email=email,
         )
         customer.sa_content_type = customer.ia_content_type = address_type
         customer.sa_object_id = customer.ia_object_id = address.id
@@ -192,25 +278,54 @@ def create_customers_and_orders(country: Country, tax: Tax) -> None:
         products = [(Product.objects.get(slug=slug), amount) for slug, amount in items]
         price = sum(product.price * amount for product, amount in products) + shipping.price
         order = Order.objects.create(
-            number=f"2026-{number:05d}", user=user, session=customer.session, customer_firstname=first,
-            customer_lastname=last, customer_email=email, shipping_method=shipping, payment_method=payment,
-            shipping_price=shipping.price, price=price, tax=round(price * 19 / 119, 2), state=state, sa_content_type=address_type, sa_object_id=address.id,
-            ia_content_type=address_type, ia_object_id=address.id,
+            number=f"2026-{number:05d}",
+            user=user,
+            session=customer.session,
+            customer_firstname=first,
+            customer_lastname=last,
+            customer_email=email,
+            shipping_method=shipping,
+            payment_method=payment,
+            shipping_price=shipping.price,
+            price=price,
+            tax=round(price * 19 / 119, 2),
+            state=state,
+            sa_content_type=address_type,
+            sa_object_id=address.id,
+            ia_content_type=address_type,
+            ia_object_id=address.id,
         )
         for product, amount in products:
             OrderItem.objects.create(
-                order=order, product=product, product_name=product.name, product_sku=product.sku,
-                product_amount=amount, product_price_gross=product.price, price_gross=product.price * amount,
+                order=order,
+                product=product,
+                product_name=product.name,
+                product_sku=product.sku,
+                product_amount=amount,
+                product_price_gross=product.price,
+                price_gross=product.price * amount,
                 product_tax=round(product.price * amount * 19 / 119, 2),
             )
     cart = Cart.objects.create(session="session-open-cart")
     CartItem.objects.create(cart=cart, product=Product.objects.get(slug="chefs-knife-20"), amount=1)
     CartItem.objects.create(cart=cart, product=Product.objects.get(slug="linen-apron-charcoal"), amount=2)
     Review.objects.create(
-        content_type=ContentType.objects.get_for_model(Product), content_id=Product.objects.get(slug="bread-knife-21").id,
-        user_name="Jonas", user_email="jonas.weber@example.com", score=5, active=False,
+        content_type=ContentType.objects.get_for_model(Product),
+        content_id=Product.objects.get(slug="bread-knife-21").id,
+        user_name="Jonas",
+        user_email="jonas.weber@example.com",
+        score=5,
+        active=False,
         comment="Cuts even the crustiest sourdough without crumbs.",
     )
+    # Fixed dates instead of "now", so that taking the screenshots again changes only what really changed.
+    when = datetime(2026, 11, 20, 10, 30, tzinfo=UTC)
+    for days, order in enumerate(Order.objects.order_by("-id")):
+        Order.objects.filter(id=order.id).update(created=when - timedelta(days=days), state_modified=when)
+    for days, user in enumerate(User.objects.order_by("-id")):
+        User.objects.filter(id=user.id).update(date_joined=when - timedelta(days=days))
+    Cart.objects.update(creation_date=when, modification_date=when)
+    Review.objects.update(creation_date=when)
 
 
 class QuietHandler(WSGIRequestHandler):
@@ -239,8 +354,21 @@ def category_id(slug: str) -> int:
     return Category.objects.get(slug=slug).id
 
 
-# File name in docs/images/ (without .png) and a function that returns the path to show.
-SHOTS: list[tuple[str, Callable[[], str]]] = [
+def shipping_id() -> int:
+    """Return the id of the demo shipping method ``Standard``."""
+    return ShippingMethod.objects.get(name="Standard").id
+
+
+def open_price_criteria(page: "Page") -> None:
+    """Open the dialog with the criteria of the first price on the Prices tab."""
+    page.click("text=Edit Criteria")
+    page.wait_for_selector(".modal.show")
+    page.wait_for_timeout(500)
+
+
+# File name in docs/images/ (without .png), a function that returns the path to show, and optionally what to do on
+# the page before the screenshot.
+SHOTS: list[tuple[str, Callable[[], str]] | tuple[str, Callable[[], str], Callable[["Page"], None]]] = [
     ("manage_product_data", lambda: f"/manage/product/{product_id('linen-apron-sage')}/data/"),
     ("manage_product_images", lambda: f"/manage/product/{product_id('linen-apron-sage')}/images/"),
     ("manage_product_stock", lambda: f"/manage/product/{product_id('linen-apron-sage')}/stock/"),
@@ -249,7 +377,10 @@ SHOTS: list[tuple[str, Callable[[], str]]] = [
     ("manage_category_products", lambda: f"/manage/category/{category_id('kitchen-textiles')}/products/"),
     ("manage_shop_data", lambda: "/manage/shop/data/"),
     ("manage_shop_default_values", lambda: "/manage/shop/default-values/"),
-    ("manage_shipping_method_data", lambda: f"/manage/shipping-method/{ShippingMethod.objects.get(name='Standard').id}/data"),
+    (
+        "manage_shipping_method_data",
+        lambda: f"/manage/shipping-method/{ShippingMethod.objects.get(name='Standard').id}/data",
+    ),
     ("manage_property_data", lambda: f"/manage/property/{Property.objects.get(name='Colour').id}/data"),
     ("manage_page_data", lambda: f"/manage/page/{Page.objects.get(slug='imprint').id}/data"),
     ("manage_orders", lambda: "/manage/orders/"),
@@ -257,7 +388,17 @@ SHOTS: list[tuple[str, Callable[[], str]]] = [
     ("manage_review", lambda: f"/manage/review/{Review.objects.get().id}/"),
     ("manage_featured", lambda: "/manage/featured"),
     ("manage_discount_data", lambda: f"/manage/discount/{Discount.objects.get().id}/data"),
-    ("manage_payment_method_data", lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Prepayment').id}/data"),
+    ("howto_shipping_criteria", lambda: f"/manage/shipping-method/{shipping_id()}/criteria/"),
+    ("howto_shipping_prices", lambda: f"/manage/shipping-method/{shipping_id()}/prices/"),
+    ("howto_shipping_price_criteria", lambda: f"/manage/shipping-method/{shipping_id()}/prices/", open_price_criteria),
+    (
+        "howto_payment_criteria",
+        lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Cash on delivery').id}/criteria/",
+    ),
+    (
+        "manage_payment_method_data",
+        lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Prepayment').id}/data",
+    ),
 ]
 
 
@@ -269,18 +410,21 @@ def take_screenshots(base: str, only: list[str]) -> None:
     client.login(username="admin", password=PASSWORD)
     session = client.cookies["sessionid"].value
     # Look the paths up before the browser starts: Playwright runs an event loop, in which Django refuses queries.
-    paths = [(name, url()) for name, url in SHOTS if not only or name in only]
+    paths = [(name, url(), rest[0] if rest else None) for name, url, *rest in SHOTS if not only or name in only]
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page(viewport={"width": 1280, "height": 800})
         page.context.add_cookies([{"name": "sessionid", "value": session, "url": base}])
-        for name, url in paths:
+        for name, url, action in paths:
             response = page.goto(base + url)
             page.wait_for_load_state("networkidle")
             if response is None or response.status != 200:
                 raise SystemExit(f"{name}: {url} answered {response.status if response else 'nothing'}")
+            if action:
+                action(page)
             # The product list scrolls to the selected product; show every list from its top.
-            page.evaluate("document.querySelectorAll('*').forEach(e => { e.scrollTop = 0; })")
+            if not action:
+                page.evaluate("document.querySelectorAll('*').forEach(e => { e.scrollTop = 0; })")
             page.screenshot(path=IMAGES / f"{name}.png", animations="disabled")
             print(f"docs/images/{name}.png")
         browser.close()
