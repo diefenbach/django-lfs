@@ -173,14 +173,7 @@ lfs-samples         ``lfs_samples``          Product samples
 Production
 ==========
 
-* Set ``DEBUG = False``, a secret ``SECRET_KEY``, ``ALLOWED_HOSTS`` and ``CSRF_TRUSTED_ORIGINS``, and an e-mail
-  server: the shop sends the order mails.
-* Use PostgreSQL and add ``django.contrib.postgres`` to ``INSTALLED_APPS``; the search then ignores accents.
-* Run ``python manage.py collectstatic`` on every deployment.
-* Run the project with an application server such as gunicorn behind a web server (nginx, Caddy) that terminates
-  HTTPS and serves the static and uploaded files. Do not use ``runserver`` in production.
-* The theme's ``robots.txt`` is the template ``lfs/shop/robots.txt``. To change it, put a template with the same path
-  into your project's templates or your own theme.
+For running the shop on a server see :doc:`production`.
 
 What's next?
 ============
