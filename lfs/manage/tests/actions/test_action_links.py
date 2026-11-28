@@ -10,13 +10,15 @@ from lfs.core.models import Action, ActionGroup
 
 
 @pytest.fixture
-def action(db):
+def action(db, shop):
     group = ActionGroup.objects.create(name="Footer")
     return Action.objects.create(group=group, title="Imprint", link="https://example.com/old", active=True)
 
 
 def save_link(client, action, link):
-    client.post(reverse("lfs_manage_action", kwargs={"pk": action.pk}), {"title": "Imprint", "link": link, "active": "on"})
+    client.post(
+        reverse("lfs_manage_action", kwargs={"pk": action.pk}), {"title": "Imprint", "link": link, "active": "on"}
+    )
     action.refresh_from_db()
     return action.link
 
