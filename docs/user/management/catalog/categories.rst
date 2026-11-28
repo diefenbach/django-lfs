@@ -6,7 +6,12 @@
 Categories
 ==========
 
-This section describes the category management interface.
+This section describes the category management interface (``Catalog / Categories``).
+
+.. image:: /images/manage_category_data.png
+   :alt: The Data tab of a category, with the category tree on the left
+
+On the left is the tree of all categories, on the right the selected category with its tabs.
 
 Site Actions
 ============
@@ -15,24 +20,26 @@ Add Top Category
     Adds a category to the root of the catalog.
 
 Add Category
-    Adds a sub category to the current displayed category.
+    Adds a sub category to the selected category.
 
 Delete Category
-    Deletes the current displayed category.
+    Deletes the selected category, after a confirmation.
 
 View Category
-    Opens the category in a pop-up window to quickly check the appearance of
-    the category without leaving the :term:`LMI`.
+    Opens the category in the shop.
 
-Goto Category
-    Leaves the :term:`LMI` and goes to customer view of the current displayed
-    category.
+Category Tree
+=============
 
-Move Categories
-===============
+Search
+    Filters the tree by the name of the category.
 
-In order to move categories, hold it on the handle left beside the category name
-and drag and drop it to the new place.
+Expand all / Collapse all
+    The buttons beside the heading open or close all branches of the tree.
+
+Move categories
+    Click the lock button beside the heading to switch on drag and drop, then drag a category by its handle to its
+    new place, also into another category. Click the button again to lock the tree.
 
 Tabs
 ====
@@ -40,127 +47,89 @@ Tabs
 Data
 ----
 
-Exclude from navigation
-    If checked the category is not displayed within the :ref:`categories portlet
-    <portlets_concepts_categories>`.
-
 Name
-    The name of the category. This is displayed on several places, e.g: within
-    category overviews and on top of the category detail view.
+    The name of the category. It is displayed in several places, e.g. in category overviews and on top of the
+    category page.
 
 Slug
     The unique last part of the category's URL.
 
+Short description
+    A short description of the category, used in overviews.
+
 Description
-    The detailed description of the category. This is displayed on the detail
-    view of the category.
+    The detailed description of the category, displayed on the category page.
+
+Exclude from navigation
+    If checked, the category is not displayed in the navigation of the shop.
 
 Image
-    The image of the category. This can be displayed within category overviews
-    and the category detail view.
+    The image of the category, displayed in category overviews and on the category page.
 
-Static block
-    An optional :ref:`static block <static_blocks_concepts>` which displayed on
-    top of the category detail view.
+Static block Above / Static block Below
+    An optional :ref:`static block <static_blocks_concepts>`, displayed above resp. below the products or sub
+    categories on the category page.
+
+Click ``Save Category Data`` to save the changes.
 
 View
 ----
 
+.. image:: /images/manage_category_view.png
+   :alt: The View tab of a category
+
 Category template
-    The selected template of the category decides whether the sub categories or
-    the products are displayed. It is also possible to provide more templates to
-    display single categories individually.
+    Decides whether the category page displays the products of the category (``Category with products``) or its sub
+    categories (``Category with subcategories``). A theme can provide more templates.
 
 Show all products
+    If checked, the category page displays also the products of all sub categories; otherwise only the products
+    assigned directly to the category.
 
-    If this check box is activated also the products of the sub categories are
-    displayed. Otherwise only the direct products are displayed.
-
-    .. note::
-
-        This is only available when a the products of the category are
-        displayed. (see Category Template).
-
-Active formats
-    If this check box is activated several formats for this category can be
-    overwritten. Otherwise the formats are inherited from the parent object,
-    which is either the parent category or the shop.
-
-Category cols
-    Amount of columns which are used to display the sub categories. Always all
-    direct categories of the category are displayed.
-
-    .. note::
-
-        This is only available if active formats is True and a category
-        template is selected.
-
-Product cols / Product rows
-    Amount of columns and rows which are used to display the products of the
-    category. The amount of products which are displayed calculates by
-    cols * rows. If there are more products than that
-    the products are automatically paginated.
-
-    .. note::
-
-        This is only available if ``Active Formats`` is True and a product
-        template is selected.
+Click ``Save View Settings`` to save the changes.
 
 Products
 --------
 
-This tab is used to assign and remove products to the category.
+This tab assigns products to the category and removes them.
 
-Add Products
-************
+.. image:: /images/manage_category_products.png
+   :alt: The Products tab of a category: all products on the left, the assigned products on the right
 
-In order to assign products to the category, select the check boxes of the
-corresponding products within the section ``Selectable Products`` and click on
-``Add To Category``.
+Add products
+    Select the products in the section ``Products`` and click ``Add to Category``.
 
-Remove Products
-***************
-
-In order to remove products from the category, select the check boxes beside the
-corresponding products  within the section ``Selected Products`` and click on
-``Remove From Category``.
+Remove products
+    Select the products in the section ``Assigned Products`` and click ``Remove from Category``.
 
 Filter
-******
-
-In order to make it easier to find products you can filter them by name, SKU and
-category. For that enter on top of the according section the name or the SKU
-into the text box and select the category out of the select box.
+    Above both sections you can search products by name or SKU and filter them by category and manufacturer.
 
 SEO
 ---
 
-This tab is used to optimize your pages for search engines. You can enter data
-for all meta data fields. However LFS provides some reasonable default values
-for all fields.
+This tab is used to optimize the category page for search engines.
 
 Meta title
-    This is displayed within the meta title tag of the category's HTML tags. By
-    default the name of the category is used.
-
-Meta keywords
-    This is displayed within the meta keywords tag of the category's HTML page.
-    By default the short description of the category is used.
+    Displayed in the title tag of the category page. The default is ``<name>``, the name of the category.
 
 Meta description
-    This is displayed within the meta description tag of the category's HTML
-    page. By default the short description of the category is used.
+    Displayed in the meta description tag of the category page.
+
+Meta keywords
+    Displayed in the meta keywords tag of the category page.
 
 .. note::
 
-    You can use several placeholders within these fields:
+    You can use these placeholders in the fields:
 
     <name>
         The name of the category.
 
     <short-description>
-        The short description of the category (only within meta keywords and
-        meta description field).
+        The short description of the category (only in meta keywords and meta description).
+
+Click ``Save SEO Settings`` to save the changes.
 
 .. _categories_management_portlets:
 
@@ -170,20 +139,15 @@ Portlets
 This tab is used to assign :term:`portlets` to the category.
 
 Blocked parent slots
-    By default portlets are inherited from the parent category. To block
-    portlets check the regarding slots and click on the ``Save blocked parent
-    slots`` button.
+    By default the category inherits the portlets of its parent category. To block them, check the slots and click
+    ``Save blocked parent slots``.
 
 Slots
-    Here you can see all directly assigned portlets to the category. In order
-    to edit a portlet click on row of the portlet. In order to delete a
-    portlet click on the red cross beside the portlet. You can also change
-    the position of the portlets by clicking on the up and down arrows beside
-    the portlets.
+    Lists the portlets assigned directly to the category, per slot. Click the pencil to edit a portlet and the trash
+    can to delete it. Drag a portlet to change its position or to move it to the other slot.
 
-Add new Portlet
-    In order to add a portlet to the category select the type of portlet and
-    click on ``Add portlet``.
+Add portlet
+    Select the ``Portlet Type`` and click ``Add portlet``.
 
 See also
 ========
