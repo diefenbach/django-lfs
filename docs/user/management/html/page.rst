@@ -6,36 +6,36 @@
 Pages
 =====
 
-This section describes the management interfaces of pages.
+This section describes the management interface for pages (``HTML / Pages``), e.g. imprint, terms and
+conditions, or about us.
+
+On the left are all pages (searchable by title), on the right the selected page with its tabs.
+
+.. image:: /images/manage_page_data.png
+   :alt: The Data tab of a page
 
 Site Actions
 ============
 
 Add Page
-    Adds a new page.
+    Adds a page.
 
 Delete Page
-    Deletes the currently displayed page.
+    Deletes the selected page, after a confirmation.
 
 View Page
-    Opens the page in a pop-up window to quickly check the appearance of
-    the page without leaving the :term:`LMI`.
+    Opens the page in the shop.
 
-Goto Page
-    Leaves the :term:`LMI` and redirects to the customer view of the current
-    displayed page.
+.. note::
 
-Sort Pages
-==========
-
-In order to sort pages, take the handle on besides a page within the navigation
-on the left side and drag and drop it to the position you want the page to be.
+    The shop lists pages by their position. The position is not part of the management interface in 1.0; change
+    it in Django's admin (``/admin/``, ``Page / Pages``).
 
 Root
 ====
 
-This is the root of all pages. You can add portlets to it which are inherited
-from all other pages.
+The first entry of the list, ``Root``, is the root of all pages. It has only the ``Portlets`` tab: its portlets
+are inherited by all pages.
 
 Tabs
 ====
@@ -43,61 +43,54 @@ Tabs
 Data
 ----
 
+Active
+    Only active pages are displayed in the shop.
+
 Title
-    The title of the page. This is displayed on top of the page as well as
-    within the meta title tag.
+    The title of the page, displayed on top of the page and in the title tag.
 
 Slug
-    The unique last part of the URL to the page.
+    The unique last part of the page's URL.
+
+Exclude from navigation
+    If checked, the page is not listed in the overview of all pages and in the pages portlet.
 
 Short text
-    The short text of the page. This is displayed within overviews.
+    A short text of the page, displayed in overviews.
 
 Text
     The main text of the page.
 
-Active
-    If this is checked the page is active. Only active pages are displayed to
-    the shop users.
-
-Position
-    Pages are ordered by position. Lower numbers come first.
-
 .. index:: pair: File; Downloadable
 
 File
-    A file which can be uploaded. If a file has been uploaded a download link
-    is automatically displayed at the bottom of the page.
+    A file for download. If a file has been uploaded, the page shows a download link below the text.
+
+Click ``Save data`` to save the changes.
 
 SEO
 ---
 
-This tab is used to optimize your pages for search engines. You can enter data
-for all usual HTML meta data fields. However LFS provides some reasonable default
-values for all fields.
+This tab is used to optimize the page for search engines. Click ``Save SEO`` to save the changes.
 
 Meta title
-    This is displayed within the meta title tag of the category's HTML tags. By
-    default the name of the product is used.
-
-Meta keywords
-    This is displayed within the meta keywords tag of the category's HTML page.
-    By default the short description of the category is used.
+    Displayed in the title tag of the page. The default is ``<title>``, the title of the page.
 
 Meta description
-    This is displayed within the meta description tag of the category's HTML
-    page. By default the short description of the category is used.
+    Displayed in the meta description tag of the page.
+
+Meta keywords
+    Displayed in the meta keywords tag of the page.
 
 .. note::
 
-    You can use several placeholders within these fields:
+    You can use these placeholders in the fields:
 
-    <name>
-        The name of the page.
+    <title>
+        The title of the page.
 
-    <short-description>
-        The description of the page (only within meta keywords and meta
-        description field).
+    <short-text>
+        The short text of the page (only in meta keywords and meta description).
 
 Portlets
 --------
@@ -105,19 +98,15 @@ Portlets
 This tab is used to assign :term:`portlets` to the page.
 
 Blocked parent slots
-    By default portlets are inherited from the current category. To block
-    portlets check the regarding slots and click on the ``Save blocked parent
-    slots`` button.
+    By default a page inherits the portlets of the root. To block them, check the slots and click ``Save blocked
+    parent slots``.
 
 Slots
-  Here you can see all directly assigned portlets to the page. In order to edit
-  a portlet click on row of the portlet. In order to delete a portlet click on
-  the red cross beside the portlet. You can also change the position of the
-  portlets by clicking on the up and down arrows beside the portlets.
+    Lists the portlets assigned directly to the page, per slot. Click the pencil to edit a portlet and the trash
+    can to delete it. Drag a portlet to change its position or to move it to the other slot.
 
-Add new Portlet
-    In order to add a portlet to the page select the type of portlet and click
-    on ``Add portlet``.
+Add portlet
+    Select the ``Portlet Type`` and click ``Add portlet``.
 
 See Also
 ========

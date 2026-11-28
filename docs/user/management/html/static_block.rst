@@ -2,11 +2,14 @@
 
 .. _static_blocks_management:
 
-============
-Static Block
-============
+=============
+Static Blocks
+=============
 
-This section describes the management interface of ``Static Blocks``.
+This section describes the management interface for :term:`static blocks <Static Block>` (``HTML / Static
+blocks``): pieces of HTML you can show on the start page, on categories, and on products.
+
+On the left are all static blocks (searchable by name), on the right the selected static block with its tabs.
 
 .. _static-blocks-site-actions-label:
 
@@ -14,16 +17,13 @@ Site actions
 ============
 
 Add Static Block
-    Adds a :term:`Static Block` to the shop.
+    Adds a static block.
 
-Delete product
-    Deletes the current displayed :term:`Static Block`.
+Delete Static Block
+    Deletes the selected static block, after a confirmation.
 
-View Static Block
-    Opens the current displayed :term:`Static Block` in a pop-up window to quickly
-    check the appearance of the without leaving the :term:`LMI`.
-
-.. static-blocks-tabs-label:
+Preview Static Block
+    Shows the static block in a dialog.
 
 Tabs
 ====
@@ -32,39 +32,27 @@ Data
 ----
 
 Name
-    The name of the :term:`Static Block`. The name is used to select a certain
-    static block.
-
-Display Files
-    This must be checked in order to display the attached files.
+    The name of the static block, used to select it, e.g. on the ``Data`` tab of a category.
 
 HTML
-    The HTML of the :term:`Static Block`. This can be any valid HTML code.
+    The content of the static block, written with the text editor.
+
+Click ``Save data`` to save the changes.
 
 Files
 -----
 
-Within this tab you can add arbitrary files to the :term:`Static Block`. These
-are provided for download if ``Display Files`` is checked (see above).
+Files attached to the static block are offered as ``Downloads`` where the static block appears on a product (in
+lfs-theme a tab of its own on the product page); on the start page and on categories only the HTML is shown.
 
 Add files
-    Click on the ``Select files`` button and select as many files as you want
-    within your browsers pop-up window. You can use shift click to select a
-    range of files at once and ctrl (cmd for apple users) click to select
-    more files. Now click on open to start the upload process. You will now
-    see a progress bar meanwhile your files are being uploaded.
+    Under ``Add files`` choose one or more files and click ``Upload files``.
 
-Update files
-    To update the files just change the Title and/or the position of all
-    filed you want to change and click on the ``Update`` button.
-
-Move files
-    To move files just enter the position of every file and click on the
-    ``Update`` button.
+Change files
+    Change the ``Title`` or the ``Position`` and click ``Save Changes``.
 
 Delete files
-    To delete files select the check boxes beside all files you want to delete
-    and click the ``Delete`` button.
+    Select the files and click ``Delete Selected Files``.
 
 See also
 ========

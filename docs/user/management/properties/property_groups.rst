@@ -6,21 +6,21 @@
 Property Groups
 ===============
 
-This section describes the management interface for ``property groups``.
+This section describes the management interface for property groups (``Properties / Property Groups``). A property
+group bundles properties; products get the properties of the groups they belong to.
 
 Site Actions
 ============
 
 Add Property Group
-  Adds a new property group.
+    Adds a property group.
 
 Delete Property Group
-  Deletes the current displayed property group.
+    Deletes the selected property group, after a confirmation.
 
-  .. warning::
+    .. warning::
 
-      Please note that all values which have been assigned to products and
-      properties of this property group will get lost.
+        All values assigned to products for the properties of this group get lost.
 
 Tabs
 ====
@@ -29,73 +29,47 @@ Data
 ----
 
 Name
-    The unique name of the property group. This is used to assign property
-    groups to products.
+    The unique name of the property group, used to assign it to products.
 
-Properties
-----------
-
-Within this tab you can manage properties for this property group.
-
-Add Properties
-  To add properties to the group select the check box beside the properties
-  you want to add within the ``Properties`` section on the left side and click
-  on ``Add to Property Group``.
-
-Update Properties
-  To change the position of properties enter the new position of the properties
-  and click on ``Update properties``.
-
-Remove Properties
-  To remove properties from the group select the check boxes beside the properties
-  you want to remove within the ``Selected properties`` section on the right
-  side and click on ``Remove from Property Group``.
-
-  .. warning::
-
-    Please note that all values which have been assigned to products of this
-    group and the removed property will get lost.
+Click ``Save property group`` to save the changes.
 
 Products
 --------
 
-Within this tab you can assign products to the property group. All products
-will have the properties of this property group.
+The products of the group get all its properties.
 
-.. note::
+Add products
+    In the section ``Available Products`` (searchable by name, filtered by category) select the products
+    and click ``Add to Property Group``.
 
-  The selectable products can be filtered with the text field (name) and
-  select box (categories).
+Remove products
+    In the section ``Assigned Products`` select the products and click ``Remove from Property Group``.
 
-Add Products
-  To add products to the group select the check box beside the products
-  you want to add within the ``Products`` section on the left side and click
-  on ``Add to Property Group``.
+    .. warning::
 
-Remove Products
-  To remove products from the group select the check boxes beside the products
-  you want to remove within the ``Selected products`` section on the right
-  side and click on ``Remove from Property Group``.
+        The values of the group's properties on these products get lost.
 
-  .. warning::
+Properties
+----------
 
-    Please note that all values which have been assigned to properties of this
-    group and this product will get lost.
+Add properties
+    In the section ``Available Properties`` (searchable by name, filtered by type) select the properties and click
+    ``Add to Property Group``.
 
-Product values
---------------
+Sort properties
+    Drag a property in the section ``Assigned Properties`` by its handle in the ``Sort`` column.
 
-In this tab you can assign values for every product / property pair within this
-group.
+Remove properties
+    In the section ``Assigned Properties`` select the properties and click ``Remove from Property Group``.
 
-For that just enter the you want and click save values.
+    .. warning::
 
-.. Note::
+        The values of the removed properties on the group's products get lost.
 
-    You can also enter the values within the ``Properties`` tab of the product.
-    :ref:`See here for more <products_management_properties>`.
+The values of the properties are entered per product, on the :ref:`Properties tab of the product
+<products_management_properties>`.
 
-See More
+See also
 ========
 
-* :ref:`Properties within Product Management Interface <products_management_properties>`.
+* :ref:`Properties within Product Management Interface <products_management_properties>`
