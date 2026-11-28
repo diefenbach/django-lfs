@@ -23,7 +23,7 @@ def dashboard(request, template_name="manage/dashboard/dashboard.html"):
     total_orders = Order.objects.count()
 
     # Calculate orders this month (from 1st day of current month)
-    now = timezone.now()
+    now = timezone.localtime()  # the shop's day, not the UTC day (they differ around midnight)
     first_day_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     orders_this_month = Order.objects.filter(created__gte=first_day_of_month).count()
 
