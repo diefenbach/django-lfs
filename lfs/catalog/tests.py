@@ -12,6 +12,7 @@ from django.core.files.base import ContentFile
 
 from django.utils.encoding import force_str
 import lfs.catalog.utils
+from lfs.cart.models import CartItem
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import CHOICES_STANDARD
@@ -1299,23 +1300,27 @@ class ViewsTestCase(TestCase):
         self.assertFalse("lfs/catalog/categories/product/default.html" in templates)
         self.assertFalse("lfs/catalog/categories/category/default.html" not in templates)
 
-    def test_product_form_dispatcher(self):
-        """Tests the product dispatcher. The product dispatcher decides where to
-        go after the product form (for shop customers) has been submitted. These
-        can either be a variant or the add-to-cart view.
-        """
-        url = reverse("lfs_product_dispatcher")
+    def test_product_form_dispatcher_adds_to_cart(self):
+        """The product form has several submit buttons; add-to-cart goes to the cart."""
+        self.client.post(reverse("lfs_product_dispatcher"), {"action": "add-to-cart", "product_id": self.v1.id})
 
-        # Add the variant to cart
-        self.client.post(url, {"add-to-cart": 1, "product_id": self.v1.id})
+        self.assertEqual([item.product for item in CartItem.objects.all()], [self.v1])
 
-        # Select the default variant
-        self.client.post(url, {"product_id": self.p1.id})
+    def test_product_form_dispatcher_falls_back_to_the_default_variant(self):
+        """A combination of properties without variant leads to the default variant."""
+        response = self.client.post(
+            reverse("lfs_product_dispatcher"), {"product_id": self.p1.id, "property_{0}|1".format(self.pg.pk): "2"}
+        )
 
-        # Select the variant color = red
-        self.client.post(url, {"product_id": self.p1.id, "property_{0}|{1}".format(self.pg.pk, self.p1.pk): "1"})
+        self.assertEqual(response["Location"], self.v1.get_absolute_url())
 
-        # TODO: check response?
+    def test_product_form_dispatcher_stays_on_a_product_without_variants(self):
+        """A product without variants (or a variant itself) has no default variant: show the product, not an error."""
+        product = Product.objects.create(name="Plain", slug="plain", active=True)
+
+        response = self.client.post(reverse("lfs_product_dispatcher"), {"product_id": product.id})
+
+        self.assertEqual(response["Location"], product.get_absolute_url())
 
     def test_product_detail_view(self):
         """
