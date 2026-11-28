@@ -16,7 +16,6 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.utils import get_cart
 from lfs.cart.views import add_to_cart
-from lfs.cart.views import added_to_cart_items
 from lfs.cart.views import refresh_cart
 from lfs.catalog.models import Category, DeliveryTime
 from lfs.catalog.models import Product
@@ -72,7 +71,9 @@ class LoginTestCase(TestCase):
         self.assertEqual(Cart.objects.count(), 0)
 
         # add item to cart as anonymous user
-        response = client.post(reverse("lfs_add_to_cart"), {"product_id": self.p0.id, "quantity": 1}, follow=True)
+        response = client.post(
+            reverse("lfs_add_to_cart"), {"action": "add-to-cart", "product_id": self.p0.id, "quantity": 1}, follow=True
+        )
 
         self.assertEqual(Cart.objects.count(), 1)
         request = response.context["request"]
@@ -96,7 +97,9 @@ class LoginTestCase(TestCase):
         client.logout()
 
         # add items to the cart again - as anonymous
-        response = client.post(reverse("lfs_add_to_cart"), {"product_id": self.p0.id, "quantity": 2}, follow=True)
+        response = client.post(
+            reverse("lfs_add_to_cart"), {"action": "add-to-cart", "product_id": self.p0.id, "quantity": 2}, follow=True
+        )
         request = response.context["request"]
         cart = get_cart(request)
         self.assertFalse(cart is None)
@@ -123,7 +126,12 @@ class LoginTestCase(TestCase):
         # add item to cart as anonymous user
         response = client.post(
             reverse("lfs_add_to_cart"),
-            {"product_id": self.p1.id, "quantity": 1, "property-%s-%s" % (self.pg.pk, self.pp1.id): "A"},
+            {
+                "action": "add-to-cart",
+                "product_id": self.p1.id,
+                "quantity": 1,
+                "property-%s-%s" % (self.pg.pk, self.pp1.id): "A",
+            },
             follow=True,
         )
 
@@ -137,7 +145,12 @@ class LoginTestCase(TestCase):
         # add 10 more items - different variant
         response = client.post(
             reverse("lfs_add_to_cart"),
-            {"product_id": self.p1.id, "quantity": 10, "property-%s-%s" % (self.pg.pk, self.pp1.id): "B"},
+            {
+                "action": "add-to-cart",
+                "product_id": self.p1.id,
+                "quantity": 10,
+                "property-%s-%s" % (self.pg.pk, self.pp1.id): "B",
+            },
             follow=True,
         )
         self.assertEqual(Cart.objects.count(), 1)
@@ -165,7 +178,12 @@ class LoginTestCase(TestCase):
         # add more items as Anonymous
         response = client.post(
             reverse("lfs_add_to_cart"),
-            {"product_id": self.p1.id, "quantity": 2, "property-%s-%s" % (self.pg.pk, self.pp1.id): "A"},
+            {
+                "action": "add-to-cart",
+                "product_id": self.p1.id,
+                "quantity": 2,
+                "property-%s-%s" % (self.pg.pk, self.pp1.id): "A",
+            },
             follow=True,
         )
         request = response.context["request"]
@@ -177,7 +195,12 @@ class LoginTestCase(TestCase):
         # add more items of the second variant
         response = client.post(
             reverse("lfs_add_to_cart"),
-            {"product_id": self.p1.id, "quantity": 20, "property-%s-%s" % (self.pg.pk, self.pp1.id): "B"},
+            {
+                "action": "add-to-cart",
+                "product_id": self.p1.id,
+                "quantity": 20,
+                "property-%s-%s" % (self.pg.pk, self.pp1.id): "B",
+            },
             follow=True,
         )
         request = response.context["request"]
@@ -298,7 +321,7 @@ class AddToCartTestCase(TestCase):
     def test_add_to_cart_non_active(self):
         """Try to add product to the cart which is not active."""
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -311,7 +334,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -327,7 +350,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
 
@@ -357,7 +380,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
 
@@ -394,7 +417,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 3})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 3})
         request.session = self.session
         request.user = self.user
 
@@ -439,7 +462,7 @@ class RefreshCartTestCase(TestCase):
     def test_amount_1(self):
         """Don't manage stock amount."""
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -460,6 +483,7 @@ class RefreshCartTestCase(TestCase):
         request = rf.post(
             "/",
             {
+                "action": "add-to-cart",
                 "product_id": self.p1.id,
                 "amount-cart-item_%s" % cart.get_items()[0].id: 2,
                 "shipping_method": sm.pk,
@@ -478,7 +502,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -499,6 +523,7 @@ class RefreshCartTestCase(TestCase):
         request = rf.post(
             "/",
             {
+                "action": "add-to-cart",
                 "product_id": self.p1.id,
                 "amount-cart-item_%s" % cart.get_items()[0].id: 2,
                 "shipping_method": sm.pk,
@@ -539,7 +564,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -560,6 +585,7 @@ class RefreshCartTestCase(TestCase):
         request = rf.post(
             "/",
             {
+                "action": "add-to-cart",
                 "product_id": self.p1.id,
                 "amount-cart-item_%s" % cart.get_items()[0].id: 2,
                 "shipping_method": sm.pk,
@@ -578,6 +604,7 @@ class RefreshCartTestCase(TestCase):
         request = rf.post(
             "/",
             {
+                "action": "add-to-cart",
                 "product_id": self.p1.id,
                 "amount-cart-item_%s" % cart.get_items()[0].id: 3,
                 "shipping_method": sm.pk,
@@ -617,7 +644,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -645,6 +672,7 @@ class RefreshCartTestCase(TestCase):
         request = rf.post(
             "/",
             {
+                "action": "add-to-cart",
                 "product_id": self.p1.id,
                 "amount-cart-item_%s" % item_id: 2,
                 "shipping_method": sm.pk,
@@ -736,45 +764,33 @@ class AddedToCartTestCase(TestCase):
             default_invoice_address=self.address4,
         )
 
-    def test_totals_1(self):
-        """Add a product without quantity to cart (implicit 1)"""
+    def test_adding_without_quantity_adds_one_each_time(self):
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id})
         request.session = self.session
         request.user = self.user
 
-        locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
-
-        # Added product_1 to cart
         add_to_cart(request)
-        response = added_to_cart_items(request)
+        cart = lfs.cart.utils.get_cart(request)
+        self.assertEqual((cart.get_amount_of_items(), cart.get_price_gross(request)), (1, 10.0))
 
-        # need to test for two versions of currency output (Mac and Ubuntu differ)
-        self.assertFalse(response.find("Total: $ 10.00") == -1)
-
-        # Added product_1 to cart again
         add_to_cart(request)
-        response = added_to_cart_items(request)
-        self.assertFalse(response.find("Total: $ 20.00") == -1)
+        cart = lfs.cart.utils.get_cart(request)
+        self.assertEqual((cart.get_amount_of_items(), cart.get_price_gross(request)), (2, 20.0))
 
-    def test_totals_2(self):
-        """Add a product with explicit quantity to cart"""
+    def test_adding_with_quantity_adds_that_many_each_time(self):
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
 
-        locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
-
-        # Added product_1 two times to cart
         add_to_cart(request)
-        response = added_to_cart_items(request)
-        self.assertFalse(response.find("Total: $ 20.00") == -1)
+        cart = lfs.cart.utils.get_cart(request)
+        self.assertEqual((cart.get_amount_of_items(), cart.get_price_gross(request)), (2, 20.0))
 
-        # Added product_1 two times to cart again
         add_to_cart(request)
-        response = added_to_cart_items(request)
-        self.assertFalse(response.find("Total: $ 40.00") == -1)
+        cart = lfs.cart.utils.get_cart(request)
+        self.assertEqual((cart.get_amount_of_items(), cart.get_price_gross(request)), (4, 40.0))
 
     def test_discounts(self):
         """Add a product with explicit quantity to cart and use discounts/voucher
@@ -824,7 +840,7 @@ class AddedToCartTestCase(TestCase):
         )
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
 
@@ -834,21 +850,22 @@ class AddedToCartTestCase(TestCase):
         self.client.post(
             reverse("lfs_login"), dict(username=self.username, password=self.password, action="login"), follow=True
         )
-        response = self.client.post(reverse("lfs_cart"), data={"voucher": self.v1.number})
+        session = self.client.session
+        session["voucher"] = self.v1.number
+        session.save()
+        response = self.client.get(reverse("lfs_cart"))
 
         self.assertNotContains(response, "Special offer 1")
         self.assertContains(response, "Summer")
-        self.assertContains(response, "Voucher")
-        # self.assertContains(response, "The voucher is valid")
+        self.assertTrue(response.context["display_voucher"])
+        self.assertEqual(response.context["voucher_number"], "AAAA")
 
 
 class BuildAddToCartEventTestCase(TestCase):
     fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        self.p1 = Product.objects.create(
-            name="Product 1", slug="product-1", price=10.0, active=True, deliverable=True
-        )
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True, deliverable=True)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
         self.session.save()
@@ -882,16 +899,14 @@ class AddToCartEventSessionTestCase(TestCase):
     fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        self.p1 = Product.objects.create(
-            name="Product 1", slug="product-1", price=10.0, active=True, deliverable=True
-        )
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True, deliverable=True)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
         self.session.save()
 
     def test_add_to_cart_stores_event_in_session(self):
         rf = RequestFactory()
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
+        request = rf.post("/", {"action": "add-to-cart", "product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
