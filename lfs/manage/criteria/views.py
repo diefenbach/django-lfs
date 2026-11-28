@@ -1,10 +1,11 @@
 # django imports
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.views import View
 
 # lfs imports
 from lfs.core.utils import import_symbol
+from lfs.criteria.base import criterion_class
 from lfs.settings import lfs_setting
 
 
@@ -35,9 +36,11 @@ class ChangeCriterionFormView(PermissionRequiredMixin, View):
 
     permission_required = "core.manage_shop"
 
-    def post(self, request):
-        type = request.POST.get("type", "price")
-        criterion = import_symbol(type)
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Return the form row of the posted criterion type; 400 for a type that LFS_CRITERIA does not list."""
+        criterion = criterion_class(request.POST.get("type", ""))
+        if criterion is None:
+            return HttpResponseBadRequest("Unknown criterion type.")
 
         # create dummy criterion
         result = criterion(pk=1).render(request, 10)

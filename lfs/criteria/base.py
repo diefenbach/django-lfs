@@ -4,6 +4,18 @@ from django.contrib.contenttypes.models import ContentType
 # lfs imports
 from django.core.cache import cache
 from lfs.core.utils import import_symbol
+from lfs.settings import lfs_setting
+
+
+def criterion_class(path: str) -> type | None:
+    """Return the criterion class at ``path`` if LFS_CRITERIA lists it, otherwise None.
+
+    The path comes from the management's form; checking it against LFS_CRITERIA keeps a crafted form from importing
+    and instantiating any other class.
+    """
+    if path in [entry[0] for entry in lfs_setting("LFS_CRITERIA")]:
+        return import_symbol(path)
+    return None
 
 
 class Criteria(object):
@@ -62,8 +74,10 @@ class Criteria(object):
                 operator = request.POST.get("operator-%s" % id)
                 position = request.POST.get("position-%s" % id)
 
-                criterion_class = import_symbol(model)
-                criterion = criterion_class.objects.create(content=self, operator=operator, position=position)
+                klass = criterion_class(model)
+                if klass is None:
+                    continue
+                criterion = klass.objects.create(content=self, operator=operator, position=position)
 
                 if criterion.get_value_type() == criterion.MULTIPLE_SELECT:
                     value = request.POST.getlist("value-%s" % id)
