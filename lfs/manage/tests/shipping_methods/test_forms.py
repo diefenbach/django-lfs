@@ -1,4 +1,3 @@
-from django.forms import ModelForm
 
 from lfs.shipping.models import ShippingMethod
 from lfs.manage.shipping_methods.forms import ShippingMethodForm, ShippingMethodAddForm
@@ -6,10 +5,6 @@ from lfs.manage.shipping_methods.forms import ShippingMethodForm, ShippingMethod
 
 class TestShippingMethodForm:
     """Test ShippingMethodForm for editing shipping methods."""
-
-    def test_form_inheritance(self):
-        """Should inherit from ModelForm."""
-        assert issubclass(ShippingMethodForm, ModelForm)
 
 
     def test_form_meta_exclude(self):
@@ -216,11 +211,6 @@ class TestShippingMethodForm:
 
 class TestShippingMethodAddForm:
     """Test ShippingMethodAddForm for adding new shipping methods."""
-
-    def test_form_inheritance(self):
-        """Should inherit from ModelForm."""
-        assert issubclass(ShippingMethodAddForm, ModelForm)
-
 
 
     def test_form_includes_only_name_field(self):

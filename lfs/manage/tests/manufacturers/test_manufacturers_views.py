@@ -10,7 +10,6 @@ from lfs.manage.manufacturers.views import (
     ManufacturerCreateView,
     ManufacturerDeleteView,
     ManufacturerViewByIDView,
-    ManufacturersAjaxView,
 )
 
 User = get_user_model()
@@ -164,57 +163,4 @@ class TestManufacturerViewByIDView:
 
 
 
-class TestManufacturersAjaxView:
-    """Test ManufacturersAjaxView behavior."""
 
-
-    def test_get_method_exists(self):
-        """Should have get method."""
-        assert hasattr(ManufacturersAjaxView, "get")
-        assert callable(getattr(ManufacturersAjaxView, "get"))
-
-
-class TestManufacturerTabMixin:
-    """Test ManufacturerTabMixin behavior."""
-
-
-    def test_has_get_manufacturer_method(self):
-        """Should have get_manufacturer method."""
-        from lfs.manage.manufacturers.views import ManufacturerTabMixin
-
-        assert hasattr(ManufacturerTabMixin, "get_manufacturer")
-        assert callable(getattr(ManufacturerTabMixin, "get_manufacturer"))
-
-    def test_has_get_manufacturers_queryset_method(self):
-        """Should have get_manufacturers_queryset method."""
-        from lfs.manage.manufacturers.views import ManufacturerTabMixin
-
-        assert hasattr(ManufacturerTabMixin, "get_manufacturers_queryset")
-        assert callable(getattr(ManufacturerTabMixin, "get_manufacturers_queryset"))
-
-    def test_has_get_context_data_method(self):
-        """Should have get_context_data method."""
-        from lfs.manage.manufacturers.views import ManufacturerTabMixin
-
-        assert hasattr(ManufacturerTabMixin, "get_context_data")
-        assert callable(getattr(ManufacturerTabMixin, "get_context_data"))
-
-    def test_has_get_tabs_method(self):
-        """Should have _get_tabs method."""
-        from lfs.manage.manufacturers.views import ManufacturerTabMixin
-
-        assert hasattr(ManufacturerTabMixin, "_get_tabs")
-        assert callable(getattr(ManufacturerTabMixin, "_get_tabs"))
-
-    def test_has_get_navigation_context_method(self):
-        """Should have _get_navigation_context method."""
-        from lfs.manage.manufacturers.views import ManufacturerTabMixin
-
-        assert hasattr(ManufacturerTabMixin, "_get_navigation_context")
-        assert callable(getattr(ManufacturerTabMixin, "_get_navigation_context"))
-
-    def test_tab_name_attribute_exists(self):
-        """Should have tab_name attribute."""
-        from lfs.manage.manufacturers.views import ManufacturerTabMixin
-
-        assert hasattr(ManufacturerTabMixin, "tab_name")

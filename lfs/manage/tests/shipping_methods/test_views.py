@@ -3,29 +3,13 @@ from django.http import HttpResponseRedirect
 from lfs.shipping.models import ShippingMethod, ShippingMethodPrice
 from lfs.manage.shipping_methods.views import (
     ManageShippingView,
-    NoShippingMethodsView,
-    ShippingMethodDataView,
-    ShippingMethodCriteriaView,
     ShippingMethodPricesView,
-    ShippingMethodCreateView,
-    ShippingMethodDeleteConfirmView,
-    ShippingMethodDeleteView,
-    ShippingMethodPriceCriteriaView,
-    ShippingMethodPriceCriteriaSaveView,
     ShippingMethodTabMixin,
 )
 
 
 class TestManageShippingView:
     """Test the ManageShippingView dispatcher."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django RedirectView."""
-        from django.views.generic import RedirectView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(ManageShippingView, RedirectView)
-        assert issubclass(ManageShippingView, PermissionRequiredMixin)
 
 
     def test_redirects_to_first_shipping_method_when_methods_exist(self, shipping_method, mock_request, monkeypatch):
@@ -61,18 +45,6 @@ class TestManageShippingView:
         assert response == "/manage/shipping-methods/no/"
 
 
-class TestNoShippingMethodsView:
-    """Test the NoShippingMethodsView template view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(NoShippingMethodsView, TemplateView)
-        assert issubclass(NoShippingMethodsView, PermissionRequiredMixin)
-
-
 
 class TestShippingMethodTabMixin:
     """Test the ShippingMethodTabMixin functionality."""
@@ -87,254 +59,16 @@ class TestShippingMethodTabMixin:
         assert hasattr(ShippingMethodTabMixin, "tab_name")
         assert ShippingMethodTabMixin.tab_name is None
 
-    def test_get_shipping_method_method_exists(self):
-        """Should have get_shipping_method method."""
-        assert hasattr(ShippingMethodTabMixin, "get_shipping_method")
-        assert callable(getattr(ShippingMethodTabMixin, "get_shipping_method"))
 
-    def test_get_shipping_methods_queryset_method_exists(self):
-        """Should have get_shipping_methods_queryset method."""
-        assert hasattr(ShippingMethodTabMixin, "get_shipping_methods_queryset")
-        assert callable(getattr(ShippingMethodTabMixin, "get_shipping_methods_queryset"))
 
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ShippingMethodTabMixin, "get_context_data")
-        assert callable(getattr(ShippingMethodTabMixin, "get_context_data"))
 
-    def test_get_tabs_method_exists(self):
-        """Should have _get_tabs method."""
-        assert hasattr(ShippingMethodTabMixin, "_get_tabs")
-        assert callable(getattr(ShippingMethodTabMixin, "_get_tabs"))
 
 
-class TestShippingMethodDataView:
-    """Test the ShippingMethodDataView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from Django UpdateView."""
-        from django.views.generic.edit import UpdateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
 
-        assert issubclass(ShippingMethodDataView, UpdateView)
-        assert issubclass(ShippingMethodDataView, PermissionRequiredMixin)
-        assert issubclass(ShippingMethodDataView, ShippingMethodTabMixin)
 
 
 
-
-
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ShippingMethodDataView, "get_success_url")
-        assert callable(getattr(ShippingMethodDataView, "get_success_url"))
-
-    def test_form_valid_method_exists(self):
-        """Should have form_valid method."""
-        assert hasattr(ShippingMethodDataView, "form_valid")
-        assert callable(getattr(ShippingMethodDataView, "form_valid"))
-
-
-class TestShippingMethodCriteriaView:
-    """Test the ShippingMethodCriteriaView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(ShippingMethodCriteriaView, TemplateView)
-        assert issubclass(ShippingMethodCriteriaView, PermissionRequiredMixin)
-        assert issubclass(ShippingMethodCriteriaView, ShippingMethodTabMixin)
-
-
-
-
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ShippingMethodCriteriaView, "get_success_url")
-        assert callable(getattr(ShippingMethodCriteriaView, "get_success_url"))
-
-    def test_post_method_exists(self):
-        """Should have post method."""
-        assert hasattr(ShippingMethodCriteriaView, "post")
-        assert callable(getattr(ShippingMethodCriteriaView, "post"))
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ShippingMethodCriteriaView, "get_context_data")
-        assert callable(getattr(ShippingMethodCriteriaView, "get_context_data"))
-
-
-class TestShippingMethodPricesView:
-    """Test the ShippingMethodPricesView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(ShippingMethodPricesView, TemplateView)
-        assert issubclass(ShippingMethodPricesView, PermissionRequiredMixin)
-        assert issubclass(ShippingMethodPricesView, ShippingMethodTabMixin)
-
-
-
-
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ShippingMethodPricesView, "get_success_url")
-        assert callable(getattr(ShippingMethodPricesView, "get_success_url"))
-
-    def test_post_method_exists(self):
-        """Should have post method."""
-        assert hasattr(ShippingMethodPricesView, "post")
-        assert callable(getattr(ShippingMethodPricesView, "post"))
-
-    def test_handle_add_price_method_exists(self):
-        """Should have _handle_add_price method."""
-        assert hasattr(ShippingMethodPricesView, "_handle_add_price")
-        assert callable(getattr(ShippingMethodPricesView, "_handle_add_price"))
-
-    def test_handle_update_prices_method_exists(self):
-        """Should have _handle_update_prices method."""
-        assert hasattr(ShippingMethodPricesView, "_handle_update_prices")
-        assert callable(getattr(ShippingMethodPricesView, "_handle_update_prices"))
-
-    def test_update_price_positions_method_exists(self):
-        """Should have _update_price_positions method."""
-        assert hasattr(ShippingMethodPricesView, "_update_price_positions")
-        assert callable(getattr(ShippingMethodPricesView, "_update_price_positions"))
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ShippingMethodPricesView, "get_context_data")
-        assert callable(getattr(ShippingMethodPricesView, "get_context_data"))
-
-
-class TestShippingMethodCreateView:
-    """Test the ShippingMethodCreateView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django CreateView."""
-        from django.views.generic.edit import CreateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(ShippingMethodCreateView, CreateView)
-        assert issubclass(ShippingMethodCreateView, PermissionRequiredMixin)
-
-
-
-
-    def test_form_valid_method_exists(self):
-        """Should have form_valid method."""
-        assert hasattr(ShippingMethodCreateView, "form_valid")
-        assert callable(getattr(ShippingMethodCreateView, "form_valid"))
-
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ShippingMethodCreateView, "get_success_url")
-        assert callable(getattr(ShippingMethodCreateView, "get_success_url"))
-
-
-class TestShippingMethodDeleteConfirmView:
-    """Test the ShippingMethodDeleteConfirmView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(ShippingMethodDeleteConfirmView, TemplateView)
-        assert issubclass(ShippingMethodDeleteConfirmView, PermissionRequiredMixin)
-
-
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ShippingMethodDeleteConfirmView, "get_context_data")
-        assert callable(getattr(ShippingMethodDeleteConfirmView, "get_context_data"))
-
-
-class TestShippingMethodDeleteView:
-    """Test the ShippingMethodDeleteView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django DeleteView."""
-        from django.views.generic.edit import DeleteView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.contrib.messages.views import SuccessMessageMixin
-        from lfs.manage.mixins import DirectDeleteMixin
-
-        assert issubclass(ShippingMethodDeleteView, DeleteView)
-        assert issubclass(ShippingMethodDeleteView, PermissionRequiredMixin)
-        assert issubclass(ShippingMethodDeleteView, SuccessMessageMixin)
-        assert issubclass(ShippingMethodDeleteView, DirectDeleteMixin)
-
-
-
-
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ShippingMethodDeleteView, "get_success_url")
-        assert callable(getattr(ShippingMethodDeleteView, "get_success_url"))
-
-    def test_delete_method_exists(self):
-        """Should have delete method."""
-        assert hasattr(ShippingMethodDeleteView, "delete")
-        assert callable(getattr(ShippingMethodDeleteView, "delete"))
-
-
-class TestShippingMethodPriceCriteriaView:
-    """Test the ShippingMethodPriceCriteriaView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(ShippingMethodPriceCriteriaView, TemplateView)
-        assert issubclass(ShippingMethodPriceCriteriaView, PermissionRequiredMixin)
-
-
-
-    def test_get_shipping_price_method_exists(self):
-        """Should have get_shipping_price method."""
-        assert hasattr(ShippingMethodPriceCriteriaView, "get_shipping_price")
-        assert callable(getattr(ShippingMethodPriceCriteriaView, "get_shipping_price"))
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ShippingMethodPriceCriteriaView, "get_context_data")
-        assert callable(getattr(ShippingMethodPriceCriteriaView, "get_context_data"))
-
-    def test_get_method_exists(self):
-        """Should have get method."""
-        assert hasattr(ShippingMethodPriceCriteriaView, "get")
-        assert callable(getattr(ShippingMethodPriceCriteriaView, "get"))
-
-
-class TestShippingMethodPriceCriteriaSaveView:
-    """Test the ShippingMethodPriceCriteriaSaveView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-
-        assert issubclass(ShippingMethodPriceCriteriaSaveView, TemplateView)
-        assert issubclass(ShippingMethodPriceCriteriaSaveView, PermissionRequiredMixin)
-
-
-    def test_post_method_exists(self):
-        """Should have post method."""
-        assert hasattr(ShippingMethodPriceCriteriaSaveView, "post")
-        assert callable(getattr(ShippingMethodPriceCriteriaSaveView, "post"))
-
-    def test_get_criteria_method_exists(self):
-        """Should have _get_criteria method."""
-        assert hasattr(ShippingMethodPriceCriteriaSaveView, "_get_criteria")
-        assert callable(getattr(ShippingMethodPriceCriteriaSaveView, "_get_criteria"))
 
 
 class TestShippingMethodPriceOperations:

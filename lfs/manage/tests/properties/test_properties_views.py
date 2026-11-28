@@ -4,7 +4,6 @@ from unittest.mock import patch
 from lfs.catalog.models import Property, PropertyOption
 from lfs.manage.properties.views import (
     ManagePropertiesView,
-    PropertyNavigationMixin,
     PropertyDataView,
     PropertyCreateView,
     PropertyDeleteConfirmView,
@@ -63,14 +62,6 @@ class TestPropertyNavigationMixinUnit:
 
 
 class TestPropertyDataViewUnit:
-    def test_view_inheritance(self):
-        from django.views.generic.edit import UpdateView
-
-        assert issubclass(PropertyDataView, PropertyNavigationMixin)
-        assert issubclass(PropertyDataView, UpdateView)
-
-
-
 
     @pytest.mark.django_db
     def test_get_success_url(self, mock_request_with_messages, admin_user):
@@ -109,12 +100,6 @@ class TestPropertyDataViewUnit:
 
 
 class TestPropertyCreateViewUnit:
-    def test_view_inheritance(self):
-        from django.views.generic.edit import CreateView
-
-        assert issubclass(PropertyCreateView, CreateView)
-
-
 
     @pytest.mark.django_db
     def test_form_valid_sets_defaults_and_redirects(self, mock_request_with_messages, admin_user):

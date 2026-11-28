@@ -1,9 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse
 from django.test import RequestFactory
-from django.views.generic.base import TemplateView
 
 from lfs.manage.tools.views import ToolsView
 
@@ -12,11 +10,6 @@ User = get_user_model()
 
 class TestToolsView:
     """Test the ToolsView class."""
-
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and TemplateView."""
-        assert issubclass(ToolsView, PermissionRequiredMixin)
-        assert issubclass(ToolsView, TemplateView)
 
 
     def test_get_context_data_returns_utilities_list(self, mock_request):

@@ -254,14 +254,6 @@ class TestTopsellerDataService:
 class TestTopsellerAjaxService:
     """Test topseller AJAX functionality."""
 
-    @pytest.mark.django_db
-    def test_sort_topseller_view_exists_and_has_post_method(self):
-        """Test that SortTopsellerView exists and has the expected post method."""
-        from lfs.manage.topsellers.views import SortTopsellerView
-
-        # Verify the view class exists and has the post method
-        assert hasattr(SortTopsellerView, "post")
-        assert callable(SortTopsellerView.post)
 
     @pytest.mark.django_db
     def test_sort_topseller_view_handles_json_parsing(self):

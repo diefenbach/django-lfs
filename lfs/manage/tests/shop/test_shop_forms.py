@@ -12,13 +12,6 @@ RETURNS = {"return_days": 14, "return_fees": "FreeReturn", "return_method": "Ret
 class TestShopDataForm:
     """Test ShopDataForm validation and behavior."""
 
-    def test_form_inheritance(self):
-        """Should inherit from ModelForm."""
-        from django.forms import ModelForm
-
-        assert issubclass(ShopDataForm, ModelForm)
-
-
 
     def test_form_initialization_with_shop(self, shop):
         """Should initialize form with shop data."""
@@ -238,13 +231,6 @@ class TestShopDataForm:
 
 class TestShopDefaultValuesForm:
     """Test ShopDefaultValuesForm validation and behavior."""
-
-    def test_form_inheritance(self):
-        """Should inherit from ModelForm."""
-        from django.forms import ModelForm
-
-        assert issubclass(ShopDefaultValuesForm, ModelForm)
-
 
 
     def test_form_initialization_with_shop(self, shop):

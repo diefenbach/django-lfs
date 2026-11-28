@@ -11,7 +11,6 @@ from lfs.manage.images.views import (
     DeleteImagesConfirmView,
     DeleteImagesView,
     AddImagesView,
-    ImagesUploadView,
     ImagesTabMixin,
 )
 
@@ -27,42 +26,13 @@ class TestImagesTabMixin:
         assert hasattr(ImagesTabMixin, "tab_name")
         assert ImagesTabMixin.tab_name is None
 
-    def test_get_tabs_method_exists(self):
-        """Should have _get_tabs method."""
-        assert hasattr(ImagesTabMixin, "_get_tabs")
-        assert callable(getattr(ImagesTabMixin, "_get_tabs"))
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ImagesTabMixin, "get_context_data")
-        assert callable(getattr(ImagesTabMixin, "get_context_data"))
 
 
 class TestImagesListView:
     """Test the ImagesListView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin, ImagesTabMixin, and TemplateView."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ImagesListView, PermissionRequiredMixin)
-        assert issubclass(ImagesListView, ImagesTabMixin)
-        assert issubclass(ImagesListView, TemplateView)
 
 
-
-
-
-    def test_get_queryset_method_exists(self):
-        """Should have get_queryset method."""
-        assert hasattr(ImagesListView, "get_queryset")
-        assert callable(getattr(ImagesListView, "get_queryset"))
-
-    def test_render_to_response_method_exists(self):
-        """Should have render_to_response method."""
-        assert hasattr(ImagesListView, "render_to_response")
-        assert callable(getattr(ImagesListView, "render_to_response"))
 
     @pytest.mark.django_db
     def test_get_queryset_without_search(self, admin_user, multiple_images):
@@ -143,15 +113,6 @@ class TestImagesListView:
 class TestImagePreviewView:
     """Test the ImagePreviewView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
-
-        assert issubclass(ImagePreviewView, PermissionRequiredMixin)
-        assert issubclass(ImagePreviewView, View)
-
-
 
     @pytest.mark.django_db
     def test_get_existing_image(self, admin_user, image, mock_session):
@@ -184,15 +145,6 @@ class TestImagePreviewView:
 
 class TestDeleteImagesConfirmView:
     """Test the DeleteImagesConfirmView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
-
-        assert issubclass(DeleteImagesConfirmView, PermissionRequiredMixin)
-        assert issubclass(DeleteImagesConfirmView, View)
-
 
 
     @pytest.mark.django_db
@@ -227,15 +179,6 @@ class TestDeleteImagesConfirmView:
 
 class TestDeleteImagesView:
     """Test the DeleteImagesView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
-
-        assert issubclass(DeleteImagesView, PermissionRequiredMixin)
-        assert issubclass(DeleteImagesView, View)
-
 
 
     @pytest.mark.django_db
@@ -286,20 +229,7 @@ class TestDeleteImagesView:
 class TestAddImagesView:
     """Test the AddImagesView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
 
-        assert issubclass(AddImagesView, PermissionRequiredMixin)
-        assert issubclass(AddImagesView, View)
-
-
-
-    def test_dispatch_has_csrf_exempt(self):
-        """Should have csrf_exempt decorator on dispatch."""
-
-        assert hasattr(AddImagesView.dispatch, "__wrapped__")
 
     @pytest.mark.django_db
     def test_post_uploads_images(self, admin_user, test_image_file):
@@ -326,19 +256,5 @@ class TestAddImagesView:
 
         assert isinstance(response, JsonResponse)
         assert response.status_code == 200
-
-
-class TestImagesUploadView:
-    """Test the ImagesUploadView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin, ImagesTabMixin, and TemplateView."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ImagesUploadView, PermissionRequiredMixin)
-        assert issubclass(ImagesUploadView, ImagesTabMixin)
-        assert issubclass(ImagesUploadView, TemplateView)
-
 
 

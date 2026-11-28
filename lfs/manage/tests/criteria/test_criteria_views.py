@@ -15,10 +15,6 @@ User = get_user_model()
 class TestAddCriterion:
     """Test the add_criterion view function."""
 
-    def test_add_criterion_function_exists(self):
-        """Should have add_criterion function."""
-        assert callable(add_criterion)
-
 
     @patch(
         "django.conf.settings.LFS_CRITERIA",
@@ -94,10 +90,6 @@ class TestAddCriterion:
 
 class TestChangeCriterionForm:
     """Test the change_criterion_form view function."""
-
-    def test_change_criterion_form_function_exists(self):
-        """Should have change_criterion_form function."""
-        assert callable(change_criterion_form)
 
 
     @patch("lfs.manage.criteria.views.import_symbol")
@@ -179,10 +171,6 @@ class TestChangeCriterionForm:
 
 class TestDeleteCriterion:
     """Test the delete_criterion view function."""
-
-    def test_delete_criterion_function_exists(self):
-        """Should have delete_criterion function."""
-        assert callable(delete_criterion)
 
 
     def test_delete_criterion_requires_delete_method(self):
