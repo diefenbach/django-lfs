@@ -150,3 +150,28 @@ class TestDelete:
 
         assert list(Image.objects.all()) == [lamp]
         assert messages_of(response) == ["1 image has been successfully deleted."]
+
+
+def test_uploading_without_a_csrf_token_is_refused(admin_user, shop):
+    """Another site could otherwise make a logged-in manager's browser upload images; the page sends the token."""
+    from django.test import Client
+
+    client = Client(enforce_csrf_checks=True)
+    client.force_login(admin_user)
+
+    response = client.post(reverse("lfs_manage_images_add"), {"files[]": [png()]})
+
+    assert response.status_code == 403
+    assert not Image.objects.exists()
+
+
+def test_uploading_with_the_pages_csrf_token_works(admin_user, shop):
+    from django.test import Client
+
+    client = Client(enforce_csrf_checks=True)
+    client.force_login(admin_user)
+    token = client.get(reverse("lfs_manage_images_upload")).context["csrf_token"]
+
+    client.post(reverse("lfs_manage_images_add"), {"files[]": [png()], "csrfmiddlewaretoken": str(token)})
+
+    assert Image.objects.count() == 1

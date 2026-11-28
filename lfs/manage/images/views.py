@@ -9,8 +9,6 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _, ngettext
 from django.views.generic import TemplateView, View
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 from lfs.catalog.models import Image
 from lfs.core.utils import lfs_pagination
@@ -215,10 +213,6 @@ class AddImagesView(PermissionRequiredMixin, View):
 
     permission_required = "core.manage_shop"
     http_method_names = ["post"]
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
 
     def post(self, request: HttpRequest) -> JsonResponse:
         """Process uploaded image files."""
