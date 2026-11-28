@@ -1,9 +1,11 @@
-"""The property group sort endpoints change data only for users with the manage_shop permission."""
+"""The property group sort endpoints change data only for users with the manage_shop permission, and only with a
+CSRF token."""
 
 import json
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.test import Client
 from django.urls import reverse
 
 from lfs.catalog.models import GroupsPropertiesRelation, Property, PropertyGroup
@@ -98,4 +100,33 @@ def test_user_without_permission_cannot_sort_properties_of_a_group(regular_clien
 @pytest.mark.django_db
 def test_shop_manager_can_sort_properties_of_a_group(admin_client, relations):
     _sort_properties(admin_client, relations)
+    assert _positions(relations) == [20, 10]
+
+
+@pytest.mark.django_db
+def test_sorting_properties_of_a_group_without_a_csrf_token_is_refused(relations):
+    """Another site could otherwise make a logged-in manager's browser reorder them."""
+    client = Client(enforce_csrf_checks=True)
+    client.force_login(User.objects.create_user(username="admin", password="x", is_superuser=True))
+
+    response = _sort_properties(client, relations)
+
+    assert response.status_code == 403
+    assert _positions(relations) == [10, 20]
+
+
+@pytest.mark.django_db
+def test_sorting_properties_of_a_group_with_the_csrf_token_works(relations, shop):
+    client = Client(enforce_csrf_checks=True)
+    client.force_login(User.objects.create_user(username="admin", password="x", is_superuser=True))
+    client.get(reverse("lfs_manage_property_group_properties", args=[relations[0].group_id]))
+
+    response = client.post(
+        reverse("lfs_manage_sort_property_group_properties", args=[relations[0].group_id]),
+        data=json.dumps({"property_ids": [relations[1].property_id, relations[0].property_id]}),
+        content_type="application/json",
+        HTTP_X_CSRFTOKEN=client.cookies["csrftoken"].value,
+    )
+
+    assert response.status_code == 200
     assert _positions(relations) == [20, 10]
