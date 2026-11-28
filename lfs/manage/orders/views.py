@@ -2,7 +2,6 @@ from typing import Dict, Any
 from datetime import timedelta
 
 from django.conf import settings
-from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -17,7 +16,7 @@ from django.views.generic import TemplateView, FormView, RedirectView, DeleteVie
 import lfs.core.utils
 import lfs.core.signals
 import lfs.order.settings
-from lfs.caching.utils import lfs_get_object_or_404
+from lfs.caching.utils import delete_cache, lfs_get_object_or_404
 from lfs.mail import utils as mail_utils
 from lfs.order.models import Order
 from lfs.manage.mixins import DirectDeleteMixin
@@ -367,7 +366,7 @@ class ChangeOrderStateView(PermissionRequiredMixin, View):
             lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
 
             cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
-            cache.delete(cache_key)
+            delete_cache(cache_key)  # also the hashed key under which lfs_get_object_or_404 keeps the order
 
             messages.success(request, _("Order state has been changed"))
 

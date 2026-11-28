@@ -199,6 +199,16 @@ class TestState:
 
         assert [m.to for m in mail.outbox] == [["jane@example.com"]]
 
+    def test_the_order_page_shows_the_new_state_at_once(self, manager):
+        """The order is cached; changing its state must not leave the old one on the page."""
+        jane = order(state=SUBMITTED)
+        url = reverse("lfs_manage_order", kwargs={"order_id": jane.id})
+        manager.get(url)
+
+        self.change(manager, jane, CANCELED)
+
+        assert manager.get(url).context["current_order"].state == CANCELED
+
     def test_a_state_that_is_not_a_number_is_refused(self, manager):
         jane = order(state=SUBMITTED)
 
