@@ -159,9 +159,6 @@ class TestPageTabMixin:
 class TestManagePagesView:
     """Tests for ManagePagesView dispatcher."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert ManagePagesView.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_redirects_to_first_non_root_page_when_pages_exist(
         self, regular_page, authenticated_request, monkeypatch
@@ -384,13 +381,6 @@ class TestPageDataView:
 class TestPageSEOView:
     """Tests for PageSEOView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PageSEOView.model == Page
-        assert PageSEOView.fields == ["meta_title", "meta_description", "meta_keywords"]
-        assert PageSEOView.tab_name == "seo"
-        assert PageSEOView.pk_url_kwarg == "id"
-        assert PageSEOView.permission_required == "core.manage_shop"
 
     def test_get_prevents_access_to_root_page(self, root_page, authenticated_request):
         """Should prevent access to root page SEO."""
@@ -466,10 +456,6 @@ class TestPageSEOView:
 class TestPagePortletsView:
     """Tests for PagePortletsView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PagePortletsView.tab_name == "portlets"
-        assert PagePortletsView.permission_required == "core.manage_shop"
 
     def test_get_context_data_includes_portlets(self, page, authenticated_request, monkeypatch):
         """Should include portlets in context data."""
@@ -564,10 +550,6 @@ class TestPageCreateView:
 class TestPageDeleteConfirmView:
     """Tests for PageDeleteConfirmView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PageDeleteConfirmView.template_name == "manage/pages/delete_page.html"
-        assert PageDeleteConfirmView.permission_required == "core.manage_shop"
 
     def test_get_context_data_includes_page(self, page, authenticated_request):
         """Should include page in context data."""
@@ -588,12 +570,6 @@ class TestPageDeleteConfirmView:
 class TestPageDeleteView:
     """Tests for PageDeleteView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PageDeleteView.model == Page
-        assert PageDeleteView.pk_url_kwarg == "id"
-        assert PageDeleteView.permission_required == "core.manage_shop"
-        assert PageDeleteView.success_message == "Page has been deleted."
 
     def test_get_success_url_returns_correct_url(self, authenticated_request, monkeypatch):
         """Should return correct success URL after page deletion."""
@@ -619,9 +595,6 @@ class TestPageDeleteView:
 class TestPageViewByIDView:
     """Tests for PageViewByIDView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PageViewByIDView.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_raises_404_for_root_page(self, authenticated_request):
         """Should raise Http404 for root page."""

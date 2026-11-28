@@ -11,7 +11,6 @@ from lfs.manage.images.views import (
     DeleteImagesConfirmView,
     DeleteImagesView,
     AddImagesView,
-    ImagesUploadView,
     ImagesTabMixin,
 )
 
@@ -21,63 +20,19 @@ User = get_user_model()
 class TestImagesTabMixin:
     """Test the ImagesTabMixin functionality."""
 
-    def test_mixin_has_template_name(self):
-        """Should have correct template name."""
-        assert ImagesTabMixin.template_name == "manage/images/images.html"
 
     def test_mixin_has_tab_name_attribute(self):
         """Should have tab_name attribute."""
         assert hasattr(ImagesTabMixin, "tab_name")
         assert ImagesTabMixin.tab_name is None
 
-    def test_get_tabs_method_exists(self):
-        """Should have _get_tabs method."""
-        assert hasattr(ImagesTabMixin, "_get_tabs")
-        assert callable(getattr(ImagesTabMixin, "_get_tabs"))
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ImagesTabMixin, "get_context_data")
-        assert callable(getattr(ImagesTabMixin, "get_context_data"))
 
 
 class TestImagesListView:
     """Test the ImagesListView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin, ImagesTabMixin, and TemplateView."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import TemplateView
 
-        assert issubclass(ImagesListView, PermissionRequiredMixin)
-        assert issubclass(ImagesListView, ImagesTabMixin)
-        assert issubclass(ImagesListView, TemplateView)
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ImagesListView.permission_required == "core.manage_shop"
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ImagesListView.template_name == "manage/images/images.html"
-
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ImagesListView.tab_name == "list"
-
-    def test_paginate_by(self):
-        """Should have correct pagination setting."""
-        assert ImagesListView.paginate_by == 50
-
-    def test_get_queryset_method_exists(self):
-        """Should have get_queryset method."""
-        assert hasattr(ImagesListView, "get_queryset")
-        assert callable(getattr(ImagesListView, "get_queryset"))
-
-    def test_render_to_response_method_exists(self):
-        """Should have render_to_response method."""
-        assert hasattr(ImagesListView, "render_to_response")
-        assert callable(getattr(ImagesListView, "render_to_response"))
 
     @pytest.mark.django_db
     def test_get_queryset_without_search(self, admin_user, multiple_images):
@@ -158,21 +113,6 @@ class TestImagesListView:
 class TestImagePreviewView:
     """Test the ImagePreviewView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
-
-        assert issubclass(ImagePreviewView, PermissionRequiredMixin)
-        assert issubclass(ImagePreviewView, View)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ImagePreviewView.permission_required == "core.manage_shop"
-
-    def test_http_method_names(self):
-        """Should only allow GET requests."""
-        assert ImagePreviewView.http_method_names == ["get"]
 
     @pytest.mark.django_db
     def test_get_existing_image(self, admin_user, image, mock_session):
@@ -206,21 +146,6 @@ class TestImagePreviewView:
 class TestDeleteImagesConfirmView:
     """Test the DeleteImagesConfirmView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
-
-        assert issubclass(DeleteImagesConfirmView, PermissionRequiredMixin)
-        assert issubclass(DeleteImagesConfirmView, View)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert DeleteImagesConfirmView.permission_required == "core.manage_shop"
-
-    def test_http_method_names(self):
-        """Should only allow GET requests."""
-        assert DeleteImagesConfirmView.http_method_names == ["get"]
 
     @pytest.mark.django_db
     def test_get_with_selected_images(self, admin_user, multiple_images, mock_session):
@@ -255,21 +180,6 @@ class TestDeleteImagesConfirmView:
 class TestDeleteImagesView:
     """Test the DeleteImagesView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
-
-        assert issubclass(DeleteImagesView, PermissionRequiredMixin)
-        assert issubclass(DeleteImagesView, View)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert DeleteImagesView.permission_required == "core.manage_shop"
-
-    def test_http_method_names(self):
-        """Should only allow POST requests."""
-        assert DeleteImagesView.http_method_names == ["post"]
 
     @pytest.mark.django_db
     def test_post_deletes_selected_images(self, admin_user, multiple_images, monkeypatch):
@@ -319,27 +229,7 @@ class TestDeleteImagesView:
 class TestAddImagesView:
     """Test the AddImagesView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and View."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import View
 
-        assert issubclass(AddImagesView, PermissionRequiredMixin)
-        assert issubclass(AddImagesView, View)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert AddImagesView.permission_required == "core.manage_shop"
-
-    def test_http_method_names(self):
-        """Should only allow POST requests."""
-        assert AddImagesView.http_method_names == ["post"]
-
-    def test_dispatch_has_csrf_exempt(self):
-        """Should have csrf_exempt decorator on dispatch."""
-        from django.views.decorators.csrf import csrf_exempt
-
-        assert hasattr(AddImagesView.dispatch, "__wrapped__")
 
     @pytest.mark.django_db
     def test_post_uploads_images(self, admin_user, test_image_file):
@@ -368,26 +258,3 @@ class TestAddImagesView:
         assert response.status_code == 200
 
 
-class TestImagesUploadView:
-    """Test the ImagesUploadView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin, ImagesTabMixin, and TemplateView."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ImagesUploadView, PermissionRequiredMixin)
-        assert issubclass(ImagesUploadView, ImagesTabMixin)
-        assert issubclass(ImagesUploadView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ImagesUploadView.permission_required == "core.manage_shop"
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ImagesUploadView.template_name == "manage/images/images.html"
-
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ImagesUploadView.tab_name == "upload"

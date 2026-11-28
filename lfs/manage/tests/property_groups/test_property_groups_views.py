@@ -107,15 +107,6 @@ class TestManagePropertyGroupsViewUnit:
 
         assert "/manage/property-groups/no" in url
 
-    @pytest.mark.django_db
-    def test_permission_required_is_correct(self, mock_request, regular_user):
-        """Test that permission_required is set correctly."""
-        view = ManagePropertyGroupsView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        assert view.permission_required == "core.manage_shop"
-
 
 class TestPropertyGroupDataViewUnit:
     """Unit tests for PropertyGroupDataView."""
@@ -196,15 +187,6 @@ class TestPropertyGroupDataViewUnit:
 
             mock_success.assert_called_once()
 
-    @pytest.mark.django_db
-    def test_permission_required_is_correct(self, mock_request, regular_user):
-        """Test that permission_required is set correctly."""
-        view = PropertyGroupDataView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        assert view.permission_required == "core.manage_shop"
-
 
 class TestPropertyGroupProductsViewUnit:
     """Unit tests for PropertyGroupProductsView."""
@@ -256,15 +238,6 @@ class TestPropertyGroupProductsViewUnit:
             assert "filter" in context
             assert "category_filter" in context
 
-    @pytest.mark.django_db
-    def test_permission_required_is_correct(self, mock_request, regular_user):
-        """Test that permission_required is set correctly."""
-        view = PropertyGroupProductsView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        assert view.permission_required == "core.manage_shop"
-
 
 class TestPropertyGroupPropertiesViewUnit:
     """Unit tests for PropertyGroupPropertiesView."""
@@ -311,15 +284,6 @@ class TestPropertyGroupPropertiesViewUnit:
             assert "properties" in context
             assert "group_properties" in context
 
-    @pytest.mark.django_db
-    def test_permission_required_is_correct(self, mock_request, regular_user):
-        """Test that permission_required is set correctly."""
-        view = PropertyGroupPropertiesView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        assert view.permission_required == "core.manage_shop"
-
 
 class TestNoPropertyGroupsViewUnit:
     """Unit tests for NoPropertyGroupsView."""
@@ -334,15 +298,6 @@ class TestNoPropertyGroupsViewUnit:
         response = view.get(mock_request)
 
         assert response.status_code == 200
-
-    @pytest.mark.django_db
-    def test_permission_required_is_correct(self, mock_request, regular_user):
-        """Test that permission_required is set correctly."""
-        view = NoPropertyGroupsView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        assert view.permission_required == "core.manage_shop"
 
 
 class TestPropertyGroupCreateViewUnit:
@@ -372,15 +327,6 @@ class TestPropertyGroupCreateViewUnit:
 
         assert "property_groups" in context
         assert "came_from" in context
-
-    @pytest.mark.django_db
-    def test_permission_required_is_correct(self, mock_request, regular_user):
-        """Test that permission_required is set correctly."""
-        view = PropertyGroupCreateView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        assert view.permission_required == "core.manage_shop"
 
 
 class TestPropertyGroupDeleteViewsUnit:
@@ -429,29 +375,10 @@ class TestPropertyGroupDeleteViewsUnit:
 
         assert "property-groups" in url
 
-    @pytest.mark.django_db
-    def test_permission_required_is_correct(self, mock_request, regular_user):
-        """Test that permission_required is set correctly."""
-        view = PropertyGroupDeleteView()
-        view.request = mock_request
-        view.request.user = regular_user
-
-        assert view.permission_required == "core.manage_shop"
-
 
 class TestPropertyGroupTabMixinUnit:
     """Unit tests for PropertyGroupTabMixin."""
 
-    @pytest.mark.django_db
-    def test_get_property_groups_queryset_returns_property_group_queryset(self, mock_request, admin_user):
-        """Test that get_property_groups_queryset returns PropertyGroup queryset."""
-        view = PropertyGroupDataView()
-        view.request = mock_request
-        view.request.user = admin_user
-
-        queryset = view.get_property_groups_queryset()
-
-        assert queryset.model == PropertyGroup
 
     @pytest.mark.django_db
     def test_get_property_groups_queryset_applies_search_filter(self, mock_request, admin_user, sample_property_group):

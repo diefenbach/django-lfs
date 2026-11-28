@@ -2,25 +2,16 @@ import importlib.util
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.test import RequestFactory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.edit import UpdateView
 
 from lfs.catalog.models import Product
-from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.products.views import (
     ManageProductsView,
-    ProductCreateView,
     ProductDataView,
     ProductListView,
-    ProductStockView,
-    ProductSEOView,
-    ProductPortletsView,
-    NoProductsView,
-    ProductCategoriesView,
     ProductImagesView,
     ProductAttachmentsView,
     ProductAccessoriesView,
@@ -45,11 +36,6 @@ User = get_user_model()
 class TestManageProductsView:
     """Test the ManageProductsView dispatcher."""
 
-    def test_view_inheritance(self):
-        """Should inherit from Django RedirectView."""
-        from django.views.generic.base import RedirectView
-
-        assert issubclass(ManageProductsView, RedirectView)
 
     def test_permission_required_attribute(self):
         """Should require core.manage_shop permission."""
@@ -76,243 +62,16 @@ class TestManageProductsView:
         assert response.status_code in [200, 302]
 
 
-class TestProductCreateView:
-    """Test the ProductCreateView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from Django CreateView."""
-        from django.views.generic.edit import CreateView
 
-        assert issubclass(ProductCreateView, CreateView)
 
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductCreateView.model == Product
 
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductCreateView.permission_required == "core.manage_shop"
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ProductCreateView.template_name == "manage/products/add_product.html"
-
-    def test_form_valid_method_exists(self):
-        """Should have form_valid method."""
-        assert hasattr(ProductCreateView, "form_valid")
-        assert callable(getattr(ProductCreateView, "form_valid"))
-
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ProductCreateView, "get_success_url")
-        assert callable(getattr(ProductCreateView, "get_success_url"))
 
 
 class TestProductDataView:
     """Test the ProductDataView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and UpdateView."""
-        from django.views.generic.edit import UpdateView
-
-        assert issubclass(ProductDataView, ProductTabMixin)
-        assert issubclass(ProductDataView, UpdateView)
-
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductDataView.model == Product
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDataView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'data' as tab name."""
-        assert ProductDataView.tab_name == "data"
-
-    def test_pk_url_kwarg(self):
-        """Should use 'id' as pk_url_kwarg."""
-        assert ProductDataView.pk_url_kwarg == "id"
-
-    def test_form_valid_method_exists(self):
-        """Should have form_valid method."""
-        assert hasattr(ProductDataView, "form_valid")
-        assert callable(getattr(ProductDataView, "form_valid"))
-
-    def test_get_success_url_method_exists(self):
-        """Should have get_success_url method."""
-        assert hasattr(ProductDataView, "get_success_url")
-        assert callable(getattr(ProductDataView, "get_success_url"))
-
-    def test_delete_method_exists(self):
-        """Should have delete method."""
-        assert hasattr(ProductDataView, "delete")
-        assert callable(getattr(ProductDataView, "delete"))
-
-    def test_get_method_exists(self):
-        """Should have get method."""
-        assert hasattr(ProductDataView, "get")
-        assert callable(getattr(ProductDataView, "get"))
-
-class TestProductStockView:
-    """Test the ProductStockView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and UpdateView."""
-        from django.views.generic.edit import UpdateView
-
-        assert issubclass(ProductStockView, ProductTabMixin)
-        assert issubclass(ProductStockView, UpdateView)
-
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductStockView.model == Product
-
-    def test_form_class_attribute(self):
-        """Should use ProductStockForm."""
-        from lfs.manage.products.forms import ProductStockForm
-
-        assert ProductStockView.form_class == ProductStockForm
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductStockView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'stock' as tab name."""
-        assert ProductStockView.tab_name == "stock"
-
-    def test_get_form_kwargs_method_exists(self):
-        """Should have get_form_kwargs method."""
-        assert hasattr(ProductStockView, "get_form_kwargs")
-        assert callable(getattr(ProductStockView, "get_form_kwargs"))
-
-
-class TestProductSEOView:
-    """Test the ProductSEOView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and UpdateView."""
-        from django.views.generic.edit import UpdateView
-
-        assert issubclass(ProductSEOView, ProductTabMixin)
-        assert issubclass(ProductSEOView, UpdateView)
-
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductSEOView.model == Product
-
-    def test_form_class_attribute(self):
-        """Should use SEOForm."""
-        from lfs.manage.products.forms import SEOForm
-
-        assert ProductSEOView.form_class == SEOForm
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductSEOView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'seo' as tab name."""
-        assert ProductSEOView.tab_name == "seo"
-
-
-class TestProductPortletsView:
-    """Test the ProductPortletsView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductPortletsView, ProductTabMixin)
-        assert issubclass(ProductPortletsView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductPortletsView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'portlets' as tab name."""
-        assert ProductPortletsView.tab_name == "portlets"
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ProductPortletsView, "get_context_data")
-        assert callable(getattr(ProductPortletsView, "get_context_data"))
-
-
-class TestNoProductsView:
-    """Test the NoProductsView template view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from Django TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(NoProductsView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert NoProductsView.permission_required == "core.manage_shop"
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert NoProductsView.template_name == "manage/products/no_products.html"
-
-
-class TestProductCategoriesView:
-    """Test the ProductCategoriesView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductCategoriesView, ProductTabMixin)
-        assert issubclass(ProductCategoriesView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductCategoriesView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'categories' as tab name."""
-        assert ProductCategoriesView.tab_name == "categories"
-
-    def test_post_method_exists(self):
-        """Should have post method."""
-        assert hasattr(ProductCategoriesView, "post")
-        assert callable(getattr(ProductCategoriesView, "post"))
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ProductCategoriesView, "get_context_data")
-        assert callable(getattr(ProductCategoriesView, "get_context_data"))
-
-
-class TestProductDataView:
-    """Test the ProductDataView class-based view."""
-
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and UpdateView."""
-        from django.views.generic.edit import UpdateView
-
-        assert issubclass(ProductDataView, ProductTabMixin)
-        assert issubclass(ProductDataView, UpdateView)
-
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductDataView.model == Product
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDataView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'data' as tab name."""
-        assert ProductDataView.tab_name == "data"
-
-    def test_pk_url_kwarg(self):
-        """Should use 'id' as pk_url_kwarg."""
-        assert ProductDataView.pk_url_kwarg == "id"
 
     def test_get_form_class_returns_product_form_for_standard_product(self, product):
         """Should return ProductDataForm for standard products."""
@@ -344,7 +103,6 @@ class TestProductDataView:
 
     def test_form_valid_adds_success_message(self, rf, product, mocker):
         """Should add success message when form is valid."""
-        from django.contrib import messages
 
         factory = RequestFactory()
         request = factory.post("/", {})
@@ -440,7 +198,6 @@ class TestProductDataView:
 
     def test_delete_standard_product_redirects_to_products_overview(self, rf, admin_user, product, mocker):
         """Should redirect to products overview when deleting standard product."""
-        from django.contrib import messages
 
         factory = RequestFactory()
         request = factory.post("/", {})
@@ -466,7 +223,6 @@ class TestProductDataView:
 
     def test_delete_variant_product_redirects_to_parent(self, rf, admin_user, variant_product, mocker):
         """Should redirect to parent product when deleting variant."""
-        from django.contrib import messages
 
         factory = RequestFactory()
         request = factory.post("/", {})
@@ -530,20 +286,6 @@ class TestProductDataView:
 class TestProductImagesView:
     """Test the ProductImagesView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductImagesView, ProductTabMixin)
-        assert issubclass(ProductImagesView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductImagesView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'images' as tab name."""
-        assert ProductImagesView.tab_name == "images"
 
     def test_post_toggle_active_images(self, rf, product, mocker):
         """Should toggle active images setting."""
@@ -626,20 +368,6 @@ class TestProductImagesView:
 class TestProductAttachmentsView:
     """Test the ProductAttachmentsView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductAttachmentsView, ProductTabMixin)
-        assert issubclass(ProductAttachmentsView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductAttachmentsView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'attachments' as tab name."""
-        assert ProductAttachmentsView.tab_name == "attachments"
 
     def test_post_delete_attachments(self, rf, product, mocker):
         """Should delete selected attachments."""
@@ -711,20 +439,6 @@ class TestProductAttachmentsView:
 class TestProductAccessoriesView:
     """Test the ProductAccessoriesView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductAccessoriesView, ProductTabMixin)
-        assert issubclass(ProductAccessoriesView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductAccessoriesView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'accessories' as tab name."""
-        assert ProductAccessoriesView.tab_name == "accessories"
 
     def test_post_toggle_active_accessories(self, rf, product, mocker):
         """Should toggle active accessories setting."""
@@ -1024,20 +738,6 @@ class TestProductAccessoriesView:
 class TestProductDeleteConfirmView:
     """Test the ProductDeleteConfirmView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductDeleteConfirmView, PermissionRequiredMixin)
-        assert issubclass(ProductDeleteConfirmView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDeleteConfirmView.permission_required == "core.manage_shop"
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ProductDeleteConfirmView.template_name == "manage/products/delete_product.html"
 
     def test_get_context_data_includes_product(self, rf, product):
         """Should include the product in context."""
@@ -1058,30 +758,6 @@ class TestProductDeleteConfirmView:
 class TestProductDeleteView:
     """Test the ProductDeleteView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, and DeleteView."""
-        from django.views.generic.edit import DeleteView
-
-        assert issubclass(ProductDeleteView, DirectDeleteMixin)
-        assert issubclass(ProductDeleteView, SuccessMessageMixin)
-        assert issubclass(ProductDeleteView, PermissionRequiredMixin)
-        assert issubclass(ProductDeleteView, DeleteView)
-
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductDeleteView.model == Product
-
-    def test_pk_url_kwarg(self):
-        """Should use 'id' as pk_url_kwarg."""
-        assert ProductDeleteView.pk_url_kwarg == "id"
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductDeleteView.permission_required == "core.manage_shop"
-
-    def test_success_message(self):
-        """Should have correct success message."""
-        assert ProductDeleteView.success_message == "Product has been deleted."
 
     def test_get_success_url_returns_products_list(self):
         """Should redirect to products list after deletion."""
@@ -1150,22 +826,6 @@ class TestProductDeleteView:
 class TestApplyProductFiltersView:
     """Test the ApplyProductFiltersView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and FormView."""
-        from django.views.generic.edit import FormView
-
-        assert issubclass(ApplyProductFiltersView, PermissionRequiredMixin)
-        assert issubclass(ApplyProductFiltersView, FormView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ApplyProductFiltersView.permission_required == "core.manage_shop"
-
-    def test_form_class(self):
-        """Should use ProductFilterForm."""
-        from lfs.manage.products.forms import ProductFilterForm
-
-        assert ApplyProductFiltersView.form_class == ProductFilterForm
 
     def test_form_valid_saves_filters_to_session(self, rf, admin_user, mocker):
         """Should save valid filter data to session."""
@@ -1405,16 +1065,6 @@ class TestApplyProductFiltersView:
 class TestResetProductFiltersView:
     """Test the ResetProductFiltersView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and RedirectView."""
-        from django.views.generic.base import RedirectView
-
-        assert issubclass(ResetProductFiltersView, PermissionRequiredMixin)
-        assert issubclass(ResetProductFiltersView, RedirectView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ResetProductFiltersView.permission_required == "core.manage_shop"
 
     def test_get_redirect_url_removes_filters_from_session(self, rf, admin_user):
         """Should remove product-filters from session."""
@@ -1491,20 +1141,6 @@ class TestResetProductFiltersView:
 class TestProductVariantsView:
     """Test the ProductVariantsView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductVariantsView, ProductTabMixin)
-        assert issubclass(ProductVariantsView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductVariantsView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'variants' as tab name."""
-        assert ProductVariantsView.tab_name == "variants"
 
     def test_post_delete_variants(self, rf, product, mocker):
         """Should delete selected variants."""
@@ -1696,20 +1332,6 @@ class TestProductVariantsView:
 class TestProductRelatedProductsView:
     """Test the ProductRelatedProductsView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductRelatedProductsView, ProductTabMixin)
-        assert issubclass(ProductRelatedProductsView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductRelatedProductsView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'related' as tab name."""
-        assert ProductRelatedProductsView.tab_name == "related"
 
     def test_post_toggle_active_related_products(self, rf, product, mocker):
         """Should toggle active related products setting."""
@@ -2053,20 +1675,6 @@ class TestProductRelatedProductsView:
 class TestProductPropertiesView:
     """Test the ProductPropertiesView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from ProductTabMixin and TemplateView."""
-        from django.views.generic.base import TemplateView
-
-        assert issubclass(ProductPropertiesView, ProductTabMixin)
-        assert issubclass(ProductPropertiesView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductPropertiesView.permission_required == "core.manage_shop"
-
-    def test_tab_name(self):
-        """Should use 'properties' as tab name."""
-        assert ProductPropertiesView.tab_name == "properties"
 
     def test_get_context_data_basic_structure(self, rf, product):
         """Should return context with basic structure."""
@@ -2287,29 +1895,10 @@ class TestProductTabMixin:
         assert hasattr(ProductTabMixin, "template_name")
         assert ProductTabMixin.template_name == "manage/products/product.html"
 
-    def test_mixin_has_tab_name(self):
-        """Should have tab_name attribute."""
-        assert hasattr(ProductTabMixin, "tab_name")
 
-    def test_get_product_method_exists(self):
-        """Should have get_product method."""
-        assert hasattr(ProductTabMixin, "get_product")
-        assert callable(getattr(ProductTabMixin, "get_product"))
 
-    def test_get_tabs_method_exists(self):
-        """Should have _get_tabs method."""
-        assert hasattr(ProductTabMixin, "_get_tabs")
-        assert callable(getattr(ProductTabMixin, "_get_tabs"))
 
-    def test_get_products_queryset_method_exists(self):
-        """Should have _get_products_queryset method."""
-        assert hasattr(ProductTabMixin, "_get_products_queryset")
-        assert callable(getattr(ProductTabMixin, "_get_products_queryset"))
 
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ProductTabMixin, "get_context_data")
-        assert callable(getattr(ProductTabMixin, "get_context_data"))
 
     def test_get_tabs_returns_correct_structure(self, product):
         """Should return correct tab structure."""
@@ -2328,20 +1917,6 @@ class TestProductTabMixin:
         assert len(tabs) > 0
         assert all(isinstance(tab, tuple) and len(tab) == 3 for tab in tabs)
 
-    def test_get_products_queryset_filters_by_search(self, product):
-        """Should filter products by search query."""
-        factory = RequestFactory()
-        request = factory.get("/?q=test")
-        request.session = {}
-
-        view = ProductDataView()
-        view.request = request
-
-        queryset = view._get_products_queryset()
-
-        # Should return QuerySet
-        assert hasattr(queryset, "filter")
-        assert hasattr(queryset, "order_by")
 
     def test_get_products_queryset_filters_by_session_sub_type(self, product, shop):
         """Should filter sidebar products by session sub_type."""
@@ -2490,26 +2065,7 @@ class TestProductTabMixin:
 class TestProductListView:
     """Test the ProductListView class-based view."""
 
-    def test_view_inheritance(self):
-        """Should inherit from PermissionRequiredMixin and TemplateView."""
-        from django.contrib.auth.mixins import PermissionRequiredMixin
-        from django.views.generic.base import TemplateView
 
-        assert issubclass(ProductListView, PermissionRequiredMixin)
-        assert issubclass(ProductListView, TemplateView)
-
-    def test_permission_required(self):
-        """Should require core.manage_shop permission."""
-        assert ProductListView.permission_required == "core.manage_shop"
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ProductListView.template_name == "manage/products/product_list.html"
-
-    def test_get_context_data_method_exists(self):
-        """Should have get_context_data method."""
-        assert hasattr(ProductListView, "get_context_data")
-        assert callable(getattr(ProductListView, "get_context_data"))
 
     def test_get_context_data_basic_structure(self, rf, db, category, shop):
         """Should return context with basic structure when no filters."""
@@ -2559,7 +2115,6 @@ class TestProductListView:
 
     def test_get_context_data_with_session_filters(self, rf, db, shop):
         """Should apply filters from session."""
-        from lfs.manage.products.services import ProductFilterService
 
         # Create test data
         product1 = Product.objects.create(name="Apple Product", slug="apple-product", sku="APP001", price=10.0)

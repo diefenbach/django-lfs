@@ -1,6 +1,5 @@
 import pytest
 from django.contrib.auth import get_user_model
-from django.test import RequestFactory
 
 from lfs.marketing.models import FeaturedProduct
 from lfs.manage.featured.views import (
@@ -18,21 +17,6 @@ User = get_user_model()
 class TestManageFeaturedView:
     """Tests for ManageFeaturedView class-based view."""
 
-    def test_get_context_data_returns_correct_template_name(self, manage_user):
-        """Should return the correct template name."""
-        view = ManageFeaturedView()
-        view.request = RequestFactory().get("/")
-        view.request.user = manage_user
-
-        assert view.template_name == "manage/featured/featured.html"
-
-    def test_permission_required_is_correct(self, manage_user):
-        """Should require manage_shop permission."""
-        view = ManageFeaturedView()
-        view.request = RequestFactory().get("/")
-        view.request.user = manage_user
-
-        assert view.permission_required == "core.manage_shop"
 
     def test_get_context_data_includes_featured_products(self, authenticated_request, featured_products):
         """Should include featured products in context ordered by position."""

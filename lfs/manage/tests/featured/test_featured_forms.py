@@ -21,7 +21,6 @@ class TestFeaturedFormsStructure:
         assert hasattr(lfs.manage.featured, "__file__")
 
         # Check that the directory exists and is writable (conceptually)
-        import os
         from pathlib import Path
 
         featured_dir = Path(lfs.manage.featured.__file__).parent

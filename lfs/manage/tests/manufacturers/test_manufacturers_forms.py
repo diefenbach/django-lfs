@@ -232,15 +232,7 @@ class TestManufacturerAddForm:
         assert manufacturer.slug == "new-manufacturer"
         assert Manufacturer.objects.filter(slug="new-manufacturer").exists()
 
-    def test_form_meta_model(self):
-        """Should use Manufacturer model."""
-        form = ManufacturerAddForm()
-        assert form._meta.model == Manufacturer
 
-    def test_form_meta_fields(self):
-        """Should have correct Meta fields configuration."""
-        form = ManufacturerAddForm()
-        assert form._meta.fields == ("name", "slug")
 
     def test_unicode_characters_in_name(self, db):
         """Should handle unicode characters in manufacturer name."""

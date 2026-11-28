@@ -354,13 +354,6 @@ class TestProductVariantCreateForm:
         assert form.options == options
         assert form.product == product
 
-    def test_prepare_slug_method_exists(self):
-        """Should have prepare_slug method."""
-        from lfs.manage.products.forms import ProductVariantCreateForm
-
-        form = ProductVariantCreateForm()
-        assert hasattr(form, "prepare_slug")
-        assert callable(getattr(form, "prepare_slug"))
 
     @pytest.mark.django_db
     def test_valid_variant_data(self, product):

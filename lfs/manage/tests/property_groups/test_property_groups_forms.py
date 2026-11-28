@@ -2,7 +2,6 @@ import pytest
 
 from django import forms
 from django.test import RequestFactory
-from django.utils.translation import gettext_lazy as _
 
 from lfs.manage.property_groups.forms import PropertyGroupForm
 

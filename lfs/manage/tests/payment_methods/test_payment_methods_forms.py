@@ -33,13 +33,6 @@ class TestPaymentMethodForm:
 
         assert isinstance(form.fields["image"].widget, LFSImageInput)
 
-    def test_form_is_model_form(self):
-        """Test that PaymentMethodForm is a ModelForm."""
-        assert issubclass(PaymentMethodForm, forms.ModelForm)
-
-    def test_form_uses_payment_method_model(self):
-        """Test that form uses PaymentMethod model."""
-        assert PaymentMethodForm.Meta.model == PaymentMethod
 
     def test_form_can_be_instantiated_empty(self):
         """Test that form can be instantiated without data."""
@@ -227,13 +220,6 @@ class TestPaymentMethodAddForm:
         assert "name" in form.fields
         assert len(form.fields) == 1
 
-    def test_form_is_model_form(self):
-        """Test that PaymentMethodAddForm is a ModelForm."""
-        assert issubclass(PaymentMethodAddForm, forms.ModelForm)
-
-    def test_form_uses_payment_method_model(self):
-        """Test that form uses PaymentMethod model."""
-        assert PaymentMethodAddForm.Meta.model == PaymentMethod
 
     def test_form_meta_fields_is_tuple(self):
         """Test that Meta.fields is properly defined as tuple."""

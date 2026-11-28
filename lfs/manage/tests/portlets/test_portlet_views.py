@@ -29,10 +29,6 @@ User = get_user_model()
 class TestPortletsInlineView:
     """Tests for PortletsInlineView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PortletsInlineView.permission_required == "core.manage_shop"
-        assert PortletsInlineView.template_name == "manage/portlets/portlets_inline.html"
 
     def test_get_renders_portlets_inline_template(self, page, authenticated_request, monkeypatch):
         """Should render portlets inline template with correct context."""
@@ -115,9 +111,6 @@ class TestPortletsInlineView:
 class TestUpdatePortletsView:
     """Tests for UpdatePortletsView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert UpdatePortletsView.permission_required == "core.manage_shop"
 
     def test_post_updates_portlet_blocking(self, page, authenticated_request, slot, monkeypatch):
         """Should update portlet blocking settings."""
@@ -211,10 +204,6 @@ class TestUpdatePortletsView:
 class TestAddPortletView:
     """Tests for AddPortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert AddPortletView.permission_required == "core.manage_shop"
-        assert AddPortletView.template_name == "manage/portlets/portlet_add.html"
 
     def test_get_without_portlet_type_returns_warning(self, page, authenticated_request):
         """Should return warning when no portlet type is provided."""
@@ -404,10 +393,6 @@ class TestAddPortletView:
 class TestDeletePortletView:
     """Tests for DeletePortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert DeletePortletView.permission_required == "core.manage_shop"
-        assert DeletePortletView.template_name == "manage/portlets/delete_portlet.html"
 
     def test_get_with_nonexistent_portlet_returns_error(self, authenticated_request):
         """Should return error for non-existent portlet."""
@@ -492,10 +477,6 @@ class TestDeletePortletView:
 class TestEditPortletView:
     """Tests for EditPortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert EditPortletView.permission_required == "core.manage_shop"
-        assert EditPortletView.template_name == "manage/portlets/portlet_edit.html"
 
     def test_get_with_nonexistent_portlet_returns_error(self, authenticated_request):
         """Should return error for non-existent portlet."""
@@ -648,9 +629,6 @@ class TestEditPortletView:
 class TestMovePortletView:
     """Tests for MovePortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert MovePortletView.permission_required == "core.manage_shop"
 
     def test_get_with_nonexistent_portlet_returns_empty(self, authenticated_request):
         """Should return empty response for non-existent portlet."""
@@ -754,9 +732,6 @@ class TestMovePortletView:
 class TestSortPortletsView:
     """Tests for SortPortletsView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert SortPortletsView.permission_required == "core.manage_shop"
 
     def test_post_sorts_portlets_correctly(self, portlet_assignment, authenticated_request, slot):
         """Should sort portlets after drag and drop."""

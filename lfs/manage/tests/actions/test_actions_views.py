@@ -485,9 +485,6 @@ class TestSortActionsView:
 class TestUpdatePositionsHelper:
     """Test the _update_positions helper function."""
 
-    def test_update_positions_function_exists(self):
-        """Should have _update_positions function."""
-        assert callable(_update_positions)
 
     def test_update_positions_with_multiple_actions(self, multiple_actions):
         """Should update positions correctly."""

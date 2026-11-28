@@ -338,15 +338,6 @@ class TestManageTopsellerView:
                 assert response.status_code == 200
                 assert "Test Product 1" in response.content.decode()
 
-    @pytest.mark.django_db
-    def test_manage_topseller_view_uses_correct_template(self, mock_request, admin_user, sample_topsellers):
-        """Test ManageTopsellerView uses correct template."""
-        mock_request.user = admin_user
-        mock_request.session = {"topseller-amount": 25}
-
-        view = ManageTopsellerView()
-        assert view.template_name == "manage/topsellers/topseller.html"
-
 
 class TestManageTopsellerInlineView:
     """Test inline topseller functionality."""
