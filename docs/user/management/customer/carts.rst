@@ -1,62 +1,34 @@
-.. index:: Cart
+.. index:: Cart, Carts
 
 =====
 Carts
 =====
 
-Overview
-=========
+This section describes the management interface for carts (``Customers / Carts``): the carts of customers that
+have not (yet) become orders.
 
-Within the carts overview all carts are displayed.
+List
+====
 
-.. image:: /images/carts_overview.*
+The list shows the carts with ``Cart ID``, ``Customer`` (or ``Anonymous``), ``Products``, ``Items``, ``Total`` and
+``Modified``. Click a cart to see its details.
 
-Navigation / Filtering
-----------------------
-
-You can filter and navigate through the displayed carts:
-
-.. image:: /images/carts_navigation.*
-
-* With the page navigation you can navigate through all carts.
-* To filter the carts by date just fill in Start and End (YYYY-MM-DD) and
-  click ``Submit``. For convenience you can click on the links left beside the
-  start field. T = today, Y = yesterday, W = week.
-* To reset the filter just click on the red ``X`` button.
-
-Sorting
--------
-
-.. note::
-    Sorting is not available at the moment.
-
-Details
--------
-
-* To view a cart in detail just click on the cart.
+Filter
+    Filter by the date of the last change with ``Start`` and ``End`` or the buttons ``Today``, ``Week`` and
+    ``Month``. Click ``Apply`` to filter and ``Reset`` to show all carts again.
 
 Details
 =======
 
-Within the cart detail view you can see several information about a
-single cart:
+The detail page of a cart shows its customer and its items with product, quantity, price and total.
 
-* The general information: cart id, the customer (if there is one), creation
-  and modification date, amount of items and the total amount.
-* The cart items.
-* On the left you can see all carts. Just click on a cart to see it in detail.
+All Carts
+    Back to the list.
 
-.. image:: /images/carts_details.*
+Delete Cart
+    Deletes the cart with all its items, after a confirmation.
 
-Navigation / Filtering
-----------------------
+.. note::
 
-You can filter and navigate through the displayed carts on the left:
-
-.. image:: /images/carts_navigation.*
-
-* With the page navigation you can navigate through all carts.
-* To filter the carts by date just fill in Start and End (YYYY-MM-DD) and
-  click ``Submit``. For convenience you can click on links beside the start field.
-  T = today, Y = yesterday, W = week.
-* To reset the filter just click on the red ``X`` button.
+    Carts that have not been changed for 7 days are removed by the management command ``cleanup_carts``, see
+    :doc:`/developer/management_commands`.

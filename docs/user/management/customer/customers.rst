@@ -4,45 +4,36 @@
 Customers
 =========
 
-Overview
-=========
+This section describes the management interface for customers (``Customers / Customers``). LFS creates a customer
+for every visitor who puts something into the cart; registered customers have a user account.
 
-Within the customers overview all customers are displayed.
+.. image:: /images/manage_customers.png
+   :alt: The list of customers
 
-.. image:: /images/customers_overview.*
+List
+====
 
-Navigation / Filtering
-----------------------
+The list shows the customers with ``ID``, ``Name``, ``Email``, number of ``Orders``, ``Cart Value`` and ``Date
+Joined``. Click a column heading to sort by it, and a customer to see the details.
 
-With the page navigation you can navigate through all customers. To filter the
-displayed customers by name just fill in the name field and click ``Submit``. To
-reset the filter just click on the red ``X`` button.
-
-Sorting
--------
-
-To sort the displayed customers click on the columns title.
-
-Details
--------
-
-To view a customer in detail just click on the row of the customer.
+Filter
+    Filter by name (first or last name of the customer's addresses) and by the date with ``Start`` and ``End`` or
+    the buttons ``Today``, ``Week`` and ``Month``. Click ``Apply`` to filter and ``Reset`` to show all customers
+    again.
 
 Details
 =======
 
-Within the customer detail view you can see several information about a single
-customer: the id and the registration status, the current invoice address and
-shipping address, the current cart of the customer, if there is one. Click on
-the cart row to see it in detail. You can also check which orders the customer
-has submitted and the state of the them. Click on the order row to see it in
-detail.
+The detail page of a customer shows:
 
-.. image:: /images/customers_detail.*
+* Customer information: name, e-mail, user account.
+* Shipping and invoice address.
+* The orders of the customer; click one to open it.
+* The current cart with its items, if there is one.
 
-Navigation / Filtering
-----------------------
+``All Customers`` leads back to the list.
 
-With the page navigation you can navigate through all customers. To filter the
-displayed customers by name just fill in the name field and click ``Submit``. To
-reset the filter just click on the red ``X`` button.
+.. note::
+
+    Customers who did not register and have neither a cart nor an order are removed by the management command
+    ``cleanup_customers``, see :doc:`/developer/management_commands`.
