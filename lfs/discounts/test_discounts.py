@@ -89,6 +89,12 @@ class TestWhichDiscountsApply:
         cache.clear()
         assert list(valid(request_)) == ["Lamps"]
 
+    def test_a_product_discount_does_not_break_a_visitor_without_cart(self, request_):
+        lamps = discount("Lamps")
+        lamps.products.add(Product.objects.create(name="Lamp", slug="lamp", price=40.0, active=True))
+
+        assert valid(request_) == {}
+
 
 class TestValue:
     def test_an_absolute_discount_is_its_value(self, request_):
