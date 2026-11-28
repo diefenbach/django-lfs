@@ -205,3 +205,12 @@ class TestSort:
         response = manager.post(reverse("lfs_manage_sort_categories"))
 
         assert response.json()["message"] == "No category data received."
+
+
+def test_the_products_tab_ignores_unknown_ids(manager):
+    lights = category("Lights")
+    url = reverse("lfs_manage_category_products", kwargs={"id": lights.id})
+
+    for action in ("assign_products", "remove_products"):
+        response = manager.post(url, {action: "1", "product-999999": "on", "product-x": "on"})
+        assert response["Location"] == url

@@ -241,30 +241,22 @@ class CategoryProductsView(PermissionRequiredMixin, CategoryTabMixin, TemplateVi
         return super().post(request, *args, **kwargs)
 
     def _handle_assign_products(self, request: HttpRequest) -> HttpResponse:
-        """Handles assigning products to category."""
+        """Assigns the checked products (product-<id>) to the category; unknown ids are ignored."""
         category = self.get_category()
-
-        for temp_id in request.POST.keys():
-            if temp_id.startswith("product"):
-                temp_id = temp_id.split("-")[1]
-                product = Product.objects.get(pk=temp_id)
-                category.products.add(product)
-
+        category.products.add(*Product.objects.filter(pk__in=self._checked_product_ids(request)))
         messages.success(self.request, _("Products have been assigned."))
         return HttpResponseRedirect(self.get_success_url())
 
     def _handle_remove_products(self, request: HttpRequest) -> HttpResponse:
-        """Handles removing products from category."""
+        """Removes the checked products (product-<id>) from the category; unknown ids are ignored."""
         category = self.get_category()
-
-        for temp_id in request.POST.keys():
-            if temp_id.startswith("product"):
-                temp_id = temp_id.split("-")[1]
-                product = Product.objects.get(pk=temp_id)
-                category.products.remove(product)
-
+        category.products.remove(*Product.objects.filter(pk__in=self._checked_product_ids(request)))
         messages.success(self.request, _("Products have been removed."))
         return HttpResponseRedirect(self.get_success_url())
+
+    def _checked_product_ids(self, request: HttpRequest) -> list[str]:
+        """Returns the ids of the checked product-<id> boxes."""
+        return [key.removeprefix("product-") for key in request.POST if key.removeprefix("product-").isdigit()]
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with products and filters."""
