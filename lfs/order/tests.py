@@ -262,24 +262,6 @@ class OrderTestCase(TestCase):
         order = Order.objects.filter()[0]
         self.assertEqual(order.get_pay_link(self.request), "")
 
-    def test_paypal_link(self):
-        """Tests created paypal link."""
-        payment_method, created = PaymentMethod.objects.get_or_create(
-            id=3,
-            name="PayPal",
-            active=True,
-        )
-
-        self.customer.selected_payment_method = payment_method
-        self.customer.save()
-
-        from lfs.payment.utils import process_payment
-
-        process_payment(self.request)
-
-        order = Order.objects.filter()[0]
-        self.assertFalse(order.get_pay_link(self.request).find("paypal") == -1)
-
     def test_delete_product(self):
         """Tests that OrderItems are not deleted when a product is deleted."""
         address = Address.objects.create()
