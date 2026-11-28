@@ -7,6 +7,7 @@ from portlets.models import PortletAssignment, Slot
 
 from lfs.core.utils import import_symbol
 from lfs.payment.models import PaymentMethod
+from lfs.tests.utils import requires_addon
 
 
 @pytest.mark.django_db
@@ -17,6 +18,7 @@ def test_lfs_init_creates_the_slots_but_assigns_no_portlets():
     assert PortletAssignment.objects.count() == 0
 
 
+@requires_addon("lfs_paypal")
 @pytest.mark.django_db
 def test_lfs_init_offers_paypal_when_lfs_paypal_is_installed(settings):
     if "lfs_paypal" not in settings.INSTALLED_APPS:

@@ -28,7 +28,7 @@ from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.customer.models import Customer
-from lfs.tests.utils import RequestFactory
+from lfs.tests.utils import RequestFactory, requires_addon
 from lfs.tax.models import Tax
 
 
@@ -903,6 +903,7 @@ class AddToCartEventSessionTestCase(TestCase):
         self.assertNotIn("event", tracking)
         self.assertNotIn("added_to_cart", request.session)
 
+    @requires_addon("lfs_gtm")
     def test_cart_view_pops_event_from_session(self):
         from django.test import override_settings
 

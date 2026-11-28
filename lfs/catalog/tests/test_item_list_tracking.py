@@ -18,7 +18,7 @@ from lfs.catalog.settings import VARIANT
 from lfs.catalog.utils import item_list_to_tracking_snapshot
 from lfs.catalog.utils import resolve_product_for_category_list
 from lfs.catalog.utils import resolve_product_for_search_list
-from lfs.tests.utils import RequestFactory
+from lfs.tests.utils import RequestFactory, requires_addon
 
 
 class ItemListTrackingUtilsTestCase(TestCase):
@@ -122,6 +122,7 @@ class ItemListViewTrackingTestCase(TestCase):
         self.c1.products.set([self.p1, self.p2])
         self.c1.save()
 
+    @requires_addon("lfs_gtm")
     def test_category_view_renders_view_item_list(self):
         response = self.client.get(reverse("lfs_category", kwargs={"slug": "category-1"}))
         self.assertEqual(response.status_code, 200)
