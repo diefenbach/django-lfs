@@ -7,7 +7,6 @@ from django.contrib.sessions.backends.file import SessionStore
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
 from django.utils.encoding import force_str
