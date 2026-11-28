@@ -4,43 +4,44 @@
 Testing LFS
 ===========
 
-This section describes how to test LFS.
+This section describes how to run the tests of LFS. Set up the checkout first, see :doc:`developing`.
 
 Overview
 ========
 
-Testing is based on `nose <http://readthedocs.org/docs/nose/en/latest/>`_ and
-`django-nose <http://pypi.python.org/pypi/django-nose>`_.
+The tests use `pytest <https://docs.pytest.org/>`_ with `pytest-django <https://pytest-django.readthedocs.io/>`_.
+``uv sync`` installs them. The tests run against the settings in ``tests/settings.py``: LFS with the default theme,
+SQLite in memory, and no optional add-ons. Tests of features that need an add-on (for instance lfs-paypal or
+lfs-gtm) skip themselves when the add-on is not installed; they are marked with
+``lfs.tests.utils.requires_addon``.
 
 Examples
 ========
 
-Test everything::
+Test everything, on all CPU cores::
 
-    $ bin/django test lfs.core
-
-Test everything with coverage (you'll find the coverage report in the current
-directory)::
-
-    $ bin/django test lfs.core --with-coverage --cover-package=lfs --cover-html
+    $ uv run pytest -n auto
 
 Test only the catalog::
 
-    $ bin/django test lfs.catalog
+    $ uv run pytest lfs/catalog
 
-Test only the catalog with coverage (you'll find the coverage report in the
-current directory)::
+Test only one test, without capturing the output (helpful to debug it with ``breakpoint()``)::
 
-    $ bin/django test lfs.catalog --with-coverage --cover-package=lfs.catalog --cover-html
+    $ uv run pytest lfs/catalog/tests.py::ViewsTestCase::test_file -s
 
-Test only one method without capturing the output (this is helpful if you want
-to debug a test with pdb)::
+Show the slowest tests::
 
-    $ bin/django test lfs.catalog.tests:ViewsTestCase.test_file -s
+    $ uv run pytest -n auto --durations=10
+
+.. note::
+
+    The test suite of LFS 1.0 is not fully green yet: about 80 tests fail and about 25 tests have errors, also on
+    ``main``. Make sure your change adds no new failures: run the tests before and after your change and compare.
 
 See also
 ========
 
-* `nose <http://readthedocs.org/docs/nose/en/latest/>`_
-* `nose options <http://readthedocs.org/docs/nose/en/latest/usage.html#options>`_
-* `django-nose <http://pypi.python.org/pypi/django-nose>`_
+* `pytest <https://docs.pytest.org/>`_
+* `pytest-django <https://pytest-django.readthedocs.io/>`_
+* `pytest-xdist <https://pytest-xdist.readthedocs.io/>`_ (``-n auto``)
