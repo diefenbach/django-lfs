@@ -163,7 +163,6 @@ def test_return_policy_comes_from_the_shop(returns):
 
 def test_shop_without_returns_says_so(returns):
     returns.return_days = 0
-    returns.return_policy_url = ""
     returns.save()
     policy = merchant_return_policy(RequestFactory().get("/"))
     assert policy == {
@@ -182,6 +181,17 @@ def test_other_variants_offer_the_shop_return_policy(parent, returns):
 def test_return_policy_tag_renders_json_for_the_themes(returns):
     policy = json.loads(render("{% merchant_return_policy_json %}"))
     assert policy["returnFees"] == "https://schema.org/FreeReturn"
+
+
+def test_shop_without_a_return_policy_page_claims_no_return_policy(parent):
+    """Until the shop names its return policy page, LFS does not tell search engines "free return in 14 days"."""
+    assert get_default_shop().return_policy_url == ""
+    first, _ = parent.get_variants()
+
+    assert merchant_return_policy(RequestFactory().get("/")) is None
+    assert json.loads(render("{% merchant_return_policy_json %}")) is None
+    other = json.loads(render("{% product_group_json product %}", product=first))["hasVariant"][1]
+    assert "hasMerchantReturnPolicy" not in other["offers"]
 
 
 def test_product_group_has_the_parent_short_description(parent):
