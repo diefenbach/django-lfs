@@ -128,8 +128,8 @@ class PageDataView(PermissionRequiredMixin, PageTabMixin, UpdateView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Redirects root page to portlets tab."""
-        if self.kwargs["id"] == "1":
-            return HttpResponseRedirect(reverse("lfs_manage_page_portlets", kwargs={"id": "1"}))
+        if self.kwargs["id"] == 1:
+            return HttpResponseRedirect(reverse("lfs_manage_page_portlets", kwargs={"id": 1}))
         return super().get(request, *args, **kwargs)
 
     def get_success_url(self) -> str:
@@ -139,13 +139,6 @@ class PageDataView(PermissionRequiredMixin, PageTabMixin, UpdateView):
     def form_valid(self, form):
         """Saves and shows success message."""
         # Handle file deletion if checkbox is checked
-        if self.request.POST.get("delete_file"):
-            page = self.get_object()
-            if page.file:
-                page.file.delete()
-                page.file = None
-                page.save()
-
         response = super().form_valid(form)
         messages.success(self.request, _("Page has been saved."))
         return response
@@ -172,13 +165,13 @@ class PageSEOView(PermissionRequiredMixin, PageTabMixin, UpdateView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Prevents access to root page SEO."""
-        if self.kwargs["id"] == "1":
+        if self.kwargs["id"] == 1:
             return HttpResponseForbidden()
         return super().get(request, *args, **kwargs)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Prevents access to root page SEO."""
-        if self.kwargs["id"] == "1":
+        if self.kwargs["id"] == 1:
             return HttpResponseForbidden()
         return super().post(request, *args, **kwargs)
 
