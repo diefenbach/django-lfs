@@ -129,13 +129,16 @@ def _description(product):
     return strip_tags(product.get_short_description() or "").strip()
 
 
-def merchant_return_policy(request):
-    """Return the shop's schema.org MerchantReturnPolicy for product offers.
+def merchant_return_policy(request) -> dict | None:
+    """Return the shop's schema.org MerchantReturnPolicy for product offers, or None if the shop has not set one.
 
     Google expects it in every offer of a merchant listing, including the variants of a ProductGroup.
-    The countries are the shop's shipping countries.
+    The countries are the shop's shipping countries. A shop has set its policy once it names its return policy
+    page; until then the defaults (14 days, free return) would be a claim nobody made, so there is none.
     """
     shop = get_default_shop(request)
+    if not shop.return_policy_url:
+        return None
     policy = {
         "@type": "MerchantReturnPolicy",
         "applicableCountry": sorted(country.code.upper() for country in shop.shipping_countries.all()),
@@ -152,15 +155,14 @@ def merchant_return_policy(request):
         "refundType": "https://schema.org/FullRefund",
     })
     link = shop.return_policy_url
-    if link:
-        # Like the other URLs here always https, which request.build_absolute_uri behind a proxy is not.
-        policy["merchantReturnLink"] = f"https://{request.get_host()}{link}" if link.startswith("/") else link
+    # Like the other URLs here always https, which request.build_absolute_uri behind a proxy is not.
+    policy["merchantReturnLink"] = f"https://{request.get_host()}{link}" if link.startswith("/") else link
     return policy
 
 
 @register.simple_tag(takes_context=True)
 def merchant_return_policy_json(context):
-    """Return the shop's MerchantReturnPolicy as JSON, for the offer of a theme's Product block."""
+    """Return the shop's MerchantReturnPolicy as JSON for the offer of a theme's Product block; ``null`` without one."""
     return _json(merchant_return_policy(context["request"]))
 
 
@@ -207,8 +209,9 @@ def product_group_json(context, product):
             "priceCurrency": "EUR",
             "price": f"{price:.2f}",
             "availability": f"https://schema.org/{'InStock' if variant.is_deliverable() else 'OutOfStock'}",
-            "hasMerchantReturnPolicy": return_policy,
         }
+        if return_policy:
+            entry["offers"]["hasMerchantReturnPolicy"] = return_policy
         entries.append(entry)
     group = {
         "@context": "https://schema.org",
