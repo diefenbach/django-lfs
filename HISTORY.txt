@@ -1,6 +1,28 @@
 HISTORY
 =======
 
+1.0.1 (2026-11-28)
+==================
+
+Security
+* Requires Pillow 13, which fixes the open advisories of Pillow 12.
+* The management interface deletes only on POST.
+
+Management interface
+* /manage/ redirects to the dashboard; the product list has its own path and is in the catalog menu again.
+* Complete German translation; localized date formats kept.
+* Date filters of orders, carts and customers include the end day, in the shop's time zone.
+* Help links point to existing docs pages; selects in the product data and variants tabs are styled.
+* Deleting categories and properties renumbers them again; deleting a delivery time clears the caches.
+
+Shop
+* The return policy is published only once the shop has set its page.
+* The order detail page no longer shows Höhne-specific rows; add-ons can use the block ``order_extra_info``.
+* ``lfs_init`` creates Prepayment when lfs_paypal is not installed.
+
+Docs
+* Rewritten for 1.0, published at docs.django-lfs.com; the README leads with the demo Docker image.
+
 1.0.0 (2026-11-27)
 ==================
 
