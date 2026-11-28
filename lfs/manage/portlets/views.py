@@ -171,7 +171,7 @@ class AddPortletView(PermissionRequiredMixin, View):
         # Get content type to which the portlet should be added
         try:
             object_ct = ContentType.objects.get(pk=object_type_id)
-            obj = object_ct.get_object_for_this_type(pk=object_id)
+            object_ct.get_object_for_this_type(pk=object_id)  # the object must exist
         except ContentType.DoesNotExist:
             return HttpResponse("<div class='alert alert-danger'>Invalid content type.</div>")
 
@@ -313,7 +313,6 @@ class DeletePortletView(PermissionRequiredMixin, View):
             return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": 1}))
 
         content_obj = pa.content
-        content_obj_id = content_obj.id if content_obj else 1  # Default to page 1 if content is None
         pa.delete()
         update_portlet_positions(pa)
 
