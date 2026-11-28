@@ -1,0 +1,9 @@
+#!/bin/bash
+# Take the screenshots of the management interface for the documentation into docs/images/ (see docs/screenshots.py).
+# Arguments pick single screenshots by name, e.g. bin/screenshots manage_product_data. Needs uv; the first run also
+# downloads the headless browser.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+PLAYWRIGHT="playwright>=1.56,<2"
+uv run -q --with "$PLAYWRIGHT" playwright install chromium-headless-shell
+exec uv run -q --with "$PLAYWRIGHT" python docs/screenshots.py "$@"
