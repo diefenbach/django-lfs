@@ -430,20 +430,6 @@ class Category(models.Model):
         """
         return lfs.catalog.utils.get_filtered_products_for_category(self, filters, price_filter, sorting)
 
-    def get_static_block(self):
-        """
-        Returns the static block of the category.
-        """
-        cache_key = "%s-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
-        blocks = cache.get(cache_key)
-        if blocks is not None:
-            return blocks
-
-        block = self.static_block
-        cache.set(cache_key, blocks)
-
-        return block
-
     # 3rd party contracts
     def get_parent_for_portlets(self):
         """
