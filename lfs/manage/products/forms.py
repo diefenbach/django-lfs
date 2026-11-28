@@ -179,7 +179,8 @@ class ProductVariantCreateForm(ModelForm):
 
 
 class CategoryVariantForm(ModelForm):
-    """ """
+    """Form to choose which variant of a product is shown in category listings: one of the general choices
+    (``CATEGORY_VARIANT_CHOICES``) or one of the product's variants."""
 
     def __init__(self, *args, **kwargs):
         super(CategoryVariantForm, self).__init__(*args, **kwargs)
@@ -192,7 +193,7 @@ class CategoryVariantForm(ModelForm):
         for variant in Product.objects.filter(parent=product):
             choices.append([variant.id, "%s (%s)" % (variant.get_name(), variant.variant_position)])
 
-        self.fields["category_variant"].widget = Select(choices=choices)
+        self.fields["category_variant"].widget = Select(choices=choices, attrs={"class": "form-select"})
 
     class Meta:
         model = Product
@@ -205,6 +206,7 @@ class DisplayTypeForm(ModelForm):
     class Meta:
         model = Product
         fields = ("variants_display_type",)
+        widgets = {"variants_display_type": Select(attrs={"class": "form-select"})}
 
 
 class DefaultVariantForm(ModelForm):
