@@ -133,11 +133,11 @@ class TestFiles:
         assert messages_of(response) == ["Files have been uploaded successfully."]
 
     def test_updates_titles_and_positions(self, manager, block):
-        first = attach(block, "first", 10)
-        attach(block, "second", 20)
+        first, second = attach(block, "first", 10), attach(block, "second", 20)
 
         response = manager.post(
-            self.url(block), {"update": "1", f"title-{first.id}": "Logo", f"position-{first.id}": "30"}
+            self.url(block),
+            {"update": "1", f"title-{first.id}": "Logo", f"position-{first.id}": "30", f"position-{second.id}": "abc"},
         )
 
         assert list(block.files.values_list("title", "position")) == [("second", 20), ("Logo", 30)]
@@ -152,3 +152,28 @@ class TestFiles:
 
         assert list(block.files.values_list("title", "position")) == [("first", 10), ("third", 20)]
         assert messages_of(response) == ["Files have been deleted successfully."]
+
+
+class TestFilesOfOtherBlocks:
+    """The files tab of one block must not change the files of another block."""
+
+    def test_are_not_updated(self, manager, block):
+        other = attach(StaticBlock.objects.create(name="Header"), "other", 10)
+
+        manager.post(
+            reverse("lfs_manage_static_block_files", kwargs={"id": block.id}),
+            {"update": "1", f"title-{other.id}": "Hacked", f"position-{other.id}": "1"},
+        )
+
+        other.refresh_from_db()
+        assert (other.title, other.position) == ("other", 10)
+
+    def test_are_not_deleted(self, manager, block):
+        other = attach(StaticBlock.objects.create(name="Header"), "other")
+
+        manager.post(
+            reverse("lfs_manage_static_block_files", kwargs={"id": block.id}),
+            {"delete": "1", f"delete-{other.id}": "on"},
+        )
+
+        assert File.objects.filter(pk=other.pk).exists()
