@@ -1,6 +1,8 @@
 """The delivery time management, tested through real requests as a shop manager: the start page, searching the
 list, adding, saving and deleting a delivery time, and keeping the search query while doing so."""
 
+from urllib.parse import parse_qs, urlparse
+
 import pytest
 from django.contrib.messages import get_messages
 from django.urls import reverse
@@ -108,6 +110,14 @@ class TestSaving:
         response = manager.post(page(dt), {"min": "1", "max": "3", "unit": str(DELIVERY_TIME_UNIT_DAYS), "q": "std"})
 
         assert response["Location"] == page(dt) + "?q=std"
+
+    def test_keeps_a_search_query_with_special_characters_intact(self, manager):
+        dt = DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
+
+        response = manager.post(page(dt), {"min": "1", "max": "3", "unit": str(DELIVERY_TIME_UNIT_DAYS), "q": "1 & 2"})
+
+        location = urlparse(response["Location"])
+        assert (location.path, parse_qs(location.query)) == (page(dt), {"q": ["1 & 2"]})
 
 
 class TestAdding:

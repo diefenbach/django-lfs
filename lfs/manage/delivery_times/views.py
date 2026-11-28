@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -44,7 +46,7 @@ class DeliveryTimeUpdateView(PermissionRequiredMixin, UpdateView):
         search_query = self.request.POST.get("q", "")
         url = reverse_lazy("lfs_manage_delivery_time", kwargs={"pk": self.object.id})
         if search_query:
-            url = f"{url}?q={search_query}"
+            url = f"{url}?{urlencode({'q': search_query})}"
         return url
 
     def get_delivery_times_queryset(self):
@@ -122,7 +124,7 @@ class DeliveryTimeCreateView(PermissionRequiredMixin, CreateView):
         search_query = self.request.POST.get("q", "")
         url = reverse_lazy("lfs_manage_delivery_time", kwargs={"pk": self.object.id})
         if search_query:
-            url = f"{url}?q={search_query}"
+            url = f"{url}?{urlencode({'q': search_query})}"
         return url
 
     def get_form_kwargs(self):
