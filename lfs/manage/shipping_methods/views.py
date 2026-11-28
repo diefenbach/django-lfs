@@ -12,11 +12,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView
 
 # lfs imports
-from lfs.customer.models import Customer
 from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.shipping_methods.forms import ShippingMethodForm, ShippingMethodAddForm
 from lfs.shipping.models import ShippingMethod, ShippingMethodPrice
-from lfs.shipping import utils as shipping_utils
 
 
 class ManageShippingView(PermissionRequiredMixin, RedirectView):
@@ -340,21 +338,6 @@ class ShippingMethodDeleteView(DirectDeleteMixin, SuccessMessageMixin, Permissio
 
     def get_success_url(self):
         return reverse("lfs_manage_shipping_methods")
-
-    def delete(self, request, *args, **kwargs):
-        """Override delete to handle customer shipping method updates."""
-        shipping_method = self.get_object()
-
-        # Update customers with this shipping method to use default
-        customers_to_update = Customer.objects.filter(selected_shipping_method=shipping_method)
-
-        for customer in customers_to_update:
-            default_method = shipping_utils.get_default_shipping_method(request)
-            customer.selected_shipping_method = default_method
-            customer.save()
-
-        return super().delete(request, *args, **kwargs)
-
 
 class ShippingMethodPriceCriteriaView(PermissionRequiredMixin, TemplateView):
     """View for editing criteria of a specific shipping method price."""

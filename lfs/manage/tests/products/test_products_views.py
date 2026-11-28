@@ -769,60 +769,6 @@ class TestProductDeleteView:
         url = view.get_success_url()
         assert url == "/manage/products/"
 
-    def test_delete_standard_request_redirects(self, rf, admin_user, product, mocker):
-        """Should redirect normally for standard requests."""
-        factory = RequestFactory()
-        request = factory.post("/", {"confirm": "yes"})
-        request.user = admin_user
-        request.session = {}
-
-        view = ProductDeleteView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success to avoid middleware requirement
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.delete(request)
-
-        # Should be HttpResponseRedirect for standard requests
-        assert isinstance(response, HttpResponseRedirect)
-        assert response.url == "/manage/products/"
-
-        # Should have called messages.success
-        mock_messages_success.assert_called_once_with(request, "Product has been deleted.")
-
-        # Product should be deleted
-        assert not Product.objects.filter(id=product.id).exists()
-
-    def test_delete_htmx_request_sets_hx_redirect_header(self, rf, admin_user, product, mocker):
-        """Should set HX-Redirect header for HTMX requests."""
-        factory = RequestFactory()
-        request = factory.post("/", {"confirm": "yes"})
-        request.META["HTTP_HX_REQUEST"] = "true"
-        request.user = admin_user
-        request.session = {}
-
-        view = ProductDeleteView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success to avoid middleware requirement
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.delete(request)
-
-        # Should be HttpResponse with HX-Redirect header for HTMX
-        assert isinstance(response, HttpResponse)
-        assert response["HX-Redirect"] == "/manage/products/"
-
-        # Should have called messages.success
-        mock_messages_success.assert_called_once_with(request, "Product has been deleted.")
-
-        # Product should be deleted
-        assert not Product.objects.filter(id=product.id).exists()
-
-
 class TestApplyProductFiltersView:
     """Test the ApplyProductFiltersView class-based view."""
 

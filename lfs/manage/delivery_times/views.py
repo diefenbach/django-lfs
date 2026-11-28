@@ -10,7 +10,6 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 
 from lfs.catalog.models import DeliveryTime
-from lfs.catalog.models import Product
 from lfs.manage.mixins import DirectDeleteMixin
 
 
@@ -169,27 +168,3 @@ class DeliveryTimeDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionR
             return reverse("lfs_manage_delivery_time", kwargs={"pk": first_delivery_time.id})
         else:
             return reverse("lfs_no_delivery_times")
-
-    def delete(self, request, *args, **kwargs):
-        """Override delete to clean up references before deletion."""
-        delivery_time = self.get_object()
-
-        # Remove the delivery time from all products delivery
-        for product in Product.objects.filter(delivery_time=delivery_time):
-            product.delivery_time = None
-            product.save()
-
-        # Remove the delivery time from all products order_time
-        for product in Product.objects.filter(order_time=delivery_time):
-            product.order_time = None
-            product.save()
-
-        # Remove the delivery time from the shop
-        from lfs.core.utils import get_default_shop
-
-        shop = get_default_shop(request)
-        if shop.delivery_time == delivery_time:
-            shop.delivery_time = None
-            shop.save()
-
-        return super().delete(request, *args, **kwargs)
