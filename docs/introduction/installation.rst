@@ -154,8 +154,8 @@ Add-ons
 =======
 
 Each add-on is a package of its own. Install it, add its app to ``INSTALLED_APPS`` after ``*LFS_APPS``, include its
-URLs if it has any, and run ``python manage.py migrate``. The add-on's README names its settings and URLs; the
-``urls.py`` of lfs-starter shows them all.
+URLs if it has any, and run ``python manage.py migrate``. :doc:`/addons/index` describes each add-on; the
+``urls.py`` of lfs-starter shows all URLs.
 
 =================== ======================== =========================================================
 Package             App                      Purpose
