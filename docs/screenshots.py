@@ -45,6 +45,14 @@ sys.modules["docs_screenshot_urls"].urlpatterns = [
 ]
 
 from django.contrib.auth.models import User  # noqa: E402
+from django.contrib.contenttypes.models import ContentType  # noqa: E402
+from reviews.models import Review  # noqa: E402
+
+from lfs.addresses.models import Address  # noqa: E402
+from lfs.cart.models import Cart, CartItem  # noqa: E402
+from lfs.customer.models import Customer  # noqa: E402
+from lfs.order.models import Order, OrderItem  # noqa: E402
+from lfs.order.settings import PAID, SENT, SUBMITTED  # noqa: E402
 from django.contrib.staticfiles.handlers import StaticFilesHandler  # noqa: E402
 from django.core.files.base import ContentFile  # noqa: E402
 from django.core.management import call_command  # noqa: E402
@@ -147,6 +155,56 @@ def create_demo_data() -> None:
         product.categories.add(categories[category])
         image = Image(content=product, title=name, position=10)
         image.image.save(f"{slug}.jpg", product_image(colour), save=True)
+    create_customers_and_orders(germany, tax)
+
+
+# first name, last name, e-mail, city, order state, products with amounts
+CUSTOMERS = [
+    ("Anna", "Becker", "anna.becker@example.com", "Hamburg", SUBMITTED,
+     [("linen-apron-sage", 1), ("tea-towel-set", 2)]),
+    ("Jonas", "Weber", "jonas.weber@example.com", "Leipzig", PAID, [("bread-knife-21", 1)]),
+    ("Lena", "Hoffmann", "lena.hoffmann@example.com", "Freiburg", SENT,
+     [("stoneware-plate-27", 6), ("stoneware-bowl-15", 6)]),
+]
+
+
+def create_customers_and_orders(country: Country, tax: Tax) -> None:
+    """Create registered customers with an address and an order each, an open cart, and a product review."""
+    shipping = ShippingMethod.objects.get(name="Standard")
+    payment = PaymentMethod.objects.get(name="Prepayment")
+    address_type = ContentType.objects.get_for_model(Address)
+    for number, (first, last, email, city, state, items) in enumerate(CUSTOMERS, start=1):
+        user = User.objects.create_user(email.split("@")[0], email, PASSWORD, first_name=first, last_name=last)
+        customer = Customer.objects.create(user=user, session=f"session-{number}")
+        address = Address.objects.create(
+            customer=customer, firstname=first, lastname=last, line1=f"Example Street {number}", city=city,
+            zip_code=f"2{number}000", country=country, email=email,
+        )
+        customer.sa_content_type = customer.ia_content_type = address_type
+        customer.sa_object_id = customer.ia_object_id = address.id
+        customer.save()
+        products = [(Product.objects.get(slug=slug), amount) for slug, amount in items]
+        price = sum(product.price * amount for product, amount in products) + shipping.price
+        order = Order.objects.create(
+            number=f"2026-{number:05d}", user=user, session=customer.session, customer_firstname=first,
+            customer_lastname=last, customer_email=email, shipping_method=shipping, payment_method=payment,
+            shipping_price=shipping.price, price=price, tax=round(price * 19 / 119, 2), state=state, sa_content_type=address_type, sa_object_id=address.id,
+            ia_content_type=address_type, ia_object_id=address.id,
+        )
+        for product, amount in products:
+            OrderItem.objects.create(
+                order=order, product=product, product_name=product.name, product_sku=product.sku,
+                product_amount=amount, product_price_gross=product.price, price_gross=product.price * amount,
+                product_tax=round(product.price * amount * 19 / 119, 2),
+            )
+    cart = Cart.objects.create(session="session-open-cart")
+    CartItem.objects.create(cart=cart, product=Product.objects.get(slug="chefs-knife-20"), amount=1)
+    CartItem.objects.create(cart=cart, product=Product.objects.get(slug="linen-apron-charcoal"), amount=2)
+    Review.objects.create(
+        content_type=ContentType.objects.get_for_model(Product), content_id=Product.objects.get(slug="bread-knife-21").id,
+        user_name="Jonas", user_email="jonas.weber@example.com", score=5, active=False,
+        comment="Cuts even the crustiest sourdough without crumbs.",
+    )
 
 
 class QuietHandler(WSGIRequestHandler):
@@ -188,6 +246,9 @@ SHOTS: list[tuple[str, Callable[[], str]]] = [
     ("manage_shipping_method_data", lambda: f"/manage/shipping-method/{ShippingMethod.objects.get(name='Standard').id}/data"),
     ("manage_property_data", lambda: f"/manage/property/{Property.objects.get(name='Colour').id}/data"),
     ("manage_page_data", lambda: f"/manage/page/{Page.objects.get(slug='imprint').id}/data"),
+    ("manage_orders", lambda: "/manage/orders/"),
+    ("manage_customers", lambda: "/manage/customers/"),
+    ("manage_review", lambda: f"/manage/review/{Review.objects.get().id}/"),
     ("manage_payment_method_data", lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Prepayment').id}/data"),
 ]
 

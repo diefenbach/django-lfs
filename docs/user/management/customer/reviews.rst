@@ -1,78 +1,35 @@
-.. index:: Reviews
+.. index:: Review, Reviews
 
 =======
 Reviews
 =======
 
-Overview
-=========
+This section describes the management interface for the product reviews of customers (``Customers / Reviews``).
 
-Within the reviews overview all existing reviews are displayed.
+.. image:: /images/manage_review.png
+   :alt: The detail page of a review
 
-.. image:: /images/reviews_overview.*
+List
+====
 
-Navigation / Filtering
-----------------------
+The list shows the reviews with ``ID``, ``User``, ``Product``, ``Rating``, ``Active`` and ``Created``. Click a
+column heading to sort by it, and a review to see the details.
 
-You can filter and navigate through the displayed reviews: 
-
-.. image:: /images/reviews_navigation.*
-
-* With the page navigation you can navigate through all customers.
-* To filter the reviews by name just fill in the name field and click ``Submit``.
-* To filter the reviews by activity state just select the state and click 
-  ``Submit``.
-* To reset the filter just click on the red ``X`` button.
-
-Sorting
--------
-
-* To sort the displayed reviews click on the columns title.
-
-Details
--------
-
-* To view a review in detail just click on it.
+Filter
+    Filter by the name of the reviewer and by ``Active`` (``All``, ``Active``, ``Inactive``). Click ``Apply`` to
+    filter and ``Reset`` to show all reviews again.
 
 Details
 =======
 
-Within the review detail view you can see several information about a
-single review:
+The detail page of a review shows the reviewer, the product, the rating and the comment.
 
-* The general information: the id, activity state, creation date, reviewer's 
-  name, reviewer's e-mail, customer's registration state, the reviewed state, 
-  the score.
-* The comment of the review
+Publish or hide a review
+    Select ``Active`` ``Yes`` or ``No`` and click ``Update``. Only active reviews are displayed in the shop. Whether
+    new reviews must be activated first depends on the setting ``REVIEWS_IS_MODERATED``.
 
-.. image:: /images/reviews_details.*
+Delete Review
+    Deletes the review, after a confirmation.
 
-Navigation / Filtering
-----------------------
-
-You can filter and navigate through the displayed reviews on the left: 
-
-.. image:: /images/reviews_navigation.*
-
-* With the page navigation you can navigate through all customers.
-* To filter the reviews by name just fill in the name field and click ``Submit``.
-* To filter the reviews by activity state just select the state and click 
-  ``Submit``.
-* To reset the filter just click on the red ``X`` button.
-
-Actions
--------
-
-.. image:: /images/reviews_actions.*
-
-Delete review
-    To delete the current review just click on the ``Delete review`` button
-    and answer the confirmation question with ``Yes``.
-
-Change activity state:
-    To change the activity state of the current review select the desired 
-    state and click on the ``Change`` button.
-    
-    .. note:: 
-        
-        Only active reviews are displayed.
+All Reviews
+    Back to the list.
