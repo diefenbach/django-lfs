@@ -74,10 +74,6 @@ class ShopDataView(PermissionRequiredMixin, ShopTabMixin, UpdateView):
     def form_valid(self, form):
         """Saves and shows success message."""
         # Handle image deletion if checkbox is checked
-        if self.request.POST.get("delete_image"):
-            shop = self.get_object()
-            if shop.image:
-                shop.image.delete()
 
         response = super().form_valid(form)
         shop_changed.send(self.object)
