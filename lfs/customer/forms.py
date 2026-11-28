@@ -1,4 +1,6 @@
+import logging
 import time
+from typing import NoReturn
 
 from django import forms
 from django.core import signing
@@ -13,6 +15,8 @@ import lfs.payment.settings
 from lfs.customer.models import BankAccount
 from lfs.customer.models import CreditCard
 from lfs.payment.models import PaymentMethod
+
+logger = logging.getLogger(__name__)
 
 
 class BankAccountForm(forms.ModelForm):
@@ -101,6 +105,8 @@ class CustomerAuthenticationForm(AuthenticationForm):
 
 # A person needs at least this long to fill in the registration form; bots are faster.
 REGISTER_MIN_SECONDS = 3
+# The registration form's honeypot field, hidden from people; whoever fills it in is a bot.
+HONEYPOT_FIELD = "lfs-check"
 _FORM_START_SALT = "lfs.customer.register-form-start"
 
 
@@ -120,38 +126,49 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(label=_("E-mail"), max_length=75)
     password_1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput(), max_length=20)
     password_2 = forms.CharField(label=_("Confirm password"), widget=forms.PasswordInput(), max_length=20)
-    website = forms.CharField(
-        label="",
-        required=False,
-        widget=forms.TextInput(
-            attrs={
-                "autocomplete": "off",
-                "tabindex": "-1",
-                "aria-hidden": "true",
-                "style": "position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden",
-            }
-        ),
-    )
     started = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        # The honeypot. Its name means nothing to browser autofill or password managers, so they leave it empty
+        # like a person does; a hyphenated name cannot be declared as a class attribute, hence here.
+        self.fields[HONEYPOT_FIELD] = forms.CharField(
+            label="",
+            required=False,
+            widget=forms.TextInput(
+                attrs={
+                    "autocomplete": "off",
+                    "tabindex": "-1",
+                    "aria-hidden": "true",
+                    "style": "position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden",
+                }
+            ),
+        )
         if not self.is_bound:
             self.initial["started"] = sign_form_start(time.time())
 
     def clean(self) -> dict:
-        """Refuses the registration of bots: honeypot filled, start time missing, forged or too recent."""
+        """Refuses the registration of bots: honeypot filled, start time missing, forged or too recent.
+
+        Every refusal is logged with its reason and the e-mail address, so that people refused by mistake show up
+        in the logs.
+        """
         cleaned_data = super().clean()
-        refused = forms.ValidationError(_("Your registration could not be processed. Please try again."))
-        if cleaned_data.get("website"):
-            raise refused
+        if cleaned_data.get(HONEYPOT_FIELD):
+            self._refuse("honeypot filled")
         try:
             started = signing.loads(cleaned_data.get("started") or "", salt=_FORM_START_SALT)
         except signing.BadSignature:
-            raise refused
-        if time.time() - float(started) < REGISTER_MIN_SECONDS:
-            raise refused
+            self._refuse("start time missing or forged")
+        seconds = time.time() - float(started)
+        if seconds < REGISTER_MIN_SECONDS:
+            self._refuse(f"sent {seconds:.1f} s after the form was shown")
         return cleaned_data
+
+    def _refuse(self, reason: str) -> NoReturn:
+        """Logs why the registration is refused and raises the error the person sees."""
+        logger.warning("Registration refused as a bot (%s): %s", reason, self.data.get("email", ""))
+        raise forms.ValidationError(_("Your registration could not be processed. Please try again."))
 
     def clean_password_2(self):
         """Validates that password 1 and password 2 are the same."""

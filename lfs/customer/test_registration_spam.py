@@ -43,10 +43,10 @@ def test_a_person_registers(client, shop, url_name: str):
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "changes",
-    [{"website": "https://spam.example"}, {"seconds_ago": 1}, {"started": "forged"}, {"started": None}],
+    [{"lfs-check": "https://spam.example"}, {"seconds_ago": 1}, {"started": "forged"}, {"started": None}],
     ids=["honeypot filled", "sent too fast", "forged time stamp", "no time stamp"],
 )
-def test_a_bot_is_refused(client, shop, changes: dict):
+def test_a_bot_is_refused_and_logged(client, shop, caplog, changes: dict):
     seconds_ago = changes.pop("seconds_ago", 10)
     data = {k: v for k, v in registration(seconds_ago=seconds_ago, **changes).items() if v is not None}
 
@@ -55,12 +55,16 @@ def test_a_bot_is_refused(client, shop, changes: dict):
     assert not User.objects.filter(email="new@example.com").exists()
     assert response.status_code == 200
     assert response.context["register_form"].non_field_errors()
+    assert any(
+        "Registration refused as a bot" in r.getMessage() and "new@example.com" in r.getMessage()
+        for r in caplog.records
+    )
 
 
 def test_the_form_renders_the_honeypot_hidden_from_people():
     html = str(RegisterForm())
 
-    assert 'name="website"' in html
+    assert 'name="lfs-check"' in html
     assert 'tabindex="-1"' in html
     assert 'autocomplete="off"' in html
     assert "captcha" not in html
