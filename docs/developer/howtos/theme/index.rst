@@ -2,98 +2,94 @@
 How to create a theme
 =====================
 
-In this how-to you will learn how to create a theme for LFS.
+In this how-to you will learn how to change the look of a shop: its templates and its CSS.
 
-.. note::
+The storefront of LFS comes from the theme lfs-theme (app ``lfs_theme``): templates under ``templates/lfs/`` and
+static files under ``static/lfs_theme/``. Django uses the first template it finds with a given path, so a template
+with the same path in your project or in your own theme replaces the one of lfs-theme. Everything you do not
+replace stays as it is.
 
-    You can :download:`download the whole theme here <mytheme.tar.gz>`.
+Find the templates
+==================
 
-Preparations
-============
+Look up where lfs-theme is installed::
 
-First you have to create a new Django application. This is beyond the purpose
-of this tutorial and you should refer to `Django's excellent tutorial
-<http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_ if you want to learn
-more.
+    $ python -c "import lfs_theme, os; print(os.path.dirname(lfs_theme.__file__))"
 
-In short, your starting file structure should look like this::
+Its ``templates/lfs/`` folder holds all storefront templates, for instance ``base.html`` (the frame of every page)
+and ``portlets/cart.html`` (the cart portlet).
+
+Small changes: templates in the project
+=======================================
+
+For a few changes, put the templates into the project's template folder. lfs-starter has one, ``templates/``; in
+another project add it to ``DIRS`` in ``TEMPLATES``. Copy the template you want to change there, keeping its path
+below ``templates/``, and adapt it::
+
+    templates
+        lfs
+            portlets
+                cart.html
+
+Your own theme
+==============
+
+For a larger redesign, or to use it in several shops, create a theme of its own: a Django app with templates and
+static files.
+
+#. Create the app with this structure::
 
     mytheme
         __init__.py
         templates
             lfs
+        static
+            mytheme
 
-Registration
-============
+#. Register it in ``INSTALLED_APPS`` **before** ``lfs_theme``, so its templates win. Keep ``lfs_theme``: it provides
+   every template your theme does not replace::
 
-Register mytheme to Django's template engine.
+    INSTALLED_APPS = [
+        "mytheme",
+        "lfs_theme",
+        *LFS_APPS,
+        ...
+    ]
 
-1. Move the mytheme folder to the PYTHONPATH.
-
-   The easiest way to do that is to put it into the lfs_project folder of the
-   buildout.
-
-2. Register the theme
-
-   Add mytheme to INSTALLED_APPS **before** lfstheme::
-
-     INSTALLED_APPS = (
-         ...
-         "mytheme",
-         "lfstheme",
-         "django.contrib.admin",
-         ...
-
-Copy templates
-==============
-
-Now copy the templates you want to change into the lfs folder of mytheme and
-adapt them to your needs.
-
-**Important:** you have to keep the original path, e.g: base.html must be within
-the root of the lfs folder whereas the cart portlet (cart.html) must be within
-the portlets  folder::
+#. Copy the templates you want to change into ``mytheme/templates/lfs/``, keeping their paths, and adapt them::
 
     mytheme
-        __init__.py
         templates
             lfs
                 base.html
                 portlets
                     cart.html
 
-Use own css
-===========
+Use your own CSS
+================
 
-To use own CSS several steps are necessary.
-
-1. Create a ``static`` folder within mytheme::
-
-    mytheme
-        static
-        ...
-
-2. Within that create a new CSS-file, e.g. mytheme.css and add your CSS rules,
-   e.g.:
+#. Create a CSS file in your theme, e.g. ``mytheme/static/mytheme/mytheme.css``:
 
    .. code-block:: css
 
-     .breadcrumbs li {
-         color: red !important;
+     .breadcrumb {
+         color: red;
      }
 
-   Alternatively you might copy main.css from ``lfstheme`` and adapt it to your
-   needs.
+#. Copy ``lfs/base.html`` into your theme (if you haven't done so already) and include your CSS after the one of
+   lfs-theme, so your rules win:
 
-3. Go to the ``lfs_project/media`` folder and create a symbolic link to the
-   static folder::
+   .. code-block:: html+django
 
-   $ ln -s <path/to/buildout>/lfs_project/mytheme/static mytheme
+     <link rel="stylesheet" href="{% static 'lfs_theme/css/lfs_theme.css' %}">
+     <link rel="stylesheet" href="{% static 'mytheme/mytheme.css' %}">
 
-4. Copy base.html to mytheme/templates/lfs (if you haven't done it so far)
+   lfs-theme is built with `Bootstrap 5 <https://getbootstrap.com/>`_, so its classes and CSS variables are
+   available in your templates and CSS.
 
-5. Include your CSS file to the header::
+#. In production, run ``python manage.py collectstatic`` after every change of a static file.
 
-    <link rel="stylesheet" type="text/css" href="{% static 'mytheme/mytheme.css' %}">
+.. note::
 
-6. Optionally delete the link to main.css (if you just want to use your own CSS).
+    Templates you copy do not get the improvements of later lfs-theme releases. Copy only the templates you really
+    change, and compare them with the new version of lfs-theme when you upgrade.
