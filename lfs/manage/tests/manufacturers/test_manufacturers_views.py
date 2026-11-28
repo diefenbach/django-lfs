@@ -1,166 +1,132 @@
-from django.contrib.auth import get_user_model
+"""The manufacturer management, tested through real requests as a shop manager: the list and its search, adding,
+saving (including the image), SEO, portlets, viewing and deleting a manufacturer, and the search for manufacturers
+that product forms use. Assigning products is tested in test_manufacturer_products.py."""
+
+import io
+
+import pytest
+from django.contrib.messages import get_messages
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from PIL import Image
 
+from lfs.catalog.models import Product
 from lfs.manufacturer.models import Manufacturer
-from lfs.manage.manufacturers.views import (
-    ManageManufacturersView,
-    ManufacturerDataView,
-    ManufacturerProductsView,
-    ManufacturerSEOView,
-    ManufacturerCreateView,
-    ManufacturerDeleteView,
-    ManufacturerViewByIDView,
-)
 
-User = get_user_model()
+pytestmark = pytest.mark.django_db
 
 
-class TestManageManufacturersView:
-    """Test ManageManufacturersView behavior."""
+@pytest.fixture(autouse=True)
+def media_root(settings, tmp_path):
+    """Store uploaded files in a temporary folder."""
+    settings.MEDIA_ROOT = str(tmp_path)
 
-    def test_redirect_to_first_manufacturer_when_exists(self, request_factory, admin_user, manufacturer):
-        """Should redirect to first manufacturer when manufacturers exist."""
-        view = ManageManufacturersView()
-        request = request_factory.get("/")
-        request.user = admin_user
-        view.request = request
 
-        url = view.get_redirect_url()
+@pytest.fixture
+def manager(client, admin_user, shop):
+    """A test client logged in as a shop manager."""
+    client.force_login(admin_user)
+    return client
 
-        expected_url = reverse("lfs_manage_manufacturer", kwargs={"id": manufacturer.id})
-        assert url == expected_url
 
-    def test_redirect_to_no_manufacturers_when_none_exist(self, request_factory, admin_user, db):
-        """Should redirect to no manufacturers view when no manufacturers exist."""
-        # Ensure no manufacturers exist
-        Manufacturer.objects.all().delete()
+@pytest.fixture
+def acme():
+    return Manufacturer.objects.create(name="Acme", slug="acme")
 
-        view = ManageManufacturersView()
-        request = request_factory.get("/")
-        request.user = admin_user
-        view.request = request
 
-        url = view.get_redirect_url()
+def png() -> SimpleUploadedFile:
+    """Return a small PNG upload."""
+    buffer = io.BytesIO()
+    Image.new("RGB", (4, 4), "red").save(buffer, "PNG")
+    return SimpleUploadedFile("logo.png", buffer.getvalue(), content_type="image/png")
 
-        expected_url = reverse("lfs_manage_no_manufacturers")
-        assert url == expected_url
 
+def messages_of(response) -> list[str]:
+    """Return the messages the request added for the manager."""
+    return [str(m) for m in get_messages(response.wsgi_request)]
 
-class TestManufacturerDataView:
-    """Test ManufacturerDataView behavior."""
 
+class TestStartAndList:
+    def test_shows_the_first_manufacturer(self, manager, acme):
+        assert manager.get(reverse("lfs_manage_manufacturers"))["Location"] == reverse(
+            "lfs_manage_manufacturer", kwargs={"id": acme.id}
+        )
 
+    def test_without_manufacturers_shows_the_empty_page(self, manager):
+        assert manager.get(reverse("lfs_manage_manufacturers"))["Location"] == reverse("lfs_manage_no_manufacturers")
 
-    def test_success_url_uses_manufacturer_id(self, manufacturer):
-        """Should redirect to manufacturer data tab after successful save."""
-        view = ManufacturerDataView()
-        view.object = manufacturer
+    def test_search_filters_the_list_and_the_tabs_keep_it(self, manager, acme):
+        Manufacturer.objects.create(name="Globex", slug="globex")
 
-        url = view.get_success_url()
+        response = manager.get(reverse("lfs_manage_manufacturer", kwargs={"id": acme.id}), {"q": "ac"})
 
-        expected_url = reverse("lfs_manage_manufacturer", kwargs={"id": manufacturer.pk})
-        assert url == expected_url
+        assert list(response.context["manufacturers"]) == [acme]
+        assert all(url.endswith("?q=ac") for _, url in response.context["tabs"])
 
 
+class TestManufacturer:
+    def test_adds_a_manufacturer(self, manager):
+        response = manager.post(reverse("lfs_manage_add_manufacturer"), {"name": "Acme", "slug": "acme"})
 
+        acme = Manufacturer.objects.get()
+        assert response["Location"] == reverse("lfs_manage_manufacturer", kwargs={"id": acme.id})
+        assert messages_of(response) == ["Manufacturer has been created."]
 
-class TestManufacturerProductsView:
-    """Test ManufacturerProductsView behavior."""
+    def test_a_slug_must_be_unique(self, manager, acme):
+        response = manager.post(reverse("lfs_manage_add_manufacturer"), {"name": "Acme 2", "slug": "acme"})
 
+        assert response.context["form"].errors["slug"]
+        assert Manufacturer.objects.count() == 1
 
+    def test_saves_the_data_and_the_image(self, manager, acme):
+        url = reverse("lfs_manage_manufacturer", kwargs={"id": acme.id})
 
-    def test_success_url_uses_manufacturer_id(self, manufacturer):
-        """Should redirect to manufacturer products tab."""
-        view = ManufacturerProductsView()
-        view.kwargs = {"id": manufacturer.pk}
+        response = manager.post(
+            url, {"name": "Acme Corp", "slug": "acme", "short_description": "Lamps", "image": png()}
+        )
 
-        url = view.get_success_url()
+        acme.refresh_from_db()
+        assert (acme.name, acme.short_description) == ("Acme Corp", "Lamps")
+        assert acme.image.name.endswith(".png")
+        assert response["Location"] == url
+        assert messages_of(response) == ["Manufacturer data has been saved."]
 
-        expected_url = reverse("lfs_manage_manufacturer_products", kwargs={"id": manufacturer.pk})
-        assert url == expected_url
+    def test_saves_the_seo_data(self, manager, acme):
+        url = reverse("lfs_manage_manufacturer_seo", kwargs={"id": acme.id})
 
+        manager.post(url, {"meta_title": "Acme", "meta_description": "Lamps", "meta_keywords": "acme"})
 
-class TestManufacturerSEOView:
-    """Test ManufacturerSEOView behavior."""
+        acme.refresh_from_db()
+        assert (acme.meta_title, acme.meta_description, acme.meta_keywords) == ("Acme", "Lamps", "acme")
 
+    def test_shows_the_portlets_tab(self, manager, acme):
+        response = manager.get(reverse("lfs_manage_manufacturer_portlets", kwargs={"id": acme.id}))
 
+        assert response.context["active_tab"] == "portlets" and response.context["portlets"]
 
-    def test_success_url_uses_manufacturer_id(self, manufacturer):
-        """Should redirect to manufacturer SEO tab after successful save."""
-        view = ManufacturerSEOView()
-        view.object = manufacturer
+    def test_view_opens_the_manufacturer_in_the_shop(self, manager, acme):
+        response = manager.get(reverse("lfs_manufacturer_by_id", kwargs={"id": acme.id}))
 
-        url = view.get_success_url()
+        assert response["Location"] == reverse("lfs_manufacturer", kwargs={"slug": "acme"})
 
-        expected_url = reverse("lfs_manage_manufacturer_seo", kwargs={"id": manufacturer.pk})
-        assert url == expected_url
+    def test_deletes_the_manufacturer_but_keeps_its_products(self, manager, acme):
+        lamp = Product.objects.create(name="Lamp", slug="lamp", manufacturer=acme)
 
+        assert (
+            manager.get(reverse("lfs_delete_manufacturer_confirm", kwargs={"id": acme.id})).context["manufacturer"]
+            == acme
+        )
+        response = manager.post(reverse("lfs_delete_manufacturer", kwargs={"id": acme.id}))
 
+        assert not Manufacturer.objects.exists()
+        assert Product.objects.get(pk=lamp.pk).manufacturer is None
+        assert response["Location"] == reverse("lfs_manage_manufacturers")
 
 
+def test_the_manufacturer_search_finds_names_that_start_with_the_term(manager, acme):
+    Manufacturer.objects.create(name="Globex", slug="globex")
+    Manufacturer.objects.create(name="Mega Acme", slug="mega-acme")
 
-class TestManufacturerCreateView:
-    """Test ManufacturerCreateView behavior."""
+    response = manager.get(reverse("lfs_manufacturers_ajax"), {"term": "ac"})
 
-
-    def test_success_url_uses_created_manufacturer_id(self, manufacturer):
-        """Should redirect to created manufacturer after successful creation."""
-        view = ManufacturerCreateView()
-        view.object = manufacturer
-
-        url = view.get_success_url()
-
-        expected_url = reverse("lfs_manage_manufacturer", kwargs={"id": manufacturer.pk})
-        assert url == expected_url
-
-
-
-
-    def test_has_success_message(self):
-        """Should have success message."""
-        assert hasattr(ManufacturerCreateView, "success_message")
-        assert ManufacturerCreateView.success_message is not None
-
-
-
-class TestManufacturerDeleteView:
-    """Test ManufacturerDeleteView behavior."""
-
-
-    def test_success_url_goes_to_manufacturers_list(self):
-        """Should redirect to manufacturers list after deletion."""
-        view = ManufacturerDeleteView()
-
-        url = view.get_success_url()
-
-        expected_url = reverse("lfs_manage_manufacturers")
-        assert url == expected_url
-
-
-
-    def test_has_success_message(self):
-        """Should have success message."""
-        assert hasattr(ManufacturerDeleteView, "success_message")
-        assert ManufacturerDeleteView.success_message is not None
-
-
-class TestManufacturerViewByIDView:
-    """Test ManufacturerViewByIDView behavior."""
-
-
-    def test_redirect_url_uses_manufacturer_slug(self, request_factory, admin_user, manufacturer):
-        """Should redirect to manufacturer detail page using slug."""
-        view = ManufacturerViewByIDView()
-        request = request_factory.get("/")
-        request.user = admin_user
-        view.request = request
-        view.kwargs = {"id": manufacturer.id}
-
-        url = view.get_redirect_url()
-
-        expected_url = reverse("lfs_manufacturer", kwargs={"slug": manufacturer.slug})
-        assert url == expected_url
-
-
-
-
+    assert response.json() == [{"label": "Acme", "value": acme.id}]
