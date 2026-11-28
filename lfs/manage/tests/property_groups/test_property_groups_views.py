@@ -150,6 +150,17 @@ class TestProducts:
         assert list(page) == [desk_lamp]
         assert list(uncategorized) == [lamp_shade]
 
+    def test_paging_keeps_the_filters_in_the_session(self, manager, group):
+        for i in range(3):
+            product(f"Lamp {i}")
+        product("Chair")
+        first_page = manager.get(self.url(group), {"filter": "lamp", "products-amount": 2})
+        assert f'href="{self.url(group)}?' in first_page.content.decode()  # the page links point to this group
+
+        page = manager.get(self.url(group), {"page": 2}).context["page"]
+
+        assert [p.name for p in page] == ["Lamp 2"]
+
 
 class TestProperties:
     def url(self, group) -> str:
