@@ -3,6 +3,7 @@ from typing import Dict, Any
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.forms import Form
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -162,7 +163,7 @@ class PropertyDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequi
     def get_success_url(self):
         return reverse("lfs_manage_properties")
 
-    def form_valid(self, form) -> HttpResponse:
+    def form_valid(self, form: Form) -> HttpResponse:
         """Deletes the property, renumbers the others and invalidates the property caches."""
         response = super().form_valid(form)
         self._update_property_positions()
