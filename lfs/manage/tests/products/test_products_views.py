@@ -17,6 +17,7 @@ from lfs.catalog.models import (
     ProductAccessories,
     ProductAttachment,
     ProductPropertyValue,
+    ProductsPropertiesRelation,
     Property,
     PropertyGroup,
     PropertyOption,
@@ -456,6 +457,18 @@ class TestVariantsTab:
         values = ProductPropertyValue.objects.filter(product__in=variants, property=colour)
         assert sorted(v.value for v in values) == sorted([str(red.id), str(blue.id)])
         assert messages_of(response) == ["Variants have been added."]
+
+    def test_adding_a_variant_of_a_local_property(self, manager, product):
+        """The form names local properties property_0_<id> (no property group)."""
+        size = Property.objects.create(name="Size", title="Size", type=PROPERTY_SELECT_FIELD)
+        medium = PropertyOption.objects.create(name="M", property=size)
+        ProductsPropertiesRelation.objects.create(product=product, property=size, position=1)
+
+        manager.post(url("variants", product), {"action": "add_variants", f"property_0_{size.id}": medium.id})
+
+        variant = Product.objects.get(parent=product)
+        assert variant.slug == f"{product.slug}-m"
+        assert ProductPropertyValue.objects.filter(product=variant, property=size, value=str(medium.id)).exists()
 
     def test_added_variant_gets_a_unique_slug(self, manager, product):
         group = PropertyGroup.objects.create(name="Group")
