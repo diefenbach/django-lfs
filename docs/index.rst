@@ -78,6 +78,17 @@ How-tos
    user/howtos/how_to_export_script
    user/howtos/how_to_use_celery
 
+.. _index_addons:
+
+=======
+Add-ons
+=======
+
+.. toctree::
+   :maxdepth: 1
+
+   addons/index.rst
+
 .. _index_developers:
 
 ==========================

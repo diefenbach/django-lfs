@@ -34,6 +34,13 @@ test_settings.DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "
 test_settings.MEDIA_ROOT = WORK / "media"
 test_settings.ROOT_URLCONF = "docs_screenshot_urls"
 test_settings.LANGUAGE_CODE = "en"
+# The add-ons the docs show (bin/screenshots installs them).
+test_settings.INSTALLED_APPS = [*test_settings.INSTALLED_APPS, "lfs_bulk_prices", "lfs_carousel"]
+test_settings.LFS_PRICE_CALCULATORS = [
+    ["lfs.gross_price.calculator.GrossPriceCalculator", "Price includes tax"],
+    ["lfs.net_price.calculator.NetPriceCalculator", "Price excludes tax"],
+    ["lfs_bulk_prices.calculator.BulkPricesCalculator", "Bulk prices"],
+]
 
 import django  # noqa: E402
 
@@ -41,11 +48,14 @@ django.setup()
 
 from django.urls import include, path, re_path  # noqa: E402
 from django.views.static import serve  # noqa: E402
+from lfs_carousel.views import carousel  # noqa: E402
 
 # The test URLs plus the uploaded product images, which the test settings do not serve.
 sys.modules["docs_screenshot_urls"] = type(sys)("docs_screenshot_urls")
 sys.modules["docs_screenshot_urls"].urlpatterns = [
     re_path(r"^media/(?P<path>.*)$", serve, {"document_root": test_settings.MEDIA_ROOT}),
+    path("bulk-prices/", include("lfs_bulk_prices.urls")),
+    path("carousel/", include(carousel.urls)),
     path("", include("tests.urls")),
 ]
 
@@ -87,6 +97,8 @@ from lfs.catalog.settings import (  # noqa: E402
 from lfs.portlet.models import FilterPortlet  # noqa: E402
 from portlets.models import PortletAssignment, Slot  # noqa: E402
 from lfs.core.models import Country, Shop  # noqa: E402
+from lfs_bulk_prices.models import BulkPrice  # noqa: E402
+from lfs_carousel.models import CarouselItem  # noqa: E402
 from lfs.discounts.models import Discount  # noqa: E402
 from lfs.discounts.settings import DISCOUNT_TYPE_PERCENTAGE  # noqa: E402
 from lfs.marketing.models import FeaturedProduct  # noqa: E402
@@ -249,6 +261,7 @@ def create_demo_data() -> None:
     create_customers_and_orders(germany, tax)
     create_product_with_variants()
     create_colour_filter(colour_property)
+    create_addon_data()
     for position, slug in enumerate(["chefs-knife-20", "linen-apron-sage"]):
         FeaturedProduct.objects.create(product=Product.objects.get(slug=slug), position=(position + 1) * 10)
     Discount.objects.create(name="Autumn sale", value=10, type=DISCOUNT_TYPE_PERCENTAGE, active=True, sums_up=True)
@@ -404,6 +417,21 @@ def create_colour_filter(colour: Property) -> None:
     )
 
 
+def create_addon_data() -> None:
+    """Give the tea towels bulk prices and the start page a carousel of two items."""
+    towels = Product.objects.get(slug="tea-towel-set")
+    towels.price_calculator = "lfs_bulk_prices.calculator.BulkPricesCalculator"
+    towels.save()
+    for amount, price in [(1, 19.5), (5, 17.9), (10, 15.9)]:
+        BulkPrice.objects.create(product=towels, amount=amount, price_absolute=price)
+    shop = Shop.objects.get()
+    for position, (title, colour) in enumerate([("Autumn linen", (190, 150, 110)), ("New knives", (120, 92, 70))]):
+        item = CarouselItem(
+            content=shop, title=title, text=f"{title} – now in the shop.", position=position * 10
+        )
+        item.image.save(f"carousel-{position}.jpg", product_image(colour), save=True)
+
+
 class QuietHandler(WSGIRequestHandler):
     """Request handler that does not log every request."""
 
@@ -478,6 +506,8 @@ SHOTS: list[tuple[str, Callable[[], str]] | tuple[str, Callable[[], str], Callab
         "howto_payment_criteria",
         lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Cash on delivery').id}/criteria/",
     ),
+    ("addon_bulk_prices", lambda: f"/bulk-prices/manage/product/{product_id('tea-towel-set')}/"),
+    ("addon_carousel", lambda: "/manage/shop/carousel/"),
     ("howto_filters_shop", lambda: "/category-kitchen-textiles/"),
     ("howto_variants", lambda: f"/manage/product/{product_id('linen-napkin')}/variants/", scroll_to_variants),
     (
