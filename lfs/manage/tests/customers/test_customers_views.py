@@ -84,6 +84,27 @@ class TestList:
         page = manager.get(reverse("lfs_manage_customer", kwargs={"customer_id": anna.id}))
         assert len(page.context["orders"]) == 2
 
+    def test_an_anonymous_customer_shows_the_orders_and_cart_of_its_session(self, manager):
+        guest = Customer.objects.create(session="guest-session")
+        address = Address.objects.create()
+        Order.objects.create(session="guest-session", invoice_address=address, shipping_address=address)
+        Order.objects.create(session="other-session", invoice_address=address, shipping_address=address)
+        Cart.objects.create(session="guest-session")
+
+        row = manager.get(LIST).context["customers_with_data"][0]
+        page = manager.get(reverse("lfs_manage_customer", kwargs={"customer_id": guest.id})).context
+
+        assert (row["customer"], row["orders_count"]) == (guest, 1)
+        assert (len(page["orders"]), page["cart"].session) == (1, "guest-session")
+
+    def test_an_invalid_date_or_predefined_filter_is_refused(self, manager):
+        response = manager.post(reverse("lfs_apply_customer_filters_list"), {"start": "someday"})
+        assert "customer-filters" not in manager.session
+        assert messages_of(response) == ["Invalid filter data provided. Please check your input."]
+
+        response = manager.get(reverse("lfs_apply_predefined_customer_filter_list", kwargs={"filter_type": "year"}))
+        assert messages_of(response)[-1] == "Invalid filter type."
+
     def test_filters_by_address_name_and_registration_days(self, manager):
         customer("Anna", joined=at(10))
         customer("Annabel", joined=at(20))
@@ -150,8 +171,9 @@ class TestCustomer:
     def test_an_unknown_customer_is_not_found(self, manager):
         assert manager.get(reverse("lfs_manage_customer", kwargs={"customer_id": 99999})).status_code == 404
 
-    def test_a_predefined_filter_returns_to_the_customer(self, manager):
+    def test_a_predefined_filter_drops_the_end_day_and_returns_to_the_customer(self, manager):
         anna = customer("Anna")
+        manager.post(reverse("lfs_apply_customer_filters_list"), {"end": "2026-11-11"})
 
         response = manager.get(
             reverse("lfs_apply_predefined_customer_filter", kwargs={"customer_id": anna.id, "filter_type": "week"})
