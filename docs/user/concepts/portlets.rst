@@ -19,6 +19,10 @@ left and a right slot and several default portlets. By default portlets are
 inherited from parent objects but it is also possible to block parent portlets
 per slot.
 
+The default theme lfs-theme shows a slot as a sidebar only when it has portlets. ``lfs_init`` assigns none: the
+theme navigates with its menu, so a new shop has no sidebars until you add portlets, e.g. the filter (see
+:doc:`/user/howtos/how_to_filters`).
+
 The inheritance path for categories and products is::
 
     shop > category > sub category > product
@@ -150,6 +154,9 @@ Show price filters:
     If this is checked price filters are displayed (which are automatically
     calculated).
 
+Show manufacturer filters:
+    If this is checked the manufacturers of the products are offered as a filter.
+
 .. index:: For Sale Portlet
    single: Portlet; For Sale
 
@@ -175,10 +182,10 @@ Slideshow
     one product at once which is exchanged automatically. If this is unchecked
     all products are display as a list.
 
-.. index:: Page Portlet
-   single: Portlet; Page
+.. index:: Latest Portlet
+   single: Portlet; Latest
 
-.. _portlets_concepts_pages:
+.. _portlets_concepts_latest_products:
 
 Latest Products
 ---------------
@@ -200,10 +207,10 @@ Slideshow
     single product which is exchanged automatically). If this is unchecked all
     products are display at once.
 
-.. index:: Latest Portlet
-   single: Portlet; Latest
+.. index:: Page Portlet
+   single: Portlet; Page
 
-.. _portlets_concepts_latest_products:
+.. _portlets_concepts_pages:
 
 Pages
 ------

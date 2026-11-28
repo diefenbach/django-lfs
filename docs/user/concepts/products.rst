@@ -19,9 +19,9 @@ data fields in detail.
 
 .. _product_types_label:
 
-LFS provides  three types of products: default products, configurable products
-and products with variants. They are described in more detail in the following
-sections.
+LFS provides three types of products: default products, configurable products and products with variants. The
+type is chosen when the product is added (``Subtype``) and cannot be changed later. They are described in more
+detail in the following sections.
 
 .. index:: single: Product; Default
 
@@ -34,7 +34,7 @@ This is the simple and straightforward product of LFS. All other product types
 are based on the default product. It handles a lot of information like:
 
     * General descriptions
-    * Prices and price units
+    * Prices, base prices and units
     * Images
     * Attachments
     * :ref:`Accessories <marketing_concepts_accessories>`
