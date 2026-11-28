@@ -1,24 +1,27 @@
+.. index:: Manufacturer
+
+.. _manufacturers_management:
+
 =============
 Manufacturers
 =============
 
-This section describes the management interface for manufacturers.
+This section describes the management interface for manufacturers (``Shop / Manufacturers``).
+
+On the left are all manufacturers (searchable by name), on the right the selected manufacturer with its tabs.
 
 Site Actions
 ============
 
 Add Manufacturer
-    Adds a new manufacturer.
+    Opens a dialog to add a manufacturer with its ``Name`` and ``Slug``.
 
 Delete Manufacturer
-    Deletes the current displayed manufacturer.
+    Deletes the selected manufacturer, after a confirmation. Its products stay; they just have no manufacturer
+    any more.
 
 View Manufacturer
-    Opens the Manufacturer in a pop-up window to quickly check the appearance of
-    the Manufacturer without leaving the :term:`LMI`.
-
-Goto Manufacturer
-    Leaves the :term:`LMI` and goes to manufacturer view.
+    Opens the manufacturer's page in the shop.
 
 Tabs
 ====
@@ -27,83 +30,63 @@ Data
 ----
 
 Name
-    The name of the manufacturer
+    The name of the manufacturer.
 
 Slug
     The unique last part of the manufacturer's URL.
 
 Short description
-    The simplified description of the manufacturer. Displayed on the list of all
-    manufacturers (/manufacturers).
+    A short description, displayed in the list of all manufacturers.
 
 Description
-    The detailed description of the manufacturer. This is displayed on the detail
-    view of the manufacturer.
+    The detailed description, displayed on the manufacturer's page.
 
 Image
-    Logo of the manufacturer.
+    The logo of the manufacturer.
 
-View
-----
+Click ``Save Manufacturer Data`` to save the changes.
 
-Active formats
-    If this check box is activated several formats for this manufacturer can be
-    overwritten. Otherwise the formats are inherited from the shop.
+Products
+--------
 
-Product cols / Product rows
-    Amount of columns and rows which are used to display the products of the
-    manufacturer. The amount of products which are displayed calculates by
-    cols * rows. If there are more products than that
-    the products are automatically paginated.
+This tab assigns products to the manufacturer; the ``Manufacturer`` field on the :ref:`Data tab of a product
+<products_management_data>` does the same.
 
-    .. note::
+Add products
+    In the section ``Products`` (searchable by name, filtered by category) select the products and click
+    ``Add to Manufacturer``.
 
-        This is only available if ``Active Formats`` is True.
+Remove products
+    In the section ``Assigned Products`` select the products and click ``Remove from Manufacturer``.
 
 SEO
 ---
 
-This tab is used to optimize your pages for search engines. You can enter data
-for all meta data fields. However LFS provides some reasonable default values
-for all fields.
+This tab is used to optimize the manufacturer's page for search engines. Click ``Save SEO Settings`` to save the
+changes.
 
 Meta title
-    This is displayed within the meta title tag of the manufacturer's HTML tags. By
-    default the name of the manufacturer is used.
-
-Meta keywords
-    This is displayed within the meta keywords tag of the manufacturer's HTML page.
-    By default the short description of the manufacturer is used.
+    Displayed in the title tag of the manufacturer's page. The default is ``<name>``, the name of the manufacturer.
 
 Meta description
-    This is displayed within the meta description tag of the manufacturer's HTML
-    page. By default the short description of the manufacturer is used.
+    Displayed in the meta description tag of the manufacturer's page.
+
+Meta keywords
+    Displayed in the meta keywords tag of the manufacturer's page.
 
 .. note::
 
-    You can use several placeholders within these fields:
+    You can use these placeholders in the fields:
 
     <name>
         The name of the manufacturer.
 
     <short-description>
-        The short description of the manufacturer (only within meta keywords and
-        meta description field).
+        The short description of the manufacturer (only in meta keywords and meta description).
 
-
-Products
+Portlets
 --------
 
-In order to assign products to the manufacturer, select the check boxes of the
-corresponding products within the section ``Selectable Products`` and click on
-``Add To Manufacturer``.
-
-
-Products Tree
--------------
-
-Within this tab you can assign categories and products to the manufacturer.
-
-To assign all products of a category to the manufacturer just check it. If you
-want just a sub category or single products of it, click on the category to
-expand the children.
+This tab is used to assign :term:`portlets` to the manufacturer's page. Click the pencil to edit a portlet and the
+trash can to delete it; drag a portlet to change its position or to move it to the other slot. To add a portlet,
+select the ``Portlet Type`` and click ``Add portlet``.

@@ -6,25 +6,31 @@
 Product Taxes
 =============
 
-This section describes the management interface for product taxes.
+This section describes the management interface for product taxes (``Shop / Product Taxes``): the tax rates you
+select for products, shipping and payment methods.
 
 Site Actions
 ============
 
 Add Tax
-    Adds a new product tax.
+    Adds a product tax.
 
 Delete Tax
-    Deletes the current product tax.
+    Deletes the selected product tax, after a confirmation.
+
+View Shop
+    Opens the shop.
 
 Data
 ====
 
 Rate
-    The tax rate in percent.
+    The tax rate in percent, e.g. ``19``.
 
 Description
-    A short description for internal uses only.
+    A short description for internal use only.
+
+Click ``Save`` to save the changes.
 
 See also
 ========

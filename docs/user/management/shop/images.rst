@@ -6,23 +6,21 @@
 Images
 ======
 
-This section describes the management interface for :ref:`global images
-<images_concepts_global_images>`.
+This section describes the management interface for :ref:`global images <images_concepts_global_images>`
+(``Shop / Images``): images you can insert anywhere in the shop with the text editors, e.g. into pages, static
+blocks, or descriptions.
 
-Data
+List
 ====
 
-Add images
-    Click on the ``Select images`` button and select as many images as you want
-    within your browsers pop-up window. You can use shift click to select a
-    range of images at once and ctrl (cmd for apple users) click to select
-    more images. Now click on open to start the upload process. You will now
-    see a progress bar meanwhile your images are being uploaded.
+Shows all global images, the newest first. Search them by the beginning of their title, click an image to see a preview with its size, and select images
+(or ``Toggle all``) to delete them with ``Delete selected``, after a confirmation.
 
-Delete Images
-    To delete images select the check boxes above all images you want to delete
-    and click the ``Delete`` button. Alternative you can click on the ``Toggle
-    selection`` button in order to inverse the current selection.
+Upload
+======
+
+Click ``Select Images``, choose one or more image files (at most 10 MB each), and click ``Upload Images``. ``View
+Uploaded Images`` leads back to the list.
 
 See also
 ========
