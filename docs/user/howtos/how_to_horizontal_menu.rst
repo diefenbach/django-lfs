@@ -2,38 +2,23 @@
 How To Add a Horizontal Menu
 ============================
 
-Overview
-========
+The menu at the top of the default theme lfs-theme shows the top-level categories: add a category under ``Catalog /
+Categories`` (and uncheck ``Exclude from navigation``) and it appears in the menu. The order follows the category
+tree; drag the categories there to change it.
 
-In this how-to you will learn how to add a horizontal menu.
+Further links are :ref:`actions <actions_management>`. lfs-theme shows the actions of the group ``Footer`` in the
+footer:
 
-Overview
-========
+#. Go to ``Shop / Actions`` and click ``Add action``.
 
-By default there is no automatically horizontal menu. You can add so-called
-actions to add one.
+#. Enter the ``Title`` (the text of the link) and the ``Link``: a path of the shop such as ``/page/about-us/``, a
+   full URL, or a ``mailto:`` link. Select the ``Group`` ``Footer`` and add the action.
 
-.. image:: /images/how_to_horizontal_menu.*
+#. Check ``Active`` and click ``Save``. Only active actions are shown.
 
-Step by Step
-=============
+#. To change the order, drag the actions in the list on the left.
 
-#. Go to Management / Shop / Actions.
+.. note::
 
-#. Click on ``Add action``.
-
-#. Enter the ``Link`` for the action.
-
-#. Select the ``Group`` Tabs.
-
-#. Click on ``Add``.
-
-#. Now check the ``Active`` checkbox. Note: only active actions are displayed.
-
-#. Repeat Steps 2. - 6. for every action.
-
-.. Note::
-
-    In order to sort action grab the handle on the left side of an action (six
-    dots) and drag'n drop it to the new position.
-
+    lfs-theme 1.0 does not show the actions of the group ``Tabs`` (e.g. ``Contact``, which ``lfs_init`` creates).
+    A theme of your own can show them with the template tag ``{% actions Tabs %}`` from ``lfs_tags``.
