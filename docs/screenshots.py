@@ -66,8 +66,26 @@ from django.test import Client  # noqa: E402
 from PIL import Image as PILImage  # noqa: E402
 from PIL import ImageDraw  # noqa: E402
 
-from lfs.catalog.models import Category, Image, Product, Property, PropertyOption  # noqa: E402
-from lfs.catalog.settings import PROPERTY_SELECT_FIELD  # noqa: E402
+from lfs.catalog.models import (  # noqa: E402
+    Category,
+    GroupsPropertiesRelation,
+    Image,
+    Product,
+    ProductPropertyValue,
+    Property,
+    PropertyGroup,
+    PropertyOption,
+)
+from lfs.catalog.settings import (  # noqa: E402
+    PRODUCT_WITH_VARIANTS,
+    PROPERTY_SELECT_FIELD,
+    PROPERTY_VALUE_TYPE_DEFAULT,
+    PROPERTY_VALUE_TYPE_DISPLAY,
+    PROPERTY_VALUE_TYPE_FILTER,
+    SELECT,
+)
+from lfs.portlet.models import FilterPortlet  # noqa: E402
+from portlets.models import PortletAssignment, Slot  # noqa: E402
 from lfs.core.models import Country, Shop  # noqa: E402
 from lfs.discounts.models import Discount  # noqa: E402
 from lfs.discounts.settings import DISCOUNT_TYPE_PERCENTAGE  # noqa: E402
@@ -187,9 +205,11 @@ def create_demo_data() -> None:
     CartPriceCriterion.objects.create(
         content=free, operator=CartPriceCriterion.GREATER_THAN_EQUAL, value=50, position=10
     )
-    colour = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, filterable=True)
+    colour_property = Property.objects.create(
+        name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, filterable=True
+    )
     for position, option in enumerate(["Sage", "Charcoal", "Natural"]):
-        PropertyOption.objects.create(property=colour, name=option, position=(position + 1) * 10)
+        PropertyOption.objects.create(property=colour_property, name=option, position=(position + 1) * 10)
     Page.objects.filter(slug="imprint").update(
         short_text="Who runs this shop.",
         body="<p>Kitchen &amp; Table GmbH<br>Example Street 1<br>12345 Example Town</p>",
@@ -227,6 +247,8 @@ def create_demo_data() -> None:
         image = Image(content=product, title=name, position=10)
         image.image.save(f"{slug}.jpg", product_image(colour), save=True)
     create_customers_and_orders(germany, tax)
+    create_product_with_variants()
+    create_colour_filter(colour_property)
     for position, slug in enumerate(["chefs-knife-20", "linen-apron-sage"]):
         FeaturedProduct.objects.create(product=Product.objects.get(slug=slug), position=(position + 1) * 10)
     Discount.objects.create(name="Autumn sale", value=10, type=DISCOUNT_TYPE_PERCENTAGE, active=True, sums_up=True)
@@ -328,6 +350,60 @@ def create_customers_and_orders(country: Country, tax: Tax) -> None:
     Review.objects.update(creation_date=when)
 
 
+def create_product_with_variants() -> None:
+    """Create the linen napkin with three colour variants as the variants how-to does, through the management views."""
+    napkin = Product.objects.create(
+        name="Linen napkin",
+        slug="linen-napkin",
+        sku="NP-4040",
+        price=12.9,
+        tax=Tax.objects.get(),
+        active=True,
+        sub_type=PRODUCT_WITH_VARIANTS,
+        variants_display_type=SELECT,
+    )
+    client = Client()
+    client.login(username="admin", password=PASSWORD)
+    url = f"/manage/product/{napkin.id}/variants/"
+    client.post(url, {"action": "add_local_property", "name": "Colour"})
+    colour = Property.objects.get(name="Colour", local=True)
+    options = {
+        "action": "add_local_property_option",
+        "property_id": colour.id,
+        "option_names": "Sage, Charcoal, Natural",
+    }
+    client.post(url, options)
+    client.post(url, {"action": "add_variants", f"property__{colour.id}": "all"})
+    variants = napkin.variants.order_by("variant_position")
+    variants.update(active=True)
+    napkin.default_variant = variants.first()
+    napkin.save()
+
+
+def create_colour_filter(colour: Property) -> None:
+    """Give three textiles a colour through a property group and put the filter portlet into the shop's left slot."""
+    textiles = PropertyGroup.objects.create(name="Textiles")
+    GroupsPropertiesRelation.objects.create(group=textiles, property=colour, position=10)
+    for slug, name in [
+        ("linen-apron-sage", "Sage"),
+        ("linen-apron-charcoal", "Charcoal"),
+        ("tea-towel-set", "Natural"),
+    ]:
+        product = Product.objects.get(slug=slug)
+        textiles.products.add(product)
+        option = PropertyOption.objects.get(property=colour, name=name)
+        for value_type in (PROPERTY_VALUE_TYPE_FILTER, PROPERTY_VALUE_TYPE_DEFAULT, PROPERTY_VALUE_TYPE_DISPLAY):
+            ProductPropertyValue.objects.create(
+                product=product, property=colour, property_group=textiles, value=str(option.id), type=value_type
+            )
+    PortletAssignment.objects.create(
+        slot=Slot.objects.get(name="Left"),
+        content=Shop.objects.get(),
+        portlet=FilterPortlet.objects.create(),
+        position=10,
+    )
+
+
 class QuietHandler(WSGIRequestHandler):
     """Request handler that does not log every request."""
 
@@ -366,6 +442,13 @@ def open_price_criteria(page: "Page") -> None:
     page.wait_for_timeout(500)
 
 
+def scroll_to_variants(page: "Page") -> None:
+    """Scroll the main column to the list of variants."""
+    page.locator("input[name=default_variant]").first.scroll_into_view_if_needed()
+    page.mouse.wheel(0, -120)
+    page.wait_for_timeout(300)
+
+
 # File name in docs/images/ (without .png), a function that returns the path to show, and optionally what to do on
 # the page before the screenshot.
 SHOTS: list[tuple[str, Callable[[], str]] | tuple[str, Callable[[], str], Callable[["Page"], None]]] = [
@@ -381,7 +464,7 @@ SHOTS: list[tuple[str, Callable[[], str]] | tuple[str, Callable[[], str], Callab
         "manage_shipping_method_data",
         lambda: f"/manage/shipping-method/{ShippingMethod.objects.get(name='Standard').id}/data",
     ),
-    ("manage_property_data", lambda: f"/manage/property/{Property.objects.get(name='Colour').id}/data"),
+    ("manage_property_data", lambda: f"/manage/property/{Property.objects.get(name='Colour', local=False).id}/data"),
     ("manage_page_data", lambda: f"/manage/page/{Page.objects.get(slug='imprint').id}/data"),
     ("manage_orders", lambda: "/manage/orders/"),
     ("manage_customers", lambda: "/manage/customers/"),
@@ -395,6 +478,8 @@ SHOTS: list[tuple[str, Callable[[], str]] | tuple[str, Callable[[], str], Callab
         "howto_payment_criteria",
         lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Cash on delivery').id}/criteria/",
     ),
+    ("howto_filters_shop", lambda: "/category-kitchen-textiles/"),
+    ("howto_variants", lambda: f"/manage/product/{product_id('linen-napkin')}/variants/", scroll_to_variants),
     (
         "manage_payment_method_data",
         lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Prepayment').id}/data",

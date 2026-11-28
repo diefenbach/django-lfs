@@ -2,27 +2,21 @@
 How To Use Celery
 =================
 
-Overview
-========
+LFS sends its e-mails (order confirmations, notifications, rating mails) during the request, with Django's mail
+functions. If the mail server is slow, the customer waits for it. To send the mails in the background, use an
+e-mail backend that hands them to a task queue; LFS needs no changes for that.
 
-``Celery`` is a distributed task queue that can be used to send e-mails from LFS asynchronously.
+One way is `Celery <https://docs.celeryq.dev/>`_ with `django-celery-email
+<https://pypi.org/project/django-celery-email/>`_:
 
-There is no special integration in LFS for ``Celery`` but there are general patterns for Django based projects
-that can be used to get asynchronous e-mail backend.
+#. Set up Celery for your Django project and a broker such as Redis, see `First steps with Django
+   <https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html>`_.
 
-Dependencies
-============
+#. Install django-celery-email, add ``"djcelery_email"`` to ``INSTALLED_APPS``, and set::
 
-You need:
+    EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+    CELERY_EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
- * `celery <http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html>`_
- * `django-celery-email <https://pypi.python.org/pypi/django-celery-email>`_
+#. Start a Celery worker next to the shop.
 
-as well as some Celery backend, eg Redis. Consult Celery documentation for details.
-
-
-Installation
-============
-
-Follow the Celery's `first steps with Django <http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html>`_
-and django-celery-email `documentation <https://pypi.python.org/pypi/django-celery-email>`_.
+From then on the shop puts every mail into the queue, and the worker sends it.
