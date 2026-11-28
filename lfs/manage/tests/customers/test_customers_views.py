@@ -159,3 +159,13 @@ class TestCustomer:
 
         assert set(manager.session["customer-filters"]) == {"start"}
         assert response["Location"] == reverse("lfs_manage_customer", kwargs={"customer_id": anna.id})
+
+
+def test_an_unknown_ordering_is_ignored(manager):
+    """The ordering comes from the URL and is kept in the session; an unknown one must not break the pages."""
+    anna = customer("Anna")
+
+    manager.get(reverse("lfs_set_customer_ordering", kwargs={"ordering": "no_such_field"}))
+
+    assert listed(manager) == ["anna"]
+    assert manager.get(reverse("lfs_manage_customer", kwargs={"customer_id": anna.id})).status_code == 200
