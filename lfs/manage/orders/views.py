@@ -261,7 +261,7 @@ class ApplyPredefinedOrderFilterView(PermissionRequiredMixin, RedirectView):
         order_id = self.request.GET.get("order_id") or self.kwargs.get("order_id")
         filter_type = self.kwargs.get("filter_type")
 
-        now = timezone.now()
+        now = timezone.localtime()  # the shop's day, not the UTC day (they differ around midnight)
         start_date = None
 
         if filter_type == "today":
