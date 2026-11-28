@@ -4,6 +4,21 @@
 Installation
 ============
 
+Try LFS with Docker
+===================
+
+To look at LFS before installing it, start the demo image. It needs only `Docker <https://www.docker.com/>`_::
+
+    $ docker run --rm -p 8000:8000 ghcr.io/diefenbach/lfs
+
+Then open http://localhost:8000/ for a shop with demo categories, products, and pages, and
+http://localhost:8000/manage/dashboard/ for the management interface (user ``admin``, password ``admin``). Stop it
+with Ctrl+C; every start begins with the same fresh demo shop, so what you change is gone. For a shop in another
+language add ``-e DJANGO_LANGUAGE_CODE=de``.
+
+The image is for trying LFS only: it runs with debug on, SQLite, and a known password. For a real shop install LFS
+as described below. The image is built from `lfs-docker <https://github.com/diefenbach/lfs-docker>`_.
+
 Requirements
 ============
 
