@@ -90,6 +90,16 @@ class TestVoucherGroups:
         assert xmas.name == "Christmas"
         assert messages_of(response) == ["Voucher group has been saved."]
 
+    def test_deleting_a_group_deletes_its_vouchers(self, manager, xmas):
+        voucher(xmas, "AAAA")
+        other = voucher(VoucherGroup.objects.create(name="Easter"), "BBBB")
+
+        response = manager.post(reverse("lfs_delete_voucher_group", kwargs={"id": xmas.id}))
+
+        assert not VoucherGroup.objects.filter(pk=xmas.pk).exists()
+        assert list(Voucher.objects.all()) == [other]
+        assert response["Location"] == reverse("lfs_manage_voucher_groups")
+
 
 class TestCreatingVouchers:
     def test_creates_the_amount_with_the_entered_values(self, manager, xmas, admin_user):
@@ -158,6 +168,15 @@ class TestListingAndDeletingVouchers:
 
         assert list(xmas.vouchers.all()) == [keep]
         assert messages_of(response) == ["1 vouchers have been deleted."]
+
+    def test_does_not_delete_vouchers_of_another_group(self, manager, xmas):
+        other = voucher(VoucherGroup.objects.create(name="Easter"), "EASTER")
+
+        manager.post(
+            tab("lfs_manage_voucher_group_vouchers", xmas), {"delete_vouchers": "1", "voucher-ids": [other.id]}
+        )
+
+        assert Voucher.objects.filter(pk=other.pk).exists()
 
 
 class TestOptions:
