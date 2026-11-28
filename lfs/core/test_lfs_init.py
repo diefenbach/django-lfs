@@ -36,3 +36,16 @@ def test_lfs_init_offers_no_paypal_without_lfs_paypal(settings):
 
     assert not PaymentMethod.objects.filter(name="PayPal").exists()
     assert PaymentMethod.objects.filter(name="Prepayment").exists()
+
+
+@pytest.mark.django_db
+def test_lfs_init_creates_each_payment_method_once_without_lfs_paypal(settings):
+    """Prepayment used to be created twice: once with the next free id, once more with the id 4 forced on it."""
+    settings.INSTALLED_APPS = [app for app in settings.INSTALLED_APPS if app != "lfs_paypal"]
+    call_command("lfs_init")
+
+    assert list(PaymentMethod.objects.order_by("priority").values_list("name", flat=True)) == [
+        "Direct debit",
+        "Cash on delivery",
+        "Prepayment",
+    ]

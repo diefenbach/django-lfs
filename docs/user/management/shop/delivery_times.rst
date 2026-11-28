@@ -6,16 +6,19 @@
 Delivery times
 ==============
 
-This section describes the management interface for delivery times.
+This section describes the management interface for delivery times (``Shop / Delivery Times``).
 
 Site Actions
 ============
 
 Add Delivery Time
-    Adds a new deliver time.
+    Adds a delivery time.
 
 Delete Delivery Time
-    Deletes the current displayed delivery time.
+    Deletes the selected delivery time, after a confirmation.
+
+View Shop
+    Opens the shop.
 
 Data
 ====
@@ -27,10 +30,12 @@ Max
     The maximal delivery time.
 
 Unit
-    The unit of the delivery time, which is, hours, days, weeks or months.
+    The unit of the delivery time: ``hours``, ``days``, ``weeks`` or ``months``.
 
 Description
-    A short description for internal uses only.
+    A short description for internal use only.
+
+Click ``Save`` to save the changes.
 
 See also
 ========

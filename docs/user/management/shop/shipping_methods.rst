@@ -6,16 +6,19 @@
 Shipping methods
 ================
 
-This section describes the management interface of shipping methods.
+This section describes the management interface of shipping methods (``Shop / Shipping Methods``).
+
+.. image:: /images/manage_shipping_method_data.png
+   :alt: The Data tab of a shipping method
 
 Site Actions
 ============
 
 Add Shipping Method
-    Adds a new shipping method.
+    Opens a dialog to add a shipping method with its name.
 
 Delete Shipping Method
-    Deletes the currently displayed shipping method
+    Deletes the selected shipping method, after a confirmation.
 
 Tabs
 ====
@@ -23,56 +26,54 @@ Tabs
 Data
 ----
 
+Active
+    Only active shipping methods are offered to customers.
+
 Name
-    The name of the shipping method, which is displayed to the shop
-    customer (e.g. on the cart and the checkout page).
+    The name of the shipping method, displayed to customers, e.g. in the cart and in the checkout.
 
 Description
-    A short description of the shipping method, which is displayed to the
-    customer (e.g. on the checkout page).
+    A short description, displayed to customers in the checkout.
 
-Note
-    A note of the shipping method, which is displayed on the confirmation
-    mail after the shop customer has been checked out.
-
-Priority
-    The first valid shipping method with the highest priority (smaller
-    number) method is displayed to the customer as default (if she hasn't
-    selected one explicitly).
-
-Image
-    An image for the shipping method, which is displayed to the shop
-    customer (On the checkout page).
+Note / Image
+    A note and an image of the shipping method, for themes that display them; the default theme lfs-theme
+    displays neither.
 
 Tax
-    The included tax of the shipping method's price.
+    The tax included in resp. added to the price.
 
 Price
-    The default price of the shipping method. This can be overwritten
-    within the price tab (see below).
+    The default price of the shipping method. The ``Prices`` tab can replace it (see below).
 
 Delivery time
-    The delivery time of the shipping method. See :doc:`delivery_times`.
+    The delivery time of the shipping method, see :doc:`delivery_times`.
+
+Price Calculator
+    Whether the price includes the tax (``Price includes tax``) or excludes it (``Price excludes tax``).
+
+Click ``Save shipping method`` to save the changes.
 
 Criteria
 --------
 
-Here you can add criteria for the shipping method. The shipping method is
-only available for shop customers if all criteria are true.
+The shipping method is offered to customers only if all its criteria are met, e.g. a country, a cart price, or a
+weight. Click ``Add criterion``, select the type, operator and value of each criterion, and click ``Save
+criteria``.
 
-Please see :ref:`How to manage shipping methods <how_to_shipping_method_criteria>`
-to see how to add criteria.
+Please see :ref:`How to manage shipping methods <how_to_shipping_method_criteria>` for examples.
 
 Prices
 ------
 
-Here you can add additional prices for the shipping method based on criteria.
-If prices are given the first price which meets all criteria is taken for the
-shipping method. If no prices are given, the default price of the ``Data`` tab
-is taken.
+Prices that replace the default price when their criteria are met. The first price (lowest ``Priority``) whose
+criteria are all met applies; if none applies, the default price of the ``Data`` tab is taken.
 
-Please see :ref:`How to manage shipping methods <how_to_shipping_method_prices>`
-to see how to add prices.
+* ``Add Price`` adds a price.
+* Change ``Priority`` and ``Price`` in the list and click ``Update Prices``; select prices and click ``Delete
+  Selected`` to delete them.
+* ``Edit Criteria`` opens the criteria of a price.
+
+Please see :ref:`How to manage shipping methods <how_to_shipping_method_prices>` for examples.
 
 See also
 ========

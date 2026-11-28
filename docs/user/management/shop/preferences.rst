@@ -6,140 +6,140 @@
 Preferences
 ===========
 
-This section describes the preferences management interface.
+This section describes the preferences of the shop (``Shop / Preferences``).
 
+.. image:: /images/manage_shop_data.png
+   :alt: The Data tab of the shop preferences
 
 .. _preferences_shop:
 
-Shop
+Data
 ====
+
+Click ``Save Shop Data`` to save the changes of this tab.
 
 General
 -------
 
 Name
-    The name of the shop. It will be used as prefix of all pages of the shop and
-    is therefore very important for the appearance within SERPs.
+    The name of the shop. It is part of the title of every page and therefore important for search engines.
 
 Shop owner
-    The shop owner. This can be used on several places within the shop, e.g.
-    within the thank-you page.
+    The owner of the shop, used in several places, e.g. on the thank-you page.
 
 E-Mails
 -------
 
 From e-mail address
-    This e-mail address will be used as sender for all outgoing mails.
+    The sender of all e-mails the shop sends.
 
 Notification email addresses
-    This e-mail addresses will be used as receiver for all incoming mails.
-
-Google
-------
-
-Google Analytics ID
-    The unique Google Analytics ID of the shop.
-
-Google Analytics Site Tracking
-    If checked the shop is tracked with Google Analytics.
-
-Google Analytics E-Commerce Tracking
-    If checked the shop is tracked with Google Analytics E-Commerce feature.
+    The addresses that get the notifications of the shop, e.g. about new orders. Separate several addresses by
+    commas or line breaks.
 
 Checkout
 --------
 
 Checkout type
-    There are three checkout types:
-
     Anonymous and Authenticated
-        The customer can decide whether he registers and login to the shop
-        or checkout without registration.
+        The customer can register and log in, or check out without registering.
 
     Anonymous only
-        Registration is not available
+        Customers check out without registering.
 
-    Anonymous only
-        All customers have to register and login to the shop.
+    Authenticated only
+        Customers have to register and log in to check out.
 
 Confirm TOC
-    If checked the customers have to confirm the terms of contract of the shop
-    in order to checkout.
+    If checked, customers have to confirm the terms and conditions of the shop to check out.
+
+Google
+------
+
+Google Analytics ID
+    The Google Analytics ID of the shop.
+
+Google Analytics Site Tracking
+    If checked, the shop is tracked with Google Analytics.
+
+Google Analytics E-Commerce Tracking
+    If checked, orders are tracked with the e-commerce feature of Google Analytics.
+
+.. note::
+
+    The default theme lfs-theme does not use these fields: they take effect only in a theme that includes the
+    template tags ``google_analytics_tracking`` and ``google_analytics_ecommerce`` (from ``lfs_tags``). For Google
+    Tag Manager with a consent banner use the add-ons lfs-gtm and lfs-cookie-consent.
 
 Content
 -------
 
 Description
-    The description of the shop. This is displayed within the front page of the
-    shop.
-
-Static block
-    The static block is displayed on top of the front page of the shop. See
-    :doc:`/user/management/html/static_block` for more.
+    The description of the shop, displayed on the start page.
 
 Image
     The image of the shop.
 
+Static block
+    A :doc:`static block </user/management/html/static_block>` displayed on the start page.
 
 .. _preferences_default_values:
 
 Default Values
 ==============
 
-Price calculator
+.. image:: /images/manage_shop_default_values.png
+   :alt: The Default Values tab of the shop preferences
+
+Click ``Save Default Values`` to save the changes of this tab.
+
+Price Calculator
 ----------------
 
 Price calculator
-    The default price calculator of the shop. If a product doesn't have an
-    explicit price calculator this one is used.
+    The price calculator of all products that do not select one themselves.
 
-Delivery time
+Delivery Time
 -------------
 
 Delivery time
-    The default delivery time, which is used if no delivery time can be
-    calculated for a product.
-
-Format
-------
-
-Product cols
-    Default value for amount of displayed columns within a category if the
-    category displays products.
-
-Product rows
-    Default value for amount of displayed rows within a category if the
-    category displays products.
-
-Category cols
-    Default value for amount of displayed columns within a category if the
-    category displays sub categories.
+    The delivery time used when none can be calculated for a product.
 
 Countries
 ---------
 
+Default shipping country
+    Preselected in addresses. It is used to calculate the shipping costs as long as the customer has not selected
+    a country.
+
 Invoice countries
-    Available countries within the invoice address.
+    The countries customers can select in the invoice address.
 
 Shipping countries
-    Available countries within the shipping address.
+    The countries customers can select in the shipping address.
 
-Default shipping country
-    The default shipping country within addresses. This country will be used to
-    calculate shipping price if the shop customer doesn't have select a country
-    yet.
+.. note::
 
-Localization
-------------
+    The lists offer the countries in the database; add more in Django's admin under ``Core / Countries`` (see
+    :doc:`/introduction/getting_started`).
 
-Default shop locale
-    This locale of the shop. This is used for localization of numbers and
-    currencies, etc. You can find more information here: http://en.wikipedia.org/wiki/Locale
+Returns
+-------
 
-Use international currency codes
-    If checked the international currency code of the currency is used, e.g. USD
-    or EUR.
+LFS writes the return policy into the structured data (schema.org ``MerchantReturnPolicy``) of every product, so
+search engines can show it.
 
+Return days
+    The days a customer has to return a product; ``0`` means no returns.
+
+Return fees
+    ``Free return`` or ``Customer pays the return``.
+
+Return method
+    ``By mail`` or ``In store``.
+
+Return policy page
+    Path or URL of the page with the return policy, e.g. ``/page/return-policy/``.
 
 .. _preferences_order_numbers:
 
@@ -148,20 +148,14 @@ Use international currency codes
 Order Numbers
 =============
 
-Last order number
-    This field stores the integer part of the last given order number, which is
-    the base for the next given order number.
+Last Order Number
+    The number of the last order. The next order gets this number plus one.
 
 Format
-    This field stores the format of the order number. The integer part which is
-    stored in ``Last order number`` can be formatted with `Python's string
-    formatting operators <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_,
-    e.g.::
+    The format of the order number. ``%d`` stands for the number, ``%04d`` for the number with at least four
+    digits, e.g. ``ACME-%04d`` gives ``ACME-0001``.
 
-        DOE-%04d-2012 will return DOE-0001-2012
-
-    Whereas ``%04d`` represents the integer part of the order number, which is
-    stored in ``Last order number``.
+Click ``Save Order Numbers`` to save the changes.
 
 .. index:: SEO
 
@@ -170,25 +164,16 @@ Format
 SEO
 ===
 
-This tab is used to optimize the start page for search engines. One can enter
-data for all usual HTML meta data fields.
+This tab is used to optimize the start page for search engines. Click ``Save SEO Data`` to save the changes.
 
 Meta title
-    This is displayed within the ``meta title`` tag of the start page. By
-    default the ``Name`` field of the ``Shop`` tab is used (see above).
-
-Meta keywords
-    This is displayed within the ``meta keywords`` tag of the start page.
+    Displayed in the title tag of the start page. The default is ``<name>``, the name of the shop.
 
 Meta description
-    This is displayed within the ``meta description`` tag of the start page.
+    Displayed in the meta description tag of the start page.
 
-.. note::
-
-    Following placeholder can be used within these fields:
-
-    <name>
-        The name of the product.
+Meta keywords
+    Displayed in the meta keywords tag of the start page.
 
 .. _preferences_portlets:
 
@@ -197,15 +182,12 @@ Meta description
 Portlets
 ========
 
-This tab is used to assign :term:`Portlets` to the shop.
+This tab is used to assign :term:`portlets` to the shop. Categories, products and pages inherit them unless they
+block them.
 
 Slots
-    Here you can see all directly assigned portlets to the shop. In order
-    to edit a portlet click on row of the portlet. In order to delete a
-    portlet click on the red cross beside the portlet. You can also change
-    the position of the portlets by clicking on the up and down arrows beside
-    the portlets.
+    Lists the portlets of the shop, per slot. Click the pencil to edit a portlet and the trash can to delete it.
+    Drag a portlet to change its position or to move it to the other slot.
 
-Add new Portlet
-    In order to add a portlet to the shop select the type of portlet and
-    click on ``Add portlet``.
+Add new portlet
+    Select the ``Portlet Type`` and click ``Add portlet``.

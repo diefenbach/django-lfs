@@ -54,8 +54,10 @@ from PIL import Image as PILImage  # noqa: E402
 from PIL import ImageDraw  # noqa: E402
 
 from lfs.catalog.models import Category, Image, Product  # noqa: E402
-from lfs.core.models import Shop  # noqa: E402
+from lfs.core.models import Country, Shop  # noqa: E402
 from lfs.manufacturer.models import Manufacturer  # noqa: E402
+from lfs.payment.models import PaymentMethod  # noqa: E402
+from lfs.shipping.models import ShippingMethod  # noqa: E402
 from lfs.tax.models import Tax  # noqa: E402
 
 PASSWORD = "screenshots-only"
@@ -101,12 +103,26 @@ def create_demo_data() -> None:
     """Create the shop, its categories and products, and the user who logs in to take the screenshots."""
     call_command("migrate", verbosity=0)
     call_command("lfs_init")
+    germany = Country.objects.create(code="de", name="Germany")
+    austria = Country.objects.create(code="at", name="Austria")
     shop = Shop.objects.get()
     shop.name = "Kitchen & Table"
+    shop.shop_owner = "Kitchen & Table GmbH"
+    shop.from_email = "shop@example.com"
+    shop.notification_emails = "orders@example.com"
+    shop.default_country = germany
     shop.save()
+    shop.invoice_countries.set([germany, austria])
+    shop.shipping_countries.set([germany, austria])
     User.objects.create_superuser("admin", "admin@example.com", PASSWORD)
 
     tax = Tax.objects.create(rate=Decimal("19"), description="VAT 19%")
+    ShippingMethod.objects.filter(name="Standard").update(
+        tax=tax, price=Decimal("4.90"), description="<p>DHL parcel, 1–2 working days</p>"
+    )
+    PaymentMethod.objects.filter(name="Prepayment").update(
+        description="<p>Pay by bank transfer; we ship when the money has arrived.</p>"
+    )
     manufacturer = Manufacturer.objects.create(name="Nordlein", slug="nordlein")
     categories = {}
     for position, (name, slug) in enumerate(CATEGORIES):
@@ -158,6 +174,10 @@ SHOTS: list[tuple[str, Callable[[], str]]] = [
     ("manage_category_data", lambda: f"/manage/category/{category_id('kitchen-textiles')}/data"),
     ("manage_category_view", lambda: f"/manage/category/{category_id('kitchen-textiles')}/view/"),
     ("manage_category_products", lambda: f"/manage/category/{category_id('kitchen-textiles')}/products/"),
+    ("manage_shop_data", lambda: "/manage/shop/data/"),
+    ("manage_shop_default_values", lambda: "/manage/shop/default-values/"),
+    ("manage_shipping_method_data", lambda: f"/manage/shipping-method/{ShippingMethod.objects.get(name='Standard').id}/data"),
+    ("manage_payment_method_data", lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Prepayment').id}/data"),
 ]
 
 

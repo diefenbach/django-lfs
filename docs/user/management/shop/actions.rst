@@ -6,43 +6,43 @@
 Actions
 =======
 
-This section describes the management interface for :ref:`actions
-<actions_concepts>`.
+This section describes the management interface for :ref:`actions <actions_concepts>` (``Shop / Actions``): the
+links of the shop's menus, e.g. in the tabs at the top or in the footer.
+
+On the left are all actions, by group; on the right the selected action.
 
 Site Actions
 ============
 
-Add Action
-    Adds a new action.
+Add action
+    Opens a dialog to add an action: its ``Title``, ``Link`` and ``Group`` (``Tabs`` for the menu at the top,
+    ``Footer`` for the footer).
 
-Delete Action
-    Deletes the currently displayed action.
+Delete action
+    Deletes the selected action, after a confirmation.
 
 View Shop
-    This opens the front page of the shop in a pop-up window to quickly check
-    the added actions without the need to leave the management interface.
+    Opens the shop.
 
-Sort Actions
-    In order to sort the actions, hold an action on the handle within the
-    navigation on the left and drag and drop it to the position you want it to
-    be.
+Sort actions
+    Drag an action in the list on the left to its new position, also into the other group.
+
+Search
+    Filters the list by title.
 
 Data
 ====
 
 Active
-    Only active actions are displayed to the shop user.
+    Only active actions are displayed in the shop.
 
 Title
-    The title of the action. It is displayed to the shop user.
+    The title of the action, displayed in the shop.
 
 Link
-    The URL to which the shop user is pointed when he clicks on the action.
+    The target of the action: a path of the shop (e.g. ``/page/imprint/``), a full URL, or a ``mailto:`` link.
 
-Group
-    The group the action belongs to. Select ``Tabs`` to display the action
-    on the horizontal menu or ``Footer`` to display the action on the footer
-    of the shop.
+Click ``Save`` to save the changes.
 
 See also
 ========
