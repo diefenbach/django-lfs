@@ -26,7 +26,7 @@ requires-python = ">=3.12"
 # samples, ...) are not listed; the core uses them only when they are in INSTALLED_APPS.
 dependencies = [
     "Django>=5.2,<6",
-    "Pillow>=12,<13",
+    "Pillow>=13,<14",
     "babel>=2.18,<3",
     "django-compressor>=4.6,<5",
     "django-crispy-forms>=2.7,<3",
