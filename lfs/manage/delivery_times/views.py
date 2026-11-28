@@ -2,14 +2,16 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect
+from django.forms import Form
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 
-from lfs.catalog.models import DeliveryTime
+from lfs.catalog.models import DeliveryTime, Product
+from lfs.core.models import Shop
 from lfs.manage.mixins import DirectDeleteMixin
 
 
@@ -168,3 +170,17 @@ class DeliveryTimeDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionR
             return reverse("lfs_manage_delivery_time", kwargs={"pk": first_delivery_time.id})
         else:
             return reverse("lfs_no_delivery_times")
+
+    def form_valid(self, form: Form) -> HttpResponse:
+        """Deletes the delivery time. Products and the shop using it are saved without it first: the database
+        would clear the references itself (SET_NULL), but without sending the signals that clear their caches."""
+        for product in Product.objects.filter(Q(delivery_time=self.object) | Q(order_time=self.object)):
+            if product.delivery_time_id == self.object.pk:
+                product.delivery_time = None
+            if product.order_time_id == self.object.pk:
+                product.order_time = None
+            product.save()
+        for shop in Shop.objects.filter(delivery_time=self.object):
+            shop.delivery_time = None
+            shop.save()
+        return super().form_valid(form)
