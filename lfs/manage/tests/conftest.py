@@ -36,6 +36,15 @@ from lfs.portlet.models import TextPortlet
 User = get_user_model()
 
 
+
+@pytest.fixture(autouse=True)
+def empty_cache():
+    """Start every test with an empty cache. LFS caches by primary key (cart items, products, ...), and SQLite
+    hands out the same keys again after a test's rollback, so a test could see the cached data of an earlier one."""
+    from django.core.cache import cache
+
+    cache.clear()
+
 @pytest.fixture
 def request_factory():
     """Django RequestFactory for creating test requests."""
