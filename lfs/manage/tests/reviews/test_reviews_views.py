@@ -154,3 +154,14 @@ class TestDelete:
         assert not Review.objects.exists()
         assert response["Location"] == LIST
         assert messages_of(response) == ["Review has been deleted"]
+
+    def test_deleting_from_a_review_shows_the_next_one(self, manager):
+        anna, bob = review("Anna"), review("Bob")
+
+        response = manager.post(
+            reverse("lfs_delete_review", kwargs={"id": anna.id}),
+            HTTP_REFERER="http://testserver" + reverse("lfs_manage_review", kwargs={"id": anna.id}),
+        )
+
+        assert response["Location"] == reverse("lfs_manage_review", kwargs={"id": bob.id})
+

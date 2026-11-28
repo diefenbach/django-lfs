@@ -288,7 +288,7 @@ class ReviewDeleteView(PermissionRequiredMixin, DirectDeleteMixin, SuccessMessag
         # Check if referer contains a review ID pattern (digits after /manage/reviews/)
         import re
 
-        if re.search(r"/manage/reviews/\d+/", referer):
+        if re.search(r"/manage/review/\d+/", referer):
             # This means it came from an individual review page
             # Try to find next review with same ordering
             try:
