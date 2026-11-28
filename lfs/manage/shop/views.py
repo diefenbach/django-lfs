@@ -114,8 +114,6 @@ class ShopOrderNumbersView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with order numbers form."""
         ctx = super().get_context_data(**kwargs)
-        shop = self.get_shop()
-
         ong = import_symbol(lfs_setting("LFS_ORDER_NUMBER_GENERATOR"))
         try:
             order_number = ong.objects.get(id="order_number")
