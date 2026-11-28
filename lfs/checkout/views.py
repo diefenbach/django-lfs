@@ -86,10 +86,11 @@ def login(request, template_name="lfs/checkout/login.html"):
             # Store the "old" session to be able to merge the carts after login
             request.session["anonymous_session_key"] = request.session.session_key
 
-            # Log in user (no need to authenticate, we just created the user)
+            # Log in user (no need to authenticate, we just created the user). With more than one authentication
+            # backend configured, as in LFS's default settings, login() needs to be told which one.
             from django.contrib.auth import login
 
-            login(request, user)
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
 
             # Manually trigger cart merge since user_logged_in signal won't fire
             # when calling login() directly without authenticate()

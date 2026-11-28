@@ -19,6 +19,13 @@ from lfs.tax.models import Tax
 
 from postal.library import form_factory
 
+import time
+
+from lfs.customer.forms import sign_form_start
+
+# A registration form shown ten seconds ago, as a person would send it.
+FORM_STARTED = sign_form_start(time.time() - 10)
+
 
 class CheckoutTestCase(TestCase):
     """ """
@@ -157,7 +164,7 @@ class CheckoutTestCase(TestCase):
         email = "testverylongemailaddressthatislongerthanusername1@example.com"
         self.client.post(
             reverse("lfs_checkout_login"),
-            {"email": email, "action": "register", "password_1": "test", "password_2": "test"},
+            {"email": email, "action": "register", "started": FORM_STARTED, "password_1": "test", "password_2": "test"},
         )
         self.assertEqual(User.objects.filter(email=email).count(), 1)
         self.client.logout()
@@ -165,7 +172,13 @@ class CheckoutTestCase(TestCase):
         email2 = "testverylongemailaddressthatislongerthanusername2@example.com"
         self.client.post(
             reverse("lfs_checkout_login"),
-            {"email": email2, "action": "register", "password_1": "test", "password_2": "test"},
+            {
+                "email": email2,
+                "action": "register",
+                "started": FORM_STARTED,
+                "password_1": "test",
+                "password_2": "test",
+            },
         )
         self.assertEqual(User.objects.filter(email=email2).count(), 1)
 

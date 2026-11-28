@@ -26,7 +26,7 @@ LFS_APPS = [
     "django.contrib.sitemaps",
     "django_countries",
     "localflavor",
-    "captcha",
+    "captcha",  # no longer used by LFS; kept so the include("captcha.urls") in existing projects keeps working
     "reviews",
     "portlets",
     "postal",

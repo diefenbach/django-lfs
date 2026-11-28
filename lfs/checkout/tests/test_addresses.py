@@ -15,6 +15,13 @@ from lfs.payment.settings import BY_INVOICE
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 
+import time
+
+from lfs.customer.forms import sign_form_start
+
+# A registration form shown ten seconds ago, as a person would send it.
+FORM_STARTED = sign_form_start(time.time() - 10)
+
 
 class CheckoutAddressesTestCase(TestCase):
     """Test localization of addresses on OnePageCheckoutForm."""
@@ -182,7 +189,13 @@ class CheckoutAddressesTestCase(TestCase):
         # register a new user
         registration_response = self.client.post(
             reverse("lfs_login"),
-            {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
+            {
+                "action": "register",
+                "started": FORM_STARTED,
+                "email": "test@test.com",
+                "password_1": "password",
+                "password_2": "password",
+            },
         )
 
         self.assertEqual(registration_response.status_code, 302)
@@ -438,7 +451,13 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         # register a new user
         registration_response = self.client.post(
             reverse("lfs_login"),
-            {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
+            {
+                "action": "register",
+                "started": FORM_STARTED,
+                "email": "test@test.com",
+                "password_1": "password",
+                "password_2": "password",
+            },
         )
         self.assertEqual(registration_response.status_code, 302)
         self.assertEqual(registration_response.headers["location"], "/")
