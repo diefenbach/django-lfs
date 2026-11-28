@@ -1,5 +1,5 @@
 {% extends "manage/base.html" %}
-{% load i18n static crispy_forms_tags %}
+{% load i18n static crispy_forms_tags lfs_manage_tags %}
 
 {% block help_link %}user/management/html/page.html{% endblock %}
 {% block section %}manage-page{% endblock %}
@@ -44,8 +44,8 @@
                     <div class="d-flex justify-content-between fw-semibold">
                         <nav aria-label="Breadcrumb" class="me-2">
                             <ol class="breadcrumb mb-0 small">
-                                <li class="breadcrumb-item">Manage</li>
-                                <li class="breadcrumb-item">Pages</li>
+                                <li class="breadcrumb-item">{% translate "Manage" context "breadcrumb" %}</li>
+                                <li class="breadcrumb-item">{% translate "Pages" %}</li>
                                 <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
                             </ol>
                         </nav>                                
@@ -86,7 +86,7 @@
                                 role="tab"
                                 aria-controls="{{ key }}-content"
                                 aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
-                                    {% trans key|title %}
+                                    {{ key|tab_label }}
                                 </a>
                             </li>
                         {% endfor %}

@@ -1,10 +1,35 @@
 from django import template
 from django.template.loader import render_to_string
+from django.utils.translation import gettext
+from django.utils.translation import pgettext_lazy
 
 from lfs.catalog.models import Category
 from lfs.manufacturer.models import Manufacturer
 
 register = template.Library()
+
+# Labels of the tabs whose views pass only a key, with the context "tab" ("View" is a noun here, not "to view").
+# Product tabs carry their own label (lfs.manage.products.tabs).
+TAB_LABELS = {
+    "carousel": pgettext_lazy("tab", "Carousel"),
+    "data": pgettext_lazy("tab", "Data"),
+    "default_values": pgettext_lazy("tab", "Default Values"),
+    "list": pgettext_lazy("tab", "List"),
+    "order_numbers": pgettext_lazy("tab", "Order Numbers"),
+    "portlets": pgettext_lazy("tab", "Portlets"),
+    "products": pgettext_lazy("tab", "Products"),
+    "properties": pgettext_lazy("tab", "Properties"),
+    "seo": pgettext_lazy("tab", "SEO"),
+    "upload": pgettext_lazy("tab", "Upload"),
+    "view": pgettext_lazy("tab", "View"),
+}
+
+
+@register.filter
+def tab_label(key: str) -> str:
+    """Return the translated label of the tab ``key``; an unknown key is shown capitalised and translated if possible."""
+    label = TAB_LABELS.get(key)
+    return str(label) if label is not None else gettext(key.replace("_", " ").capitalize())
 
 
 @register.inclusion_tag("manage/category/category_filter.html", takes_context=True)
