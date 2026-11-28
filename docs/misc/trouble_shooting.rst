@@ -33,7 +33,7 @@ The checkout offers no country, or only USA
 
 ``Prepayment`` is offered twice
     ``lfs_init`` of LFS 1.0.0 created it twice when lfs-paypal was not installed. Delete one of them under ``Shop /
-    Payment Methods``; LFS 1.0.1 creates it once.
+    Payment Methods``; LFS 1.1.0 creates it once.
 
 The shop has no sidebars
     The default theme shows a sidebar only when its slot has portlets, and ``lfs_init`` assigns none. Add portlets
