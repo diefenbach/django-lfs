@@ -216,26 +216,13 @@
                                             <td class="fw-bold">{% trans 'Total' %}:</td>
                                             <td>{{ current_order.price|currency:request }}</td>
                                         </tr>
+                                        {% if current_order.delivery_time %}
                                         <tr>
-                                            <td class="fw-bold">{% trans 'Lieferzeit' %}:</td>
+                                            <td class="fw-bold">{% trans 'Delivery time' %}:</td>
                                             <td>{{ current_order.delivery_time.round.as_string }}</td>
                                         </tr>
-                                        <tr>
-                                            <td class="fw-bold">{% trans 'Gesamtgewicht' %}:</td>
-                                            <td>{{ current_order.order_extensions.total_weight }} kg</td>
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                                Europallettentausch möglich:
-                                            </th>
-                                            <td>
-                                                {% if current_order.order_extensions.europallet_change %}
-                                                    Ja
-                                                {% else %}
-                                                    Nein
-                                                {% endif %}
-                                            </td>
-                                        </tr>                                    
+                                        {% endif %}
+                                        {% block order_extra_info %}{# Rows of add-ons, e.g. hoehne-order-extensions #}{% endblock %}
                                     </table>
                                 </div>
                             </div>
