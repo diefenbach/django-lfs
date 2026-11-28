@@ -86,6 +86,18 @@ class TestList:
 
         assert [r["cart"] for r in rows] == [recent]
 
+    def test_ignores_a_stored_date_that_is_not_a_date_and_shows_the_stored_end_in_the_form(self, manager):
+        cart = cart_with(("Lamp", 40.0, 1))
+        set_filters(manager, start="garbage", end="2999-12-31")
+
+        context = manager.get(reverse("lfs_manage_carts")).context
+
+        assert [r["cart"] for r in context["carts_with_data"]] == [cart]
+        assert context["filter_form"].initial == {"start": None, "end": datetime.date(2999, 12, 31)}
+
+    def test_without_carts_lists_none(self, manager):
+        assert manager.get(reverse("lfs_manage_carts")).context["carts_with_data"] == []
+
     def test_shows_50_carts_per_page(self, manager):
         for i in range(55):
             Cart.objects.create(session=f"s{i}")
@@ -164,6 +176,18 @@ class TestFilters:
 
         assert manager.session["cart-filters"] == {"start": start}
         assert response["Location"] == reverse("lfs_manage_carts")
+
+    def test_reset_without_a_cart_shows_the_list(self, manager):
+        assert manager.get(reverse("lfs_manage_reset_cart_filters"))["Location"] == reverse("lfs_manage_carts")
+
+    def test_a_predefined_filter_on_a_cart_returns_to_the_cart(self, manager):
+        cart = cart_with(("Lamp", 40.0, 1))
+
+        response = manager.get(
+            reverse("lfs_manage_apply_predefined_cart_filter", kwargs={"id": cart.id, "filter_type": "month"})
+        )
+
+        assert response["Location"] == reverse("lfs_manage_cart", kwargs={"id": cart.id})
 
     def test_an_unknown_predefined_filter_is_refused(self, manager):
         response = manager.get(reverse("lfs_manage_apply_predefined_cart_filter_list", kwargs={"filter_type": "year"}))
