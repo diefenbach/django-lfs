@@ -319,17 +319,14 @@ class ApplyPredefinedCustomerFilterView(PermissionRequiredMixin, RedirectView):
         if filter_type == "today":
             # Start of today
             start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
-            end_date = start_date + timedelta(days=1)
             filter_name = _("Today")
         elif filter_type == "week":
             # Last 7 days including today
             start_date = (now - timedelta(days=6)).replace(hour=0, minute=0, second=0, microsecond=0)
-            end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
             filter_name = _("Last 7 Days")
         elif filter_type == "month":
             # Start of current month
             start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-            end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
             filter_name = _("This Month")
         else:
             messages.error(self.request, _("Invalid filter type."))
