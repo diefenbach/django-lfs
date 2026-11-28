@@ -273,3 +273,34 @@ class TestSeveralCriteria:
         cache.clear()
         add_to_cart(request_, price=300.0)
         assert not method.is_valid(request_)
+
+
+class TestSavingCriteria:
+    """``save_criteria`` builds the criteria of an object from the management's form; it creates only types that
+    LFS_CRITERIA lists, whatever class path the form sends."""
+
+    def post(self, data: dict[str, str]):
+        """Return a POST request with ``data``."""
+        return RequestFactory().post("/", data)
+
+    def test_saves_a_listed_type(self, method):
+        method.save_criteria(
+            self.post(
+                {
+                    "type-1": "lfs.criteria.models.CartPriceCriterion",
+                    "operator-1": str(LT),
+                    "position-1": "10",
+                    "value-1": "500",
+                }
+            )
+        )
+
+        [criterion] = method.get_criteria()
+        assert (type(criterion), criterion.operator, criterion.value) == (CartPriceCriterion, LT, 500.0)
+
+    @pytest.mark.parametrize("type_", ["lfs.catalog.models.Product", "lfs.criteria.models.Criterion"])
+    def test_ignores_a_type_that_is_not_listed(self, method, type_: str):
+        method.save_criteria(self.post({"type-1": type_, "operator-1": "0", "position-1": "10", "value-1": "1"}))
+
+        assert method.get_criteria() == []
+        assert not Product.objects.exists()
