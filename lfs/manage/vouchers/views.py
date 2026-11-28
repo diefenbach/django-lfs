@@ -3,6 +3,7 @@ from typing import Dict, List, Tuple, Any, Optional
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.forms import Form
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -193,7 +194,7 @@ class VoucherGroupVouchersView(PermissionRequiredMixin, VoucherGroupTabMixin, Fo
         """Handles deleting vouchers."""
         voucher_ids = request.POST.getlist("voucher-ids")
         if voucher_ids:
-            vouchers = Voucher.objects.filter(pk__in=voucher_ids)
+            vouchers = self.get_voucher_group().vouchers.filter(pk__in=voucher_ids)
             count = vouchers.count()
             vouchers.delete()
             messages.success(self.request, _("%(count)d vouchers have been deleted.") % {"count": count})
@@ -318,3 +319,8 @@ class VoucherGroupDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionR
 
     def get_success_url(self):
         return reverse("lfs_manage_voucher_groups")
+
+    def form_valid(self, form: Form) -> HttpResponse:
+        """Deletes the group and its vouchers; ``Voucher.group`` is SET_NULL, so they would stay redeemable."""
+        self.object.vouchers.all().delete()
+        return super().form_valid(form)
