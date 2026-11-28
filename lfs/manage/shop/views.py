@@ -74,10 +74,6 @@ class ShopDataView(PermissionRequiredMixin, ShopTabMixin, UpdateView):
     def form_valid(self, form):
         """Saves and shows success message."""
         # Handle image deletion if checkbox is checked
-        if self.request.POST.get("delete_image"):
-            shop = self.get_object()
-            if shop.image:
-                shop.image.delete()
 
         response = super().form_valid(form)
         shop_changed.send(self.object)
@@ -118,8 +114,6 @@ class ShopOrderNumbersView(PermissionRequiredMixin, ShopTabMixin, TemplateView):
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with order numbers form."""
         ctx = super().get_context_data(**kwargs)
-        shop = self.get_shop()
-
         ong = import_symbol(lfs_setting("LFS_ORDER_NUMBER_GENERATOR"))
         try:
             order_number = ong.objects.get(id="order_number")
