@@ -170,4 +170,5 @@ Production
 What's next?
 ============
 
-Move on to :doc:`getting_started`. If you upgrade an existing shop, read :doc:`upgrade_notes` first.
+Move on to :doc:`getting_started`. If you upgrade an existing shop, read :doc:`upgrade_notes` first. If something
+does not work, see :doc:`/misc/trouble_shooting`.

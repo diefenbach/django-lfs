@@ -2,40 +2,45 @@
 Contributing translations
 =========================
 
-There are two preferred ways to contribute translations:
+LFS is translated with Django's translation system. Contributions are welcome as pull requests on GitHub.
 
-Via DVCS
-========
+Where the translations are
+==========================
 
-If your are a (Django-)developer you might want to fork django-lfs and
-lfs-theme on `GitHub <https://github.com/diefenbach>`_ add the translations as
-`used to <https://docs.djangoproject.com/en/dev/topics/i18n/translation/#localization-how-to-create-language-files>`_,
-commit them and send us a pull request.
+* django-lfs: one catalog for all its apps, ``lfs/core/locale/<language>/LC_MESSAGES/django.po``. It covers the
+  management interface and the texts of LFS's Python code.
+* lfs-theme: the texts of the shop, ``lfs_theme/locale/<language>/LC_MESSAGES/django.po`` in its repository.
 
-.. Note::
+You need GNU gettext (``xgettext``, ``msgfmt``), e.g. ``brew install gettext`` or ``apt install gettext``, and a
+checkout set up as described in :doc:`/developer/developing`.
 
-    Please make sure to fork the correct version branch.
+Update and translate the catalog of django-lfs
+==============================================
 
-Via Transifex
-=============
+#. Collect the texts. The catalog lists its sources relative to ``lfs/``, so run ``makemessages`` there, through a
+   temporary link to the catalog::
 
-If your are a translator you can just go to `transifex
-<https://www.transifex.net/projects/p/lfs/>`_, choose or add the language of
-your choice and start to translate via the web interface. Once you are ready we
-would add your translations to the source code.
+    $ cd lfs
+    $ ln -s core/locale locale
+    $ uv run django-admin makemessages -l de --ignore "*/tests/*" --ignore "tests_e2e/*" --ignore "node_modules/*"
+    $ rm locale
 
-.. Note::
+   Replace ``de`` with your language. New texts get an empty ``msgstr``; changed ones are marked ``fuzzy``.
 
-    Please make sure to use the correct version.
+#. Translate ``lfs/core/locale/de/LC_MESSAGES/django.po`` with an editor such as Poedit, or any text editor: fill
+   the empty ``msgstr`` entries and check the ``fuzzy`` ones (then remove the ``fuzzy`` flag).
 
-Other
-=====
+#. Compile it and look at the result in a shop with your checkout (see :doc:`/developer/developing`)::
 
-If none of these fit your workflow you can of course just send us the
-translation files.
+    $ cd lfs/core
+    $ uv run django-admin compilemessages -l de
+
+#. Commit the ``.po`` and ``.mo`` files and open a pull request.
+
+For lfs-theme run ``makemessages`` and ``compilemessages`` in its ``lfs_theme`` directory; there the catalog is in
+the usual place, so no link is needed.
 
 See also
 ========
 
-* `LFS on Transifex <https://www.transifex.net/projects/p/lfs/>`_
-* `How to create language files in Django <https://docs.djangoproject.com/en/dev/topics/i18n/translation/#localization-how-to-create-language-files>`_
+* `Translation in Django <https://docs.djangoproject.com/en/5.2/topics/i18n/translation/>`_

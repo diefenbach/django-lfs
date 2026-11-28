@@ -83,6 +83,11 @@ LFS_SHIPPING_METHOD_PRICE_CALCULATORS
 Miscellaneous
 =============
 
+CATEGORY_TEMPLATES / PRODUCT_TEMPLATES
+    The templates offered for categories (``View`` tab) and products (``Product template`` on the ``Data`` tab).
+    Each setting replaces LFS's list in ``lfs.catalog.settings``, so start from a copy of it. See
+    :doc:`/developer/howtos/how_to_add_own_templates`.
+
 LFS_AFTER_ADD_TO_CART
     URL name to which LFS redirects after the customer has put a product into
     the cart. LFS ships with ``lfs_added_to_cart``, which displays the last
