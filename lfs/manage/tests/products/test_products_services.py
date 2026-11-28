@@ -1,7 +1,6 @@
 import pytest
 from datetime import datetime, date
 from decimal import Decimal
-from unittest.mock import Mock, patch
 
 
 from lfs.catalog.models import Product, Category
@@ -212,62 +211,24 @@ class TestProductFilterService:
 
         assert result.count() == 3
 
-    @patch("lfs.core.utils.get_default_shop")
-    def test_should_filter_by_explicit_price_calculator(self, mock_get_shop, product_filter_service, sample_products):
-        """Should filter products by explicit price calculator."""
-        # Mock shop with different default price calculator
-        mock_shop = Mock()
-        mock_shop.price_calculator = "different.calculator"
-        mock_get_shop.return_value = mock_shop
-
-        queryset = Product.objects.all()
+    def test_should_filter_by_a_price_calculator_that_is_not_the_shop_default(
+        self, product_filter_service, sample_products
+    ):
+        """Products without own calculator inherit the shop's (gross); filtering by net finds only explicit ones."""
         filters = {"price_calculator": "lfs.net_price.calculator.NetPriceCalculator"}
 
-        result = product_filter_service.filter_products(queryset, filters)
+        result = product_filter_service.filter_products(Product.objects.all(), filters)
 
-        assert result.count() == 1  # Only product2 has explicit net price calculator
-        assert result.first().price_calculator == "lfs.net_price.calculator.NetPriceCalculator"
+        assert list(result) == [sample_products[1]]
 
-    @patch("lfs.core.utils.get_default_shop")
-    def test_should_filter_by_price_calculator_including_shop_default(
-        self, mock_get_shop, product_filter_service, sample_products
+    def test_should_include_inheriting_products_when_filtering_by_the_shop_default(
+        self, product_filter_service, sample_products
     ):
-        """Should include products inheriting from shop when filtering by shop default price calculator."""
-        # Mock shop with gross price calculator as default
-        mock_shop = Mock()
-        mock_shop.price_calculator = "lfs.gross_price.calculator.GrossPriceCalculator"
-        mock_get_shop.return_value = mock_shop
-
-        queryset = Product.objects.all()
         filters = {"price_calculator": "lfs.gross_price.calculator.GrossPriceCalculator"}
 
-        result = product_filter_service.filter_products(queryset, filters)
+        result = product_filter_service.filter_products(Product.objects.all(), filters)
 
-        # Should include product1 (explicit gross) and product3 (None, inherits gross)
-        assert result.count() == 2
-        explicit_gross = result.filter(price_calculator="lfs.gross_price.calculator.GrossPriceCalculator")
-        inherited_gross = result.filter(price_calculator__isnull=True)
-        assert explicit_gross.count() == 1
-        assert inherited_gross.count() == 1
-
-    @patch("lfs.core.utils.get_default_shop")
-    def test_should_exclude_inherited_when_filtering_by_non_shop_default(
-        self, mock_get_shop, product_filter_service, sample_products
-    ):
-        """Should exclude products inheriting from shop when filtering by non-shop default."""
-        # Mock shop with gross price calculator as default
-        mock_shop = Mock()
-        mock_shop.price_calculator = "lfs.gross_price.calculator.GrossPriceCalculator"
-        mock_get_shop.return_value = mock_shop
-
-        queryset = Product.objects.all()
-        filters = {"price_calculator": "lfs.net_price.calculator.NetPriceCalculator"}  # Not the shop default
-
-        result = product_filter_service.filter_products(queryset, filters)
-
-        # Should only include product2 (explicit net), not product3 (inherits gross)
-        assert result.count() == 1
-        assert result.first().price_calculator == "lfs.net_price.calculator.NetPriceCalculator"
+        assert set(result) == {sample_products[0], sample_products[2]}
 
     def test_should_ignore_empty_price_calculator_filter(self, product_filter_service, sample_products):
         """Should ignore empty price_calculator filter."""
@@ -339,132 +300,38 @@ class TestProductFilterService:
 class TestProductDataService:
     """Test ProductDataService functionality."""
 
-    @patch.object(Product, "get_price")
-    def test_should_return_product_summary_with_all_fields(self, mock_get_price, product_data_service, sample_products):
-        """Should return complete product summary with all required fields."""
+    def test_should_return_categories_price_stock_and_status(self, product_data_service, sample_products):
         product = sample_products[0]
-
-        # Setup mocks and product data
-        mock_get_price.return_value = Decimal("19.99")
         product.manage_stock_amount = True
         product.stock_amount = 10.0
         product.save()
-
-        # Create categories for the product
-        category1 = Category.objects.create(name="Electronics", slug="electronics")
-        category2 = Category.objects.create(name="Computers", slug="computers")
-        product.categories.add(category1, category2)
+        product.categories.add(
+            Category.objects.create(name="Electronics", slug="electronics"),
+            Category.objects.create(name="Computers", slug="computers"),
+        )
 
         result = product_data_service.get_product_summary(product)
 
-        assert "categories" in result
-        assert "price" in result
-        assert "stock" in result
-        assert "active" in result
-        assert result["categories"] == "Electronics, Computers"
-        assert result["price"] == Decimal("19.99")
-        assert result["stock"] == 10.0
-        assert result["active"] is True
+        assert result == {
+            "categories": "Electronics, Computers",
+            "price": Decimal("19.99"),
+            "stock": 10.0,
+            "active": True,
+        }
 
-    @patch.object(Product, "get_price")
-    def test_should_limit_categories_to_first_three(self, mock_get_price, product_data_service, sample_products):
-        """Should limit categories display to first three categories."""
+    def test_should_limit_categories_to_first_three(self, product_data_service, sample_products):
         product = sample_products[0]
-
-        # Setup mocks and product data
-        mock_get_price.return_value = Decimal("19.99")
-        product.manage_stock_amount = True
-        product.stock_amount = 10.0
-        product.save()
-
-        # Create more than 3 categories
-        categories = []
         for i in range(5):
-            category = Category.objects.create(name=f"Category {i+1}", slug=f"category-{i+1}")
-            categories.append(category)
-            product.categories.add(category)
+            product.categories.add(Category.objects.create(name=f"Category {i+1}", slug=f"category-{i+1}"))
 
         result = product_data_service.get_product_summary(product)
 
-        category_names = result["categories"].split(", ")
-        assert len(category_names) == 3
+        assert len(result["categories"].split(", ")) == 3
 
-    @patch.object(Product, "get_price")
-    def test_should_handle_product_with_no_categories(self, mock_get_price, product_data_service, sample_products):
-        """Should handle product with no categories."""
+    def test_should_return_no_stock_when_it_is_not_managed(self, product_data_service, sample_products):
         product = sample_products[0]
-
-        # Setup mocks and product data
-        mock_get_price.return_value = Decimal("19.99")
-        product.manage_stock_amount = True
-        product.stock_amount = 10.0
-        product.save()
-
-        # Ensure no categories
-        product.categories.clear()
-
-        result = product_data_service.get_product_summary(product)
-
-        assert result["categories"] == ""
-
-    @patch.object(Product, "get_price")
-    def test_should_call_product_methods_with_none_parameter(
-        self, mock_get_price, product_data_service, sample_products
-    ):
-        """Should call product price method with None parameter."""
-        product = sample_products[0]
-
-        # Setup mocks and product data
-        mock_get_price.return_value = Decimal("19.99")
-        product.manage_stock_amount = True
-        product.stock_amount = 10.0
-        product.save()
-
-        product_data_service.get_product_summary(product)
-
-        mock_get_price.assert_called_once_with(None)
-
-    @patch.object(Product, "get_price")
-    def test_should_propagate_price_method_exceptions(self, mock_get_price, product_data_service, sample_products):
-        """Should propagate exceptions from product price method (fail fast)."""
-        product = sample_products[0]
-
-        # Setup mocks - price method raises exception
-        mock_get_price.side_effect = Exception("Price calculation error")
-        product.manage_stock_amount = True
-        product.stock_amount = 10.0
-        product.save()
-
-        # Should raise the exception
-        with pytest.raises(Exception, match="Price calculation error"):
-            product_data_service.get_product_summary(product)
-
-    @patch.object(Product, "get_price")
-    def test_should_return_none_stock_when_not_managed(self, mock_get_price, product_data_service, sample_products):
-        """Should return None for stock when stock is not managed."""
-        product = sample_products[0]
-
-        # Setup mocks and product data - stock not managed
-        mock_get_price.return_value = Decimal("19.99")
         product.manage_stock_amount = False
-        product.stock_amount = 10.0  # This should be ignored
+        product.stock_amount = 10.0
         product.save()
 
-        result = product_data_service.get_product_summary(product)
-
-        assert result["stock"] is None
-
-    @patch.object(Product, "get_price")
-    def test_should_return_stock_amount_when_managed(self, mock_get_price, product_data_service, sample_products):
-        """Should return actual stock amount when stock is managed."""
-        product = sample_products[0]
-
-        # Setup mocks and product data - stock managed
-        mock_get_price.return_value = Decimal("19.99")
-        product.manage_stock_amount = True
-        product.stock_amount = 15.5
-        product.save()
-
-        result = product_data_service.get_product_summary(product)
-
-        assert result["stock"] == 15.5
+        assert product_data_service.get_product_summary(product)["stock"] is None

@@ -1,6 +1,8 @@
 """Add-ons add their own tabs to the product management page through lfs.manage.products.tabs; the core itself knows
 no add-on tabs (it used to ship the bulk prices tab, which failed without lfs_bulk_prices)."""
 
+import importlib.util
+
 import pytest
 from django.contrib.sessions.backends.db import SessionStore
 from django.urls import NoReverseMatch, reverse
@@ -66,6 +68,9 @@ def test_addon_view_renders_the_registered_template(rf, admin_user, product, add
     assert "Content of the add-on tab" in response.content.decode()
 
 
+@pytest.mark.skipif(
+    importlib.util.find_spec("lfs_bulk_prices") is not None, reason="lfs_bulk_prices is installed and adds the tab"
+)
 def test_core_has_no_bulk_prices_tab_without_the_addon(admin_client, product):
     with pytest.raises(NoReverseMatch):
         reverse("lfs_manage_product_bulk_prices", args=[product.pk])
