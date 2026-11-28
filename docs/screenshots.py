@@ -64,6 +64,9 @@ from PIL import ImageDraw  # noqa: E402
 from lfs.catalog.models import Category, Image, Product, Property, PropertyOption  # noqa: E402
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD  # noqa: E402
 from lfs.core.models import Country, Shop  # noqa: E402
+from lfs.discounts.models import Discount  # noqa: E402
+from lfs.discounts.settings import DISCOUNT_TYPE_PERCENTAGE  # noqa: E402
+from lfs.marketing.models import FeaturedProduct  # noqa: E402
 from lfs.manufacturer.models import Manufacturer  # noqa: E402
 from lfs.page.models import Page  # noqa: E402
 from lfs.payment.models import PaymentMethod  # noqa: E402
@@ -156,6 +159,9 @@ def create_demo_data() -> None:
         image = Image(content=product, title=name, position=10)
         image.image.save(f"{slug}.jpg", product_image(colour), save=True)
     create_customers_and_orders(germany, tax)
+    for position, slug in enumerate(["chefs-knife-20", "linen-apron-sage"]):
+        FeaturedProduct.objects.create(product=Product.objects.get(slug=slug), position=(position + 1) * 10)
+    Discount.objects.create(name="Autumn sale", value=10, type=DISCOUNT_TYPE_PERCENTAGE, active=True, sums_up=True)
 
 
 # first name, last name, e-mail, city, order state, products with amounts
@@ -249,6 +255,8 @@ SHOTS: list[tuple[str, Callable[[], str]]] = [
     ("manage_orders", lambda: "/manage/orders/"),
     ("manage_customers", lambda: "/manage/customers/"),
     ("manage_review", lambda: f"/manage/review/{Review.objects.get().id}/"),
+    ("manage_featured", lambda: "/manage/featured"),
+    ("manage_discount_data", lambda: f"/manage/discount/{Discount.objects.get().id}/data"),
     ("manage_payment_method_data", lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Prepayment').id}/data"),
 ]
 

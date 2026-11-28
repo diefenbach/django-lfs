@@ -2,6 +2,11 @@
 Export
 ======
 
+.. warning::
+
+    The export is switched off in LFS 1.0: the ``Export`` entry of the ``Utils`` menu is hidden and its URLs
+    are not included. This page describes the export of earlier versions.
+
 Within this tab you can export selections of products.
 
 Site Actions

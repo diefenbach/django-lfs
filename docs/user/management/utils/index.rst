@@ -8,4 +8,5 @@ This section describes the management interfaces of the ``Utils`` menu.
    :maxdepth: 2
 
    miscellaneous.rst
+   environment.rst
    export.rst
