@@ -140,3 +140,13 @@ class TestDelete:
 
         assert Image.objects.count() == 1
         assert messages_of(response) == ["No images were selected for deletion."]
+
+    def test_does_not_delete_product_images(self, manager):
+        """Only library images are listed; a posted id of a product image must not delete it."""
+        lamp = product_image("Lamp photo")
+        beach = library_image("Beach")
+
+        response = manager.post(reverse("lfs_manage_images_delete"), {"images": [lamp.id, beach.id]})
+
+        assert list(Image.objects.all()) == [lamp]
+        assert messages_of(response) == ["1 image has been successfully deleted."]

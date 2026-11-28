@@ -188,11 +188,13 @@ class DeleteImagesView(PermissionRequiredMixin, View):
 
     def post(self, request: HttpRequest) -> HttpResponseRedirect:
         """Delete images specified in POST data."""
-        image_ids = request.POST.getlist("images")
-        deleted_count = len(image_ids)
+        image_ids = [i for i in request.POST.getlist("images") if i.isdigit()]
+        # Only library images: product images are managed with their product.
+        images = Image.objects.filter(pk__in=image_ids, content_id=None)
+        deleted_count = images.count()
 
         if deleted_count > 0:
-            Image.objects.filter(pk__in=image_ids).delete()
+            images.delete()
 
             # Add success message
             message = ngettext(
