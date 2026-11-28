@@ -1,0 +1,7 @@
+#!/bin/bash
+# Show the documentation at http://127.0.0.1:8040/ (another port: PORT=... bin/docs). It rebuilds and reloads the
+# browser on every change in docs/. Needs uv; installs Sphinx and the theme into a throwaway environment.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+exec uv run --no-project --with-requirements docs/requirements.txt --with "sphinx-autobuild>=2024.10,<2026" \
+    sphinx-autobuild docs docs/_build/html --host 127.0.0.1 --port "${PORT:-8040}" --open-browser
