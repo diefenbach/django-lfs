@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.translation import gettext_lazy as _
 
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manufacturer.models import Manufacturer
