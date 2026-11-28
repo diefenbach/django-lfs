@@ -11,7 +11,6 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView
 
@@ -497,7 +496,6 @@ def sort_property_groups(request):
 
 
 @permission_required("core.manage_shop")
-@csrf_exempt
 @require_http_methods(["POST"])
 def sort_property_group_properties(request, id):
     """Handle drag and drop sorting of properties within a property group."""

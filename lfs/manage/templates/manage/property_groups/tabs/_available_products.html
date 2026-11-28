@@ -16,7 +16,7 @@
                 </h2>
                 <!-- Pagination -->
                 {% if page and page.has_other_pages %}
-                    {% include 'manage/snippets/pagination.html' with page_obj=page url_name='lfs_manage_property_group_products' page_info_position='beside' %}
+                    {% include 'manage/snippets/pagination.html' with page_obj=page url_name='lfs_manage_property_group_products' url_params=property_group.id page_info_position='beside' %}
                 {% endif %}
             </div>
         </div>

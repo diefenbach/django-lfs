@@ -4,11 +4,11 @@ from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.forms import Form
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView
+from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView, View
 
 from lfs.caching.listeners import invalidate_cache_group_id
 from lfs.catalog.models import Property, PropertyOption
@@ -269,28 +269,24 @@ class PropertyOptionUpdateView(PermissionRequiredMixin, RedirectView):
             option.save()
 
 
-class PropertyOptionDeleteView(PermissionRequiredMixin, DeleteView):
-    """Deletes option with given id."""
+class PropertyOptionDeleteView(PermissionRequiredMixin, View):
+    """Deletes the option with the given id, renumbers the remaining options and invalidates the property caches.
 
-    model = PropertyOption
-    pk_url_kwarg = "option_id"
+    Only DELETE: the property page sends it with htmx and replaces the option's row with the empty response.
+    """
+
+    http_method_names = ["delete"]
     permission_required = "core.manage_shop"
 
-    def get_success_url(self):
-        property = self.object.property
-        return reverse("lfs_manage_property", kwargs={"id": property.id})
-
-    def delete(self, request, *args, **kwargs):
-        """Deletes and updates positions."""
-        property = self.get_object().property
-        response = super().delete(request, *args, **kwargs)
-
+    def delete(self, request: HttpRequest, option_id: int) -> HttpResponse:
+        """Deletes the option and returns an empty response that removes its row."""
+        option = get_object_or_404(PropertyOption, pk=option_id)
+        property = option.property
+        option.delete()
         self._update_positions(property)
         # invalidate global properties version number (all product property caches will be invalidated)
         invalidate_cache_group_id("global-properties-version")
-
-        messages.success(request, _("Option has been deleted."))
-        return response
+        return HttpResponse()
 
     def _update_positions(self, property):
         """Updates position of options of given property."""
