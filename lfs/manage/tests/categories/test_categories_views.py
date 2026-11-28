@@ -4,6 +4,7 @@ by drag and drop. Levels of new categories are tested in test_category_level.py,
 lfs/manage/tests/test_delete_views.py."""
 
 import io
+import os
 
 import pytest
 from django.contrib.messages import get_messages
@@ -93,6 +94,18 @@ class TestCategory:
         assert lights.image.name.endswith(".png")
         assert response["Location"] == url
         assert messages_of(response) == ["Category data has been saved."]
+
+    def test_deleting_the_image_removes_it(self, manager):
+        lights = category("Lights")
+        url = reverse("lfs_manage_category", kwargs={"id": lights.id})
+        data = {"name": "Lights", "slug": "lights"}
+        manager.post(url, data | {"image": png()})
+        path = Category.objects.get(pk=lights.pk).image.path
+
+        manager.post(url, data | {"delete_image": "on"})
+
+        assert not Category.objects.get(pk=lights.pk).image
+        assert not os.path.exists(path)
 
     def test_saves_the_view_settings(self, manager):
         lights = category("Lights")
