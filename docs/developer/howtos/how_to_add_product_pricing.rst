@@ -17,7 +17,7 @@ Implement the price calculator class
 ====================================
 
 Within ``__init__.py`` file of your application (or anywhere you choose) create
-a class that inherits from lfs.plugins.PricingCalculator and implement all
+a class that inherits from ``lfs.plugins.PriceCalculator`` and implement all
 inherited methods.
 
 .. code-block:: python
@@ -39,17 +39,17 @@ Plug in the custom price calculator
 
 2. Add the application to settings.INSTALLED_APPS.
 
-3. If your are using models (which is completely up to you), sync your database.
+3. If you are using models (which is completely up to you), run ``python manage.py migrate``.
 
-4. Edit the dictionary lfs.core.settings.LFS_PRICE_CALCULATORS to make
+4. Set ``LFS_PRICE_CALCULATORS`` in your project's settings to make
    your custom pricing calculator available to products in the manage interface
 
 .. code-block:: python
 
     LFS_PRICE_CALCULATORS = [
-        ["lfs.gross_price.calculator.GrossPriceCalculator", _(u"Price includes tax")],
-        ["lfs.net_price.calculator.NetPriceCalculator", _(u"Price excludes tax")],
-        ["mycustom_price.CustomPriceCalculator", _(u"My Pricing Calculator")],
+        ["lfs.gross_price.calculator.GrossPriceCalculator", _("Price includes tax")],
+        ["lfs.net_price.calculator.NetPriceCalculator", _("Price excludes tax")],
+        ["mycustom_price.CustomPriceCalculator", _("My Pricing Calculator")],
     ]
 
 Set the shop default price calculator

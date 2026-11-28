@@ -81,7 +81,7 @@ first:
 
     $ bin/django test lfs.core
 
-#. New features shouldn't make LFS slower. Please see :doc:`benchmarking`.
+#. New features shouldn't make LFS slower.
 
 #. Add yourself to `CREDITS.txt <https://github.com/diefenbach/django-lfs/blob/master/CREDITS.txt>`_.
 
