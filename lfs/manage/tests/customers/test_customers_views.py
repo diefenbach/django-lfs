@@ -74,6 +74,16 @@ class TestList:
 
         assert (row["customer"], row["orders_count"], row["cart_price"]) == (anna, 2, 40.0)
 
+    def test_a_registered_customer_shows_the_orders_of_all_sessions(self, manager):
+        """After registering, the customer keeps the session it started with; later orders have other sessions."""
+        anna = customer("Anna", session="first-visit")
+        order_of(anna, session="first-visit")
+        order_of(anna, session="a-later-visit")
+
+        assert manager.get(LIST).context["customers_with_data"][0]["orders_count"] == 2
+        page = manager.get(reverse("lfs_manage_customer", kwargs={"customer_id": anna.id}))
+        assert len(page.context["orders"]) == 2
+
     def test_filters_by_address_name_and_registration_days(self, manager):
         customer("Anna", joined=at(10))
         customer("Annabel", joined=at(20))
