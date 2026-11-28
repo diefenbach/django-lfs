@@ -53,3 +53,49 @@ def test_lists_assigned_products_and_offers_only_the_others(manager, manufacture
 
     assert list(context["manufacturer_products"]) == [p1]
     assert list(context["page"].object_list) == [p2, p3]
+
+
+def test_removing_does_not_touch_products_of_another_manufacturer(manager, manufacturer, products):
+    """The tab lists only this manufacturer's products; a posted id of another one's product must not change it."""
+    from lfs.manufacturer.models import Manufacturer
+
+    other = Manufacturer.objects.create(name="Other", slug="other")
+    p1 = products[0]
+    Product.objects.filter(pk=p1.pk).update(manufacturer=other)
+
+    manager.post(tab_url(manufacturer), {"remove_products": "1", f"product-{p1.id}": "on"})
+
+    assert Product.objects.get(pk=p1.pk).manufacturer == other
+
+
+def test_unknown_ids_are_ignored(manager, manufacturer, products):
+    response = manager.post(tab_url(manufacturer), {"assign_products": "1", "product-999999": "on", "product-x": "on"})
+
+    assert response["Location"] == tab_url(manufacturer)
+
+
+def test_offers_products_filtered_by_name_and_category_with_its_subcategories(manager, manufacturer, products):
+    from lfs.catalog.models import Category
+
+    lights = Category.objects.create(name="Lights", slug="lights")
+    lamps = Category.objects.create(name="Lamps", slug="lamps", parent=lights)
+    desk_lamp = Product.objects.create(name="Desk lamp", slug="desk-lamp")
+    desk_lamp.categories.add(lamps)
+    Product.objects.create(name="Lamp shade", slug="lamp-shade")
+
+    by_category = manager.get(tab_url(manufacturer), {"filter": "lamp", "products_category_filter": lights.id})
+    without_category = manager.get(tab_url(manufacturer), {"filter": "lamp", "products_category_filter": "None"})
+
+    assert list(by_category.context["page"].object_list) == [desk_lamp]
+    assert [p.name for p in without_category.context["page"].object_list] == ["Lamp shade"]
+
+
+def test_paging_keeps_the_filter_in_the_session(manager, manufacturer, products):
+    for i in range(26):
+        Product.objects.create(name=f"Lamp {i:02d}", slug=f"lamp-{i}")
+    manager.get(tab_url(manufacturer), {"filter": "lamp"})
+
+    page = manager.get(tab_url(manufacturer), {"page": 2}).context["page"]
+
+    assert [p.name for p in page.object_list] == ["Lamp 25"]
+    assert manager.get(tab_url(manufacturer), {"page": 9}).context["page"] == 0
