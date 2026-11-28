@@ -53,9 +53,11 @@ from django.test import Client  # noqa: E402
 from PIL import Image as PILImage  # noqa: E402
 from PIL import ImageDraw  # noqa: E402
 
-from lfs.catalog.models import Category, Image, Product  # noqa: E402
+from lfs.catalog.models import Category, Image, Product, Property, PropertyOption  # noqa: E402
+from lfs.catalog.settings import PROPERTY_SELECT_FIELD  # noqa: E402
 from lfs.core.models import Country, Shop  # noqa: E402
 from lfs.manufacturer.models import Manufacturer  # noqa: E402
+from lfs.page.models import Page  # noqa: E402
 from lfs.payment.models import PaymentMethod  # noqa: E402
 from lfs.shipping.models import ShippingMethod  # noqa: E402
 from lfs.tax.models import Tax  # noqa: E402
@@ -120,6 +122,13 @@ def create_demo_data() -> None:
     ShippingMethod.objects.filter(name="Standard").update(
         tax=tax, price=Decimal("4.90"), description="<p>DHL parcel, 1–2 working days</p>"
     )
+    colour = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, filterable=True)
+    for position, option in enumerate(["Sage", "Charcoal", "Natural"]):
+        PropertyOption.objects.create(property=colour, name=option, position=(position + 1) * 10)
+    Page.objects.filter(slug="imprint").update(
+        short_text="Who runs this shop.",
+        body="<p>Kitchen &amp; Table GmbH<br>Example Street 1<br>12345 Example Town</p>",
+    )
     PaymentMethod.objects.filter(name="Prepayment").update(
         description="<p>Pay by bank transfer; we ship when the money has arrived.</p>"
     )
@@ -177,6 +186,8 @@ SHOTS: list[tuple[str, Callable[[], str]]] = [
     ("manage_shop_data", lambda: "/manage/shop/data/"),
     ("manage_shop_default_values", lambda: "/manage/shop/default-values/"),
     ("manage_shipping_method_data", lambda: f"/manage/shipping-method/{ShippingMethod.objects.get(name='Standard').id}/data"),
+    ("manage_property_data", lambda: f"/manage/property/{Property.objects.get(name='Colour').id}/data"),
+    ("manage_page_data", lambda: f"/manage/page/{Page.objects.get(slug='imprint').id}/data"),
     ("manage_payment_method_data", lambda: f"/manage/payment-method/{PaymentMethod.objects.get(name='Prepayment').id}/data"),
 ]
 
