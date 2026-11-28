@@ -5,13 +5,11 @@ Management view mixins for common functionality.
 
 class DirectDeleteMixin:
     """
-    Mixin that makes DeleteView delete directly on GET without confirmation.
+    Mixin for a DeleteView whose confirmation is a modal: it deletes on POST from that modal and refuses every other
+    method with 405. A GET never deletes, so a link or an image cannot delete anything.
 
-    This mixin bypasses Django's default confirmation template for DeleteView
-    and directly calls the delete() method when a GET request is made.
-    Useful for delete operations that are already confirmed via modals or other UI.
+    On POST, Django's DeleteView calls ``form_valid()``, not ``delete()``; work that belongs to a deletion goes into
+    ``form_valid()``.
     """
 
-    def get(self, request, *args, **kwargs):
-        """Handle GET request - delete directly without confirmation."""
-        return self.delete(request, *args, **kwargs)
+    http_method_names = ["post"]

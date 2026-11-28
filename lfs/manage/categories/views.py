@@ -454,13 +454,11 @@ class CategoryDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequi
     def get_success_url(self):
         return reverse("lfs_manage_categories")
 
-    def delete(self, request, *args, **kwargs):
-        """Delete category and update positions."""
-        category = self.get_object()
-        parent = category.parent
-        response = super().delete(request, *args, **kwargs)
+    def form_valid(self, form) -> HttpResponse:
+        """Deletes the category and renumbers its siblings."""
+        parent = self.object.parent
+        response = super().form_valid(form)
 
-        # Update positions
         from lfs.manage import utils as manage_utils
 
         manage_utils.update_category_positions(parent)

@@ -376,15 +376,6 @@ class TestOrderDeleteConfirmView:
 class TestOrderDeleteView:
     """Test OrderDeleteView functionality."""
 
-    def test_order_delete_view_get(self, authenticated_client, order):
-        """Test GET request to order delete view."""
-        url = reverse("lfs_manage_delete_order", kwargs={"order_id": order.id})
-        response = authenticated_client.get(url)
-
-        # DirectDeleteMixin deletes immediately on GET, so we expect a redirect
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
     def test_order_delete_view_post(self, authenticated_client, order):
         """Test POST request to delete order."""
         url = reverse("lfs_manage_delete_order", kwargs={"order_id": order.id})
