@@ -2,6 +2,7 @@ from datetime import datetime, date
 from typing import Dict, Any, List, Optional
 from django.db.models import QuerySet, Q
 from lfs.customer.models import Customer
+from lfs.manage.utils import day_range
 from lfs.cart.models import Cart
 from lfs.order.models import Order
 
@@ -33,18 +34,15 @@ class CustomerFilterService:
         if start or end:
             # For user-based customers, filter by user.date_joined
             user_q = Q()
-            if start:
-                # Parse date string using the service method
-                if isinstance(start, str):
-                    start = self.parse_iso_date(start)
-                if start:
-                    user_q &= Q(user__date_joined__gte=start)
-            if end:
-                # Parse date string using the service method
-                if isinstance(end, str):
-                    end = self.parse_iso_date(end)
-                if end:
-                    user_q &= Q(user__date_joined__lte=end)
+            if isinstance(start, str):
+                start = self.parse_iso_date(start)
+            if isinstance(end, str):
+                end = self.parse_iso_date(end)
+            start_dt, end_dt = day_range(start, end)
+            if start_dt:
+                user_q &= Q(user__date_joined__gte=start_dt)
+            if end_dt:
+                user_q &= Q(user__date_joined__lt=end_dt)
 
             # For session-based customers, we can't easily filter by creation date
             # since Customer model doesn't have a creation_date field

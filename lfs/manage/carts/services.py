@@ -1,42 +1,30 @@
-from datetime import datetime, date, time
+from datetime import datetime, date
 from typing import Dict, Any, Optional
 
-from django.utils import timezone
+from lfs.manage.utils import day_range
 
 
 class CartFilterService:
     """Service for filtering carts based on various criteria."""
 
     def filter_carts(self, queryset, filters: Dict[str, Any]):
-        """Filter carts based on session filters using half-open intervals.
+        """Filter carts based on session filters.
 
-        - start: interpreted as the start of that day (00:00:00)
-        - end: interpreted as exclusive end; if omitted, defaults to start of tomorrow
+        ``start`` and ``end`` are calendar days (YYYY-MM-DD) in the shop's time zone; both days are included.
+        An empty or invalid day leaves that side open.
         """
         # Handle case where filters might be a string (corrupted session data)
         if not isinstance(filters, dict):
             filters = {}
 
-        # Apply date filters
-        start = filters.get("start", "")
-        end = filters.get("end", "")
-
-        # Start datetime (aware) — default to epoch start
-        start_date = self.parse_iso_date(start)
-        if start_date:
-            start_dt = timezone.make_aware(datetime.combine(start_date, time.min))
-        else:
-            start_dt = timezone.make_aware(datetime(1970, 1, 1))
-
-        # End datetime exclusive (aware)
-        end_date = self.parse_iso_date(end)
-        if end_date:
-            # If a calendar end date is given, treat it as exclusive next-day start
-            end_dt = timezone.make_aware(datetime.combine(end_date, time.min))
-            return queryset.filter(modification_date__gte=start_dt, modification_date__lt=end_dt)
-        else:
-            # If no end given, only filter by start date
-            return queryset.filter(modification_date__gte=start_dt)
+        start_dt, end_dt = day_range(
+            self.parse_iso_date(filters.get("start", "")), self.parse_iso_date(filters.get("end", ""))
+        )
+        if start_dt:
+            queryset = queryset.filter(modification_date__gte=start_dt)
+        if end_dt:
+            queryset = queryset.filter(modification_date__lt=end_dt)
+        return queryset
 
     def parse_iso_date(self, date_string: str) -> Optional[date]:
         """Parse ISO format date string (YYYY-MM-DD) and return a date."""

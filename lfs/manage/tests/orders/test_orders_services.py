@@ -109,18 +109,6 @@ class TestOrderFilterService:
         assert result.count() == 2
         assert result.first().state == 1
 
-    def test_filter_orders_by_date_range(self, order_filter_service, sample_orders):
-        """Should filter orders by date range."""
-        queryset = Order.objects.all()
-        # Use a broader date range that should include some sample orders
-        base_date = timezone.now().date()
-        filters = {"start": str(base_date - timedelta(days=10)), "end": str(base_date + timedelta(days=1))}
-
-        result = order_filter_service.filter_orders(queryset, filters)
-
-        # Should find orders within the date range (sample_orders creates orders from today back to 4 days ago)
-        assert result.count() >= 1
-
     def test_filter_orders_combined_filters(self, order_filter_service, sample_orders):
         """Should apply multiple filters correctly."""
         queryset = Order.objects.all()

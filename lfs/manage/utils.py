@@ -1,4 +1,19 @@
+from datetime import date, datetime, time, timedelta
+
+from django.utils import timezone
+
 from lfs.catalog.models import Category
+
+
+def day_range(start: date | None, end: date | None) -> tuple[datetime | None, datetime | None]:
+    """Turn the calendar days ``start`` and ``end`` of a date filter into aware datetimes in the shop's time zone.
+
+    Returns the start of ``start`` and the start of the day after ``end``, so that ``>= start`` and ``< end``
+    include both days completely. A missing day gives ``None``.
+    """
+    start_dt = timezone.make_aware(datetime.combine(start, time.min)) if start else None
+    end_dt = timezone.make_aware(datetime.combine(end + timedelta(days=1), time.min)) if end else None
+    return start_dt, end_dt
 
 
 def get_current_page(request, objs, obj, amount):

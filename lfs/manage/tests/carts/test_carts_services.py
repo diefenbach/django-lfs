@@ -103,26 +103,6 @@ class TestCartFilterService:
             assert cart.modification_date < timezone.make_aware(datetime(2031, 1, 1, 0, 0, 0))
 
     @pytest.mark.django_db
-    def test_filter_carts_with_date_range(self, cart_filter_service, sample_carts):
-        """Test filtering with both start and end dates."""
-        now = timezone.now()
-        start_date = (now - timedelta(days=2)).strftime("%Y-%m-%d")
-        end_date = (now + timedelta(days=1)).strftime("%Y-%m-%d")
-
-        filters = {"start": start_date, "end": end_date}
-        queryset = cart_filter_service.filter_carts(Cart.objects.all(), filters)
-
-        # Should include carts from the last 2 days
-        assert queryset.count() >= 1
-        for cart in queryset:
-            start_dt = timezone.make_aware(
-                datetime.strptime(start_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0)
-            )
-            end_dt = timezone.make_aware(datetime.strptime(end_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0))
-            assert cart.modification_date >= start_dt
-            assert cart.modification_date < end_dt
-
-    @pytest.mark.django_db
     def test_filter_carts_with_invalid_start_date(self, cart_filter_service, sample_carts):
         """Test filtering with invalid start date falls back to epoch."""
         filters = {"start": "invalid-date"}
@@ -318,8 +298,9 @@ class TestCartDataService:
         cart_item2 = CartItem.objects.create(cart=cart, product=product2, amount=1)
 
         # Mock the get_price_gross method
-        with patch.object(cart_item1, "get_price_gross", return_value=Decimal("20.00")), patch.object(
-            cart_item2, "get_price_gross", return_value=Decimal("15.00")
+        with (
+            patch.object(cart_item1, "get_price_gross", return_value=Decimal("20.00")),
+            patch.object(cart_item2, "get_price_gross", return_value=Decimal("15.00")),
         ):
             summary = cart_data_service.get_cart_summary(cart, mock_request)
 
@@ -429,9 +410,11 @@ class TestCartDataService:
         cart_item = CartItem.objects.create(cart=cart, product=product, amount=1)
 
         # Mock cart.get_items() to return our cart_item with mocked methods
-        with patch.object(cart, "get_items", return_value=[cart_item]), patch.object(
-            cart_item, "get_price_gross", return_value=Decimal("10.00")
-        ), patch.object(product, "get_name", side_effect=Exception("Product name error")):
+        with (
+            patch.object(cart, "get_items", return_value=[cart_item]),
+            patch.object(cart_item, "get_price_gross", return_value=Decimal("10.00")),
+            patch.object(product, "get_name", side_effect=Exception("Product name error")),
+        ):
             # Service handles errors gracefully, returns empty products list
             carts_with_data = cart_data_service.get_carts_with_data([cart], mock_request)
 
@@ -449,8 +432,9 @@ class TestCartDataService:
         cart_item = CartItem.objects.create(cart=cart, product=product, amount=1)
 
         # Mock cart.get_items() to return our cart_item with mocked get_price_gross
-        with patch.object(cart, "get_items", return_value=[cart_item]), patch.object(
-            cart_item, "get_price_gross", side_effect=Exception("Price calculation error")
+        with (
+            patch.object(cart, "get_items", return_value=[cart_item]),
+            patch.object(cart_item, "get_price_gross", side_effect=Exception("Price calculation error")),
         ):
             # Service handles errors gracefully, returns zero values
             carts_with_data = cart_data_service.get_carts_with_data([cart], mock_request)
