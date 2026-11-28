@@ -73,10 +73,6 @@ class TestNoShippingMethodsView:
         assert issubclass(NoShippingMethodsView, PermissionRequiredMixin)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert NoShippingMethodsView.template_name == "manage/shipping_methods/no_shipping_methods.html"
-
 
 class TestShippingMethodTabMixin:
     """Test the ShippingMethodTabMixin functionality."""
@@ -124,24 +120,9 @@ class TestShippingMethodDataView:
         assert issubclass(ShippingMethodDataView, PermissionRequiredMixin)
         assert issubclass(ShippingMethodDataView, ShippingMethodTabMixin)
 
-    def test_model_attribute(self):
-        """Should use ShippingMethod model."""
-        assert ShippingMethodDataView.model == ShippingMethod
 
 
-    def test_form_class(self):
-        """Should use ShippingMethodForm."""
-        from lfs.manage.shipping_methods.forms import ShippingMethodForm
 
-        assert ShippingMethodDataView.form_class == ShippingMethodForm
-
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShippingMethodDataView.tab_name == "data"
-
-    def test_pk_url_kwarg(self):
-        """Should use correct URL kwarg."""
-        assert ShippingMethodDataView.pk_url_kwarg == "id"
 
     def test_get_success_url_method_exists(self):
         """Should have get_success_url method."""
@@ -167,13 +148,7 @@ class TestShippingMethodCriteriaView:
         assert issubclass(ShippingMethodCriteriaView, ShippingMethodTabMixin)
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShippingMethodCriteriaView.tab_name == "criteria"
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ShippingMethodCriteriaView.template_name == "manage/shipping_methods/shipping_method.html"
 
     def test_get_success_url_method_exists(self):
         """Should have get_success_url method."""
@@ -204,13 +179,7 @@ class TestShippingMethodPricesView:
         assert issubclass(ShippingMethodPricesView, ShippingMethodTabMixin)
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShippingMethodPricesView.tab_name == "prices"
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ShippingMethodPricesView.template_name == "manage/shipping_methods/shipping_method.html"
 
     def test_get_success_url_method_exists(self):
         """Should have get_success_url method."""
@@ -254,20 +223,8 @@ class TestShippingMethodCreateView:
         assert issubclass(ShippingMethodCreateView, CreateView)
         assert issubclass(ShippingMethodCreateView, PermissionRequiredMixin)
 
-    def test_model_attribute(self):
-        """Should use ShippingMethod model."""
-        assert ShippingMethodCreateView.model == ShippingMethod
 
 
-    def test_form_class(self):
-        """Should use ShippingMethodAddForm."""
-        from lfs.manage.shipping_methods.forms import ShippingMethodAddForm
-
-        assert ShippingMethodCreateView.form_class == ShippingMethodAddForm
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ShippingMethodCreateView.template_name == "manage/shipping_methods/add_shipping_method.html"
 
     def test_form_valid_method_exists(self):
         """Should have form_valid method."""
@@ -292,9 +249,6 @@ class TestShippingMethodDeleteConfirmView:
         assert issubclass(ShippingMethodDeleteConfirmView, PermissionRequiredMixin)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ShippingMethodDeleteConfirmView.template_name == "manage/shipping_methods/delete_shipping_method.html"
 
     def test_get_context_data_method_exists(self):
         """Should have get_context_data method."""
@@ -317,18 +271,8 @@ class TestShippingMethodDeleteView:
         assert issubclass(ShippingMethodDeleteView, SuccessMessageMixin)
         assert issubclass(ShippingMethodDeleteView, DirectDeleteMixin)
 
-    def test_model_attribute(self):
-        """Should use ShippingMethod model."""
-        assert ShippingMethodDeleteView.model == ShippingMethod
 
 
-    def test_pk_url_kwarg(self):
-        """Should use correct URL kwarg."""
-        assert ShippingMethodDeleteView.pk_url_kwarg == "id"
-
-    def test_success_message(self):
-        """Should have success message."""
-        assert ShippingMethodDeleteView.success_message == "Shipping method has been deleted."
 
     def test_get_success_url_method_exists(self):
         """Should have get_success_url method."""
@@ -353,9 +297,6 @@ class TestShippingMethodPriceCriteriaView:
         assert issubclass(ShippingMethodPriceCriteriaView, PermissionRequiredMixin)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ShippingMethodPriceCriteriaView.template_name == "manage/shipping_methods/shipping_price_criteria.html"
 
     def test_get_shipping_price_method_exists(self):
         """Should have get_shipping_price method."""

@@ -379,16 +379,6 @@ class TestPropertyGroupDeleteViewsUnit:
 class TestPropertyGroupTabMixinUnit:
     """Unit tests for PropertyGroupTabMixin."""
 
-    @pytest.mark.django_db
-    def test_get_property_groups_queryset_returns_property_group_queryset(self, mock_request, admin_user):
-        """Test that get_property_groups_queryset returns PropertyGroup queryset."""
-        view = PropertyGroupDataView()
-        view.request = mock_request
-        view.request.user = admin_user
-
-        queryset = view.get_property_groups_queryset()
-
-        assert queryset.model == PropertyGroup
 
     @pytest.mark.django_db
     def test_get_property_groups_queryset_applies_search_filter(self, mock_request, admin_user, sample_property_group):

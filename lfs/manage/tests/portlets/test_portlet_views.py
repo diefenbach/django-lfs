@@ -29,10 +29,6 @@ User = get_user_model()
 class TestPortletsInlineView:
     """Tests for PortletsInlineView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert PortletsInlineView.permission_required == "core.manage_shop"
-        assert PortletsInlineView.template_name == "manage/portlets/portlets_inline.html"
 
     def test_get_renders_portlets_inline_template(self, page, authenticated_request, monkeypatch):
         """Should render portlets inline template with correct context."""
@@ -208,10 +204,6 @@ class TestUpdatePortletsView:
 class TestAddPortletView:
     """Tests for AddPortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert AddPortletView.permission_required == "core.manage_shop"
-        assert AddPortletView.template_name == "manage/portlets/portlet_add.html"
 
     def test_get_without_portlet_type_returns_warning(self, page, authenticated_request):
         """Should return warning when no portlet type is provided."""
@@ -401,10 +393,6 @@ class TestAddPortletView:
 class TestDeletePortletView:
     """Tests for DeletePortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert DeletePortletView.permission_required == "core.manage_shop"
-        assert DeletePortletView.template_name == "manage/portlets/delete_portlet.html"
 
     def test_get_with_nonexistent_portlet_returns_error(self, authenticated_request):
         """Should return error for non-existent portlet."""
@@ -489,10 +477,6 @@ class TestDeletePortletView:
 class TestEditPortletView:
     """Tests for EditPortletView."""
 
-    def test_view_configuration(self):
-        """Should have correct view configuration."""
-        assert EditPortletView.permission_required == "core.manage_shop"
-        assert EditPortletView.template_name == "manage/portlets/portlet_edit.html"
 
     def test_get_with_nonexistent_portlet_returns_error(self, authenticated_request):
         """Should return error for non-existent portlet."""

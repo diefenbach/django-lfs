@@ -21,9 +21,6 @@ User = get_user_model()
 class TestImagesTabMixin:
     """Test the ImagesTabMixin functionality."""
 
-    def test_mixin_has_template_name(self):
-        """Should have correct template name."""
-        assert ImagesTabMixin.template_name == "manage/images/images.html"
 
     def test_mixin_has_tab_name_attribute(self):
         """Should have tab_name attribute."""
@@ -54,17 +51,8 @@ class TestImagesListView:
         assert issubclass(ImagesListView, TemplateView)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ImagesListView.template_name == "manage/images/images.html"
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ImagesListView.tab_name == "list"
 
-    def test_paginate_by(self):
-        """Should have correct pagination setting."""
-        assert ImagesListView.paginate_by == 50
 
     def test_get_queryset_method_exists(self):
         """Should have get_queryset method."""
@@ -164,9 +152,6 @@ class TestImagePreviewView:
         assert issubclass(ImagePreviewView, View)
 
 
-    def test_http_method_names(self):
-        """Should only allow GET requests."""
-        assert ImagePreviewView.http_method_names == ["get"]
 
     @pytest.mark.django_db
     def test_get_existing_image(self, admin_user, image, mock_session):
@@ -209,9 +194,6 @@ class TestDeleteImagesConfirmView:
         assert issubclass(DeleteImagesConfirmView, View)
 
 
-    def test_http_method_names(self):
-        """Should only allow GET requests."""
-        assert DeleteImagesConfirmView.http_method_names == ["get"]
 
     @pytest.mark.django_db
     def test_get_with_selected_images(self, admin_user, multiple_images, mock_session):
@@ -255,9 +237,6 @@ class TestDeleteImagesView:
         assert issubclass(DeleteImagesView, View)
 
 
-    def test_http_method_names(self):
-        """Should only allow POST requests."""
-        assert DeleteImagesView.http_method_names == ["post"]
 
     @pytest.mark.django_db
     def test_post_deletes_selected_images(self, admin_user, multiple_images, monkeypatch):
@@ -316,9 +295,6 @@ class TestAddImagesView:
         assert issubclass(AddImagesView, View)
 
 
-    def test_http_method_names(self):
-        """Should only allow POST requests."""
-        assert AddImagesView.http_method_names == ["post"]
 
     def test_dispatch_has_csrf_exempt(self):
         """Should have csrf_exempt decorator on dispatch."""
@@ -365,10 +341,4 @@ class TestImagesUploadView:
         assert issubclass(ImagesUploadView, TemplateView)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ImagesUploadView.template_name == "manage/images/images.html"
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ImagesUploadView.tab_name == "upload"

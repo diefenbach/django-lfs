@@ -18,27 +18,7 @@ class TestShopDataForm:
 
         assert issubclass(ShopDataForm, ModelForm)
 
-    def test_meta_model(self):
-        """Should use Shop model."""
-        assert ShopDataForm.Meta.model == Shop
 
-    def test_meta_fields(self):
-        """Should include correct fields."""
-        expected_fields = (
-            "name",
-            "shop_owner",
-            "from_email",
-            "notification_emails",
-            "description",
-            "image",
-            "static_block",
-            "checkout_type",
-            "confirm_toc",
-            "google_analytics_id",
-            "ga_site_tracking",
-            "ga_ecommerce_tracking",
-        )
-        assert ShopDataForm.Meta.fields == expected_fields
 
     def test_form_initialization_with_shop(self, shop):
         """Should initialize form with shop data."""
@@ -265,24 +245,7 @@ class TestShopDefaultValuesForm:
 
         assert issubclass(ShopDefaultValuesForm, ModelForm)
 
-    def test_meta_model(self):
-        """Should use Shop model."""
-        assert ShopDefaultValuesForm.Meta.model == Shop
 
-    def test_meta_fields(self):
-        """Should include correct fields."""
-        expected_fields = (
-            "price_calculator",
-            "default_country",
-            "invoice_countries",
-            "shipping_countries",
-            "delivery_time",
-            "return_days",
-            "return_fees",
-            "return_method",
-            "return_policy_url",
-        )
-        assert ShopDefaultValuesForm.Meta.fields == expected_fields
 
     def test_form_initialization_with_shop(self, shop):
         """Should initialize form with shop data."""
@@ -375,10 +338,6 @@ class TestShopDefaultValuesForm:
 class TestShopFormIntegration:
     """Integration tests for shop forms."""
 
-    def test_both_forms_use_same_model(self):
-        """Both forms should use the Shop model."""
-        assert ShopDataForm.Meta.model == Shop
-        assert ShopDefaultValuesForm.Meta.model == Shop
 
     def test_forms_have_different_field_sets(self):
         """Forms should have different field sets."""

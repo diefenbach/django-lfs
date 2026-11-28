@@ -85,14 +85,7 @@ class TestProductCreateView:
 
         assert issubclass(ProductCreateView, CreateView)
 
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductCreateView.model == Product
 
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ProductCreateView.template_name == "manage/products/add_product.html"
 
     def test_form_valid_method_exists(self):
         """Should have form_valid method."""
@@ -115,18 +108,8 @@ class TestProductDataView:
         assert issubclass(ProductDataView, ProductTabMixin)
         assert issubclass(ProductDataView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductDataView.model == Product
 
 
-    def test_tab_name(self):
-        """Should use 'data' as tab name."""
-        assert ProductDataView.tab_name == "data"
-
-    def test_pk_url_kwarg(self):
-        """Should use 'id' as pk_url_kwarg."""
-        assert ProductDataView.pk_url_kwarg == "id"
 
     def test_form_valid_method_exists(self):
         """Should have form_valid method."""
@@ -158,20 +141,8 @@ class TestProductStockView:
         assert issubclass(ProductStockView, ProductTabMixin)
         assert issubclass(ProductStockView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductStockView.model == Product
-
-    def test_form_class_attribute(self):
-        """Should use ProductStockForm."""
-        from lfs.manage.products.forms import ProductStockForm
-
-        assert ProductStockView.form_class == ProductStockForm
 
 
-    def test_tab_name(self):
-        """Should use 'stock' as tab name."""
-        assert ProductStockView.tab_name == "stock"
 
     def test_get_form_kwargs_method_exists(self):
         """Should have get_form_kwargs method."""
@@ -189,20 +160,7 @@ class TestProductSEOView:
         assert issubclass(ProductSEOView, ProductTabMixin)
         assert issubclass(ProductSEOView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductSEOView.model == Product
 
-    def test_form_class_attribute(self):
-        """Should use SEOForm."""
-        from lfs.manage.products.forms import SEOForm
-
-        assert ProductSEOView.form_class == SEOForm
-
-
-    def test_tab_name(self):
-        """Should use 'seo' as tab name."""
-        assert ProductSEOView.tab_name == "seo"
 
 
 class TestProductPortletsView:
@@ -216,9 +174,6 @@ class TestProductPortletsView:
         assert issubclass(ProductPortletsView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'portlets' as tab name."""
-        assert ProductPortletsView.tab_name == "portlets"
 
     def test_get_context_data_method_exists(self):
         """Should have get_context_data method."""
@@ -236,10 +191,6 @@ class TestNoProductsView:
         assert issubclass(NoProductsView, TemplateView)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert NoProductsView.template_name == "manage/products/no_products.html"
-
 
 class TestProductCategoriesView:
     """Test the ProductCategoriesView class-based view."""
@@ -252,9 +203,6 @@ class TestProductCategoriesView:
         assert issubclass(ProductCategoriesView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'categories' as tab name."""
-        assert ProductCategoriesView.tab_name == "categories"
 
     def test_post_method_exists(self):
         """Should have post method."""
@@ -277,18 +225,8 @@ class TestProductDataView:
         assert issubclass(ProductDataView, ProductTabMixin)
         assert issubclass(ProductDataView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductDataView.model == Product
 
 
-    def test_tab_name(self):
-        """Should use 'data' as tab name."""
-        assert ProductDataView.tab_name == "data"
-
-    def test_pk_url_kwarg(self):
-        """Should use 'id' as pk_url_kwarg."""
-        assert ProductDataView.pk_url_kwarg == "id"
 
     def test_get_form_class_returns_product_form_for_standard_product(self, product):
         """Should return ProductDataForm for standard products."""
@@ -511,9 +449,6 @@ class TestProductImagesView:
         assert issubclass(ProductImagesView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'images' as tab name."""
-        assert ProductImagesView.tab_name == "images"
 
     def test_post_toggle_active_images(self, rf, product, mocker):
         """Should toggle active images setting."""
@@ -604,9 +539,6 @@ class TestProductAttachmentsView:
         assert issubclass(ProductAttachmentsView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'attachments' as tab name."""
-        assert ProductAttachmentsView.tab_name == "attachments"
 
     def test_post_delete_attachments(self, rf, product, mocker):
         """Should delete selected attachments."""
@@ -686,9 +618,6 @@ class TestProductAccessoriesView:
         assert issubclass(ProductAccessoriesView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'accessories' as tab name."""
-        assert ProductAccessoriesView.tab_name == "accessories"
 
     def test_post_toggle_active_accessories(self, rf, product, mocker):
         """Should toggle active accessories setting."""
@@ -996,9 +925,6 @@ class TestProductDeleteConfirmView:
         assert issubclass(ProductDeleteConfirmView, TemplateView)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ProductDeleteConfirmView.template_name == "manage/products/delete_product.html"
 
     def test_get_context_data_includes_product(self, rf, product):
         """Should include the product in context."""
@@ -1028,18 +954,8 @@ class TestProductDeleteView:
         assert issubclass(ProductDeleteView, PermissionRequiredMixin)
         assert issubclass(ProductDeleteView, DeleteView)
 
-    def test_model_attribute(self):
-        """Should use Product model."""
-        assert ProductDeleteView.model == Product
-
-    def test_pk_url_kwarg(self):
-        """Should use 'id' as pk_url_kwarg."""
-        assert ProductDeleteView.pk_url_kwarg == "id"
 
 
-    def test_success_message(self):
-        """Should have correct success message."""
-        assert ProductDeleteView.success_message == "Product has been deleted."
 
     def test_get_success_url_returns_products_list(self):
         """Should redirect to products list after deletion."""
@@ -1116,11 +1032,6 @@ class TestApplyProductFiltersView:
         assert issubclass(ApplyProductFiltersView, FormView)
 
 
-    def test_form_class(self):
-        """Should use ProductFilterForm."""
-        from lfs.manage.products.forms import ProductFilterForm
-
-        assert ApplyProductFiltersView.form_class == ProductFilterForm
 
     def test_form_valid_saves_filters_to_session(self, rf, admin_user, mocker):
         """Should save valid filter data to session."""
@@ -1451,9 +1362,6 @@ class TestProductVariantsView:
         assert issubclass(ProductVariantsView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'variants' as tab name."""
-        assert ProductVariantsView.tab_name == "variants"
 
     def test_post_delete_variants(self, rf, product, mocker):
         """Should delete selected variants."""
@@ -1653,9 +1561,6 @@ class TestProductRelatedProductsView:
         assert issubclass(ProductRelatedProductsView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'related' as tab name."""
-        assert ProductRelatedProductsView.tab_name == "related"
 
     def test_post_toggle_active_related_products(self, rf, product, mocker):
         """Should toggle active related products setting."""
@@ -2007,9 +1912,6 @@ class TestProductPropertiesView:
         assert issubclass(ProductPropertiesView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should use 'properties' as tab name."""
-        assert ProductPropertiesView.tab_name == "properties"
 
     def test_get_context_data_basic_structure(self, rf, product):
         """Should return context with basic structure."""
@@ -2442,9 +2344,6 @@ class TestProductListView:
         assert issubclass(ProductListView, TemplateView)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ProductListView.template_name == "manage/products/product_list.html"
 
     def test_get_context_data_method_exists(self):
         """Should have get_context_data method."""

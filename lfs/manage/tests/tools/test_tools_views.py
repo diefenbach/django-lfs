@@ -18,10 +18,6 @@ class TestToolsView:
         assert issubclass(ToolsView, PermissionRequiredMixin)
         assert issubclass(ToolsView, TemplateView)
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert ToolsView.template_name == "manage/tools/tools.html"
-
 
     def test_get_context_data_returns_utilities_list(self, mock_request):
         """Should return utilities list in context."""

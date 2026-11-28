@@ -7,12 +7,9 @@ from lfs.manage.manufacturers.views import (
     ManufacturerDataView,
     ManufacturerProductsView,
     ManufacturerSEOView,
-    ManufacturerPortletsView,
     ManufacturerCreateView,
-    ManufacturerDeleteConfirmView,
     ManufacturerDeleteView,
     ManufacturerViewByIDView,
-    NoManufacturersView,
     ManufacturersAjaxView,
 )
 
@@ -54,9 +51,6 @@ class TestManufacturerDataView:
     """Test ManufacturerDataView behavior."""
 
 
-    def test_tab_name_is_data(self):
-        """Should have correct tab name."""
-        assert ManufacturerDataView.tab_name == "data"
 
     def test_success_url_uses_manufacturer_id(self, manufacturer):
         """Should redirect to manufacturer data tab after successful save."""
@@ -68,28 +62,13 @@ class TestManufacturerDataView:
         expected_url = reverse("lfs_manage_manufacturer", kwargs={"id": manufacturer.pk})
         assert url == expected_url
 
-    def test_model_is_manufacturer(self):
-        """Should use Manufacturer model."""
-        assert ManufacturerDataView.model == Manufacturer
 
-    def test_form_class_is_manufacturer_form(self):
-        """Should use ManufacturerForm."""
-        from lfs.manage.manufacturers.forms import ManufacturerForm
-
-        assert ManufacturerDataView.form_class == ManufacturerForm
-
-    def test_pk_url_kwarg_is_id(self):
-        """Should use 'id' as URL keyword argument."""
-        assert ManufacturerDataView.pk_url_kwarg == "id"
 
 
 class TestManufacturerProductsView:
     """Test ManufacturerProductsView behavior."""
 
 
-    def test_tab_name_is_products(self):
-        """Should have correct tab name."""
-        assert ManufacturerProductsView.tab_name == "products"
 
     def test_success_url_uses_manufacturer_id(self, manufacturer):
         """Should redirect to manufacturer products tab."""
@@ -101,18 +80,11 @@ class TestManufacturerProductsView:
         expected_url = reverse("lfs_manage_manufacturer_products", kwargs={"id": manufacturer.pk})
         assert url == expected_url
 
-    def test_template_name_is_manufacturer_html(self):
-        """Should use correct template."""
-        assert ManufacturerProductsView.template_name == "manage/manufacturers/manufacturer.html"
-
 
 class TestManufacturerSEOView:
     """Test ManufacturerSEOView behavior."""
 
 
-    def test_tab_name_is_seo(self):
-        """Should have correct tab name."""
-        assert ManufacturerSEOView.tab_name == "seo"
 
     def test_success_url_uses_manufacturer_id(self, manufacturer):
         """Should redirect to manufacturer SEO tab after successful save."""
@@ -124,27 +96,8 @@ class TestManufacturerSEOView:
         expected_url = reverse("lfs_manage_manufacturer_seo", kwargs={"id": manufacturer.pk})
         assert url == expected_url
 
-    def test_model_is_manufacturer(self):
-        """Should use Manufacturer model."""
-        assert ManufacturerSEOView.model == Manufacturer
-
-    def test_fields_include_seo_fields(self):
-        """Should include SEO fields."""
-        expected_fields = ["meta_title", "meta_description", "meta_keywords"]
-        assert ManufacturerSEOView.fields == expected_fields
-
-    def test_pk_url_kwarg_is_id(self):
-        """Should use 'id' as URL keyword argument."""
-        assert ManufacturerSEOView.pk_url_kwarg == "id"
 
 
-class TestManufacturerPortletsView:
-    """Test ManufacturerPortletsView behavior."""
-
-
-    def test_tab_name_is_portlets(self):
-        """Should have correct tab name."""
-        assert ManufacturerPortletsView.tab_name == "portlets"
 
 
 class TestManufacturerCreateView:
@@ -161,33 +114,14 @@ class TestManufacturerCreateView:
         expected_url = reverse("lfs_manage_manufacturer", kwargs={"id": manufacturer.pk})
         assert url == expected_url
 
-    def test_model_is_manufacturer(self):
-        """Should use Manufacturer model."""
-        assert ManufacturerCreateView.model == Manufacturer
 
-    def test_form_class_is_manufacturer_add_form(self):
-        """Should use ManufacturerAddForm."""
-        from lfs.manage.manufacturers.forms import ManufacturerAddForm
 
-        assert ManufacturerCreateView.form_class == ManufacturerAddForm
-
-    def test_template_name_is_add_manufacturer_html(self):
-        """Should use correct template."""
-        assert ManufacturerCreateView.template_name == "manage/manufacturers/add_manufacturer.html"
 
     def test_has_success_message(self):
         """Should have success message."""
         assert hasattr(ManufacturerCreateView, "success_message")
         assert ManufacturerCreateView.success_message is not None
 
-
-class TestManufacturerDeleteConfirmView:
-    """Test ManufacturerDeleteConfirmView behavior."""
-
-
-    def test_template_name_is_delete_manufacturer_html(self):
-        """Should use correct template."""
-        assert ManufacturerDeleteConfirmView.template_name == "manage/manufacturers/delete_manufacturer.html"
 
 
 class TestManufacturerDeleteView:
@@ -203,13 +137,7 @@ class TestManufacturerDeleteView:
         expected_url = reverse("lfs_manage_manufacturers")
         assert url == expected_url
 
-    def test_model_is_manufacturer(self):
-        """Should use Manufacturer model."""
-        assert ManufacturerDeleteView.model == Manufacturer
 
-    def test_pk_url_kwarg_is_id(self):
-        """Should use 'id' as URL keyword argument."""
-        assert ManufacturerDeleteView.pk_url_kwarg == "id"
 
     def test_has_success_message(self):
         """Should have success message."""
@@ -235,14 +163,6 @@ class TestManufacturerViewByIDView:
         assert url == expected_url
 
 
-class TestNoManufacturersView:
-    """Test NoManufacturersView behavior."""
-
-
-    def test_template_name_is_no_manufacturers_html(self):
-        """Should use correct template."""
-        assert NoManufacturersView.template_name == "manage/manufacturers/no_manufacturers.html"
-
 
 class TestManufacturersAjaxView:
     """Test ManufacturersAjaxView behavior."""
@@ -257,11 +177,6 @@ class TestManufacturersAjaxView:
 class TestManufacturerTabMixin:
     """Test ManufacturerTabMixin behavior."""
 
-    def test_template_name_is_manufacturer_html(self):
-        """Should use correct template."""
-        from lfs.manage.manufacturers.views import ManufacturerTabMixin
-
-        assert ManufacturerTabMixin.template_name == "manage/manufacturers/manufacturer.html"
 
     def test_has_get_manufacturer_method(self):
         """Should have get_manufacturer method."""

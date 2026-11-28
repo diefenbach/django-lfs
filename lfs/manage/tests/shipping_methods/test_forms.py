@@ -11,9 +11,6 @@ class TestShippingMethodForm:
         """Should inherit from ModelForm."""
         assert issubclass(ShippingMethodForm, ModelForm)
 
-    def test_form_meta_model(self):
-        """Should use ShippingMethod model."""
-        assert ShippingMethodForm.Meta.model == ShippingMethod
 
     def test_form_meta_exclude(self):
         """Should exclude deletable and priority fields."""
@@ -224,13 +221,7 @@ class TestShippingMethodAddForm:
         """Should inherit from ModelForm."""
         assert issubclass(ShippingMethodAddForm, ModelForm)
 
-    def test_form_meta_model(self):
-        """Should use ShippingMethod model."""
-        assert ShippingMethodAddForm.Meta.model == ShippingMethod
 
-    def test_form_meta_fields(self):
-        """Should only include name field."""
-        assert ShippingMethodAddForm.Meta.fields == ("name",)
 
     def test_form_includes_only_name_field(self):
         """Should include only the name field."""

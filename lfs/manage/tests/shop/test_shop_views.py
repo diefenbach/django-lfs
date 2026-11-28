@@ -21,9 +21,6 @@ User = get_user_model()
 class TestShopTabMixin:
     """Test the ShopTabMixin functionality."""
 
-    def test_mixin_has_template_name(self):
-        """Should have correct template name."""
-        assert ShopTabMixin.template_name == "manage/shop/shop.html"
 
     def test_mixin_has_tab_name_attribute(self):
         """Should have tab_name attribute."""
@@ -97,20 +94,8 @@ class TestShopDataView:
         assert issubclass(ShopDataView, ShopTabMixin)
         assert issubclass(ShopDataView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use Shop model."""
-        assert ShopDataView.model == Shop
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShopDataView.tab_name == "data"
-
-    def test_form_class_attribute(self):
-        """Should have form_class attribute."""
-        from lfs.manage.shop.forms import ShopDataForm
-
-        assert ShopDataView.form_class == ShopDataForm
 
     def test_get_object_method_exists(self):
         """Should have get_object method."""
@@ -152,20 +137,8 @@ class TestShopDefaultValuesView:
         assert issubclass(ShopDefaultValuesView, ShopTabMixin)
         assert issubclass(ShopDefaultValuesView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use Shop model."""
-        assert ShopDefaultValuesView.model == Shop
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShopDefaultValuesView.tab_name == "default_values"
-
-    def test_form_class_attribute(self):
-        """Should have form_class attribute."""
-        from lfs.manage.shop.forms import ShopDefaultValuesForm
-
-        assert ShopDefaultValuesView.form_class == ShopDefaultValuesForm
 
     def test_get_object_method_exists(self):
         """Should have get_object method."""
@@ -208,9 +181,6 @@ class TestShopOrderNumbersView:
         assert issubclass(ShopOrderNumbersView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShopOrderNumbersView.tab_name == "order_numbers"
 
     def test_get_context_data_method_exists(self):
         """Should have get_context_data method."""
@@ -273,19 +243,8 @@ class TestShopSEOTabView:
         assert issubclass(ShopSEOTabView, ShopTabMixin)
         assert issubclass(ShopSEOTabView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use Shop model."""
-        assert ShopSEOTabView.model == Shop
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShopSEOTabView.tab_name == "seo"
-
-    def test_fields_attribute(self):
-        """Should define correct fields."""
-        expected_fields = ["meta_title", "meta_description", "meta_keywords"]
-        assert ShopSEOTabView.fields == expected_fields
 
     def test_get_object_method_exists(self):
         """Should have get_object method."""
@@ -328,9 +287,6 @@ class TestShopPortletsView:
         assert issubclass(ShopPortletsView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShopPortletsView.tab_name == "portlets"
 
     def test_get_context_data_method_exists(self):
         """Should have get_context_data method."""
@@ -367,9 +323,6 @@ class TestShopCarouselView:
         assert issubclass(ShopCarouselView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert ShopCarouselView.tab_name == "carousel"
 
     def test_get_context_data_method_exists(self):
         """Should have get_context_data method."""

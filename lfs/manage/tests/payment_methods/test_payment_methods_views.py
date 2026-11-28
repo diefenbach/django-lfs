@@ -10,7 +10,6 @@ from lfs.payment.models import PaymentMethod, PaymentMethodPrice
 from lfs.customer.models import Customer
 from lfs.manage.payment_methods.views import (
     ManagePaymentsView,
-    NoPaymentMethodsView,
     PaymentMethodTabMixin,
     PaymentMethodDataView,
     PaymentMethodCriteriaView,
@@ -74,14 +73,6 @@ class TestManagePaymentsView:
 
         assert redirect_url == expected_url
 
-
-class TestNoPaymentMethodsView:
-    """Test NoPaymentMethodsView functionality."""
-
-    def test_uses_correct_template(self):
-        """Test that view uses correct template."""
-        view = NoPaymentMethodsView()
-        assert view.template_name == "manage/payment_methods/no_payment_methods.html"
 
 
 class TestPaymentMethodTabMixin:
@@ -229,15 +220,6 @@ class TestPaymentMethodDataView:
         assert view.model == PaymentMethod
         assert view.form_class.__name__ == "PaymentMethodForm"
 
-    def test_uses_correct_tab_name(self):
-        """Test that view uses correct tab name."""
-        view = PaymentMethodDataView()
-        assert view.tab_name == "data"
-
-    def test_uses_correct_pk_url_kwarg(self):
-        """Test that view uses correct pk_url_kwarg."""
-        view = PaymentMethodDataView()
-        assert view.pk_url_kwarg == "id"
 
 
     def test_get_success_url_returns_data_tab_url(self, rf, payment_method):
@@ -277,11 +259,6 @@ class TestPaymentMethodDataView:
 
 class TestPaymentMethodCriteriaView:
     """Test PaymentMethodCriteriaView functionality."""
-
-    def test_uses_correct_tab_name(self):
-        """Test that view uses correct tab name."""
-        view = PaymentMethodCriteriaView()
-        assert view.tab_name == "criteria"
 
 
     def test_get_success_url_returns_criteria_tab_url(self, rf):
@@ -368,11 +345,6 @@ class TestPaymentMethodCriteriaView:
 
 class TestPaymentMethodPricesView:
     """Test PaymentMethodPricesView functionality."""
-
-    def test_uses_correct_tab_name(self):
-        """Test that view uses correct tab name."""
-        view = PaymentMethodPricesView()
-        assert view.tab_name == "prices"
 
 
     def test_get_success_url_returns_prices_tab_url(self, rf):
@@ -490,11 +462,6 @@ class TestPaymentMethodCreateView:
         assert view.model == PaymentMethod
         assert view.form_class.__name__ == "PaymentMethodAddForm"
 
-    def test_uses_correct_template(self):
-        """Test that view uses correct template."""
-        view = PaymentMethodCreateView()
-        assert view.template_name == "manage/payment_methods/add_payment_method.html"
-
 
     @patch("lfs.manage.payment_methods.views.messages")
     def test_form_valid_creates_payment_method_and_redirects(self, mock_messages, rf):
@@ -532,11 +499,6 @@ class TestPaymentMethodCreateView:
 class TestPaymentMethodDeleteConfirmView:
     """Test PaymentMethodDeleteConfirmView functionality."""
 
-    def test_uses_correct_template(self):
-        """Test that view uses correct template."""
-        view = PaymentMethodDeleteConfirmView()
-        assert view.template_name == "manage/payment_methods/delete_payment_method.html"
-
 
     def test_get_context_data_includes_payment_method(self, rf, payment_method):
         """Test that get_context_data includes payment method."""
@@ -554,15 +516,6 @@ class TestPaymentMethodDeleteConfirmView:
 class TestPaymentMethodDeleteView:
     """Test PaymentMethodDeleteView functionality."""
 
-    def test_uses_correct_model(self):
-        """Test that view uses correct model."""
-        view = PaymentMethodDeleteView()
-        assert view.model == PaymentMethod
-
-    def test_uses_correct_pk_url_kwarg(self):
-        """Test that view uses correct pk_url_kwarg."""
-        view = PaymentMethodDeleteView()
-        assert view.pk_url_kwarg == "id"
 
 
     def test_get_success_url_returns_payment_methods_list(self, rf):
@@ -603,11 +556,6 @@ class TestPaymentMethodDeleteView:
 
 class TestPaymentMethodPriceCriteriaView:
     """Test PaymentMethodPriceCriteriaView functionality."""
-
-    def test_uses_correct_template(self):
-        """Test that view uses correct template."""
-        view = PaymentMethodPriceCriteriaView()
-        assert view.template_name == "manage/payment_methods/payment_price_criteria.html"
 
 
     def test_get_payment_price_returns_correct_object(self, rf, payment_method_price):

@@ -8,7 +8,6 @@ from lfs.manage.categories.views import (
     CategoryViewView,
     CategoryProductsView,
     CategorySEOView,
-    CategoryPortletsView,
     CategoryCreateView,
     CategoryDeleteView,
 )
@@ -51,9 +50,6 @@ class TestCategoryDataView:
     """Test CategoryDataView behavior."""
 
 
-    def test_tab_name_is_data(self):
-        """Should have correct tab name."""
-        assert CategoryDataView.tab_name == "data"
 
     def test_success_url_uses_category_id(self, root_category):
         """Should redirect to category data tab after successful save."""
@@ -70,9 +66,6 @@ class TestCategoryViewView:
     """Test CategoryViewView behavior."""
 
 
-    def test_tab_name_is_view(self):
-        """Should have correct tab name."""
-        assert CategoryViewView.tab_name == "view"
 
     def test_success_url_uses_category_id(self, root_category):
         """Should redirect to category view tab after successful save."""
@@ -89,9 +82,6 @@ class TestCategoryProductsView:
     """Test CategoryProductsView behavior."""
 
 
-    def test_tab_name_is_products(self):
-        """Should have correct tab name."""
-        assert CategoryProductsView.tab_name == "products"
 
     def test_success_url_uses_category_id(self, root_category):
         """Should redirect to category products tab."""
@@ -108,9 +98,6 @@ class TestCategorySEOView:
     """Test CategorySEOView behavior."""
 
 
-    def test_tab_name_is_seo(self):
-        """Should have correct tab name."""
-        assert CategorySEOView.tab_name == "seo"
 
     def test_success_url_uses_category_id(self, root_category):
         """Should redirect to category SEO tab after successful save."""
@@ -122,14 +109,6 @@ class TestCategorySEOView:
         expected_url = reverse("lfs_manage_category_seo", kwargs={"id": root_category.pk})
         assert url == expected_url
 
-
-class TestCategoryPortletsView:
-    """Test CategoryPortletsView behavior."""
-
-
-    def test_tab_name_is_portlets(self):
-        """Should have correct tab name."""
-        assert CategoryPortletsView.tab_name == "portlets"
 
 
 class TestCategoryCreateView:

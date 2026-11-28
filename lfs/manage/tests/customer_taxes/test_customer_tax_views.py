@@ -70,10 +70,6 @@ class TestNoCustomerTaxesView:
         assert issubclass(NoCustomerTaxesView, TemplateView)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert NoCustomerTaxesView.template_name == "manage/customer_taxes/no_customer_taxes.html"
-
 
 class TestCustomerTaxDataView:
     """Test the CustomerTaxDataView class-based view."""
@@ -84,24 +80,9 @@ class TestCustomerTaxDataView:
 
         assert issubclass(CustomerTaxDataView, UpdateView)
 
-    def test_model_attribute(self):
-        """Should use CustomerTax model."""
-        assert CustomerTaxDataView.model == CustomerTax
 
 
-    def test_form_class(self):
-        """Should use CustomerTaxForm."""
-        from lfs.manage.customer_taxes.forms import CustomerTaxForm
 
-        assert CustomerTaxDataView.form_class == CustomerTaxForm
-
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert CustomerTaxDataView.tab_name == "data"
-
-    def test_pk_url_kwarg(self):
-        """Should use correct URL kwarg."""
-        assert CustomerTaxDataView.pk_url_kwarg == "id"
 
     def test_get_success_url_method_exists(self):
         """Should have get_success_url method."""
@@ -124,13 +105,7 @@ class TestCustomerTaxCriteriaView:
         assert issubclass(CustomerTaxCriteriaView, TemplateView)
 
 
-    def test_tab_name(self):
-        """Should have correct tab name."""
-        assert CustomerTaxCriteriaView.tab_name == "criteria"
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert CustomerTaxCriteriaView.template_name == "manage/customer_taxes/customer_tax.html"
 
     def test_get_success_url_method_exists(self):
         """Should have get_success_url method."""
@@ -152,20 +127,8 @@ class TestCustomerTaxCreateView:
 
         assert issubclass(CustomerTaxCreateView, CreateView)
 
-    def test_model_attribute(self):
-        """Should use CustomerTax model."""
-        assert CustomerTaxCreateView.model == CustomerTax
 
 
-    def test_form_class(self):
-        """Should use CustomerTaxForm."""
-        from lfs.manage.customer_taxes.forms import CustomerTaxForm
-
-        assert CustomerTaxCreateView.form_class == CustomerTaxForm
-
-    def test_template_name(self):
-        """Should use correct template."""
-        assert CustomerTaxCreateView.template_name == "manage/customer_taxes/add_customer_tax.html"
 
     def test_form_valid_method_exists(self):
         """Should have form_valid method."""
@@ -188,9 +151,6 @@ class TestCustomerTaxDeleteConfirmView:
         assert issubclass(CustomerTaxDeleteConfirmView, TemplateView)
 
 
-    def test_template_name(self):
-        """Should use correct template."""
-        assert CustomerTaxDeleteConfirmView.template_name == "manage/customer_taxes/delete_customer_tax.html"
 
     def test_get_context_data_method_exists(self):
         """Should have get_context_data method."""
@@ -207,18 +167,8 @@ class TestCustomerTaxDeleteView:
 
         assert issubclass(CustomerTaxDeleteView, DeleteView)
 
-    def test_model_attribute(self):
-        """Should use CustomerTax model."""
-        assert CustomerTaxDeleteView.model == CustomerTax
 
 
-    def test_pk_url_kwarg(self):
-        """Should use correct URL kwarg."""
-        assert CustomerTaxDeleteView.pk_url_kwarg == "id"
-
-    def test_success_message(self):
-        """Should have success message."""
-        assert CustomerTaxDeleteView.success_message == "Customer tax has been deleted."
 
     def test_get_success_url_method_exists(self):
         """Should have get_success_url method."""

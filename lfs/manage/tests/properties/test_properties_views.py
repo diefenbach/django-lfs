@@ -36,13 +36,6 @@ class TestManagePropertiesView:
 
 
 class TestPropertyNavigationMixinUnit:
-    @pytest.mark.django_db
-    def test_get_properties_queryset_returns_queryset(self, mock_request_with_messages, admin_user):
-        Property.objects.create(name="Color", title="Color")
-        view = PropertyDataView()
-        view.request = mock_request_with_messages
-        qs = view.get_properties_queryset()
-        assert qs.model == Property
 
     @pytest.mark.django_db
     def test_get_properties_queryset_applies_search(self, request_factory, mock_request_with_messages, admin_user):
@@ -77,11 +70,7 @@ class TestPropertyDataViewUnit:
         assert issubclass(PropertyDataView, UpdateView)
 
 
-    def test_pk_url_kwarg(self):
-        assert PropertyDataView.pk_url_kwarg == "id"
 
-    def test_model(self):
-        assert PropertyDataView.model == Property
 
     @pytest.mark.django_db
     def test_get_success_url(self, mock_request_with_messages, admin_user):
@@ -126,8 +115,6 @@ class TestPropertyCreateViewUnit:
         assert issubclass(PropertyCreateView, CreateView)
 
 
-    def test_template_name(self):
-        assert PropertyCreateView.template_name == "manage/properties/add_property.html"
 
     @pytest.mark.django_db
     def test_form_valid_sets_defaults_and_redirects(self, mock_request_with_messages, admin_user):

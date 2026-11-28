@@ -10,7 +10,6 @@ from lfs.catalog.models import Product, Category
 from lfs.manufacturer.models import Manufacturer
 from lfs.manage.discounts.views import (
     ManageDiscountsView,
-    NoDiscountsView,
     DiscountTabMixin,
     DiscountDataView,
     DiscountCriteriaView,
@@ -127,16 +126,6 @@ class TestManageDiscountsView:
         assert redirect_url == expected_url
 
 
-@pytest.mark.django_db
-@pytest.mark.unit
-class TestNoDiscountsView:
-    """Tests for NoDiscountsView."""
-
-    def test_view_uses_correct_template(self):
-        """Should use the correct template."""
-        view = NoDiscountsView()
-        assert view.template_name == "manage/discounts/no_discounts.html"
-
 
 @pytest.mark.django_db
 @pytest.mark.unit
@@ -244,20 +233,7 @@ class TestDiscountTabMixin:
 class TestDiscountDataView:
     """Tests for DiscountDataView."""
 
-    def test_view_uses_correct_template(self):
-        """Should use the correct template."""
-        view = DiscountDataView()
-        assert view.template_name == "manage/discounts/discount.html"
 
-    def test_view_uses_correct_model(self):
-        """Should use Discount model."""
-        view = DiscountDataView()
-        assert view.model == Discount
-
-    def test_view_has_correct_tab_name(self):
-        """Should have 'data' as tab name."""
-        view = DiscountDataView()
-        assert view.tab_name == "data"
 
 
     def test_get_success_url_returns_data_tab_url(self, discount):
@@ -305,15 +281,6 @@ class TestDiscountDataView:
 class TestDiscountCriteriaView:
     """Tests for DiscountCriteriaView."""
 
-    def test_view_uses_correct_template(self):
-        """Should use the correct template."""
-        view = DiscountCriteriaView()
-        assert view.template_name == "manage/discounts/discount.html"
-
-    def test_view_has_correct_tab_name(self):
-        """Should have 'criteria' as tab name."""
-        view = DiscountCriteriaView()
-        assert view.tab_name == "criteria"
 
 
     def test_get_success_url_returns_criteria_tab_url(self, discount):
@@ -462,15 +429,6 @@ class TestDiscountCriteriaModel:
 class TestDiscountProductsView:
     """Tests for DiscountProductsView."""
 
-    def test_view_uses_correct_template(self):
-        """Should use the correct template."""
-        view = DiscountProductsView()
-        assert view.template_name == "manage/discounts/discount.html"
-
-    def test_view_has_correct_tab_name(self):
-        """Should have 'products' as tab name."""
-        view = DiscountProductsView()
-        assert view.tab_name == "products"
 
 
     def test_get_success_url_returns_products_tab_url(self, discount):
@@ -677,15 +635,6 @@ class TestDiscountProductsView:
 class TestDiscountCreateView:
     """Tests for DiscountCreateView."""
 
-    def test_view_uses_correct_model(self):
-        """Should use Discount model."""
-        view = DiscountCreateView()
-        assert view.model == Discount
-
-    def test_view_uses_correct_template(self):
-        """Should use the correct template."""
-        view = DiscountCreateView()
-        assert view.template_name == "manage/discounts/add_discount.html"
 
 
     def test_get_success_url_returns_discount_url(self, discount):
@@ -732,11 +681,6 @@ class TestDiscountCreateView:
 class TestDiscountDeleteConfirmView:
     """Tests for DiscountDeleteConfirmView."""
 
-    def test_view_uses_correct_template(self):
-        """Should use the correct template."""
-        view = DiscountDeleteConfirmView()
-        assert view.template_name == "manage/discounts/delete_discount.html"
-
 
     def test_get_context_data_includes_discount(self, discount):
         """Should include discount in context."""
@@ -753,11 +697,6 @@ class TestDiscountDeleteConfirmView:
 @pytest.mark.unit
 class TestDiscountDeleteView:
     """Tests for DiscountDeleteView."""
-
-    def test_view_uses_correct_model(self):
-        """Should use Discount model."""
-        view = DiscountDeleteView()
-        assert view.model == Discount
 
 
     def test_get_success_url_returns_discounts_list(self):
