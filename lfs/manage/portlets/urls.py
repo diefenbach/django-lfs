@@ -23,11 +23,6 @@ urlpatterns = [
         name="lfs_edit_portlet",
     ),
     path(
-        "portlets/move-portlet/<int:portletassignment_id>",
-        lfs_portlets.MovePortletView.as_view(),
-        name="lfs_move_portlet",
-    ),
-    path(
         "portlets/sort",
         lfs_portlets.SortPortletsView.as_view(),
         name="lfs_sort_portlets",

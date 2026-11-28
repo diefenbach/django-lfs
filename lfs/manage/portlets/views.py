@@ -408,47 +408,6 @@ class EditPortletView(PermissionRequiredMixin, View):
             )
 
 
-class MovePortletView(PermissionRequiredMixin, View):
-    """
-    Moves a portlet up/down within a slot.
-
-    **Parameters:**
-
-        portletassignment_id
-            The portlet assignment (hence the portlet) which should be moved.
-
-    **Query String:**
-
-        direction
-            The direction to which the portlet should be moved. One of 0 (up)
-            or 1 (down).
-    """
-
-    permission_required = "core.manage_shop"
-
-    def get(self, request, portletassignment_id):
-        """Move the portlet up or down."""
-        try:
-            pa = PortletAssignment.objects.get(pk=portletassignment_id)
-        except PortletAssignment.DoesNotExist:
-            return HttpResponse("")
-
-        direction = request.GET.get("direction", "0")
-        if direction == "1":
-            pa.position += 15
-        else:
-            pa.position -= 15
-            if pa.position < 0:
-                pa.position = 10
-        pa.save()
-
-        update_portlet_positions(pa)
-
-        result = json.dumps({"html": [["#portlets", PortletsInlineView().get(request, pa.content)]]}, cls=LazyEncoder)
-
-        return HttpResponse(result, content_type="application/json")
-
-
 class SortPortletsView(PermissionRequiredMixin, View):
     """Sorts portlets after drag 'n drop."""
 
