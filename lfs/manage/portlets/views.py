@@ -69,6 +69,20 @@ def update_portlet_positions(pa):
 # =============================================================================
 
 
+def registered_portlet_class(portlet_type: str) -> type:
+    """Returns the model class of an active, registered portlet type.
+
+    The type comes from the request, so any other model name raises ContentType.DoesNotExist.
+    """
+    if not PortletRegistration.objects.filter(type=portlet_type.lower(), active=True).exists():
+        raise ContentType.DoesNotExist()
+    for ct in ContentType.objects.filter(model=portlet_type.lower()):
+        model_class = ct.model_class()
+        if model_class is not None and hasattr(model_class, "form"):
+            return model_class
+    raise ContentType.DoesNotExist()
+
+
 class PortletsInlineView(PermissionRequiredMixin, View):
     """Displays the assigned portlets for given object."""
 
@@ -157,7 +171,7 @@ class AddPortletView(PermissionRequiredMixin, View):
         # Get content type to which the portlet should be added
         try:
             object_ct = ContentType.objects.get(pk=object_type_id)
-            obj = object_ct.get_object_for_this_type(pk=object_id)
+            object_ct.get_object_for_this_type(pk=object_id)  # the object must exist
         except ContentType.DoesNotExist:
             return HttpResponse("<div class='alert alert-danger'>Invalid content type.</div>")
 
@@ -169,12 +183,7 @@ class AddPortletView(PermissionRequiredMixin, View):
             return HttpResponse("<div class='alert alert-warning'>Please select a portlet type.</div>")
 
         try:
-            portlet_ct_queryset = ContentType.objects.filter(model=portlet_type.lower())
-            if not portlet_ct_queryset.exists():
-                raise ContentType.DoesNotExist()
-
-            portlet_ct = portlet_ct_queryset[0]
-            mc = portlet_ct.model_class()
+            mc = registered_portlet_class(portlet_type)
             form = mc().form(prefix="portlet")
 
             # Get portlet type name for modal title
@@ -218,12 +227,7 @@ class AddPortletView(PermissionRequiredMixin, View):
             return HttpResponse("<div class='alert alert-warning'>Please select a portlet type.</div>")
 
         try:
-            ct_queryset = ContentType.objects.filter(model=portlet_type.lower())
-            if not ct_queryset.exists():
-                raise ContentType.DoesNotExist()
-
-            ct = ct_queryset[0]
-            mc = ct.model_class()
+            mc = registered_portlet_class(portlet_type)
             form = mc().form(prefix="portlet", data=request.POST)
 
             if form.is_valid():
@@ -309,7 +313,6 @@ class DeletePortletView(PermissionRequiredMixin, View):
             return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": 1}))
 
         content_obj = pa.content
-        content_obj_id = content_obj.id if content_obj else 1  # Default to page 1 if content is None
         pa.delete()
         update_portlet_positions(pa)
 
@@ -403,47 +406,6 @@ class EditPortletView(PermissionRequiredMixin, View):
                     "slots": slots,
                 },
             )
-
-
-class MovePortletView(PermissionRequiredMixin, View):
-    """
-    Moves a portlet up/down within a slot.
-
-    **Parameters:**
-
-        portletassignment_id
-            The portlet assignment (hence the portlet) which should be moved.
-
-    **Query String:**
-
-        direction
-            The direction to which the portlet should be moved. One of 0 (up)
-            or 1 (down).
-    """
-
-    permission_required = "core.manage_shop"
-
-    def get(self, request, portletassignment_id):
-        """Move the portlet up or down."""
-        try:
-            pa = PortletAssignment.objects.get(pk=portletassignment_id)
-        except PortletAssignment.DoesNotExist:
-            return HttpResponse("")
-
-        direction = request.GET.get("direction", "0")
-        if direction == "1":
-            pa.position += 15
-        else:
-            pa.position -= 15
-            if pa.position < 0:
-                pa.position = 10
-        pa.save()
-
-        update_portlet_positions(pa)
-
-        result = json.dumps({"html": [["#portlets", PortletsInlineView().get(request, pa.content)]]}, cls=LazyEncoder)
-
-        return HttpResponse(result, content_type="application/json")
 
 
 class SortPortletsView(PermissionRequiredMixin, View):
