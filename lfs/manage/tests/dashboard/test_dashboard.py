@@ -10,8 +10,9 @@ from django.utils import timezone
 
 from lfs.addresses.models import Address
 from lfs.catalog.models import Category, Product
+from lfs.marketing.models import OrderRatingMail
 from lfs.order.models import Order, OrderItem
-from lfs.order.settings import SUBMITTED
+from lfs.order.settings import CLOSED, SUBMITTED
 
 pytestmark = pytest.mark.django_db
 
@@ -48,6 +49,17 @@ def test_counts_products_categories_and_orders(manager):
     assert (context["total_products"], context["active_products"], context["inactive_products"]) == (2, 1, 1)
     assert (context["total_categories"], context["visible_categories"], context["hidden_categories"]) == (2, 1, 1)
     assert (context["total_orders"], context["orders_this_month"], context["orders_this_year"]) == (1, 1, 1)
+
+
+def test_counts_the_orders_due_for_a_rating_mail(manager):
+    due = order(CLOSED, closed_days_ago=20)
+    order(CLOSED, closed_days_ago=20)
+    OrderRatingMail.objects.create(order=due)
+    # Mails sent for orders that are no longer due must not be subtracted.
+    OrderRatingMail.objects.create(order=order(CLOSED, closed_days_ago=3))
+    OrderRatingMail.objects.create(order=order(SUBMITTED))
+
+    assert dashboard(manager)["eligible_rating_mails"] == 1
 
 
 def test_shows_the_product_sold_most_often(manager):
