@@ -6,112 +6,73 @@
 How To Manage Shipping Methods
 ==============================
 
-Overview
-========
+In this how-to you add a shipping method, restrict it with criteria, and give it a second price: parcels up to
+30 kg cost 4.90, and from a cart price of 50 shipping is free.
 
-In this how-to you will learn how to add and edit shipping methods and how to
-add criteria and prices for them.
+Add the shipping method
+=======================
 
-Get Started
-===========
+#. Go to ``Shop / Shipping Methods`` and click ``Add Shipping Method``.
 
-In order to add/edit a shipping method please go to Management / Shop /
-Shipping Methods.
+#. Enter the ``Name``, e.g. ``Parcel``, and click ``Add Shipping Method`` in the dialog. The ``Data`` tab of the new
+   shipping method opens.
 
-.. image:: /images/how_to_shipping_manage.*
+#. Check ``Active``, enter a ``Description`` for the checkout, select the ``Tax`` and the ``Delivery time``, enter
+   the ``Price`` (``4.90``), and select the ``Price Calculator`` (whether the price includes the tax).
 
-If there are no shipping methods yet, you will automatically get to the add
-shipping method form. Otherwise the first shipping method is displayed and
-you can click on a shipping method to edit this or on ``Add shipping method``
-to add a new one.
-
-.. image:: /images/how_to_shipping_add.*
-
-If you have done that you can edit or enter the data for a shipping method as
-described below.
-
-Data
-====
-
-The data tab contains all core data for the shipping method.
-
-.. image:: /images/how_to_shipping_data.*
-
-* Now fill in the fields:
-
-    * **Name:** The name of the shipping method, which is displayed to the
-      shop customer.
-    * **Description:** A short description of the shipping method, which is also
-      displayed to the customer.
-    * **Note:** A note of the shipping method, which is displayed on the confirmation
-      mail after the shop customer has been checked out.
-    * **Priority:** The first valid shipping method with the highest priority
-      (smaller number) method is displayed to the customer.
-    * **Image:** An image for the shipping method, which is displayed to the
-      shop customer.
-    * **Tax:** The included tax of the shipping method's price.
-    * **Price:** The default price of the shipping method. This can be
-      overwritten within the price tab (see below).
-
-* Click on ``Save``-button
+#. Click ``Save shipping method``.
 
 .. _how_to_shipping_method_criteria:
 
-Criteria
-========
+Restrict it with criteria
+=========================
 
-Optional you can add some criteria to the shipping method. Only when all
-criteria are true the shipping method is displayed to the shop customer.
+The shipping method is offered only if all its criteria are met. Here: the weight of all cart items is at most
+30.
 
-.. image:: /images/how_to_shipping_criteria.*
+.. image:: /images/howto_shipping_criteria.png
+   :alt: The Criteria tab of a shipping method with a weight criterion
 
-**To add criterion proceed as following:**
+#. Go to the ``Criteria`` tab and click ``Add criterion``. A new row appears.
 
-* Click on the ``Add criteria``-button (adds a criterion on first position) or on the
-  ``plus`` button beside a criterion (adds a criterion below)
-* Select the criteria type you want, e.g. ``Weight`` (this is the weight of all cart items).
-* Select the operator, e.g. ``Less than equal to``.
-* Enter the value, e.g. 50.
-* Altogether this means the shipping method is valid if the weight of all
-  cart items is less than or equal to 50 units.
-* You can add as many criteria you want.
-* Click on ``Save criteria``.
+#. Select the ``Type`` ``Weight``, the ``Operator`` ``Less than equal to``, and enter the ``Value`` ``30``.
 
-**To update criteria proceed as following:**
+#. Click ``Save criteria``.
 
-* Change the values of the criteria to your needs.
-* Click on ``Save criteria``
-
-**To delete a criterion proceed as following:**
-
-* Click on the ``minus`` button beside the criterion.
-* Click on ``Save criteria``.
+The plus button of a row adds another criterion below it, the trash can removes the row; both take effect with
+``Save criteria``. The types offered are those of the setting ``LFS_CRITERIA``: cart price, combined length and
+girth, country, height, length, width, weight, shipping method and payment method.
 
 .. _how_to_shipping_method_prices:
 
-Prices
-======
+Add a second price
+==================
 
-Optional you can add additional prices to the shipping method and restrict them
-with criteria. The first price which meets all criteria will be taken.
+A shipping method can have more prices, each with its own criteria. The first price (lowest ``Priority``) whose
+criteria are all met replaces the price of the ``Data`` tab. Here: shipping is free from a cart price of 50.
 
-.. image:: /images/how_to_shipping_prices.*
+.. image:: /images/howto_shipping_prices.png
+   :alt: The Prices tab of a shipping method with a free shipping price
 
-**To add a price proceed as following:**
+#. Go to the ``Prices`` tab and click ``Add Price``. A new row appears.
 
-* To manage prices go to the ``Prices`` tab.
-* To add a new price enter the value into the text field and click ``Add price``.
-* To add/edit criteria for that price click on ``Edit criteria`` link. A pop-up
-  window will open.
-* Click on ``Add criteria`` and change the criteria type, the operator and
-  the value to your needs.
+#. Enter the ``Price`` ``0`` and the ``Priority`` ``10`` and click ``Update Prices``.
 
-**To update/delete a price proceed as following:**
+#. Click ``Edit Criteria`` beside the price. A dialog opens.
 
-* to update the prices change the priority and/or the value of the price and click on ``Update prices``.
-* To delete the prices select the check boxes of the prices you want delete and click on ``Delete prices``.
+   .. image:: /images/howto_shipping_price_criteria.png
+      :alt: The dialog with the criteria of a price
+
+#. Click ``Add criterion``, select the ``Type`` ``Cart Price``, the ``Operator`` ``Greater than equal to``, enter
+   the ``Value`` ``50``, and click ``Save Criteria``.
+
+The Prices tab now shows the criteria beside the price. A cart of 19.50 pays 4.90 for shipping, a cart of 79.00
+nothing.
+
+To delete prices, select them and click ``Delete Selected``.
 
 See Also
 ========
 
 * :ref:`Manage shipping methods <shipping_methods_management>`
+* :ref:`Criteria in general <criteria_concepts>`
