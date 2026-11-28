@@ -197,9 +197,29 @@ class TestOptions:
         PropertyOption.objects.create(property=colour, name="Green", position=2)
         PropertyOption.objects.create(property=colour, name="Blue", position=3)
 
-        manager.delete(reverse("lfs_delete_property_option", kwargs={"option_id": red.id}))
+        response = manager.delete(reverse("lfs_delete_property_option", kwargs={"option_id": red.id}))
 
         assert list(colour.options.values_list("name", "position")) == [("Green", 10), ("Blue", 20)]
+        # The page sends this with htmx and replaces the option's row with the response. A redirect would be
+        # followed with DELETE to the property page, which refuses it, and the row would stay.
+        assert (response.status_code, response.content) == (200, b"")
+
+    def test_an_option_is_not_deleted_for_a_user_without_permission(self, client, django_user_model, colour):
+        red = PropertyOption.objects.create(property=colour, name="Red")
+        client.force_login(django_user_model.objects.create_user("customer"))
+
+        client.delete(reverse("lfs_delete_property_option", kwargs={"option_id": red.id}))
+
+        assert PropertyOption.objects.filter(pk=red.pk).exists()
+
+    @pytest.mark.parametrize("method", ["get", "post"])
+    def test_an_option_is_deleted_only_by_delete(self, manager, colour, method: str):
+        red = PropertyOption.objects.create(property=colour, name="Red")
+
+        response = getattr(manager, method)(reverse("lfs_delete_property_option", kwargs={"option_id": red.id}))
+
+        assert response.status_code == 405
+        assert PropertyOption.objects.filter(pk=red.pk).exists()
 
 
 class TestDelete:
