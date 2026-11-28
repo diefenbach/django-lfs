@@ -664,15 +664,15 @@ class TestProductSidebar:
         assert (form.initial["sub_type"], form.initial["status"]) == ("0", "active")
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="ProductListView is unreachable: lfs_manage_products and lfs_manage_products_list share the path "
-    "products/, so /manage/products/ always redirects to the first product",
-)
 class TestProductList:
     def list_page(self, manager: Client, query: str = "") -> HttpResponse:
         """Return the product list page."""
         return manager.get(reverse("lfs_manage_products_list") + query)
+
+    def test_is_linked_in_the_catalog_menu(self, manager, product):
+        content = manager.get(url("data", product)).content.decode()
+
+        assert f'href="{reverse("lfs_manage_products_list")}"' in content
 
     def test_shows_categories_price_stock_and_type_of_each_product(self, manager, category, shop):
         product = Product.objects.create(

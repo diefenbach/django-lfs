@@ -44,3 +44,11 @@ def test_product_form_labels_are_german(authenticated_client, settings):
     content = response.content.decode()
     assert "Active base price" not in content
     assert "Grundpreis aktivieren" in content
+
+
+def test_catalog_menu_links_the_product_overview_in_german(authenticated_client, category, settings):
+    settings.LANGUAGE_CODE = "de"
+
+    content = authenticated_client.get(reverse("lfs_manage_category", args=[category.pk])).content.decode()
+
+    assert f'href="{reverse("lfs_manage_products_list")}">Produktübersicht</a>' in content
