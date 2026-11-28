@@ -12,6 +12,7 @@ from django.utils import timezone
 from lfs.cart.models import Cart, CartItem
 from lfs.catalog.models import Product
 from lfs.customer.models import Customer
+from lfs.tax.models import Tax
 
 pytestmark = pytest.mark.django_db
 
@@ -51,12 +52,13 @@ def set_filters(manager, **filters) -> None:
 class TestList:
     def test_shows_each_cart_with_total_items_and_products_newest_first(self, manager):
         older = cart_with(("Lamp", 40.0, 2), modified=timezone.now() - datetime.timedelta(days=1))
-        newer = cart_with(("Chair", 100.0, 1), ("Lamp", 40.0, 1), session="s2")
+        newer = cart_with(("Chair", 119.0, 1), ("Lamp", 40.0, 1), session="s2")
+        Product.objects.filter(slug="chair").update(tax=Tax.objects.create(rate=19))  # the total is gross
 
         rows = manager.get(reverse("lfs_manage_carts")).context["carts_with_data"]
 
         assert [r["cart"] for r in rows] == [newer, older]
-        assert (rows[0]["total"], rows[0]["item_count"], sorted(rows[0]["products"])) == (140.0, 2, ["Chair", "Lamp"])
+        assert (rows[0]["total"], rows[0]["item_count"], sorted(rows[0]["products"])) == (159.0, 2, ["Chair", "Lamp"])
         assert (rows[1]["total"], rows[1]["item_count"]) == (80.0, 2)
 
     def test_finds_the_customer_by_user_or_by_session(self, manager):
