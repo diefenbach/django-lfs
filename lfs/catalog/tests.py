@@ -46,7 +46,6 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import ProductAccessories
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
-from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import ProductAttachment
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
