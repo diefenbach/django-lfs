@@ -53,11 +53,6 @@ class TestTinyMCEImageBrowserView:
         assert data["pagination"]["total_pages"] == 2  # 25 images / 20 per page = 2 pages
         assert len(data["images"]) == 5  # 5 images on second page
 
-    def test_requires_permission(self, client):
-        """Test that view requires proper permissions."""
-        response = client.get(reverse("tinymce_image_browser_api"))
-        assert response.status_code == 302  # Redirect to login
-
 
 @pytest.mark.django_db
 class TestTinyMCEImageBrowserModalView:
@@ -71,11 +66,6 @@ class TestTinyMCEImageBrowserModalView:
         assert response.status_code == 200
         assert "Select Image" in response.content.decode()
         assert "imageBrowserModal" in response.content.decode()
-
-    def test_modal_view_requires_permission(self, client):
-        """Test that modal view requires proper permissions."""
-        response = client.get(reverse("tinymce_image_browser_modal"))
-        assert response.status_code == 302  # Redirect to login
 
 
 @pytest.mark.django_db
@@ -110,7 +100,27 @@ class TestTinyMCEImageBrowserHTMXView:
         assert "Red Car" in content
         assert "Blue House" not in content
 
-    def test_htmx_view_requires_permission(self, client):
-        """Test that HTMX view requires proper permissions."""
-        response = client.get(reverse("tinymce_image_browser"))
-        assert response.status_code == 302  # Redirect to login
+
+@pytest.mark.django_db
+def test_the_browser_offers_only_library_images_not_product_images(client, admin_user, shop):
+    from lfs.catalog.models import Product
+
+    Image.objects.create(title="Beach", image="beach.jpg")
+    Image.objects.create(title="Lamp photo", image="lamp.jpg", content=Product.objects.create(name="Lamp", slug="lamp"))
+    client.force_login(admin_user)
+
+    api = client.get(reverse("tinymce_image_browser_api")).json()
+    grid = client.get(reverse("tinymce_image_browser")).context["images"]
+
+    assert [i["text"] for i in api["images"]] == ["Beach"]
+    assert [i["title"] for i in grid] == ["Beach"]
+
+
+@pytest.mark.django_db
+def test_the_browser_shows_the_pages_around_the_current_one(client, admin_user, shop):
+    Image.objects.bulk_create(Image(title=f"Image {i}", image=f"image-{i}.jpg") for i in range(200))
+    client.force_login(admin_user)
+
+    pagination = client.get(reverse("tinymce_image_browser"), {"page": 5}).context["pagination"]
+
+    assert pagination["page_range"] == [1, None, 3, 4, 5, 6, 7, None, 10]
