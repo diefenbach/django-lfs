@@ -1,9 +1,10 @@
 """Rating mails of the management, tested through real requests as a shop manager: which orders get a mail, who
-receives it and that a sent mail is not sent again.
+receives it, that a sent mail is not sent again, and that a failed mail is logged and not marked as sent.
 
 The mail texts come from the theme; the tests use minimal templates of their own so that they test django-lfs."""
 
 import datetime
+import logging
 
 import pytest
 from django.contrib.messages import get_messages
@@ -112,3 +113,19 @@ def test_the_mail_asks_for_the_parent_of_a_bought_variant(manager):
     manager.post(reverse("lfs_send_rating_mails"))
 
     assert mail.outbox[0].alternatives[0][0] == "Lamp;"
+
+
+def test_a_mail_that_cannot_be_sent_is_logged_and_the_order_stays_due(manager, settings, caplog):
+    settings.EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    settings.EMAIL_HOST, settings.EMAIL_PORT, settings.EMAIL_TIMEOUT = "127.0.0.1", 1, 2  # nothing listens there
+    due = order("customer@example.com")
+
+    with caplog.at_level(logging.ERROR, logger="lfs.manage.review_mails.services"):
+        response = manager.post(reverse("lfs_send_rating_mails"))
+
+    assert not OrderRatingMail.objects.exists()
+    assert [(r.getMessage(), r.exc_info is not None) for r in caplog.records] == [
+        (f"Rating mail for order {due.pk} could not be sent", True)
+    ]
+    assert messages_of(response) == ["Rating mails sent to 0 customers."]
+    assert manager.get(reverse("lfs_manage_rating_mails")).context["eligible_orders"] == [due]

@@ -1,3 +1,5 @@
+import logging
+
 # django imports
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -11,6 +13,8 @@ import lfs.core.utils
 import lfs.marketing.utils
 from lfs.catalog.models import Product
 from lfs.marketing.models import OrderRatingMail
+
+logger = logging.getLogger(__name__)
 
 
 class RatingMailService:
@@ -99,13 +103,15 @@ class RatingMailService:
                 bcc = self.shop.get_notification_emails()
             else:
                 bcc = []
-            # Mark as sent
-            OrderRatingMail.objects.create(order=order)
 
         # Create and send email
         mail = EmailMultiAlternatives(subject=subject, body=content["text"], from_email=from_email, to=to, bcc=bcc)
         mail.attach_alternative(content["html"], "text/html")
         mail.send()
+
+        if not is_test:
+            # Only now: an order whose mail failed stays due and is sent with the next run.
+            OrderRatingMail.objects.create(order=order)
 
         return True
 
@@ -117,9 +123,8 @@ class RatingMailService:
             try:
                 self.send_rating_mail(order, is_test=is_test, include_bcc=include_bcc)
                 sent_orders.append(order)
-            except Exception as e:
-                # Log error but continue with other orders
-                # In a real implementation, you might want to log this properly
-                continue
+            except Exception:
+                # One failing mail must not stop the others; the order stays due.
+                logger.exception("Rating mail for order %s could not be sent", order.pk)
 
         return sent_orders
