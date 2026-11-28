@@ -53,3 +53,22 @@ def test_lists_assigned_products_and_offers_only_the_others(manager, manufacture
 
     assert list(context["manufacturer_products"]) == [p1]
     assert list(context["page"].object_list) == [p2, p3]
+
+
+def test_removing_does_not_touch_products_of_another_manufacturer(manager, manufacturer, products):
+    """The tab lists only this manufacturer's products; a posted id of another one's product must not change it."""
+    from lfs.manufacturer.models import Manufacturer
+
+    other = Manufacturer.objects.create(name="Other", slug="other")
+    p1 = products[0]
+    Product.objects.filter(pk=p1.pk).update(manufacturer=other)
+
+    manager.post(tab_url(manufacturer), {"remove_products": "1", f"product-{p1.id}": "on"})
+
+    assert Product.objects.get(pk=p1.pk).manufacturer == other
+
+
+def test_unknown_ids_are_ignored(manager, manufacturer, products):
+    response = manager.post(tab_url(manufacturer), {"assign_products": "1", "product-999999": "on", "product-x": "on"})
+
+    assert response["Location"] == tab_url(manufacturer)

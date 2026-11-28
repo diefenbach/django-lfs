@@ -163,32 +163,26 @@ class ManufacturerProductsView(PermissionRequiredMixin, ManufacturerTabMixin, Te
         return super().post(request, *args, **kwargs)
 
     def _handle_assign_products(self, request: HttpRequest) -> HttpResponse:
-        """Handles assigning products to manufacturer."""
+        """Assigns the checked products (product-<id>) to the manufacturer; unknown ids are ignored."""
         manufacturer = self.get_manufacturer()
-
-        for temp_id in request.POST.keys():
-            if temp_id.startswith("product"):
-                temp_id = temp_id.split("-")[1]
-                product = Product.objects.get(pk=temp_id)
-                product.manufacturer = manufacturer
-                product.save()
-
+        for product in Product.objects.filter(pk__in=self._checked_product_ids(request)):
+            product.manufacturer = manufacturer
+            product.save()
         messages.success(self.request, _("Products have been assigned."))
         return HttpResponseRedirect(self.get_success_url())
 
     def _handle_remove_products(self, request: HttpRequest) -> HttpResponse:
-        """Handles removing products from manufacturer."""
+        """Removes the checked products (product-<id>) from the manufacturer; other manufacturers' are left alone."""
         manufacturer = self.get_manufacturer()
-
-        for temp_id in request.POST.keys():
-            if temp_id.startswith("product"):
-                temp_id = temp_id.split("-")[1]
-                product = Product.objects.get(pk=temp_id)
-                product.manufacturer = None
-                product.save()
-
+        for product in Product.objects.filter(pk__in=self._checked_product_ids(request), manufacturer=manufacturer):
+            product.manufacturer = None
+            product.save()
         messages.success(self.request, _("Products have been removed."))
         return HttpResponseRedirect(self.get_success_url())
+
+    def _checked_product_ids(self, request: HttpRequest) -> list[str]:
+        """Returns the ids of the checked product-<id> boxes."""
+        return [key.removeprefix("product-") for key in request.POST if key.removeprefix("product-").isdigit()]
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with products and filters."""
