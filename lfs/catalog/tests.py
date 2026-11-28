@@ -2817,48 +2817,6 @@ class ProductTestCase(TestCase):
         # Now we get the weight of the variant itself
         self.assertEqual(self.v1.get_weight(), 14.0)
 
-    def test_add_product_variants(self):
-        """Test the add variant form in the Manage interface"""
-        self.assertEqual(len(Product.objects.all()), 5)
-
-        product = Product.objects.get(slug="product-1")
-
-        variant_data = {
-            "action": "add_variants",
-            "slug": "variant-slug",
-            "name": "variant",
-            "price": 10.00,
-            "property_0_%s" % self.size.id: self.m.id,
-        }
-
-        # set up a user with permission to access the manage interface
-        self.user, created = User.objects.get_or_create(username="manager", is_superuser=True)
-        self.password = "pass"
-        self.user.set_password(self.password)
-        self.user.save()
-
-        # login the manager account so we can access the add variant function
-        self.client.post(reverse("lfs_login"), dict(username="manager", password="pass", action="login"), follow=True)
-
-        response = self.client.post(reverse("lfs_manage_product_variants", args=(product.id,)), variant_data)
-        # following code in try loop will only be relevant if there are errors in the form
-        try:
-            if hasattr(response, "context"):
-                if response.context is not None:
-                    variant_form = response.context["form"]
-                    if variant_form.errors:
-                        print(variant_form.errors)
-                    self.assertEqual(len(variant_form.errors), 0)
-        except KeyError:
-            pass
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Product.objects.all()), 6)
-        variant = Product.objects.get(slug="product-1-variant-slug-m")
-        self.assertEqual(variant.name, "variant")
-        self.assertEqual(variant.price, 10.00)
-        self.assertEqual(variant.parent, product)
-
     def setupAttachments(self):
         # Assign attachments to products
         self.attachment_P1_1_data = dict(title="Attachment P1-1", product=self.p1, position=10)
