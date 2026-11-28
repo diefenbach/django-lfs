@@ -66,17 +66,23 @@ class TestStartAndList:
 
 
 class TestChanges:
-    def test_adds_an_action_at_the_end_of_its_group(self, manager, footer):
+    def test_adds_an_action_at_the_end_of_its_group_and_keeps_the_search(self, manager, footer):
         action(footer, "Imprint", 10)
 
         response = manager.post(
             reverse("lfs_manage_add_action"),
-            {"create-title": "Terms", "create-link": "/terms", "create-group": footer.id, "create-active": "on"},
+            {
+                "create-title": "Terms",
+                "create-link": "/terms",
+                "create-group": footer.id,
+                "create-active": "on",
+                "q": "t & c",
+            },
         )
 
         terms = Action.objects.get(title="Terms")
         assert titles(footer) == [("Imprint", 10), ("Terms", 20)]
-        assert response["Location"] == reverse("lfs_manage_action", kwargs={"pk": terms.id})
+        assert response["Location"] == reverse("lfs_manage_action", kwargs={"pk": terms.id}) + "?q=t+%26+c"
         assert messages_of(response) == ["Action has been added."]
 
     def test_an_action_needs_a_title_and_a_group(self, manager, footer):
@@ -90,12 +96,12 @@ class TestChanges:
 
         response = manager.post(
             reverse("lfs_manage_action", kwargs={"pk": imprint.id}),
-            {"title": "Legal", "link": "/legal", "q": "leg"},
+            {"title": "Legal", "link": "/legal", "q": "le & ga"},
         )
 
         imprint.refresh_from_db()
         assert (imprint.title, imprint.link, imprint.active) == ("Legal", "/legal", False)
-        assert response["Location"] == reverse("lfs_manage_action", kwargs={"pk": imprint.id}) + "?q=leg"
+        assert response["Location"] == reverse("lfs_manage_action", kwargs={"pk": imprint.id}) + "?q=le+%26+ga"
         assert messages_of(response) == ["Action has been saved."]
 
     def test_sorting_moves_an_action_within_its_group(self, manager, footer):
