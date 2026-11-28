@@ -110,7 +110,6 @@ class Discount(models.Model, Criteria):
     def is_valid(self, request, product=None):
         if self.products.exists():
             cart = lfs.cart.utils.get_cart(request)
-            items = cart.get_items()
-            if not items.filter(product__in=self.products.all()).exists():
+            if cart is None or not cart.get_items().filter(product__in=self.products.all()).exists():
                 return False
         return super(Discount, self).is_valid(request, product)
