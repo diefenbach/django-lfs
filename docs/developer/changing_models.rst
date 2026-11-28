@@ -4,36 +4,28 @@
 Changing models
 ===============
 
-This section describes how to modify and create new models in LFS
+This section describes how to change the models of LFS when you develop LFS itself.
 
-Overview
-========
+LFS uses Django's migrations; see `Migrations <https://docs.djangoproject.com/en/5.2/topics/migrations/>`_ in
+Django's documentation.
 
-Since version 0.8 LFS uses `South <http://south.aeracode.org/>`_ migrations so you're encouraged to read South
-documentation first. If you need to modify models layer of LFS then you should use 'shemamigration' command. If you
-have to migrate data then you should use 'datamigration' command. See examples below.
+#. Change the model, for instance add a field to a model in ``lfs.customer``.
 
-.. note::
+#. Create the migration for the app::
 
-  Do not forget to commit migrations into repository! They're created in migrations/ directory of the application they're crated for
+    $ python manage.py makemigrations customer
 
-Examples
-========
+#. Apply it::
 
-New field added to the model, or modified existing field in lfs.customer::
+    $ python manage.py migrate
 
-    $ bin/django schemamigration lfs.customer --auto
+#. Commit the migration together with the model change. It is created in the ``migrations/`` directory of the app.
 
-New model added to lfs.catalog::
+Migrations must not depend on a shop's settings: every shop runs the same migrations, whatever it has configured.
+If a field takes its choices or default from a setting, the migration gets a fixed value, not the shop's value. To
+check that the models and the migrations match, run::
 
-    $ bin/django schemamigration lfs.customer --auto
+    $ python manage.py makemigrations --check --dry-run
 
-Execute migration that was just created with 'schemamigration'::
-
-    $ bin/django schemamigration lfs.customer --auto
-    $ bin/django migrate lfs.customer
-
-Correct migration instead of creating new one, eg. if you've created a migration and then realized that your model still
-has to be corrected (see more `here <http://south.readthedocs.org/en/latest/tutorial/part3.html?highlight=update>`_)::
-
-    $bin/django schemamigration lfs.customer --auto --update
+In your own shop, do not change LFS's models. Put your own models into your own app, or link to LFS's models from
+there (for instance with a ``OneToOneField`` to ``lfs.catalog.models.Product``).
