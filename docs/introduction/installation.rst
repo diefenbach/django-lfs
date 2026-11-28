@@ -66,6 +66,10 @@ Add LFS to an existing Django project
     SITE_ID = 1
     SESSION_SERIALIZER = "lfs.core.pickle_serializer.PickleSerializer"
 
+    # LFS's migrations use AutoField ids; with BigAutoField (the default of startproject) Django would want to
+    # change every LFS table.
+    DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
     STATICFILES_FINDERS = [
         "django.contrib.staticfiles.finders.FileSystemFinder",
         "django.contrib.staticfiles.finders.AppDirectoriesFinder",
