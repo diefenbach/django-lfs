@@ -2,22 +2,19 @@
 Miscellaneous
 =============
 
-Overview
-========
-
-Here are some miscellaneous utilities for LFS. Actually you should never have to
-use theme.
+Utilities for repairs (``Utils / Miscellaneous``); normally you never need them. Click ``Execute`` beside a
+utility to run it.
 
 Clear Cache
-===========
-
-LFS provides an aggressive caching strategy for all content like categories and
-products (dependent on your environment). Actually LFS deletes out dating content
-automatically. However if you experience old content you can always empty the
-cache manually.
+    LFS caches categories, products and more, and removes outdated entries itself. If the shop still shows old
+    content, clear the whole cache here.
 
 Set Category Levels
-===================
+    Recalculates the level of every category from its position in the category tree.
 
-LFS manages internal category levels. Here you can create them safely new if
-something went wrong. However, you should never have to use this.
+Reindex Topseller
+    Clears the topsellers and calculates them again from the orders.
+
+Update Effective Prices
+    Saves the current price, or the for sale price when it applies, of every product as its effective price,
+    which LFS uses to sort and filter by price.

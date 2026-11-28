@@ -6,22 +6,19 @@
 Rating Mails
 ============
 
-Here you can send your customers invitations to rate their bought products.
+Here you invite customers to review the products they bought (``Marketing / Rating Mails``).
 
-All customers with an order that is ``closed`` for at least 14 days will get a
-mail with links to a rating form to all bought products of this order.
+Every order that has been ``Closed`` for at least 14 days and has not yet got a rating mail is eligible; the page
+lists these orders. The mail contains links to a review form for every product of the order. LFS remembers which
+orders got a mail, so you can safely send the mails again later: each order gets only one.
 
-You can safely send the mails more than once, LFS will store all orders which
-have already got an e-mail and don't send the mail again.
+Send the mails
+    Choose the options and click ``Send rating mails``:
 
-In order to do that, just click on the ``Send Rating Mails`` button.
+    Test
+        The mails go **only** to the notification e-mail addresses of the shop; the orders stay eligible.
 
-Options
-=======
+    Send copy
+        The mails go to the customers, and a copy of each to the notification e-mail addresses.
 
-Test
-    The mails will get **only** to the shop notification e-mail addresses.
-
-Send copy
-    The mails will get to the customers and a copy of each mail is send to
-    the notification e-mail addresses.
+Afterwards the page lists the orders that got a mail.

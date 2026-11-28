@@ -4,41 +4,21 @@
 Featured
 ========
 
-This section describes the featured products management interface.
+This section describes the management interface for featured products (``Marketing / Featured``): products you
+want to show prominently, e.g. in the featured products portlet.
 
-Navigation / Filtering
-=======================
-
-You can filter the available products within the ``Products`` section:
-
-.. image:: /images/topseller_navigation.*
-
-* Use the navigation link to navigate through the displayed products.
-* To filter the products by name fill in the text box.
-* To filter the products by category select the category from the select box.
+.. image:: /images/manage_featured.png
+   :alt: Featured products: all products on the left, the featured products on the right
 
 Add featured products
-=====================
+    In the section on the left (searchable by name, filtered by category) select the products and click ``Add to
+    Featured Products``.
 
-To add featured products check the check boxes beside the products you want to add
-(within the ``Products`` section) and click on ``Add to featured products``.
-
-.. image:: /images/topseller_products.*
-
-Update featured products
-========================
-
-To update featured products change the entries in question and click on the
-``Save featured`` button (see image below).
+Sort featured products
+    Drag a product in the section of the featured products by its handle in the ``Sort`` column.
 
 Remove featured products
-=========================
-
-To remove featured products check the check boxes beside the products you want
-to remove (within the ``Featured products`` section) and click on ``Remove from
-featured``.
-
-.. image:: /images/topseller_topseller.*
+    Select the featured products and click ``Remove from Featured``.
 
 See also
 ========
