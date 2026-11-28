@@ -4,26 +4,20 @@ This directory contains the Sphinx-based documentation for django-lfs.
 
 ## Quick Start
 
-### Install Dependencies
-
 ```bash
-# Install required packages
-make install
-# or
-pip install -r requirements.txt
+bin/docs
 ```
 
-### Build Documentation
+Builds the documentation and shows it at http://127.0.0.1:8040/; every change in `docs/` rebuilds it and reloads
+the browser. Needs [uv](https://docs.astral.sh/uv/), which installs Sphinx on the fly.
+
+To build once without the server, as `deploy-lfs-docs.sh` does:
 
 ```bash
-# Build HTML documentation
-make html
-
-# Or use the Python script
-python3 build_docs.py
+uv run --no-project --with-requirements docs/requirements.txt python -m sphinx -b html docs docs/_build/html
 ```
 
-The built documentation will be available in `_build/html/index.html`.
+The built documentation is in `docs/_build/html/index.html`.
 
 ## Available Commands
 
