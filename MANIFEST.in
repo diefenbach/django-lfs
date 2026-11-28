@@ -1,6 +1,5 @@
 include README.rst LICENSE.txt CREDITS.txt HISTORY.txt
 recursive-include lfs/core/fixtures *
-recursive-include lfs/integrationtests/fixtures *
 recursive-include lfs/core/locale *
 recursive-include lfs/manage/static *
 recursive-include lfs/manage/templates *
