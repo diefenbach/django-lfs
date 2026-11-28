@@ -103,7 +103,7 @@ class TaxCreateView(PermissionRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        super().form_valid(form)
         messages.success(self.request, _("Tax has been added."))
         # Always redirect to the created tax to avoid blank HTMX renders
         return HttpResponseRedirect(self.get_success_url())
