@@ -6,29 +6,38 @@
 Products
 ========
 
-This section describes the product management interface.
+This section describes the product management interface (``Catalog / Products``).
+
+.. image:: /images/manage_product_data.png
+   :alt: The Data tab of a product, with the product list on the left
+
+On the left is the list of all products, on the right the selected product with its tabs.
+
+Product List
+============
+
+Filter
+    Shows only products of the selected product type and price calculator. Click ``Apply`` to filter and
+    ``Reset`` to show all products again.
+
+Search
+    Filters the list by name or SKU.
 
 .. _products_management_site_actions:
 
 Site Actions
 ============
 
-Add product
-    Adds a product to the catalog.
+Add Product
+    Opens a dialog to add a product. Select its ``Subtype`` (the :ref:`type of the product <product_types_label>`:
+    ``Standard``, ``Product with variants`` or ``Configurable product``), enter its ``Name`` and ``Slug``, and click
+    ``Add Product``. The type cannot be changed later.
 
-Delete product
-    Deletes the current displayed product.
+Delete Product
+    Deletes the selected product, after a confirmation.
 
-View product
-    Opens the product in a pop-up window to quickly check the appearance of the
-    product without leaving the :term:`LMI`.
-
-Goto product
-    Leaves the :term:`LMI` and goes to customer view of the current displayed
-    product.
-
-Product type
-    Select box to change the :ref:`type of the product <product_types_label>`.
+View Product
+    Opens the product in the shop.
 
 .. _products_management_tabs:
 
@@ -41,525 +50,306 @@ Data
 ----
 
 Active
-    Only active products are displayed to the customer, can be found, bought
-    etc.
+    Only active products are displayed to customers, can be found, and can be bought.
 
 Name
-    The name of the product. This is displayed on the title of the product
-    page, within overviews and as part of the HTML meta title tag.
+    The name of the product. It is displayed as the title of the product page, in overviews, and as part of the
+    meta title.
 
 Slug
-    The last part of the product's URL. This must be unique.
-
-Redirect to
-    If the product is not active and this field is filled the user is redirected
-    to the given URL. This might be useful if your product has been indexed by
-    search engines but is not available any more. Note: super users are not
-    redirected.
+    The last part of the product's URL. It must be unique.
 
 SKU
     Your unique product id.
 
 Manufacturer
-    Product :doc:`manufacturer </user/management/shop/manufacturers>`. If you
-    have defined more than 20 manufacturers then this field is shown as auto
-    complete (start typing to see hints).
+    The :doc:`manufacturer </user/management/shop/manufacturers>` of the product.
 
-SKU manufacturer
-    The unique product id of the manufacturer (external SKU).
+SKU Manufacturer
+    The product id of the manufacturer (external SKU).
 
 Price
-    The price of the product. Whether this price is considered net or gross
-    dependents on the selected price calculator for a product (see
-    below).
-
-Price unit
-    The price unit of the product. This is displayed after the price of the
-    product within the product detail view and the category products view.
+    The price of the product. Whether it is net or gross depends on the price calculator (see below).
 
 Tax
-    The tax rate of the product. Whether this is included or excluded
-    dependents on the selected price calculator for a product (see
-    below).
-
-Price Calculation
-
-    .. warning::
-
-        This is experimental feature. Use it with care and take notice that
-        these could be replaced with something different in future.
-
-    .. note::
-
-        This is only available for ``Configurable Products``.
-
-    If the check box is checked the input field could contain a formula to
-    calculate the price of a ``Configurable Product``. In this case one can
-    refer to the values of a property in order to calculate the price.
-
-    Generally the formula could contain any valid Python expression which is
-    able to be evaluated with ``eval`` with two additionally tokens.
-
-    If an error, occurs the default price of the product is taken.
-
-    Available tokens::
-
-        product(<attribute>)
-            Refers to the attribute of the current product
-
-        property(<id>)
-            Refers to the value of the property with the given <id>
-
-    Example 1::
-
-        property(15) * product(price)
-
-    Which means: take the entered value of the property with the id 15 and
-    multiply it with the product's price.
-
-    Example 2::
-
-        product(price) * property(54) * property(55) + property(56)
-
-    Which means: multiply the product's price with the values of the properties
-    with ids 54, 55 and add the value of the property with the id 56.
+    The tax rate of the product. Whether it is included in the price or added to it depends on the price
+    calculator.
 
 Price calculator
-    Determines how the product price is calculated using the product price and
-    tax stored in the database. If you leave this field blank, your pricing
-    calculator will default to the shop :ref:`price calculator
-    <preferences_default_values>`.
+    Determines how the price is calculated from the entered price and tax. Left empty, the product uses the
+    :ref:`default price calculator of the shop <preferences_default_values>`.
 
-    LFS ships with two pricing calculator methods: ``Price Includes Tax``, which
-    means the product price in the database includes tax and ``Price Excludes
-    Tax``, which means the product price in the database excludes tax.
+    LFS ships with two price calculators: ``Price includes tax`` (the entered price includes tax) and ``Price
+    excludes tax`` (the entered price excludes tax). Add-ons can add more, for instance lfs-bulk-prices.
 
-For sale
-    If the check box is activated the entered for sale price is active. On all
-    views the standard price is displayed stroked and the for sale price is
-    displayed emphasized.
-
-    For variants following is true:
-
-    Standard
-        Inherits the ``for sale`` state of the base article.
-
-    Yes
-        Variant is for sale.
-
-    No
-        Variant is not for sale.
+For sale / For sale price
+    If ``For sale`` is checked, the ``For sale price`` applies. The shop displays the standard price struck
+    through and the for sale price emphasized.
 
 Quantity field unit
-    This is displayed before the quantity field of the product within the
-    product detail view and after the product amount within cart and order
-    items.
+    Displayed before the quantity field on the product page and after the amount in the cart and in orders.
 
 Type of quantity field
-    There are three types of quantity fields: ``Integer``, which means the
-    quantity must be an integer and all decimal places are ignored. ``Decimal
-    0.1``, which means the quantity must be a decimal number with one place and
-    more decimal places are ignored. ``Decimal 0.01``, which means the quantity
-    must be a decimal number with two places and more decimal places are ignored.
+    ``Integer``: the quantity is a whole number, decimal places are ignored. ``Decimal 0.1``: the quantity has one
+    decimal place. ``Decimal 0.01``: the quantity has two decimal places.
 
 Active base price
-    If this is activated the base price of the product is displayed within
-    product detail view and category products view.
-
-    For variants following is true:
-
-    Standard
-        Inherits the activate base price from the base article. Values for ``base
-        price unit`` and ``base price amount`` are taken from the base article.
-
-    Yes
-        Base price is activated. Values for ``base price unit`` and ``base price
-        amount`` are taken from the variant.
-
-    No
-        Base price is deactivated.
+    If checked, the base price of the product is displayed on the product page and in category overviews.
 
 Base price unit
-    This unit is displayed after the base price of the product.
+    The unit displayed after the base price.
 
 Base price amount
-    The amount, which is used to calculate the base price of the product. The
-    base price of the product is::
+    The amount used to calculate the base price::
 
-         base price = price / base price amount
+        base price = price / base price amount
 
 Short description
-    A short description of the product. This is displayed within overviews
-    like categories or the search result page.
+    A short description of the product, displayed in overviews like categories or the search result.
 
 Description
-    The detailed description of the product. This is displayed within the
-    product page.
+    The detailed description of the product, displayed on the product page.
 
 .. index:: Static Block
 
 Static block
-    An optional static block which displayed on top of the product view.
+    An optional :ref:`static block <static_blocks_concepts>` displayed on the product page.
 
 .. index:: Template
 
 Product template
-    The selected product template decides how the content of the product is
-    structured.
+    Decides how the content of the product page is structured.
+
+Click ``Save Product Data`` to save the changes.
+
+Configurable products
+    Have two more fields:
+
+    Active price calculation
+        If checked, the price is calculated with the formula in ``Price Calculation``.
+
+    Price Calculation
+        A formula that calculates the price from the values the customer selects for the properties. If the
+        formula fails, the product's price is taken.
+
+        .. warning::
+
+            This is an experimental feature. It could be replaced with something different in future.
+
+        The formula is a Python expression with two additional tokens::
+
+            product(<attribute>)
+                Refers to the attribute of the current product
+
+            property(<id>)
+                Refers to the value of the property with the given <id>
+
+        Example: ``property(15) * product(price)`` multiplies the value of the property with the id 15 with the
+        product's price.
+
+Variants
+    Have no tax and no quantity fields; they take them from their product. ``Active for sale`` and ``Active base
+    price`` have three values: ``Standard`` takes the setting of the product, ``Yes`` and ``No`` set it for the
+    variant (then with the for sale price, base price unit and amount of the variant).
 
 .. _products_management_categories:
 
 Categories
 ----------
 
-Within this tab you can assign categories to the product. To do that just
-select all categories the product should be a part of and click on ``Save
-Categories``.
+Check all categories the product belongs to and click ``Save Categories``.
 
 .. Note::
 
-    You can also :doc:`assign products to categories
-    </user/management/catalog/categories>`.
+    You can also :doc:`assign products to a category </user/management/catalog/categories>`.
 
 .. _products_management_images:
 
 Images
 ------
 
-Within this tab you can add images to the product.
+.. image:: /images/manage_product_images.png
+   :alt: The Images tab of a product
 
-Images are displayed on the details view of the product. The first image
-is the default image of the product and is also displayed on overviews like
-the category detail view or search results view.
+The images are displayed on the product page. The first image is the default image of the product, also displayed
+in overviews like categories or the search result.
 
 Add images
-    Click on the ``Select images`` button and select as many images as you want
-    within your browsers pop-up window. You can use shift click to select a
-    range of images at once and ctrl (cmd for apple users) click to select
-    more images. Now click on open to start the upload process. You will now
-    see a progress bar meanwhile your images are being uploaded.
+    Under ``Add images`` choose one or more image files and click ``Upload images``.
 
-Update images
-    To update the images just change the Title and the position of all products
-    you want to change and click on the ``Update`` button.
+Change images
+    Change the ``Position``, the ``Title`` or the ``Alt Text`` (the text for screen readers and search engines) and
+    click ``Save Changes``. Images with lower positions come first.
 
-Move images
-    To move images just click on the up or down arrow beside the image.
-
-Delete Images
-    To delete images select the check boxes beside all images you want to delete
-    and click the ``Delete`` button.
+Delete images
+    Select the images and click ``Delete Selected Images``.
 
 .. _products_management_attachments:
 
 Attachments
-------------
+-----------
 
-Within this tab you can add attachments to the product. They are displayed for
-download on the detail view of the product.
+Attachments are files the customer can download on the product page, for instance data sheets.
 
-Add Attachments
-    Click on the ``Select files`` button and select as many attachments as you
-    want within your browsers pop-up window. You can use shift click to select
-    a range of images at once and ctrl (cmd for apple users) click to select
-    more images. Click on select to start the upload process. You will now
-    see a progress indicator meanwhile your images are being uploaded.
+Add attachments
+    Under ``Add attachments`` choose one or more files and click ``Upload attachments``.
 
-Update attachments
-    To update the images just change the Title and/or the position of all
-    products you want to change and click on the ``Update`` button.
-
-Move attachments
-    To move attachments you just click on the up or down arrows beside the
-    attachment.
+Change attachments
+    Change the ``Title``, the ``Description`` or the ``Position`` and click ``Save Changes``.
 
 Delete attachments
-    To delete attachments select the check boxes beside all images you want to
-    delete and click the ``Delete`` button.
+    Select the attachments and click ``Delete Selected Attachments``.
 
-.. _products_management_accessories:
+.. _products_management_properties:
+
+Properties
+----------
+
+This tab assigns properties to the product (through property groups) and sets their values.
+
+#. Under ``Select Property Groups`` select the groups of the product (hold Ctrl or Cmd to select several) and click
+   ``Update property groups``.
+
+#. Enter the values of the properties and save them. Depending on the property there are up to three kinds of
+   values, each with its own button:
+
+   Default values
+       The values the product has; saved with ``Update default values``.
+
+   Filter values
+       The values used by the filters of the shop; saved with ``Update filter values``.
+
+   Displayed values
+       The values displayed on the product page; saved with ``Update displayed values``.
+
+For a product with variants the values of the variant properties are set on the ``Variants`` tab.
+
+.. _products_management_variants:
 
 Variants
 --------
 
-Within this tab you can manage the variants of a ``Product with Variants``.
+This tab manages the variants of a ``Product with variants`` and is only displayed for those.
 
-.. note::
-
-    This is only displayed for ``Products with Variants``.
-
-Property Groups
-^^^^^^^^^^^^^^^
-
-Select all property groups which are supposed to be used to create variants.
-After you have selected the property groups you want, you will notice that the
-properties of the groups are provided to create variants within the ``Variants``
-section below.
-
-.. note::
-
-    Only properties with select fields will be taken into account.
-
-Local Properties
-^^^^^^^^^^^^^^^^
-
-``Local Properties`` can be used to create variants without using ``Property
-Groups``. To add properties click on the stencil and add properties and property
-options. After you add local properties you will note that these are provided to
-create variants within the ``Variants`` section below.
-
-.. note::
-
-    Local properties can not be used for filtering.
-
-Variants
-^^^^^^^^
-
-Within this section single variants of the ``Product with Variants`` are
-managed.
-
-Add Variants
-    To add variants to the ``Product with Variants``, select the options
-    combination you want to add and click on the ``Add Variant(s)`` button. If
-    you select ``all`` all combinations of this property and its options will be
-    created automatically.
-
-    You can pre-fill several fields of the new variants. All fields can be
-    changed later.
-
-    Slug
-        The slugs of the variants will be pre-filled with the slug of the base
-        product, plus the slug you provide, plus all options of the properties
-        for which are selected for the variant.
-
-    Name
-        The name of the variants will be pre-filled with the name you provide.
-
-    Price
-        The price of the variants will be pre-filled with the price you provide.
-
-Edit Variants
-    There are several fields of the variants which you can edit directly on this
-    section. All others can be edit on the variant detail view.
-
-    Position
-        The position of the variant within the list view.
-
-    Active
-        If checked the variant is displayed.
-
-    URL
-        The URL of the variant
-
-    SKU
-        The SKU of th variant. This is only taken if the check box on the left
-        is checked. Otherwise the SKU of the base product is taken.
-
-    Name
-        The name of th variant. This is only taken if the check box on the left
-        is checked. Otherwise the name of the base product is taken.
-
-    Price
-        The price of th variant. This is only taken if the check box on the left
-        is checked. Otherwise the price of the base product is taken.
-
-    Default
-        The default variant, which pre-selected when the product is displayed.
-
-    To save changed variants click on the ``Save`` button.
-
-Delete Variants
-    To delete variants select all check boxes of the variants you want to delete
-    and click on the ``Delete`` button.
-
-Category Variant
-^^^^^^^^^^^^^^^^
-
-The category variant determines which variant is displayed within the category
-products view.
-
-Default
-    Displays the above selected default variant
-
-Cheapest Price
-    Displays the variant with the cheapest price
-
-Cheapest Base Price
-    Displays the variant with the cheapest base price
-
-Cheapest Prices
-    Displays the variant with the cheapest price and cheapest base price
-
-Explicit Variant
-    Displays selected variant (all variants are provided for selection by name and
-    position).
-
-Display Type
-^^^^^^^^^^^^
-
-The display type determines how variants are displayed within the product detail
-view
-
-List
-    All existing variants are displayed within a list.
-
-Select
-    All properties are displayed as select boxes with the property options as
-    options.
+Local properties
+    Properties that belong only to this product. Enter a name and click ``Add property``, then add its options
+    (comma separated) with ``Add option``. The properties of the product's property groups (see
+    ``Properties``) are offered as well.
 
     .. note::
 
-        If the customer selects a combination, which doesn't exist he will get
-        a message which says so.
+        Local properties cannot be used for filtering.
+
+Add Variants
+    Select an option for each property, or ``All`` to create a variant for every option, and click ``Add
+    variants``. LFS creates a variant for every combination that does not exist yet; it gets the price of the
+    product and the product's SKU with a number.
+
+Variants list
+    Shows all variants with ``Position``, ``Active``, ``Slug``, ``SKU``, ``Name``, ``Price`` and ``Default`` (the
+    variant preselected on the product page). Change the values and click ``Save``; select variants and click
+    ``Delete selected`` to delete them. Every other field of a variant is changed on its own page.
+
+Category variant
+    Which variant the category overviews display: ``Default`` (the default variant), ``Cheapest price``,
+    ``Cheapest base price``, ``Cheapest prices`` (cheapest price and cheapest base price), or a selected variant.
+    Click ``Change category variant`` to save.
+
+Display type
+    How the product page offers the variants: ``List`` shows all variants in a list, ``Select`` shows a select box
+    per property; if the customer selects a combination that does not exist, the shop says so. Click ``Change
+    variant display type`` to save.
+
+.. _products_management_accessories:
 
 Accessories
 -----------
 
-Within this tab you can manage the :ref:`accessories <marketing_concepts_accessories>`
-of a product.
+:ref:`Accessories <marketing_concepts_accessories>` are products that can be bought together with this product.
 
 Add accessories
-^^^^^^^^^^^^^^^
+    In the section ``Products`` (searchable by name and SKU) select the products and click ``Add as Accessories``.
 
-Within the ``Selectable Products`` section select all check box beside the
-product you want to add as accessory to the product and click on ``Add To
-Accessories``.
-
-.. Note::
-
-    You can filter the selectable products by name and category with the input
-    fields on top of the ``Selectable Products`` section.
-
-Update accessories
-^^^^^^^^^^^^^^^^^^
-
-Within the ``Selected Products`` section change the values you want and click
-on ``Save accessories``.
-
-Position
-    The position within the product. Lower numbers are displayed first.
-
-Quantity
-    The entered quantity is displayed next to the accessory. The shop customer
-    can only add the given quantity to the cart.
+Change accessories
+    In the section ``Accessories`` change the ``Position`` (lower numbers come first) and the ``Quantity`` (the
+    amount the customer adds to the cart with the accessory) and click ``Save Changes``.
 
 Remove accessories
-^^^^^^^^^^^^^^^^^^
-
-Within the ``Selected Products`` section select all check boxes beside the
-products you want to remove from the product and click on ``Remove From
-Accessories``.
+    In the section ``Accessories`` select the products and click ``Remove Selected``.
 
 .. _products_management_related_products:
 
 Related products
 ----------------
 
-Within this tab you can manage the :ref:`related products <marketing_concepts_related_products>`
-of a product.
+:ref:`Related products <marketing_concepts_related_products>` are shown to customers who view this product.
 
 Add related products
-^^^^^^^^^^^^^^^^^^^^
-
-Within the ``Selectable Products`` section select all check box beside the
-product you want to add as related products to the product and click on
-``Add To Related Products``.
-
-.. Note::
-
-    You can filter the selectable products by name and category with the input
-    fields on top of the ``Selectable Products`` section.
+    In the section ``Products`` select the products and click ``Add as Related``.
 
 Remove related products
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Within the ``Selected Products`` section select all check boxes beside the
-products you want to remove from the product and click on ``Remove From Related
-Prouducts``.
+    In the section ``Related Products`` select the products and click ``Remove Selected``.
 
 .. _products_management_stock:
 
 Stock
 -----
 
-Within this tab you can manage all stock related information of the product,
-like the dimension, stock amount and delivery dates.
+.. image:: /images/manage_product_stock.png
+   :alt: The Stock tab of a product
 
-Dimension
-^^^^^^^^^
+This tab holds the dimensions, the stock amount, and the delivery data of the product. Click ``Save Stock Data`` to
+save the changes.
 
-The values of the product which are considered shipping relevant, i.e. the
-product within its package.
+Dimensions & Weight
+^^^^^^^^^^^^^^^^^^^
 
-Weight
-    The weight of the product.
+The values relevant for shipping, i.e. of the product in its package: ``Weight``, ``Width``, ``Height`` and
+``Length``.
 
-Height
-    The height of the product.
-
-Width
-    The width of the product.
-
-Length
-    The length of the product.
-
-Stock data
-^^^^^^^^^^
-
-Deliverable
-    If this is deactivated the product is not deliverable at all. The shop
-    customer sees the product but he is not able to add the product to the
-    cart.
-
-Manual delivery time
-    By default the delivery time is calculated automatically by the currently
-    valid shipping method for a product. With this field the shop owner can
-    overwrite this behavior and can put in a manual delivery time.
+Stock Management
+^^^^^^^^^^^^^^^^
 
 Manage stock amount
-    If this is checked the stock amount will be decreased when the product
-    has been bought. Additionally the maximum amount which can be bought is
-    the number in ``Stock amount`` (see below).
+    If checked, the stock amount decreases when the product is bought, and customers can buy at most the
+    ``Stock amount``.
 
 Stock amount
-    The available amount of the product in stock.
+    The amount of the product in stock.
+
+Delivery
+^^^^^^^^
+
+Deliverable
+    If unchecked, customers see the product but cannot put it into the cart.
+
+Manual delivery time / Delivery time
+    By default the delivery time comes from the shipping method that applies to the product. Check ``Manual delivery
+    time`` and select a ``Delivery time`` to set it for this product.
 
 Order time
-    Duration from ordering the product to being in stock again (when it is out
-    of stock).
+    The time from ordering the product to having it in stock again, when it is out of stock.
 
 Ordered at
-    The date when the **shop owner** has ordered the product.
+    The date when the **shop owner** ordered the product.
 
 .. note::
 
-    If ``Order time`` and ``Order at`` is given the total ``delivery time`` is
-    calculated based on this two fields and the default ``Delivery time``.
+    If ``Order time`` and ``Ordered at`` are given, the delivery time is calculated from these two fields and the
+    delivery time of the product.
 
 Packing
 ^^^^^^^
 
 Active packing
-    If this is checked the product can only be sold in packings.
+    If checked, the product is sold only in packings. For variants: ``Standard`` takes the setting of the product,
+    ``Yes`` and ``No`` set it for the variant.
 
-    For variants following is true:
+Amount per packing
+    The amount of products per packing.
 
-    Standard
-        Inherits the packing state from the base article. Values for ``packing
-        amount`` and ``packing unit`` are taken from the base article.
-
-    Yes
-        Packing is activated. Values for ``packing amount`` and ``packing unit``
-        are taken from the variant.
-
-    No
-        Packing is deactivated.
-
-Packing amount
-    Amount of products per packing.
-
-Packing unit:
-    The unit of the packing. This is displayed after the packing amount.
+Packing unit
+    The unit of the packing, displayed after the amount.
 
 .. index:: SEO
 
@@ -568,32 +358,26 @@ Packing unit:
 SEO
 ---
 
-This tab is used to optimize the product for search engines. One can enter data
-for all usual HTML meta data fields. However LFS provides some reasonable
-default values for all fields.
+This tab is used to optimize the product page for search engines. Click ``Save SEO Data`` to save the changes.
 
 Meta title
-    This is displayed within the ``meta title`` tag of the product's detail
-    view. By default the name of the product is used.
+    Displayed in the title tag of the product page. By default the name of the product.
 
 Meta keywords
-    This is displayed within the ``meta keywords`` tag of the product's detail
-    view. By default the short description of the product is used.
+    Displayed in the meta keywords tag of the product page.
 
 Meta description
-    This is displayed within the ``meta description`` tag of the product's
-    detail view. By default the short description of the product is used.
+    Displayed in the meta description tag of the product page.
 
 .. note::
 
-    Following placeholders can be used within these fields:
+    You can use these placeholders in the fields:
 
     <name>
         The name of the product.
 
     <short-description>
-        The short description of the product (only within meta keywords and meta
-        description field).
+        The short description of the product (only in meta keywords and meta description).
 
 .. index:: Portlets
 
@@ -605,34 +389,15 @@ Portlets
 This tab is used to assign :term:`portlets` to the product.
 
 Blocked parent slots
-    By default portlets are inherited from the current category. To block
-    portlets check the regarding slots and click on the ``Save blocked parent
-    slots`` button.
+    By default the product inherits the portlets of its category. To block them, check the slots and click ``Save
+    blocked parent slots``.
 
 Slots
-    Here you can see all directly assigned portlets to the product. In order to
-    edit a portlet click on row of the portlet. In order to delete a portlet
-    click on the red cross beside the portlet. You can also change the position
-    of the portlets by clicking on the up and down arrows beside the portlets.
+    Lists the portlets assigned directly to the product, per slot. Click the pencil to edit a portlet and the trash
+    can to delete it. Drag a portlet to change its position or to move it to the other slot.
 
-Add new portlet
-    In order to add a portlet to the product select the type of portlet and
-    click on ``Add portlet``.
-
-.. _products_management_properties:
-
-Properties
-----------
-
-This tab is used to assign properties to the product (via property groups)
-and add values to them.
-
-To do that select the ``Property groups`` you want to assign to the product and
-click on ``Update property groups``. Then enter the values for the properties
-you want and click on ``Update properties``.
-
-Dependent on the kind of the property you can add values for the default value,
-the filter value and the displayed value.
+Add portlet
+    Select the ``Portlet Type`` and click ``Add portlet``.
 
 See Also
 ========
