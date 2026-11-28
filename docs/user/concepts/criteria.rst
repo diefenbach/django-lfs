@@ -56,7 +56,7 @@ A number against the gross price of all products within the cart is tested.
 Operators
 ^^^^^^^^^
 
-Equal
+Equal to
     The criterion is true, if the gross price of the cart is equal to the
     entered value.
 
@@ -149,16 +149,16 @@ Tests the country of the customer's shipping address.
 Value
 ^^^^^
 
-An arbitrary selection out of all existing countries.
+An arbitrary selection out of the shipping countries of the shop.
 
 Operators
 ^^^^^^^^^
 
-Is
+Is selected
     The criterion is true, if the customer's shipping country is within the
     selection of countries.
 
-Is not
+Is not selected
     The criterion is true, if the customer's shipping country is not within the
     selection of countries.
 
@@ -182,7 +182,7 @@ cart is tested.
 Operators
 ^^^^^^^^^
 
-Equal
+Equal to
     The criterion is true, if the total clag is equal to the entered value.
 
 Less than
@@ -215,7 +215,7 @@ A number against the total height of all products within the cart is tested.
 Operators
 ^^^^^^^^^
 
-Equal
+Equal to
     The criterion is true, if the total height of all products within the cart
     is equal to the entered value.
 
@@ -251,7 +251,7 @@ A number against the maximum length of all products within the cart is tested.
 Operators
 ^^^^^^^^^
 
-Equal
+Equal to
     The criterion is true, if the maximum length of all products within the cart
     is equal to the entered value.
 
@@ -287,7 +287,7 @@ A number against the total weight of all products within the cart is tested.
 Operators
 ^^^^^^^^^
 
-Equal
+Equal to
     The criterion is true, if the total weight of all products within the cart
     is equal to the entered value.
 
@@ -323,7 +323,7 @@ A number against the maximum width of all products within the cart is tested.
 Operators
 ^^^^^^^^^
 
-Equal
+Equal to
     The criterion is true, if the maximum width of all products within the cart
     is equal to the entered value.
 

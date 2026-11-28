@@ -30,11 +30,9 @@ Global images are managed on a :doc:`central place
 </user/management/shop/images>` and can be easily embedded within any :term:`WYSIWYG`
 text field within LFS (e.g. within a :doc:`page </user/concepts/pages>`).
 
-To do that one just  have to click on the image icon of the :term:`WYSIWYG`
-editor (see below), select the image in question, adapt the class and size of
-the image and click on the ``insert image`` button.
+To do that click the image button of the :term:`WYSIWYG` editor, select the image in the dialog, and click
+``Insert``.
 
-.. image:: /images/wysiwyg_toolbar.*
 
 See also
 ========

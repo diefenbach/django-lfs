@@ -13,9 +13,9 @@ Overview
 
 Actions are used to place links on several locations within the shop. They
 belong to exactly one action group and the action group decides the location the
-actions are displayed within the shop. LFS ships with two action groups, the
-tabs, which constitutes the horizontal menu bar and the footer. Developers can
-easily :ref:`add more action groups   <how_to_add_own_action_groups>`.
+actions are displayed within the shop. LFS ships with two action groups, ``Tabs`` and ``Footer``. The default
+theme lfs-theme shows the actions of ``Footer`` in the footer; it does not show ``Tabs`` (its menu shows the
+top-level categories). Developers can :ref:`add more action groups <how_to_add_own_action_groups>`.
 
 Examples
 ========
