@@ -1,659 +1,263 @@
+"""The order management, tested through real requests as a shop manager: the list with its filters and paging, an
+order's page, changing its state (which mails the customer when it is paid or sent), resending it, and deleting.
+Which day the predefined date filters start on is tested in lfs/manage/tests/test_local_day.py."""
+
+import datetime
+
+import pytest
+from django.contrib.messages import get_messages
+from django.core import mail
 from django.urls import reverse
+from django.utils import timezone
+
+from lfs.addresses.models import Address
+from lfs.catalog.models import Product
+from lfs.core.utils import get_default_shop
+from lfs.order.models import Order, OrderItem
+from lfs.order.settings import CANCELED, PAID, SENT, SUBMITTED
+from lfs.payment.models import PaymentMethod
+
+pytestmark = pytest.mark.django_db
+
+LIST = reverse("lfs_manage_orders")
 
 
-from lfs.order.models import Order
-import lfs.order.settings
+@pytest.fixture
+def manager(client, admin_user, shop):
+    """A test client logged in as a shop manager; the shop mails from and notifies fixed addresses."""
+    default = get_default_shop()
+    default.from_email, default.notification_emails = "shop@example.com", "owner@example.com"
+    default.save()
+    client.force_login(admin_user)
+    return client
 
 
-class TestOrderListView:
-    """Test OrderListView functionality."""
+def order(firstname: str = "Jane", lastname: str = "Doe", state: int = SUBMITTED, created=None, **kwargs) -> Order:
+    address = Address.objects.create()
+    o = Order.objects.create(
+        invoice_address=address,
+        shipping_address=address,
+        customer_firstname=firstname,
+        customer_lastname=lastname,
+        customer_email=f"{firstname.lower()}@example.com",
+        state=state,
+        price=kwargs.pop("price", 10.0),
+        **kwargs,
+    )
+    if created:
+        Order.objects.filter(pk=o.pk).update(created=created)
+    return o
 
-    def test_order_list_view_get(self, authenticated_client, multiple_orders):
-        """Test GET request to order list view."""
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
 
-        assert response.status_code == 200
-        assert "orders_with_data" in response.context
-        assert "states" in response.context
-        assert "page" in response.context
+def at(day: int) -> datetime.datetime:
+    """Noon of the given day of November 2026 in the shop's time zone."""
+    return timezone.make_aware(datetime.datetime(2026, 11, day, 12))
 
-    def test_order_list_view_with_filters(self, authenticated_client, multiple_orders):
-        """Test order list view with filters applied."""
-        # First apply filters using the ApplyOrderFiltersView
-        filter_url = reverse("lfs_manage_set_order_filter")
-        filter_data = {
-            "name": "Customer1",
-            "state": "1",
+
+def listed(manager, **params) -> list[str]:
+    """Return the customers' first names in the order the list shows the orders."""
+    return [row["order"].customer_firstname for row in manager.get(LIST, params).context["orders_with_data"]]
+
+
+def messages_of(response) -> list[str]:
+    """Return the messages the request added for the manager."""
+    return [str(m) for m in get_messages(response.wsgi_request)]
+
+
+class TestList:
+    def test_shows_each_order_newest_first_with_its_total_items_and_products(self, manager):
+        older = order("Anna", created=at(1), price=50.0)
+        order("Bob", created=at(2))
+        lamp = Product.objects.create(name="Lamp", slug="lamp")
+        OrderItem.objects.create(order=older, product=lamp, product_amount=2)
+        OrderItem.objects.create(order=older, product=None, product_name="Deleted", product_amount=1)
+
+        rows = manager.get(LIST).context["orders_with_data"]
+
+        assert [r["order"].customer_firstname for r in rows] == ["Bob", "Anna"]
+        assert (rows[1]["total"], rows[1]["item_count"], rows[1]["products"]) == (50.0, 3, ["Lamp"])
+        assert (rows[1]["customer_name"], rows[1]["state_name"]) == ("Anna Doe", "Submitted")
+
+    def test_filters_by_name_state_payment_method_and_days(self, manager):
+        invoice = PaymentMethod.objects.create(name="Invoice")
+        order("Anna", state=PAID, payment_method=invoice, created=at(10))
+        order("Annabel", state=PAID, payment_method=invoice, created=at(20))
+        order("Anne", state=SUBMITTED, payment_method=invoice, created=at(10))
+        order("Bob", lastname="Annex", state=PAID, created=at(10))
+
+        response = manager.post(
+            reverse("lfs_manage_set_order_filter"),
+            {"name": "ann", "state": PAID, "payment_method": invoice.id, "start": "09.11.2026", "end": "2026-11-11"},
+        )
+
+        assert manager.session["order-filters"] == {
+            "name": "ann",
+            "state": str(PAID),
+            "payment_method": str(invoice.id),
+            "start": "2026-11-09",
+            "end": "2026-11-11",
         }
-        authenticated_client.post(filter_url, filter_data)
-
-        # Now check that the order list view shows the filters
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        # The filters should be in the context
-        assert response.context["name"] == "Customer1"
-        assert response.context["state_id"] == "1"
-
-    def test_order_list_view_pagination(self, authenticated_client, multiple_orders):
-        """Test order list view pagination."""
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url, {"page": 1})
-
-        assert response.status_code == 200
-        assert "page" in response.context
-        assert hasattr(response.context["page"], "paginator")
-
-    def test_order_list_view_permission_required(self, client, multiple_orders):
-        """Test that order list view requires proper permissions."""
-        url = reverse("lfs_manage_orders")
-        response = client.get(url)
-
-        # Should redirect to login or return 403
-        assert response.status_code in [302, 403]
-
-
-class TestOrderDataView:
-    """Test OrderDataView functionality."""
-
-    def test_order_data_view_get(self, authenticated_client, order_with_items):
-        """Test GET request to order data view."""
-        url = reverse("lfs_manage_order", kwargs={"order_id": order_with_items.id})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert "current_order" in response.context
-        assert "order_items" in response.context
-        assert "order_total" in response.context
-        assert response.context["current_order"] == order_with_items
-
-    def test_order_data_view_with_nonexistent_order(self, authenticated_client):
-        """Test order data view with non-existent order."""
-        url = reverse("lfs_manage_order", kwargs={"order_id": 99999})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 404
-
-    def test_order_data_view_permission_required(self, client, order):
-        """Test that order data view requires proper permissions."""
-        url = reverse("lfs_manage_order", kwargs={"order_id": order.id})
-        response = client.get(url)
-
-        # Should redirect to login or return 403
-        assert response.status_code in [302, 403]
-
-    def test_order_data_view_context_data(self, authenticated_client, order_with_items):
-        """Test that order data view provides correct context data."""
-        url = reverse("lfs_manage_order", kwargs={"order_id": order_with_items.id})
-        response = authenticated_client.get(url)
-
-        context = response.context
-        assert "order_total" in context
-        assert "order_products" in context
-        assert "customer_name" in context
-        assert "order_items" in context
-        assert "active_tab" in context
-        assert context["active_tab"] == "data"
-
-
-class TestApplyOrderFiltersView:
-    """Test ApplyOrderFiltersView functionality."""
-
-    def test_apply_order_filters_post(self, authenticated_client, order):
-        """Test POST request to apply order filters."""
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "name": "John",
-            "state": "1",
-            "start": "2024-01-01",
-            "end": "2024-12-31",
-            "order-id": str(order.id),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_order", kwargs={"order_id": order.id})
-
-    def test_apply_order_filters_redirects_to_orders_list(self, authenticated_client):
-        """Test that applying filters without order-id redirects to orders list."""
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "name": "John",
-            "state": "1",
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
-    def test_apply_order_filters_saves_to_session(self, authenticated_client, order):
-        """Test that filters are saved to session."""
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "name": "John",
-            "state": "1",
-            "order-id": str(order.id),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        # Check that filters are saved in session
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert session_filters["name"] == "John"
-        assert session_filters["state"] == "1"
-
-    def test_apply_order_filters_saves_payment_method_to_session(
-        self, authenticated_client, order, payment_method
-    ):
-        """Test that payment method filter is saved to session."""
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "payment_method": str(payment_method.id),
-            "order-id": str(order.id),
-        }
-
-        authenticated_client.post(url, data)
-
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert session_filters["payment_method"] == str(payment_method.id)
-
-    def test_apply_order_filters_clears_empty_payment_method(self, authenticated_client, order, payment_method):
-        """Test that empty payment method filter is removed from session."""
-        authenticated_client.session["order-filters"] = {
-            "payment_method": str(payment_method.id),
-        }
-        authenticated_client.session.save()
-
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "payment_method": "",
-            "order-id": str(order.id),
-        }
-
-        authenticated_client.post(url, data)
-
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert "payment_method" not in session_filters
-
-    def test_apply_order_filters_clears_empty_values(self, authenticated_client, order):
-        """Test that empty filter values are removed from session."""
-        # First set some filters
-        authenticated_client.session["order-filters"] = {
-            "name": "John",
-            "state": "1",
-            "start": "2024-01-01",
-        }
-        authenticated_client.session.save()
-
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "name": "",  # Empty name should clear it
-            "state": "1",
-            "order-id": str(order.id),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        # Check that empty name is removed
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert "name" not in session_filters
-        assert session_filters["state"] == "1"
-
-    def test_apply_order_filters_accepts_dmy_format(self, authenticated_client, order):
-        """Dates entered as d.m.Y (flatpickr) are stored as ISO in session."""
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "start": "14.04.2026",
-            "end": "20.04.2026",
-            "order-id": str(order.id),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert session_filters["start"] == "2026-04-14"
-        assert session_filters["end"] == "2026-04-20"
-
-    def test_apply_order_filters_accepts_iso_format(self, authenticated_client, order):
-        """Dates entered as ISO are stored as ISO in session."""
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "start": "2024-01-01",
-            "end": "2024-12-31",
-            "order-id": str(order.id),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert session_filters["start"] == "2024-01-01"
-        assert session_filters["end"] == "2024-12-31"
-
-    def test_apply_order_filters_invalid_date_preserves_existing(self, authenticated_client, order):
-        """Invalid date input must not overwrite existing session filters."""
-        session = authenticated_client.session
-        session["order-filters"] = {"start": "2024-01-01", "end": "2024-12-31"}
-        session.save()
-
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "start": "nonsense",
-            "order-id": str(order.id),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert session_filters["start"] == "2024-01-01"
-        assert session_filters["end"] == "2024-12-31"
-
-    def test_apply_order_filters_empty_dates_clear_session(self, authenticated_client, order):
-        """Empty date fields remove previously stored date filters."""
-        session = authenticated_client.session
-        session["order-filters"] = {"start": "2024-01-01", "end": "2024-12-31"}
-        session.save()
-
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "start": "",
-            "end": "",
-            "order-id": str(order.id),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert "start" not in session_filters
-        assert "end" not in session_filters
-
-
-class TestResetOrderFiltersView:
-    """Test ResetOrderFiltersView functionality."""
-
-    def test_reset_order_filters(self, authenticated_client, order):
-        """Test resetting order filters."""
-        # Set some filters first
-        authenticated_client.session["order-filters"] = {
-            "name": "John",
-            "state": "1",
-        }
-        authenticated_client.session.save()
-
-        url = reverse("lfs_manage_reset_order_filters")
-        response = authenticated_client.get(url, {"order_id": order.id})
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_order", kwargs={"order_id": order.id})
-
-        # Check that filters are cleared
-        assert "order-filters" not in authenticated_client.session
-
-    def test_reset_order_filters_redirects_to_orders_list(self, authenticated_client):
-        """Test that resetting filters without order_id redirects to orders list."""
-        url = reverse("lfs_manage_reset_order_filters")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
-
-class TestApplyPredefinedOrderFilterView:
-    """Test ApplyPredefinedOrderFilterView functionality."""
-
-    def test_apply_today_filter(self, authenticated_client, order):
-        """Test applying today filter."""
-        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "today"})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
-        # Check that start date is set
-        session_filters = authenticated_client.session.get("order-filters", {})
-        assert "start" in session_filters
-
-    def test_apply_week_filter(self, authenticated_client, order):
-        """Test applying week filter."""
-        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "week"})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
-    def test_apply_month_filter(self, authenticated_client, order):
-        """Test applying month filter."""
-        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "month"})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
-    def test_apply_invalid_filter(self, authenticated_client, order):
-        """Test applying invalid filter type."""
-        url = reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "invalid"})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
-
-class TestOrderDeleteConfirmView:
-    """Test OrderDeleteConfirmView functionality."""
-
-    def test_order_delete_confirm_view_get(self, authenticated_client, order):
-        """Test GET request to order delete confirm view."""
-        url = reverse("lfs_manage_delete_order_confirm", kwargs={"order_id": order.id})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert "manage/orders/delete_order.html" in [template.name for template in response.templates]
-        assert response.context["order"] == order
-
-    def test_order_delete_confirm_view_permission_required(self, client, order):
-        """Test that order delete confirm view requires proper permissions."""
-        url = reverse("lfs_manage_delete_order_confirm", kwargs={"order_id": order.id})
-        response = client.get(url)
-
-        # Should redirect to login or return 403
-        assert response.status_code in [302, 403]
-
-    def test_order_delete_confirm_view_nonexistent_order(self, authenticated_client):
-        """Test order delete confirm view with nonexistent order."""
-        url = reverse("lfs_manage_delete_order_confirm", kwargs={"order_id": 99999})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 404
-
-
-class TestOrderDeleteView:
-    """Test OrderDeleteView functionality."""
-
-    def test_order_delete_view_post(self, authenticated_client, order):
-        """Test POST request to delete order."""
-        url = reverse("lfs_manage_delete_order", kwargs={"order_id": order.id})
-        response = authenticated_client.post(url)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_orders")
-
-        # Check that order is deleted
-        assert not Order.objects.filter(id=order.id).exists()
-
-    def test_order_delete_view_permission_required(self, client, order):
-        """Test that order delete view requires proper permissions."""
-        url = reverse("lfs_manage_delete_order", kwargs={"order_id": order.id})
-        response = client.post(url)
-
-        # Should redirect to login or return 403
-        assert response.status_code in [302, 403]
-
-
-class TestChangeOrderState:
-    """Test change_order_state function."""
-
-    def test_change_order_state_success(self, authenticated_client, order):
-        """Test successful order state change."""
-        url = reverse("lfs_manage_change_order_state")
-        data = {
-            "order-id": str(order.id),
-            "new-state": "2",  # Change to different state
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_order", kwargs={"order_id": order.id})
-
-        # Check that order state is updated
-        order.refresh_from_db()
-        assert order.state == 2
-
-    def test_change_order_state_invalid_state(self, authenticated_client, order):
-        """Test order state change with invalid state."""
-        url = reverse("lfs_manage_change_order_state")
-        data = {
-            "order-id": str(order.id),
-            "new-state": "invalid",
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 302
-        # Order state should remain unchanged
-        order.refresh_from_db()
-        assert order.state == 1  # Original state
-
-    def test_change_order_state_nonexistent_order(self, authenticated_client):
-        """Test order state change with non-existent order."""
-        url = reverse("lfs_manage_change_order_state")
-        data = {
-            "order-id": "99999",
-            "new-state": "2",
-        }
-
-        response = authenticated_client.post(url, data)
-
-        assert response.status_code == 404
-
-    def test_change_order_state_updates_timestamp(self, authenticated_client, order):
-        """Test that order state change updates state_modified timestamp."""
-        original_timestamp = order.state_modified
-
-        url = reverse("lfs_manage_change_order_state")
-        data = {
-            "order-id": str(order.id),
-            "new-state": "2",
-        }
-
-        response = authenticated_client.post(url, data)
-
-        order.refresh_from_db()
-        assert order.state_modified != original_timestamp
-
-    def test_change_order_state_permission_required(self, client, order):
-        """Test that order state change requires proper permissions."""
-        url = reverse("lfs_manage_change_order_state")
-        data = {
-            "order-id": str(order.id),
-            "new-state": "2",
-        }
-
-        response = client.post(url, data)
-
-        # Should redirect to login or return 403
-        assert response.status_code in [302, 403]
-
-    def test_change_order_state_triggers_signals(self, authenticated_client, order, monkeypatch):
-        """Test that order state change triggers appropriate signals."""
-        # Create mock functions to track calls
-        mock_sent_called = False
-        mock_paid_called = False
-        mock_state_changed_called = False
-
-        def mock_sent(*args, **kwargs):
-            nonlocal mock_sent_called
-            mock_sent_called = True
-
-        def mock_paid(*args, **kwargs):
-            nonlocal mock_paid_called
-            mock_paid_called = True
-
-        def mock_state_changed(*args, **kwargs):
-            nonlocal mock_state_changed_called
-            mock_state_changed_called = True
-
-        # Use monkeypatch to replace the signal functions
-        monkeypatch.setattr("lfs.core.signals.order_sent.send", mock_sent)
-        monkeypatch.setattr("lfs.core.signals.order_paid.send", mock_paid)
-        monkeypatch.setattr("lfs.core.signals.order_state_changed.send", mock_state_changed)
-
-        url = reverse("lfs_manage_change_order_state")
-        data = {
-            "order-id": str(order.id),
-            "new-state": str(lfs.order.settings.SENT),
-        }
-
-        response = authenticated_client.post(url, data)
-
-        # Check that signals are called
-        assert mock_sent_called
-        assert mock_state_changed_called
-
-
-class TestSendOrder:
-    """Test send_order function."""
-
-    def test_send_order_success(self, authenticated_client, order, monkeypatch):
-        """Test successful order sending."""
-        # Create mock function to track calls
-        mock_send_mail_called = False
-
-        def mock_send_mail(*args, **kwargs):
-            nonlocal mock_send_mail_called
-            mock_send_mail_called = True
-
-        # Use monkeypatch to replace the mail function
-        monkeypatch.setattr("lfs.mail.utils.send_order_received_mail", mock_send_mail)
-
-        url = reverse("lfs_manage_send_order", kwargs={"order_id": order.id})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 302
-        assert response.url == reverse("lfs_manage_order", kwargs={"order_id": order.id})
-
-        # Check that mail function is called
-        assert mock_send_mail_called
-
-    def test_send_order_nonexistent_order(self, authenticated_client):
-        """Test sending non-existent order."""
-        url = reverse("lfs_manage_send_order", kwargs={"order_id": 99999})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 404
-
-    def test_send_order_permission_required(self, client, order):
-        """Test that send order requires proper permissions."""
-        url = reverse("lfs_manage_send_order", kwargs={"order_id": order.id})
-        response = client.get(url)
-
-        # Should redirect to login or return 403
-        assert response.status_code in [302, 403]
-
-
-class TestLegacyViews:
-    """Test legacy function-based views."""
-
-    def test_manage_orders_with_orders(self, authenticated_client, order):
-        """Test manage_orders shows order list when orders exist."""
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert "manage/orders/order_list.html" in [template.name for template in response.templates]
-
-    def test_manage_orders_without_orders(self, authenticated_client):
-        """Test manage_orders shows empty order list when no orders exist."""
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert "manage/orders/order_list.html" in [template.name for template in response.templates]
-
-    def test_orders_view_delegates_to_class_view(self, authenticated_client, multiple_orders):
-        """Test that orders_view delegates to OrderListView."""
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert "orders_with_data" in response.context
-
-    def test_order_view_delegates_to_class_view(self, authenticated_client, order):
-        """Test that order_view delegates to OrderDataView."""
-        url = reverse("lfs_manage_order", kwargs={"order_id": order.id})
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert "current_order" in response.context
-        assert response.context["current_order"] == order
-
-
-class TestOrderFiltering:
-    """Test order filtering functionality."""
-
-    def test_filter_by_customer_name(self, authenticated_client, multiple_orders):
-        """Test filtering orders by customer name."""
-        # Apply filter
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "name": "Customer1",
-        }
-        authenticated_client.post(url, data)
-
-        # Check filtered results
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        # Should have filtered results (implementation depends on OrderFilterService)
-
-    def test_filter_by_state(self, authenticated_client, multiple_orders):
-        """Test filtering orders by state."""
-        # Apply filter
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "state": "1",
-        }
-        authenticated_client.post(url, data)
-
-        # Check filtered results
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert response.context["state_id"] == "1"
-
-    def test_filter_by_date_range(self, authenticated_client, multiple_orders):
-        """Test filtering orders by date range."""
-        # Apply filter
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "start": "2024-01-01",
-            "end": "2024-12-31",
-        }
-        authenticated_client.post(url, data)
-
-        # Check filtered results
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert response.context["start"] == "2024-01-01"
-        assert response.context["end"] == "2024-12-31"
-
-    def test_combined_filters(self, authenticated_client, multiple_orders):
-        """Test combining multiple filters."""
-        # Apply combined filters
-        url = reverse("lfs_manage_set_order_filter")
-        data = {
-            "name": "Customer1",
-            "state": "1",
-            "start": "2024-01-01",
-        }
-        authenticated_client.post(url, data)
-
-        # Check filtered results
-        url = reverse("lfs_manage_orders")
-        response = authenticated_client.get(url)
-
-        assert response.status_code == 200
-        assert response.context["name"] == "Customer1"
-        assert response.context["state_id"] == "1"
-        assert response.context["start"] == "2024-01-01"
+        assert response["Location"] == LIST
+        assert messages_of(response) == ["Order filters have been updated."]
+        assert listed(manager) == ["Anna"]
+
+    def test_the_name_filter_also_finds_the_last_name(self, manager):
+        order("Bob", lastname="Annex")
+        order("Carl")
+        manager.post(reverse("lfs_manage_set_order_filter"), {"name": "annex"})
+
+        assert listed(manager) == ["Bob"]
+
+    def test_an_emptied_filter_is_removed_and_the_order_shown(self, manager):
+        jane = order()
+        manager.post(reverse("lfs_manage_set_order_filter"), {"name": "ann", "start": "2026-11-01"})
+
+        response = manager.post(reverse("lfs_manage_set_order_filter"), {"name": "", "order-id": jane.id})
+
+        assert manager.session["order-filters"] == {}
+        assert response["Location"] == reverse("lfs_manage_order", kwargs={"order_id": jane.id})
+
+    def test_an_invalid_date_keeps_the_filters(self, manager):
+        manager.post(reverse("lfs_manage_set_order_filter"), {"name": "ann"})
+
+        response = manager.post(reverse("lfs_manage_set_order_filter"), {"name": "bob", "start": "someday"})
+
+        assert manager.session["order-filters"] == {"name": "ann"}
+        assert messages_of(response)[-1] == "Invalid filter input. Please check the date fields."
+
+    def test_reset_clears_the_filters(self, manager):
+        jane = order()
+        manager.post(reverse("lfs_manage_set_order_filter"), {"name": "ann"})
+
+        response = manager.get(reverse("lfs_manage_reset_order_filters"), {"order_id": jane.id})
+
+        assert "order-filters" not in manager.session
+        assert response["Location"] == reverse("lfs_manage_order", kwargs={"order_id": jane.id})
+
+    def test_a_predefined_filter_drops_the_end_day_and_an_unknown_one_is_refused(self, manager):
+        manager.post(reverse("lfs_manage_set_order_filter"), {"end": "2026-11-11"})
+
+        manager.get(reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "month"}))
+        assert set(manager.session["order-filters"]) == {"start"}
+
+        response = manager.get(reverse("lfs_manage_apply_predefined_order_filter", kwargs={"filter_type": "year"}))
+        assert messages_of(response)[-1] == "Invalid filter type."
+
+    def test_shows_50_orders_per_page(self, manager):
+        for i in range(52):
+            order(f"Customer{i}")
+
+        assert len(listed(manager)) == 50
+        assert len(listed(manager, page=2)) == 2
+
+
+class TestOrder:
+    def test_shows_the_order_with_its_items_and_the_filtered_orders_beside_it(self, manager):
+        jane = order("Jane", price=42.0)
+        order("Bob")
+        OrderItem.objects.create(order=jane, product=Product.objects.create(name="Lamp", slug="lamp"), product_amount=1)
+        manager.post(
+            reverse("lfs_manage_set_order_filter"), {"name": "jane", "start": "2000-01-01", "end": "2999-12-31"}
+        )
+
+        context = manager.get(reverse("lfs_manage_order", kwargs={"order_id": jane.id})).context
+
+        assert (context["current_order"], context["order_total"], context["order_products"]) == (jane, 42.0, "Lamp")
+        assert context["customer_name"] == "Jane Doe"
+        assert list(context["orders_page"]) == [jane]
+        assert [s["id"] for s in context["states"] if s["selected_order"]] == [SUBMITTED]
+        assert (context["filter_form"].initial["start"], context["filter_form"].initial["end"]) == (
+            datetime.date(2000, 1, 1),
+            datetime.date(2999, 12, 31),
+        )
+
+    def test_an_unknown_order_is_not_found(self, manager):
+        assert manager.get(reverse("lfs_manage_order", kwargs={"order_id": 99999})).status_code == 404
+
+
+class TestState:
+    def change(self, manager, o: Order, state) -> object:
+        return manager.post(reverse("lfs_manage_change_order_state"), {"order-id": o.id, "new-state": state})
+
+    def test_changes_the_state_and_its_date(self, manager):
+        jane = order(state=SUBMITTED)
+        Order.objects.filter(pk=jane.pk).update(state_modified=at(1))
+
+        response = self.change(manager, jane, CANCELED)
+
+        jane.refresh_from_db()
+        assert jane.state == CANCELED and jane.state_modified > at(1)
+        assert response["Location"] == reverse("lfs_manage_order", kwargs={"order_id": jane.id})
+        assert messages_of(response) == ["Order state has been changed"]
+        assert mail.outbox == []
+
+    @pytest.mark.parametrize("state", [PAID, SENT])
+    def test_paid_and_sent_mail_the_customer(self, manager, state: int):
+        jane = order(state=SUBMITTED)
+
+        self.change(manager, jane, state)
+
+        assert [m.to for m in mail.outbox] == [["jane@example.com"]]
+
+    def test_the_order_page_shows_the_new_state_at_once(self, manager):
+        """The order is cached; changing its state must not leave the old one on the page."""
+        jane = order(state=SUBMITTED)
+        url = reverse("lfs_manage_order", kwargs={"order_id": jane.id})
+        manager.get(url)
+
+        self.change(manager, jane, CANCELED)
+
+        assert manager.get(url).context["current_order"].state == CANCELED
+
+    def test_a_state_that_is_not_a_number_is_refused(self, manager):
+        jane = order(state=SUBMITTED)
+
+        response = self.change(manager, jane, "paid")
+
+        assert Order.objects.get(pk=jane.pk).state == SUBMITTED
+        assert messages_of(response) == ["Invalid state selected."]
+
+
+class TestSendAndDelete:
+    def test_resending_mails_the_order_to_the_customer(self, manager):
+        jane = order()
+
+        response = manager.post(reverse("lfs_manage_send_order", kwargs={"order_id": jane.id}))
+
+        assert [(m.to, m.bcc) for m in mail.outbox] == [(["jane@example.com"], ["owner@example.com"])]
+        assert response["Location"] == reverse("lfs_manage_order", kwargs={"order_id": jane.id})
+        assert messages_of(response) == ["Order has been sent."]
+
+    def test_resending_needs_a_post(self, manager):
+        """A link or an image on another site must not mail the customer again."""
+        jane = order()
+
+        response = manager.get(reverse("lfs_manage_send_order", kwargs={"order_id": jane.id}))
+
+        assert response.status_code == 405
+        assert mail.outbox == []
+
+    def test_the_order_page_resends_with_a_form(self, manager):
+        jane = order()
+        url = reverse("lfs_manage_send_order", kwargs={"order_id": jane.id})
+
+        page = manager.get(reverse("lfs_manage_order", kwargs={"order_id": jane.id})).content.decode()
+
+        assert f'<form method="post" action="{url}"' in page
+
+    def test_confirmation_names_the_order(self, manager):
+        jane = order()
+
+        assert (
+            manager.get(reverse("lfs_manage_delete_order_confirm", kwargs={"order_id": jane.id})).context["order"]
+            == jane
+        )
+
+    def test_deletes_the_order(self, manager):
+        jane = order()
+
+        response = manager.post(reverse("lfs_manage_delete_order", kwargs={"order_id": jane.id}))
+
+        assert not Order.objects.exists()
+        assert response["Location"] == LIST
+        assert messages_of(response) == ["Order has been deleted."]

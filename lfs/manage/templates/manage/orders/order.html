@@ -138,11 +138,13 @@
                         <a href="{% url 'lfs_manage_orders' %}" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-list"></i> {% trans "All Orders" %}
                         </a>
-                        <a class="btn btn-outline-primary btn-sm" 
-                        dialog_message="{% trans 'Do you really want to resend this order?' %}" 
-                        href="{% url 'lfs_manage_send_order' current_order.id %}">
-                            <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
-                        </a>
+                        <form method="post" action="{% url 'lfs_manage_send_order' current_order.id %}" class="d-inline"
+                              onsubmit="return confirm('{% trans 'Do you really want to resend this order?' as question %}{{ question|escapejs }}')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
+                            </button>
+                        </form>
                         <button class="btn btn-outline-danger btn-sm"
                             hx-get="{% url 'lfs_manage_delete_order_confirm' current_order.id %}"
                             hx-target="#modal-body-lg"
