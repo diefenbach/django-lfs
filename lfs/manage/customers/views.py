@@ -274,6 +274,10 @@ class ResetCustomerFiltersView(PermissionRequiredMixin, RedirectView):
             return reverse("lfs_manage_customers")
 
 
+# The columns the customer list can be ordered by (see CustomerFilterService.get_ordering).
+CUSTOMER_ORDERINGS = ("id", "lastname", "firstname", "email", "date_joined", "creation_date")
+
+
 class SetCustomerOrderingView(PermissionRequiredMixin, RedirectView):
     """Sets customer ordering."""
 
@@ -281,17 +285,16 @@ class SetCustomerOrderingView(PermissionRequiredMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         ordering = kwargs.get("ordering", "id")
+        session = self.request.session
 
-        # Toggle ordering direction if same field
-        if ordering == self.request.session.get("customer-ordering"):
-            if self.request.session.get("customer-ordering-order", "") == "":
-                self.request.session["customer-ordering-order"] = "-"
+        # The ordering is kept in the session; an unknown field would break every customer page of this session.
+        if ordering in CUSTOMER_ORDERINGS:
+            # The same column again reverses the direction, another column starts ascending.
+            if ordering == session.get("customer-ordering") and session.get("customer-ordering-order", "") == "":
+                session["customer-ordering-order"] = "-"
             else:
-                self.request.session["customer-ordering-order"] = ""
-        else:
-            self.request.session["customer-ordering-order"] = ""
-
-        self.request.session["customer-ordering"] = ordering
+                session["customer-ordering-order"] = ""
+            session["customer-ordering"] = ordering
 
         # Redirect back to where we came from
         customer_id = self.request.GET.get("customer_id")
@@ -316,17 +319,14 @@ class ApplyPredefinedCustomerFilterView(PermissionRequiredMixin, RedirectView):
         if filter_type == "today":
             # Start of today
             start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
-            end_date = start_date + timedelta(days=1)
             filter_name = _("Today")
         elif filter_type == "week":
             # Last 7 days including today
             start_date = (now - timedelta(days=6)).replace(hour=0, minute=0, second=0, microsecond=0)
-            end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
             filter_name = _("Last 7 Days")
         elif filter_type == "month":
             # Start of current month
             start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-            end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
             filter_name = _("This Month")
         else:
             messages.error(self.request, _("Invalid filter type."))

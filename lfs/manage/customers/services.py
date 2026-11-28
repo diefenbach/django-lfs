@@ -106,10 +106,11 @@ class CustomerDataService:
                 continue
 
             # Build query for orders and cart based on customer type
-            if customer.session:
-                query = Q(session=customer.session)
-            elif customer.user:
+            # A registered customer keeps the session it started with; its orders and carts belong to the user.
+            if customer.user:
                 query = Q(user=customer.user)
+            elif customer.session:
+                query = Q(session=customer.session)
             else:
                 query = Q(pk__in=[])  # Empty query
 
@@ -147,10 +148,11 @@ class CustomerDataService:
             }
 
         # Build query for orders and cart based on customer type
-        if customer.session:
-            query = Q(session=customer.session)
-        elif customer.user:
+        # A registered customer keeps the session it started with; its orders and carts belong to the user.
+        if customer.user:
             query = Q(user=customer.user)
+        elif customer.session:
+            query = Q(session=customer.session)
         else:
             query = Q(pk__in=[])  # Empty query
 
