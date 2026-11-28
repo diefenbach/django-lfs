@@ -69,6 +69,20 @@ def update_portlet_positions(pa):
 # =============================================================================
 
 
+def registered_portlet_class(portlet_type: str) -> type:
+    """Returns the model class of an active, registered portlet type.
+
+    The type comes from the request, so any other model name raises ContentType.DoesNotExist.
+    """
+    if not PortletRegistration.objects.filter(type=portlet_type.lower(), active=True).exists():
+        raise ContentType.DoesNotExist()
+    for ct in ContentType.objects.filter(model=portlet_type.lower()):
+        model_class = ct.model_class()
+        if model_class is not None and hasattr(model_class, "form"):
+            return model_class
+    raise ContentType.DoesNotExist()
+
+
 class PortletsInlineView(PermissionRequiredMixin, View):
     """Displays the assigned portlets for given object."""
 
@@ -169,12 +183,7 @@ class AddPortletView(PermissionRequiredMixin, View):
             return HttpResponse("<div class='alert alert-warning'>Please select a portlet type.</div>")
 
         try:
-            portlet_ct_queryset = ContentType.objects.filter(model=portlet_type.lower())
-            if not portlet_ct_queryset.exists():
-                raise ContentType.DoesNotExist()
-
-            portlet_ct = portlet_ct_queryset[0]
-            mc = portlet_ct.model_class()
+            mc = registered_portlet_class(portlet_type)
             form = mc().form(prefix="portlet")
 
             # Get portlet type name for modal title
@@ -218,12 +227,7 @@ class AddPortletView(PermissionRequiredMixin, View):
             return HttpResponse("<div class='alert alert-warning'>Please select a portlet type.</div>")
 
         try:
-            ct_queryset = ContentType.objects.filter(model=portlet_type.lower())
-            if not ct_queryset.exists():
-                raise ContentType.DoesNotExist()
-
-            ct = ct_queryset[0]
-            mc = ct.model_class()
+            mc = registered_portlet_class(portlet_type)
             form = mc().form(prefix="portlet", data=request.POST)
 
             if form.is_valid():

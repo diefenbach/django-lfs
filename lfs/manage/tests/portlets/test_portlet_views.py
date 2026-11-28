@@ -125,6 +125,18 @@ class TestAdd:
         assert titles(lights, "Right") == [("Tip", 10)]
         assert response["Location"] == reverse("lfs_manage_category_portlets", kwargs={"id": lights.id})
 
+    @pytest.mark.parametrize("portlet_type", ["user", "page", "nosuchportlet"])
+    def test_only_registered_portlet_types_are_offered(self, manager, page, portlet_type: str):
+        """The type comes from the request; other models must not be used as portlets."""
+        url = reverse("lfs_add_portlet", kwargs=object_kwargs(page))
+
+        shown = manager.get(url, {"portlet_type": portlet_type})
+        posted = manager.post(url, {"portlet_type": portlet_type, "slot": slot("Left").id, "portlet-title": "X"})
+
+        assert "Invalid portlet type." in shown.content.decode()
+        assert "Invalid portlet type." in posted.content.decode()
+        assert not PortletAssignment.objects.exists()
+
     def test_without_a_type_asks_for_one(self, manager, page):
         response = manager.get(reverse("lfs_add_portlet", kwargs=object_kwargs(page)))
 
