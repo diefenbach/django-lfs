@@ -165,3 +165,12 @@ class TestDelete:
 
         assert response["Location"] == reverse("lfs_manage_review", kwargs={"id": bob.id})
 
+
+def test_an_unknown_ordering_is_ignored(manager):
+    """The ordering comes from the URL and is kept in the session; an unknown one must not break the pages."""
+    review("Anna")
+
+    manager.get(reverse("lfs_set_review_ordering", kwargs={"ordering": "no_such_field"}))
+
+    assert listed(manager) == ["Anna"]
+    assert manager.get(reverse("lfs_manage_review", kwargs={"id": Review.objects.get().id})).status_code == 200

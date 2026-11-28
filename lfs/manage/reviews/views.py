@@ -229,6 +229,10 @@ class ResetReviewFiltersView(PermissionRequiredMixin, RedirectView):
             return reverse("lfs_manage_reviews")
 
 
+# The columns the review list can be ordered by.
+REVIEW_ORDERINGS = ("id", "user_name", "creation_date", "active", "product")
+
+
 class SetReviewOrderingView(PermissionRequiredMixin, RedirectView):
     """Sets review ordering."""
 
@@ -237,17 +241,16 @@ class SetReviewOrderingView(PermissionRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         """Set ordering and redirect."""
         ordering = kwargs.get("ordering", "id")
+        session = self.request.session
 
-        # Toggle ordering direction if same field
-        if ordering == self.request.session.get("review-ordering"):
-            if self.request.session.get("review-ordering-order", "") == "":
-                self.request.session["review-ordering-order"] = "-"
+        # The ordering is kept in the session; an unknown field would break every review page of this session.
+        if ordering in REVIEW_ORDERINGS:
+            # The same column again reverses the direction, another column starts ascending.
+            if ordering == session.get("review-ordering") and session.get("review-ordering-order", "") == "":
+                session["review-ordering-order"] = "-"
             else:
-                self.request.session["review-ordering-order"] = ""
-        else:
-            self.request.session["review-ordering-order"] = ""
-
-        self.request.session["review-ordering"] = ordering
+                session["review-ordering-order"] = ""
+            session["review-ordering"] = ordering
 
         # Check if we came from a specific review
         review_id = self.request.GET.get("review_id")
