@@ -1,7 +1,7 @@
 from datetime import datetime, date
 from typing import Dict, Any, Optional
 
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from lfs.manage.utils import day_range
 
 from lfs.order.settings import ORDER_STATES
@@ -10,7 +10,7 @@ from lfs.order.settings import ORDER_STATES
 class OrderFilterService:
     """Service for filtering orders based on various criteria."""
 
-    def filter_orders(self, queryset, filters: Dict[str, Any]):
+    def filter_orders(self, queryset: QuerySet, filters: Dict[str, Any]) -> QuerySet:
         """Filter orders based on session filters.
 
         ``start`` and ``end`` are calendar days (YYYY-MM-DD) in the shop's time zone; both days are included.

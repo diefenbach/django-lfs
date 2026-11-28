@@ -1,13 +1,15 @@
 from datetime import datetime, date
 from typing import Dict, Any, Optional
 
+from django.db.models import QuerySet
+
 from lfs.manage.utils import day_range
 
 
 class CartFilterService:
     """Service for filtering carts based on various criteria."""
 
-    def filter_carts(self, queryset, filters: Dict[str, Any]):
+    def filter_carts(self, queryset: QuerySet, filters: Dict[str, Any]) -> QuerySet:
         """Filter carts based on session filters.
 
         ``start`` and ``end`` are calendar days (YYYY-MM-DD) in the shop's time zone; both days are included.
