@@ -9,6 +9,7 @@ lfs.db
 *eggs/
 *parts/
 *bin/
+!/bin/
 *downloads/
 *sitestatic/
 /media/
