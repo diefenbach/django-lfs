@@ -127,7 +127,8 @@ Returns
 -------
 
 LFS writes the return policy into the structured data (schema.org ``MerchantReturnPolicy``) of every product, so
-search engines can show it.
+search engines can show it, but only once the ``Return policy page`` is set: until then LFS makes no statement
+about returns. Check the other fields before you set the page; their defaults are 14 days and free return.
 
 Return days
     The days a customer has to return a product; ``0`` means no returns.
@@ -139,7 +140,8 @@ Return method
     ``By mail`` or ``In store``.
 
 Return policy page
-    Path or URL of the page with the return policy, e.g. ``/page/return-policy/``.
+    Path or URL of the page with the return policy, e.g. ``/page/return-policy/``. Without it the shop publishes no
+    return policy.
 
 .. _preferences_order_numbers:
 
