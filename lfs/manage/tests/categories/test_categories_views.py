@@ -67,15 +67,15 @@ class TestStartAndTree:
         assert manager.get(reverse("lfs_manage_categories"))["Location"] == reverse("lfs_manage_no_categories")
 
     def test_shows_the_tree_in_its_order_and_the_search_as_a_flat_list(self, manager):
-        lights = category("Lights", position=20)
+        lights = category("Lights", position=10)
         category("Lamps", parent=lights)
-        category("Furniture", position=10)
+        category("Furniture", position=20)
         url = reverse("lfs_manage_category", kwargs={"id": lights.id})
 
         full = manager.get(url).context
         found = manager.get(url, {"q": "lamp"}).context
 
-        assert tree(full["hierarchical_categories"]) == [("Furniture", []), ("Lights", [("Lamps", [])])]
+        assert tree(full["hierarchical_categories"]) == [("Lights", [("Lamps", [])]), ("Furniture", [])]
         assert tree(found["hierarchical_categories"]) == [("Lamps", [])]
         assert all(u.endswith("?q=lamp") for _, u in found["tabs"])
 
@@ -111,10 +111,12 @@ class TestCategory:
         lights = category("Lights")
         url = reverse("lfs_manage_category_view", kwargs={"id": lights.id})
 
-        response = manager.post(url, {"template": 1, "show_all_products": "on"})
+        Category.objects.filter(pk=lights.pk).update(show_all_products=True)
+
+        response = manager.post(url, {"template": 1})  # "show all products" unchecked
 
         lights.refresh_from_db()
-        assert (lights.template, lights.show_all_products) == (1, True)
+        assert (lights.template, lights.show_all_products) == (1, False)
         assert messages_of(response) == ["View data has been saved."]
 
     def test_saves_the_seo_data(self, manager):
@@ -171,6 +173,8 @@ class TestProducts:
         floor_lamp = Product.objects.create(name="Floor lamp", slug="floor-lamp")
         desk_lamp.categories.add(furniture)
         floor_lamp.categories.add(furniture)
+        assigned = Product.objects.create(name="Lamp in lights", slug="lamp-in-lights")
+        assigned.categories.add(lights, furniture)
 
         def offered(**params):
             return list(manager.get(self.url(lights), params).context["page"].object_list)
@@ -185,21 +189,19 @@ class TestSort:
     def test_stores_the_new_order_parents_and_levels(self, manager):
         lights, furniture = category("Lights", position=10), category("Furniture", position=20)
         lamps = category("Lamps", parent=lights)
+        desk_lamps = category("Desk lamps", parent=lamps)
+        data = f"category[{furniture.id}]=root&category[{lamps.id}]=root&category[{lights.id}]=root"
 
-        response = manager.post(
-            reverse("lfs_manage_sort_categories"),
-            {
-                "categories": f"category[{furniture.id}]=root&category[{lights.id}]=root&category[{lamps.id}]={furniture.id}"
-            },
-        )
+        response = manager.post(reverse("lfs_manage_sort_categories"), {"categories": data})
 
         assert response.json()["message"] == "The categories have been sorted."
-        lamps.refresh_from_db()
-        assert (lamps.parent, lamps.level) == (furniture, 2)
         assert list(Category.objects.filter(parent=None).order_by("position").values_list("name", flat=True)) == [
             "Furniture",
+            "Lamps",
             "Lights",
         ]
+        # Lamps moved to the top, so it and its child are one level higher.
+        assert [Category.objects.get(pk=c.pk).level for c in (lamps, desk_lamps)] == [1, 2]
 
     def test_without_data_changes_nothing(self, manager):
         response = manager.post(reverse("lfs_manage_sort_categories"))
