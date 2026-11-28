@@ -1,684 +1,196 @@
-import pytest
-from decimal import Decimal
-from unittest.mock import patch, Mock
+"""The payment method management, tested through real requests as a shop manager: the start page, adding a method,
+the data tab, the criteria of a method and of its prices, and the prices tab."""
 
-from django.contrib.auth import get_user_model
-from django.http import Http404
+import pytest
+from django.contrib.messages import get_messages
 from django.urls import reverse
 
+from lfs.criteria.models import CartPriceCriterion
 from lfs.payment.models import PaymentMethod, PaymentMethodPrice
-from lfs.manage.payment_methods.views import (
-    ManagePaymentsView,
-    PaymentMethodTabMixin,
-    PaymentMethodDataView,
-    PaymentMethodCriteriaView,
-    PaymentMethodPricesView,
-    PaymentMethodCreateView,
-    PaymentMethodDeleteConfirmView,
-    PaymentMethodDeleteView,
-    PaymentMethodPriceCriteriaView,
-    PaymentMethodPriceCriteriaSaveView,
-)
 
-User = get_user_model()
+CART_PRICE = "lfs.criteria.models.CartPriceCriterion"
 
 
-class TestManagePaymentsView:
-    """Test ManagePaymentsView functionality."""
+@pytest.fixture(autouse=True)
+def no_payment_methods(db):
+    """Start without the payment methods the shop fixture brings."""
+    PaymentMethod.objects.all().delete()
 
-    def test_redirects_to_first_payment_method_when_methods_exist(self, rf, admin_user, payment_method):
-        """Test that view redirects to first payment method when methods exist."""
-        request = rf.get("/")
-        request.user = admin_user
 
-        view = ManagePaymentsView()
-        view.request = request
+@pytest.fixture
+def manager(client, admin_user):
+    """A test client logged in as a shop manager."""
+    client.force_login(admin_user)
+    return client
 
-        redirect_url = view.get_redirect_url()
-        expected_url = reverse("lfs_manage_payment_method", kwargs={"id": payment_method.id})
 
-        assert redirect_url == expected_url
+@pytest.fixture
+def cod(db) -> PaymentMethod:
+    """A payment method "Cash on delivery"."""
+    return PaymentMethod.objects.create(name="Cash on delivery", price=5.0, active=True)
 
-    def test_redirects_to_no_payment_methods_when_none_exist(self, rf, admin_user):
-        """Test that view redirects to no payment methods page when none exist."""
-        request = rf.get("/")
-        request.user = admin_user
 
-        view = ManagePaymentsView()
-        view.request = request
+def messages_of(response) -> list[str]:
+    """Return the messages the request added for the manager."""
+    return [str(m) for m in get_messages(response.wsgi_request)]
 
-        redirect_url = view.get_redirect_url()
-        expected_url = reverse("lfs_manage_no_payment_methods")
 
-        assert redirect_url == expected_url
+def url(name: str, pm: PaymentMethod) -> str:
+    """Return the URL of the payment method tab ``name``."""
+    return reverse(name, kwargs={"id": pm.id})
 
-    def test_orders_payment_methods_by_name(self, rf, admin_user):
-        """Test that payment methods are ordered by name."""
-        # Create payment methods in reverse alphabetical order
-        PaymentMethod.objects.create(name="Zebra Payment", active=True, priority=10)
-        PaymentMethod.objects.create(name="Alpha Payment", active=True, priority=20)
 
-        request = rf.get("/")
-        request.user = admin_user
+def a_cart_price_criterion(operator: int, value: float) -> dict[str, str]:
+    """Return the POST data the criteria form sends for one cart price criterion."""
+    return {"type-1": CART_PRICE, "operator-1": str(operator), "position-1": "10", "value-1": str(value)}
 
-        view = ManagePaymentsView()
-        view.request = request
 
-        redirect_url = view.get_redirect_url()
+class TestStartPage:
+    def test_opens_the_first_payment_method_by_name(self, manager):
+        PaymentMethod.objects.create(name="Prepayment")
+        invoice = PaymentMethod.objects.create(name="Invoice")
 
-        # Should redirect to Alpha Payment (first alphabetically)
-        alpha_method = PaymentMethod.objects.get(name="Alpha Payment")
-        expected_url = reverse("lfs_manage_payment_method", kwargs={"id": alpha_method.id})
+        response = manager.get(reverse("lfs_manage_payment_methods"))
 
-        assert redirect_url == expected_url
+        assert response["Location"] == url("lfs_manage_payment_method", invoice)
 
+    def test_without_payment_methods_shows_the_empty_page(self, manager):
+        response = manager.get(reverse("lfs_manage_payment_methods"))
 
+        assert response["Location"] == reverse("lfs_manage_no_payment_methods")
 
-class TestPaymentMethodTabMixin:
-    """Test PaymentMethodTabMixin functionality."""
+    def test_search_filters_the_list(self, manager, cod):
+        PaymentMethod.objects.create(name="Invoice")
 
-    def test_get_payment_method_returns_correct_object(self, rf, payment_method):
-        """Test that get_payment_method returns the correct PaymentMethod."""
-        request = rf.get("/")
+        response = manager.get(url("lfs_manage_payment_method", cod) + "?q=cash")
 
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-        mixin.kwargs = {"id": payment_method.id}
+        assert list(response.context["payment_methods"]) == [cod]
 
-        result = mixin.get_payment_method()
 
-        assert result == payment_method
+class TestAddPaymentMethod:
+    def test_adds_the_method_and_opens_it(self, manager):
+        response = manager.post(reverse("lfs_manage_add_payment_method"), {"name": "Invoice"})
 
-    @pytest.mark.django_db
-    def test_get_payment_method_raises_404_for_nonexistent_id(self, rf):
-        """Test that get_payment_method raises 404 for nonexistent PaymentMethod."""
-        request = rf.get("/")
+        invoice = PaymentMethod.objects.get(name="Invoice")
+        assert response["Location"] == url("lfs_manage_payment_method", invoice)
+        assert messages_of(response) == ["Payment method has been created."]
 
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-        mixin.kwargs = {"id": 999}
+    def test_requires_a_name(self, manager):
+        response = manager.post(reverse("lfs_manage_add_payment_method"), {"name": ""})
 
-        with pytest.raises(Http404):
-            mixin.get_payment_method()
+        assert not PaymentMethod.objects.exists()
+        assert "name" in response.context["form"].errors
 
-    def test_get_payment_methods_queryset_returns_all_by_default(self, rf, multiple_payment_methods):
-        """Test that get_payment_methods_queryset returns all payment methods ordered by name."""
-        request = rf.get("/")
 
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
+class TestDataTab:
+    def test_saves_the_data(self, manager, cod):
+        form = manager.get(url("lfs_manage_payment_method", cod)).context["form"]
+        data = {n: v for n in form.fields if n != "image" and (v := form[n].value()) is not None and v is not False}
+        data.update({"name": "Cash on delivery (DHL)", "price": "6.5"})
 
-        queryset = mixin.get_payment_methods_queryset()
-        result_names = list(queryset.values_list("name", flat=True))
+        response = manager.post(url("lfs_manage_payment_method", cod), data)
 
-        expected_names = ["Payment Method 1", "Payment Method 2", "Payment Method 3"]
-        assert result_names == expected_names
+        cod.refresh_from_db()
+        assert (cod.name, cod.price) == ("Cash on delivery (DHL)", 6.5)
+        assert response["Location"] == url("lfs_manage_payment_method", cod)
+        assert messages_of(response) == ["Payment method has been saved."]
 
-    def test_get_payment_methods_queryset_filters_by_search(self, rf, multiple_payment_methods):
-        """Test that get_payment_methods_queryset filters by search query."""
-        request = rf.get("/?q=Method 2")
 
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-
-        queryset = mixin.get_payment_methods_queryset()
-        result_names = list(queryset.values_list("name", flat=True))
-
-        assert result_names == ["Payment Method 2"]
-
-    def test_get_payment_methods_queryset_handles_empty_search(self, rf, multiple_payment_methods):
-        """Test that get_payment_methods_queryset handles empty search query."""
-        request = rf.get("/?q=")
-
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-
-        queryset = mixin.get_payment_methods_queryset()
-        result_count = queryset.count()
-
-        assert result_count == 3
-
-    def test_get_context_data_includes_payment_method(self, rf, payment_method):
-        """Test that get_context_data includes payment method."""
-        request = rf.get("/")
-
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-        mixin.kwargs = {"id": payment_method.id}
-        mixin.object = None
-
-        context = mixin.get_tab_context_data()
-
-        assert context["payment_method"] == payment_method
-
-    def test_get_context_data_includes_search_query(self, rf, payment_method):
-        """Test that get_context_data includes search query."""
-        request = rf.get("/?q=test")
-
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-        mixin.kwargs = {"id": payment_method.id}
-        mixin.object = None
-
-        context = mixin.get_tab_context_data()
-
-        assert context["search_query"] == "test"
-
-    def test_get_context_data_includes_active_tab(self, rf, payment_method):
-        """Test that get_context_data includes active tab."""
-        request = rf.get("/")
-
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-        mixin.kwargs = {"id": payment_method.id}
-        mixin.tab_name = "data"
-        mixin.object = None
-
-        context = mixin.get_tab_context_data()
-
-        assert context["active_tab"] == "data"
-
-    def test_get_tabs_returns_correct_urls(self, rf, payment_method):
-        """Test that _get_tabs returns correct tab URLs."""
-        request = rf.get("/")
-
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-
-        tabs = mixin._get_tabs(payment_method)
-
-        expected_tabs = [
-            ("data", reverse("lfs_manage_payment_method", args=[payment_method.pk])),
-            ("criteria", reverse("lfs_manage_payment_method_criteria", args=[payment_method.pk])),
-            ("prices", reverse("lfs_manage_payment_method_prices", args=[payment_method.pk])),
-        ]
-
-        assert tabs == expected_tabs
-
-    def test_get_tabs_includes_search_parameter(self, rf, payment_method):
-        """Test that _get_tabs includes search parameter in URLs."""
-        request = rf.get("/?q=test")
-
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-
-        tabs = mixin._get_tabs(payment_method)
-
-        # All URLs should include the search parameter
-        for tab_name, url in tabs:
-            assert "q=test" in url
-
-
-class TestPaymentMethodDataView:
-    """Test PaymentMethodDataView functionality."""
-
-    def test_uses_correct_model_and_form(self):
-        """Test that view uses correct model and form class."""
-        view = PaymentMethodDataView()
-
-        assert view.model == PaymentMethod
-        assert view.form_class.__name__ == "PaymentMethodForm"
-
-
-
-    def test_get_success_url_returns_data_tab_url(self, rf, payment_method):
-        """Test that get_success_url returns URL for data tab."""
-        request = rf.post("/")
-
-        view = PaymentMethodDataView()
-        view.request = request
-        view.object = payment_method
-
-        success_url = view.get_success_url()
-        expected_url = reverse("lfs_manage_payment_method", kwargs={"id": payment_method.pk})
-
-        assert success_url == expected_url
-
-    @patch("lfs.manage.payment_methods.views.messages")
-    def test_form_valid_shows_success_message(self, mock_messages, rf, payment_method):
-        """Test that form_valid shows success message."""
-        request = rf.post("/")
-        request.user = Mock()
-
-        view = PaymentMethodDataView()
-        view.request = request
-        view.object = payment_method
-
-        # Mock form
-        form = Mock()
-        form.save.return_value = payment_method
-
-        # Mock parent form_valid
-        with patch("django.views.generic.UpdateView.form_valid") as mock_parent:
-            mock_parent.return_value = Mock()
-            view.form_valid(form)
-
-        mock_messages.success.assert_called_once()
-
-
-class TestPaymentMethodCriteriaView:
-    """Test PaymentMethodCriteriaView functionality."""
-
-
-    def test_get_success_url_returns_criteria_tab_url(self, rf):
-        """Test that get_success_url returns URL for criteria tab."""
-        request = rf.get("/")
-
-        view = PaymentMethodCriteriaView()
-        view.request = request
-        view.kwargs = {"id": 1}
-
-        success_url = view.get_success_url()
-        expected_url = reverse("lfs_manage_payment_method_criteria", kwargs={"id": 1})
-
-        assert success_url == expected_url
-
-    @patch("lfs.manage.payment_methods.views.messages")
-    def test_post_saves_criteria_and_shows_message(self, mock_messages, rf, payment_method):
-        """Test that POST saves criteria and shows success message."""
-        request = rf.post("/")
-        request.user = Mock()
-
-        view = PaymentMethodCriteriaView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        # Mock payment method save_criteria
-        with patch.object(PaymentMethod, "save_criteria") as mock_save_criteria:
-            response = view.post(request)
-
-        mock_save_criteria.assert_called_once_with(request)
-        mock_messages.success.assert_called_once()
-
-    def test_post_returns_redirect_for_regular_request(self, rf, payment_method):
-        """Test that POST returns redirect for regular request."""
-        request = rf.post("/")
-        request.headers = {}
-        request.user = Mock()
-
-        view = PaymentMethodCriteriaView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        with patch.object(PaymentMethod, "save_criteria"):
-            with patch("lfs.manage.payment_methods.views.messages"):
-                response = view.post(request)
-
-        assert response.status_code == 302
-
-    def test_post_returns_rendered_template_for_htmx_request(self, rf, payment_method):
-        """Test that POST returns rendered template for HTMX request."""
-        request = rf.post("/")
-        request.headers = {"HX-Request": "true"}
-        request.user = Mock()
-
-        view = PaymentMethodCriteriaView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        with patch.object(PaymentMethod, "save_criteria"):
-            with patch("lfs.manage.payment_methods.views.messages"):
-                with patch("lfs.manage.payment_methods.views.render") as mock_render:
-                    view.post(request)
-
-        mock_render.assert_called_once()
-
-    def test_get_context_data_includes_criteria(self, rf, payment_method):
-        """Test that get_context_data includes criteria."""
-        request = rf.get("/")
-
-        view = PaymentMethodCriteriaView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        # Mock get_criteria method
-        mock_criterion = Mock()
-        mock_criterion.render.return_value = "<div>Test Criterion</div>"
-
-        with patch.object(PaymentMethod, "get_criteria", return_value=[mock_criterion]):
-            context = view.get_context_data()
-
-        assert "criteria" in context
-        assert len(context["criteria"]) == 1
-
-
-class TestPaymentMethodPricesView:
-    """Test PaymentMethodPricesView functionality."""
-
-
-    def test_get_success_url_returns_prices_tab_url(self, rf):
-        """Test that get_success_url returns URL for prices tab."""
-        request = rf.get("/")
-
-        view = PaymentMethodPricesView()
-        view.request = request
-        view.kwargs = {"id": 1}
-
-        success_url = view.get_success_url()
-        expected_url = reverse("lfs_manage_payment_method_prices", kwargs={"id": 1})
-
-        assert success_url == expected_url
-
-    def test_post_handles_add_price_action(self, rf, payment_method):
-        """Test that POST handles add_price action."""
-        request = rf.post("/", {"add_price": "true", "price": "15.00"})
-        request.user = Mock()
-
-        view = PaymentMethodPricesView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        with patch("lfs.manage.payment_methods.views.messages"):
-            response = view.post(request)
-
-        # Verify price was created
-        assert payment_method.prices.filter(price=Decimal("15.00")).exists()
-        assert response.status_code == 302
-
-    def test_post_handles_update_prices_action(self, rf, payment_method_with_prices):
-        """Test that POST handles update prices action."""
-        price = payment_method_with_prices.prices.first()
-        request = rf.post("/", {"action": "update", f"price-{price.id}": "25.00", f"priority-{price.id}": "15"})
-        request.user = Mock()
-
-        view = PaymentMethodPricesView()
-        view.request = request
-        view.kwargs = {"id": payment_method_with_prices.id}
-
-        with patch("lfs.manage.payment_methods.views.messages"):
-            response = view.post(request)
-
-        # Verify price was updated
-        price.refresh_from_db()
-        assert price.price == Decimal("25.00")
-        assert response.status_code == 302
-
-    def test_post_handles_delete_prices_action(self, rf, payment_method_with_prices):
-        """Test that POST handles delete prices action."""
-        price = payment_method_with_prices.prices.first()
-        price_id = price.id
-
-        request = rf.post("/", {"action": "delete", f"delete-{price_id}": "true"})
-        request.user = Mock()
-
-        view = PaymentMethodPricesView()
-        view.request = request
-        view.kwargs = {"id": payment_method_with_prices.id}
-
-        with patch("lfs.manage.payment_methods.views.messages"):
-            response = view.post(request)
-
-        # Verify price was deleted
-        assert not PaymentMethodPrice.objects.filter(id=price_id).exists()
-        assert response.status_code == 302
-
-    def test_handle_add_price_with_invalid_price(self, rf, payment_method):
-        """Test that _handle_add_price handles invalid price gracefully."""
-        request = rf.post("/", {"add_price": "true", "price": "invalid"})
-        request.user = Mock()
-
-        view = PaymentMethodPricesView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        with patch("lfs.manage.payment_methods.views.messages"):
-            response = view.post(request)
-
-        # Verify price was created with 0.0
-        assert payment_method.prices.filter(price=Decimal("0.0")).exists()
-
-    def test_update_price_positions_sets_correct_priorities(self, rf, payment_method_with_prices):
-        """Test that _update_price_positions sets correct priorities."""
-        view = PaymentMethodPricesView()
-        view._update_price_positions(payment_method_with_prices)
-
-        prices = payment_method_with_prices.prices.all()
-        priorities = [price.priority for price in prices]
-
-        assert priorities == [10, 20]
-
-    def test_get_context_data_includes_prices(self, rf, payment_method_with_prices):
-        """Test that get_context_data includes prices."""
-        request = rf.get("/")
-
-        view = PaymentMethodPricesView()
-        view.request = request
-        view.kwargs = {"id": payment_method_with_prices.id}
-
-        context = view.get_context_data()
-
-        assert "prices" in context
-        assert context["prices"].count() == 2
-
-
-class TestPaymentMethodCreateView:
-    """Test PaymentMethodCreateView functionality."""
-
-    def test_uses_correct_model_and_form(self):
-        """Test that view uses correct model and form class."""
-        view = PaymentMethodCreateView()
-
-        assert view.model == PaymentMethod
-        assert view.form_class.__name__ == "PaymentMethodAddForm"
-
-
-    @patch("lfs.manage.payment_methods.views.messages")
-    def test_form_valid_creates_payment_method_and_redirects(self, mock_messages, rf):
-        """Test that form_valid creates payment method and redirects."""
-        request = rf.post("/", {"name": "New Payment Method"})
-        request.user = Mock()
-
-        view = PaymentMethodCreateView()
-        view.request = request
-
-        # Mock form
-        form = Mock()
-        new_payment_method = PaymentMethod(id=1, name="New Payment Method")
-        form.save.return_value = new_payment_method
-
-        response = view.form_valid(form)
-
-        mock_messages.success.assert_called_once()
-        assert response.status_code == 302
-
-    def test_get_success_url_returns_payment_method_url(self, rf):
-        """Test that get_success_url returns URL for the created payment method."""
-        request = rf.post("/")
-
-        view = PaymentMethodCreateView()
-        view.request = request
-        view.object = Mock(id=1)
-
-        success_url = view.get_success_url()
-        expected_url = reverse("lfs_manage_payment_method", kwargs={"id": 1})
-
-        assert success_url == expected_url
-
-
-class TestPaymentMethodDeleteConfirmView:
-    """Test PaymentMethodDeleteConfirmView functionality."""
-
-
-    def test_get_context_data_includes_payment_method(self, rf, payment_method):
-        """Test that get_context_data includes payment method."""
-        request = rf.get("/")
-
-        view = PaymentMethodDeleteConfirmView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        context = view.get_context_data()
-
-        assert context["payment_method"] == payment_method
-
-
-class TestPaymentMethodDeleteView:
-    """Test PaymentMethodDeleteView functionality."""
-
-
-
-    def test_get_success_url_returns_payment_methods_list(self, rf):
-        """Test that get_success_url returns payment methods list URL."""
-        request = rf.delete("/")
-
-        view = PaymentMethodDeleteView()
-        view.request = request
-
-        success_url = view.get_success_url()
-        expected_url = reverse("lfs_manage_payment_methods")
-
-        assert success_url == expected_url
-
-class TestPaymentMethodPriceCriteriaView:
-    """Test PaymentMethodPriceCriteriaView functionality."""
-
-
-    def test_get_payment_price_returns_correct_object(self, rf, payment_method_price):
-        """Test that get_payment_price returns correct PaymentMethodPrice."""
-        request = rf.get("/")
-
-        view = PaymentMethodPriceCriteriaView()
-        view.request = request
-        view.kwargs = {"price_id": payment_method_price.id}
-
-        result = view.get_payment_price()
-
-        assert result == payment_method_price
-
-    @pytest.mark.django_db
-    def test_get_payment_price_raises_404_for_nonexistent_id(self, rf):
-        """Test that get_payment_price raises 404 for nonexistent price."""
-        request = rf.get("/")
-
-        view = PaymentMethodPriceCriteriaView()
-        view.request = request
-        view.kwargs = {"price_id": 999}
-
-        with pytest.raises(Http404):
-            view.get_payment_price()
-
-    def test_get_context_data_includes_payment_price_and_criteria(self, rf, payment_method_price):
-        """Test that get_context_data includes payment price and criteria."""
-        request = rf.get("/")
-
-        view = PaymentMethodPriceCriteriaView()
-        view.request = request
-        view.kwargs = {"price_id": payment_method_price.id}
-
-        # Mock get_criteria method
-        mock_criterion = Mock()
-        mock_criterion.render.return_value = "<div>Test Criterion</div>"
-
-        with patch.object(PaymentMethodPrice, "get_criteria", return_value=[mock_criterion]):
-            context = view.get_context_data()
-
-        assert context["payment_price"] == payment_method_price
-        assert "criteria" in context
-        assert len(context["criteria"]) == 1
-
-    def test_get_returns_modal_template_for_htmx_request(self, rf, payment_method_price):
-        """Test that GET returns modal template for HTMX request."""
-        request = rf.get("/")
-        request.headers = {"HX-Request": "true"}
-
-        view = PaymentMethodPriceCriteriaView()
-        view.request = request
-        view.kwargs = {"price_id": payment_method_price.id}
-
-        with patch("lfs.manage.payment_methods.views.render") as mock_render:
-            with patch.object(PaymentMethodPrice, "get_criteria", return_value=[]):
-                view.get(request)
-
-        mock_render.assert_called_once()
-        args = mock_render.call_args[0]
-        assert "payment_price_criteria_modal.html" in args[1]
-
-    def test_get_returns_regular_template_for_regular_request(self, rf, payment_method_price):
-        """Test that GET returns regular template for regular request."""
-        request = rf.get("/")
-        request.headers = {}
-
-        view = PaymentMethodPriceCriteriaView()
-        view.request = request
-        view.kwargs = {"price_id": payment_method_price.id}
-
-        with patch.object(PaymentMethodPrice, "get_criteria", return_value=[]):
-            with patch("django.views.generic.TemplateView.get") as mock_super_get:
-                view.get(request)
-
-        mock_super_get.assert_called_once()
-
-
-class TestPaymentMethodPriceCriteriaSaveView:
-    """Test PaymentMethodPriceCriteriaSaveView functionality."""
-
-
-    @patch("lfs.manage.payment_methods.views.messages")
-    def test_post_saves_criteria_and_shows_message(self, mock_messages, rf, payment_method_price):
-        """Test that POST saves criteria and shows success message."""
-        request = rf.post("/")
-        request.user = Mock()
-
-        view = PaymentMethodPriceCriteriaSaveView()
-        view.request = request
-        view.kwargs = {"price_id": payment_method_price.id}
-
-        # Mock payment price save_criteria
-        with patch.object(PaymentMethodPrice, "save_criteria") as mock_save_criteria:
-            response = view.post(request)
-
-        mock_save_criteria.assert_called_once_with(request)
-        mock_messages.success.assert_called_once()
-
-    def test_post_returns_htmx_redirect_for_htmx_request(self, rf, payment_method_price):
-        """Test that POST returns HTMX redirect for HTMX request."""
-        request = rf.post("/")
-        request.headers = {"HX-Request": "true"}
-        request.user = Mock()
-
-        view = PaymentMethodPriceCriteriaSaveView()
-        view.request = request
-        view.kwargs = {"price_id": payment_method_price.id}
-
-        with patch.object(PaymentMethodPrice, "save_criteria"):
-            with patch("lfs.manage.payment_methods.views.messages"):
-                response = view.post(request)
-
-        assert "HX-Redirect" in response
-        expected_url = reverse(
-            "lfs_manage_payment_method_prices", kwargs={"id": payment_method_price.payment_method.id}
+class TestCriteriaTab:
+    def test_saves_a_criterion_of_the_method(self, manager, cod):
+        response = manager.post(
+            url("lfs_manage_payment_method_criteria", cod), a_cart_price_criterion(CartPriceCriterion.LESS_THAN, 500)
         )
-        assert expected_url in response["HX-Redirect"]
 
-    def test_post_returns_regular_redirect_for_regular_request(self, rf, payment_method_price):
-        """Test that POST returns regular redirect for regular request."""
-        request = rf.post("/")
-        request.headers = {}
-        request.user = Mock()
+        [criterion] = cod.get_criteria()
+        assert (type(criterion), criterion.operator, criterion.value) == (
+            CartPriceCriterion,
+            CartPriceCriterion.LESS_THAN,
+            500.0,
+        )
+        assert response["Location"] == url("lfs_manage_payment_method_criteria", cod)
 
-        view = PaymentMethodPriceCriteriaSaveView()
-        view.request = request
-        view.kwargs = {"price_id": payment_method_price.id}
+    def test_shows_the_saved_criteria(self, manager, cod):
+        CartPriceCriterion.objects.create(content=cod, operator=CartPriceCriterion.LESS_THAN, value=512)
 
-        with patch.object(PaymentMethodPrice, "save_criteria"):
-            with patch("lfs.manage.payment_methods.views.messages"):
-                response = view.post(request)
+        content = manager.get(url("lfs_manage_payment_method_criteria", cod)).content.decode()
 
-        assert response.status_code == 302
+        assert 'value="512.0"' in content
 
-    def test_get_criteria_returns_rendered_criteria(self, rf, payment_method_price):
-        """Test that _get_criteria returns rendered criteria HTML."""
-        request = rf.post("/")
+    def test_shows_the_criteria_of_a_price_in_the_modal(self, manager, cod):
+        price = PaymentMethodPrice.objects.create(payment_method=cod, price=2.0)
+        CartPriceCriterion.objects.create(content=price, operator=CartPriceCriterion.GREATER_THAN, value=123)
 
-        view = PaymentMethodPriceCriteriaSaveView()
-        view.request = request
+        content = manager.get(
+            reverse("lfs_manage_payment_price_criteria", kwargs={"price_id": price.id}), HTTP_HX_REQUEST="true"
+        ).content.decode()
 
-        # Mock criterion objects
-        mock_criterion = Mock()
-        mock_criterion.render.return_value = "<div>Test Criterion</div>"
+        assert 'value="123.0"' in content
 
-        with patch.object(PaymentMethodPrice, "get_criteria", return_value=[mock_criterion]):
-            criteria = view._get_criteria(payment_method_price)
+    def test_saving_without_criteria_removes_them(self, manager, cod):
+        CartPriceCriterion.objects.create(content=cod, operator=CartPriceCriterion.LESS_THAN, value=500)
 
-        assert len(criteria) == 1
-        assert criteria[0] == "<div>Test Criterion</div>"
+        manager.post(url("lfs_manage_payment_method_criteria", cod), {})
+
+        assert cod.get_criteria() == []
+
+    def test_saves_a_criterion_of_a_price(self, manager, cod):
+        price = PaymentMethodPrice.objects.create(payment_method=cod, price=2.0)
+
+        response = manager.post(
+            reverse("lfs_manage_save_payment_price_criteria", kwargs={"price_id": price.id}),
+            a_cart_price_criterion(CartPriceCriterion.GREATER_THAN, 100),
+            HTTP_HX_REQUEST="true",
+        )
+
+        [criterion] = price.get_criteria()
+        assert (criterion.operator, criterion.value) == (CartPriceCriterion.GREATER_THAN, 100.0)
+        assert response["HX-Redirect"] == url("lfs_manage_payment_method_prices", cod)
+
+
+class TestPricesTab:
+    def test_lists_the_prices(self, manager, cod):
+        price = PaymentMethodPrice.objects.create(payment_method=cod, price=2.0)
+
+        assert list(manager.get(url("lfs_manage_payment_method_prices", cod)).context["prices"]) == [price]
+
+    def test_adds_a_price(self, manager, cod):
+        response = manager.post(url("lfs_manage_payment_method_prices", cod), {"add_price": "1", "price": "2.5"})
+
+        assert [p.price for p in cod.prices.all()] == [2.5]
+        assert messages_of(response) == ["Price has been added"]
+
+    @pytest.mark.parametrize("price", ["-1", "inf"])
+    def test_refuses_a_negative_or_infinite_price(self, manager, cod, price: str):
+        response = manager.post(url("lfs_manage_payment_method_prices", cod), {"add_price": "1", "price": price})
+
+        assert not cod.prices.exists()
+        assert messages_of(response) in (["Price cannot be negative"], ["Invalid price value"])
+
+    def test_updates_prices_and_renumbers_their_priorities(self, manager, cod):
+        first = PaymentMethodPrice.objects.create(payment_method=cod, price=1.0, priority=10)
+        second = PaymentMethodPrice.objects.create(payment_method=cod, price=2.0, priority=20)
+
+        manager.post(
+            url("lfs_manage_payment_method_prices", cod),
+            {"action": "update", f"price-{first.id}": "3", f"priority-{first.id}": "30", f"price-{second.id}": "4"},
+        )
+
+        assert [(p.id, p.price, p.priority) for p in cod.prices.all()] == [(second.id, 4.0, 10), (first.id, 3.0, 20)]
+
+    def test_deletes_selected_prices(self, manager, cod):
+        keep = PaymentMethodPrice.objects.create(payment_method=cod, price=1.0)
+        delete = PaymentMethodPrice.objects.create(payment_method=cod, price=2.0)
+
+        response = manager.post(
+            url("lfs_manage_payment_method_prices", cod), {"action": "delete", f"delete-{delete.id}": "on"}
+        )
+
+        assert list(cod.prices.all()) == [keep]
+        assert messages_of(response) == ["Prices have been deleted"]
+
+
+def test_delete_confirmation_names_the_method(manager, cod):
+    content = manager.get(url("lfs_manage_delete_payment_method_confirm", cod)).content.decode()
+
+    assert "Cash on delivery" in content
