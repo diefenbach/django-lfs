@@ -53,8 +53,8 @@ second value is the name of the operator.
 
     def get_operators(self):
         return [
-            [0, _(u"Is in cart")],
-            [1, _(u"Is not in cart")],
+            [0, _("Is in cart")],
+            [1, _("Is not in cart")],
         ]
 
 The ``is_valid`` method needs to return a boolean. If it returns ``True`` the
@@ -92,27 +92,26 @@ Plug in the Criterion
 
 Now as the code is ready, you can easily plugin your own criterion:
 
-#. Add your application to the PYTHONPATH
+#. Add your application to ``INSTALLED_APPS``::
 
-#. Add your application to settings.INSTALLED_APPS and sync your database::
-
-     INSTALLED_APPS = (
+     INSTALLED_APPS = [
           ...
           "product_criterion",
-     )
+     ]
 
 #. Add the class to the :ref:`LFS_CRITERIA <settings_lfs_criteria>` setting::
 
      LFS_CRITERIA = [
          ...
-         ["product_criterion.models.ProductCriterion", _(u"Product Criterion")],
+         ["product_criterion.models.ProductCriterion", _("Product Criterion")],
      ]
 
-#. As all criteria are models, you have to synchronize your database::
+#. As all criteria are models, create and apply the migration of your app::
 
-     $ bin/django syncdb
+     $ python manage.py makemigrations product_criterion
+     $ python manage.py migrate
 
-#. Restart your instance and the criterion should be available for selection,
+#. Restart the shop and the criterion is available for selection,
    for instance within the discount criteria tab.
 
 And that's it

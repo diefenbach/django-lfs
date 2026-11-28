@@ -64,22 +64,20 @@ Following all pieces are sticked together to the complete plugin:
         def get_price_gross(self):
             return 11.0 * ((100 + self.shipping_method.tax.rate) / 100)
 
-Plug in your payment method
-===========================
+Plug in your price calculator
+=============================
 
 Now as the code is ready, you can easily plugin your shipping method price
 calculator:
-
-#. Add your application to the PYTHONPATH.
 
 #. Add the class to the :ref:`LFS_SHIPPING_METHOD_PRICE_CALCULATORS
    <settings_lfs_shipping_price_calculators>` setting.
 
 #. If your are using models (which is completely up to you), add the application
-   to settings.INSTALLED_APPS and sync your database.
+   to ``INSTALLED_APPS`` and run ``python manage.py migrate``.
 
 #. :doc:`Add a new shipping method </user/howtos/how_to_shipping_method>` and
-   select your price calculator within the ``price_calculator`` field.
+   select your price calculator in the field ``Price Calculator``.
 
 #. Save the shipping method.
 
@@ -103,3 +101,5 @@ Further hints
 
     from lfs.customer.utils import get_customer
     customer = get_customer(self.request)
+
+With the example above a shipping method with a tax of 19 % costs 11.00 net and 13.09 gross.

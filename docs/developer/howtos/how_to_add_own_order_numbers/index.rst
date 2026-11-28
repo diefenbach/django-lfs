@@ -51,15 +51,14 @@ order.
 Plug in your order number generator
 ===================================
 
-Now as the code is ready, you can easily plugin your payment method:
-
-#. Add your application to the PYTHONPATH.
+Now as the code is ready, you can plug in your order number generator:
 
 #. Add your class to ``settings.py``
 
     LFS_ORDER_NUMBER_GENERATOR = "my_order_numbers.models.OrderNumberGenerator"
 
-#. Add your application to settings.INSTALLED_APPS and sync the database.
+#. Add your application to ``INSTALLED_APPS``, create its migration (``python manage.py makemigrations <app>``) and
+   run ``python manage.py migrate``.
 
 And that's it
 =============
@@ -71,23 +70,9 @@ called to generate a new order number.
 Optionally Add your own Template
 ================================
 
-Optionally you can add your own HTML for the management interface. For this
-just add the order_numbers_tab.html template to your application::
-
-    my_order_numbers
-        templates
-            manage
-                order_numbers
-                    order_numbers_tab.html
-
-Please refer to the standard template of LFS to get more details. You can find
-this on following place:
-
-    ``lfs/templates/manage/order_numbers/order_numbers_tab.html``
-
-In this case  please make sure that your ``my_order_numbers`` application
-stands **before** ``lfs`` within ``INSTALLED_APPS`` of ``settings.py`` so
-that LFS' default ``order_numbers_tab.html`` template is overwritten.
+The ``Order Numbers`` tab renders the form that your model's ``get_form`` returns, with LFS's template
+``manage/shop/tabs/_order_numbers.html``. To change the HTML, put a template with that path into your app and list
+the app **before** the LFS apps in ``INSTALLED_APPS``, so its template wins.
 
 Further hints
 =============

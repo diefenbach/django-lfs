@@ -23,8 +23,8 @@ in order to provide more functionality.
 Categories
 ==========
 
-In order to add a new template for categories go to ``lfs.catalog.settings`` and
-add tuple to ``CATEGORY_TEMPLATES``.
+To add a template for categories, set ``CATEGORY_TEMPLATES`` in your project's settings. The setting replaces
+LFS's list, so copy LFS's entries from ``lfs.catalog.settings`` and add yours.
 
 Example 1
 ---------
@@ -33,7 +33,7 @@ Example 1
 
     (0,{"file":"%s/%s" % (CAT_PRODUCT_PATH ,"default.html"),
         "image":IMAGES_PATH + " /product_default.png",
-        "name" : _(u"Category with products"),
+        "name" : _("Category with products"),
         }),
 
 Which means:
@@ -42,7 +42,7 @@ Which means:
     The unique id of the category template.
 
 file:
-    The absolute path to the template. ``CAT_PRODUCT_PATH`` means this is a
+    The path of the template, as Django's template loaders find it, e.g. ``lfs/catalog/products/product_inline.html``. ``CAT_PRODUCT_PATH`` means this is a
     template which displays the products of a category.
 
 image:
@@ -59,7 +59,7 @@ Example 2
 
     (1,{"file": "%s/%s" % (CAT_CATEGORY_PATH ,"default.html"),
         "image": IMAGES_PATH + "/category_square.png",
-        "name": _(u"Category with subcategories"),
+        "name": _("Category with subcategories"),
         }),
 
 Which means:
@@ -68,7 +68,7 @@ Which means:
     Unique id of the category template.
 
 file:
-    The absolute path to the template. ``CAT_PRODUCT_PATH`` means this is a
+    The path of the template, as Django's template loaders find it, e.g. ``lfs/catalog/products/product_inline.html``. ``CAT_PRODUCT_PATH`` means this is a
     template which displays the sub categories of a category.
 
 image:
@@ -81,8 +81,8 @@ name:
 Products
 ========
 
-In order to add a new template for products go to ``lfs.catalog.settings`` and
-add tuple to ``PRODUCT_TEMPLATES``.
+To add a template for products, set ``PRODUCT_TEMPLATES`` in your project's settings, again with LFS's entries
+from ``lfs.catalog.settings`` and yours.
 
 Example
 -------
@@ -91,7 +91,7 @@ Example
 
     (0, {"file" : "%s/%s" % (PRODUCT_PATH, "product_inline.html"),
          "image" : IMAGES_PATH + "/product_default.png",
-         "name" : _(u"Default template")
+         "name" : _("Default template")
          },),
 
 Which means:
@@ -100,7 +100,7 @@ Which means:
     The unique id of the product template.
 
 file:
-    The absolute path to the template.
+    The path of the template, as Django's template loaders find it, e.g. ``lfs/catalog/products/product_inline.html``.
 
 image:
     The absolute path to the preview image (Not used anymore).
