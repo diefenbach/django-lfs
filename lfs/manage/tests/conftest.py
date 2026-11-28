@@ -30,7 +30,7 @@ from lfs.manufacturer.models import Manufacturer
 
 # Portlet imports
 from portlets.models import Slot, PortletAssignment, PortletRegistration, PortletBlocking
-from portlets.example.models import TextPortlet
+from lfs.portlet.models import TextPortlet
 
 
 User = get_user_model()
