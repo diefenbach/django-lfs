@@ -137,6 +137,7 @@ Miscellaneous Information
 .. toctree::
    :maxdepth: 1
 
+   misc/trouble_shooting.rst
    misc/contributing_translations.rst
 
 ==================
