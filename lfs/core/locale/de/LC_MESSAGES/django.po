@@ -5806,3 +5806,7 @@ msgstr ""
 #: core/widgets/file.py:19
 msgid "Delete file"
 msgstr "Datei löschen"
+
+#: customer/forms.py
+msgid "Your registration could not be processed. Please try again."
+msgstr "Ihre Registrierung konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut."

@@ -1,12 +1,13 @@
+import time
+
 from django import forms
+from django.core import signing
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.forms.utils import ErrorList
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
-from captcha.fields import CaptchaField
 
 import lfs.payment.settings
 from lfs.customer.models import BankAccount
@@ -98,13 +99,59 @@ class CustomerAuthenticationForm(AuthenticationForm):
     username = forms.CharField(label=_("E-mail"), max_length=75)
 
 
+# A person needs at least this long to fill in the registration form; bots are faster.
+REGISTER_MIN_SECONDS = 3
+_FORM_START_SALT = "lfs.customer.register-form-start"
+
+
+def sign_form_start(timestamp: float) -> str:
+    """Return ``timestamp`` (seconds since the epoch) signed, to be sent with the registration form."""
+    return signing.dumps(timestamp, salt=_FORM_START_SALT)
+
+
 class RegisterForm(forms.Form):
-    """Form to register a customer."""
+    """Form to register a customer.
+
+    Instead of a captcha it keeps bots out with a honeypot field ``website``, which is hidden from people and stays
+    empty, and a signed start time ``started``: a form sent back sooner than ``REGISTER_MIN_SECONDS`` after it was
+    shown, or without a valid start time, is refused.
+    """
 
     email = forms.EmailField(label=_("E-mail"), max_length=75)
     password_1 = forms.CharField(label=_("Password"), widget=forms.PasswordInput(), max_length=20)
     password_2 = forms.CharField(label=_("Confirm password"), widget=forms.PasswordInput(), max_length=20)
-    captcha = CaptchaField()
+    website = forms.CharField(
+        label="",
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "autocomplete": "off",
+                "tabindex": "-1",
+                "aria-hidden": "true",
+                "style": "position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden",
+            }
+        ),
+    )
+    started = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if not self.is_bound:
+            self.initial["started"] = sign_form_start(time.time())
+
+    def clean(self) -> dict:
+        """Refuses the registration of bots: honeypot filled, start time missing, forged or too recent."""
+        cleaned_data = super().clean()
+        refused = forms.ValidationError(_("Your registration could not be processed. Please try again."))
+        if cleaned_data.get("website"):
+            raise refused
+        try:
+            started = signing.loads(cleaned_data.get("started") or "", salt=_FORM_START_SALT)
+        except signing.BadSignature:
+            raise refused
+        if time.time() - float(started) < REGISTER_MIN_SECONDS:
+            raise refused
+        return cleaned_data
 
     def clean_password_2(self):
         """Validates that password 1 and password 2 are the same."""
