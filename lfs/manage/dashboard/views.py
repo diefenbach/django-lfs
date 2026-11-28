@@ -32,8 +32,8 @@ def dashboard(request, template_name="manage/dashboard/dashboard.html"):
     orders_this_year = Order.objects.filter(created__gte=first_day_of_year).count()
 
     # Calculate eligible rating mails (orders without rating mail sent)
-    orders_with_rating_mail = OrderRatingMail.objects.values_list("order_id", flat=True)
-    eligible_rating_mails = get_orders().count() - len(orders_with_rating_mail)
+    # The orders the rating mail page would send now: due orders without a mail (not "due minus all mails").
+    eligible_rating_mails = get_orders().exclude(pk__in=OrderRatingMail.objects.values("order_id")).count()
 
     # Find best selling product
     best_selling_product = None
