@@ -240,7 +240,7 @@ class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
         cart_id = self.kwargs.get("id")
         filter_type = self.kwargs.get("filter_type")
 
-        now = timezone.now()
+        now = timezone.localtime()  # the shop's day, not the UTC day (they differ around midnight)
         start_date = None
 
         if filter_type == "today":

@@ -144,6 +144,25 @@ class TestFilters:
         assert response["Location"] == reverse("lfs_manage_cart", kwargs={"id": cart.id})
         assert messages_of(response) == ["Cart filters have been reset."]
 
+    @pytest.mark.parametrize(
+        "filter_type,start", [("today", "2026-11-29"), ("week", "2026-11-23"), ("month", "2026-11-01")]
+    )
+    def test_a_predefined_filter_starts_on_the_shops_local_day(
+        self, manager, monkeypatch, filter_type: str, start: str
+    ):
+        """At 0:30 on 29 November in Berlin it is still 28 November in UTC; "today" must mean the 29th."""
+        monkeypatch.setattr(
+            timezone, "now", lambda: datetime.datetime(2026, 11, 28, 23, 30, tzinfo=datetime.timezone.utc)
+        )
+        set_filters(manager, end="2026-12-31")
+
+        response = manager.get(
+            reverse("lfs_manage_apply_predefined_cart_filter_list", kwargs={"filter_type": filter_type})
+        )
+
+        assert manager.session["cart-filters"] == {"start": start}
+        assert response["Location"] == reverse("lfs_manage_carts")
+
     def test_an_unknown_predefined_filter_is_refused(self, manager):
         response = manager.get(reverse("lfs_manage_apply_predefined_cart_filter_list", kwargs={"filter_type": "year"}))
 
