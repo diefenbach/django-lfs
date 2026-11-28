@@ -261,6 +261,10 @@ msgstr "Alle Produkte anzeigen"
 msgid "Products"
 msgstr "Produkte"
 
+#: manage/templates/manage/base.html:68
+msgid "Products Overview"
+msgstr "Produktübersicht"
+
 #: catalog/models.py:182 catalog/models.py:649 manufacturer/models.py:18
 msgid "Short description"
 msgstr "Kurzbeschreibung"
