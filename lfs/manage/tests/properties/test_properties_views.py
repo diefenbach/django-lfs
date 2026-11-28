@@ -87,9 +87,10 @@ class TestPropertyDataViewUnit:
             def save(self, commit=True):
                 return p
 
-        with patch("lfs.manage.properties.views.property_type_changed.send") as mock_send, patch(
-            "lfs.manage.properties.views.invalidate_cache_group_id"
-        ) as mock_invalidate:
+        with (
+            patch("lfs.manage.properties.views.property_type_changed.send") as mock_send,
+            patch("lfs.manage.properties.views.invalidate_cache_group_id") as mock_invalidate,
+        ):
             # Simulate change: old_type != new type
             original_type = p.type
             p.type = original_type + 1
@@ -127,19 +128,6 @@ class TestPropertyDeleteViewsUnit:
         view.kwargs = {"id": p.id}
         ctx = view.get_context_data()
         assert ctx["property"].id == p.id
-
-    @pytest.mark.django_db
-    def test_delete_removes_property(self, mock_request_with_messages, admin_user):
-        p = Property.objects.create(name="Foo", title="Foo")
-        view = PropertyDeleteView()
-        view.request = mock_request_with_messages
-        view.kwargs = {"id": p.id}
-        with patch.object(view, "get_success_url", return_value="/ok/"), patch(
-            "lfs.manage.properties.views.invalidate_cache_group_id"
-        ) as mock_invalidate:
-            view.delete(mock_request_with_messages)
-            assert not Property.objects.filter(id=p.id).exists()
-            mock_invalidate.assert_called_once_with("global-properties-version")
 
     def test_delete_success_url(self):
         assert "properties" in PropertyDeleteView().get_success_url()

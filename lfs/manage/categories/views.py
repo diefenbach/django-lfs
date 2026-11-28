@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
+from django.forms import Form
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -454,16 +455,19 @@ class CategoryDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequi
     def get_success_url(self):
         return reverse("lfs_manage_categories")
 
-    def delete(self, request, *args, **kwargs):
-        """Delete category and update positions."""
-        category = self.get_object()
-        parent = category.parent
-        response = super().delete(request, *args, **kwargs)
+    def form_valid(self, form: Form) -> HttpResponse:
+        """Deletes the category and renumbers its siblings. Its children become top-level categories
+        (``Category.parent`` is SET_NULL), so the top level is renumbered too and all levels are set again."""
+        parent = self.object.parent
+        has_children = self.object.category_set.exists()
+        response = super().form_valid(form)
 
-        # Update positions
         from lfs.manage import utils as manage_utils
 
         manage_utils.update_category_positions(parent)
+        if has_children:
+            manage_utils.update_category_positions(None)
+            set_category_levels()
 
         return response
 

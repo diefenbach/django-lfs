@@ -2,15 +2,16 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect
+from django.forms import Form
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 
-from lfs.catalog.models import DeliveryTime
-from lfs.catalog.models import Product
+from lfs.catalog.models import DeliveryTime, Product
+from lfs.core.models import Shop
 from lfs.manage.mixins import DirectDeleteMixin
 
 
@@ -170,26 +171,16 @@ class DeliveryTimeDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionR
         else:
             return reverse("lfs_no_delivery_times")
 
-    def delete(self, request, *args, **kwargs):
-        """Override delete to clean up references before deletion."""
-        delivery_time = self.get_object()
-
-        # Remove the delivery time from all products delivery
-        for product in Product.objects.filter(delivery_time=delivery_time):
-            product.delivery_time = None
+    def form_valid(self, form: Form) -> HttpResponse:
+        """Deletes the delivery time. Products and the shop using it are saved without it first: the database
+        would clear the references itself (SET_NULL), but without sending the signals that clear their caches."""
+        for product in Product.objects.filter(Q(delivery_time=self.object) | Q(order_time=self.object)):
+            if product.delivery_time_id == self.object.pk:
+                product.delivery_time = None
+            if product.order_time_id == self.object.pk:
+                product.order_time = None
             product.save()
-
-        # Remove the delivery time from all products order_time
-        for product in Product.objects.filter(order_time=delivery_time):
-            product.order_time = None
-            product.save()
-
-        # Remove the delivery time from the shop
-        from lfs.core.utils import get_default_shop
-
-        shop = get_default_shop(request)
-        if shop.delivery_time == delivery_time:
+        for shop in Shop.objects.filter(delivery_time=self.object):
             shop.delivery_time = None
             shop.save()
-
-        return super().delete(request, *args, **kwargs)
+        return super().form_valid(form)

@@ -14,11 +14,9 @@ from django.shortcuts import render
 from django.contrib import messages
 
 # lfs imports
-from lfs.customer.models import Customer
 from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.payment_methods.forms import PaymentMethodForm, PaymentMethodAddForm
 from lfs.payment.models import PaymentMethod, PaymentMethodPrice
-from lfs.payment import utils as payment_utils
 
 
 class ManagePaymentsView(PermissionRequiredMixin, RedirectView):
@@ -347,20 +345,6 @@ class PaymentMethodDeleteView(DirectDeleteMixin, SuccessMessageMixin, Permission
 
     def get_success_url(self):
         return reverse("lfs_manage_payment_methods")
-
-    def delete(self, request, *args, **kwargs):
-        """Override delete to handle customer payment method updates."""
-        payment_method = self.get_object()
-
-        # Update customers with this payment method to use default
-        customers_to_update = Customer.objects.filter(selected_payment_method=payment_method)
-
-        for customer in customers_to_update:
-            default_method = payment_utils.get_default_payment_method(request)
-            customer.selected_payment_method = default_method
-            customer.save()
-
-        return super().delete(request, *args, **kwargs)
 
 
 class PaymentMethodPriceCriteriaView(PermissionRequiredMixin, TemplateView):

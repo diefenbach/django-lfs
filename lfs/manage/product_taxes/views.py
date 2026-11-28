@@ -134,9 +134,3 @@ class TaxDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMi
             return reverse("lfs_manage_tax", kwargs={"pk": first_tax.id})
         else:
             return reverse("lfs_no_taxes")
-
-    def delete(self, request, *args, **kwargs):
-        """Override delete to clean up references before deletion."""
-        tax = self.get_object()
-
-        return super().delete(request, *args, **kwargs)

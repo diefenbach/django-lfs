@@ -7,7 +7,6 @@ from django.http import Http404
 from django.urls import reverse
 
 from lfs.payment.models import PaymentMethod, PaymentMethodPrice
-from lfs.customer.models import Customer
 from lfs.manage.payment_methods.views import (
     ManagePaymentsView,
     PaymentMethodTabMixin,
@@ -529,30 +528,6 @@ class TestPaymentMethodDeleteView:
         expected_url = reverse("lfs_manage_payment_methods")
 
         assert success_url == expected_url
-
-    @patch("lfs.payment.utils.get_default_payment_method")
-    def test_delete_updates_customer_payment_methods(self, mock_get_default, rf, payment_method, admin_user):
-        """Test that delete updates customers using the deleted payment method."""
-        # Create customer using the payment method
-        customer = Customer.objects.create(user=admin_user, selected_payment_method=payment_method)
-
-        # Mock default payment method
-        default_method = PaymentMethod.objects.create(name="Default", active=True, priority=1)
-        mock_get_default.return_value = default_method
-
-        request = rf.delete("/")
-        request.user = admin_user
-
-        view = PaymentMethodDeleteView()
-        view.request = request
-        view.kwargs = {"id": payment_method.id}
-
-        view.delete(request)
-
-        # Verify customer payment method was updated
-        customer.refresh_from_db()
-        assert customer.selected_payment_method == default_method
-
 
 class TestPaymentMethodPriceCriteriaView:
     """Test PaymentMethodPriceCriteriaView functionality."""
