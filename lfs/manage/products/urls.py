@@ -29,7 +29,7 @@ urlpatterns = [
         name="lfs_manage_products",
     ),
     path(
-        "products/",
+        "products/list/",
         ProductListView.as_view(),
         name="lfs_manage_products_list",
     ),
