@@ -1,109 +1,80 @@
+"""The tools of the management, tested through real requests as a shop manager: each tool does its job on real data
+and returns to the tools page with a message."""
+
 import pytest
-from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
+from django.core.cache import cache
 from django.urls import reverse
-from django.test import RequestFactory
 
-from lfs.manage.tools.views import ToolsView
+from lfs.catalog.models import Category, Product
+from lfs.marketing.models import ProductSales
+from lfs.order.models import Order, OrderItem
+from lfs.addresses.models import Address
 
-User = get_user_model()
-
-
-class TestToolsView:
-    """Test the ToolsView class."""
+pytestmark = pytest.mark.django_db
 
 
-    def test_get_context_data_returns_utilities_list(self, mock_request):
-        """Should return utilities list in context."""
-        view = ToolsView()
-        view.request = mock_request
+@pytest.fixture
+def manager(client, admin_user, shop):
+    """A test client logged in as a shop manager."""
+    client.force_login(admin_user)
+    return client
 
-        context = view.get_context_data()
 
-        assert "utilities" in context
-        assert isinstance(context["utilities"], list)
-        assert len(context["utilities"]) == 4
+def run_tool(manager, url_name: str) -> list[str]:
+    """Run a tool and return the messages; the tool must return to the tools page."""
+    response = manager.get(reverse(url_name))
+    assert response["Location"] == reverse("lfs_manage_tools")
+    return [str(m) for m in get_messages(response.wsgi_request)]
 
-    def test_get_context_data_utilities_have_required_keys(self, mock_request):
-        """Should include all required keys in each utility."""
-        view = ToolsView()
-        view.request = mock_request
 
-        context = view.get_context_data()
-        utilities = context["utilities"]
+def test_tools_page_links_every_tool(manager):
+    urls = [u["url"] for u in manager.get(reverse("lfs_manage_tools")).context["utilities"]]
 
-        required_keys = {"name", "description", "url", "icon"}
-        for utility in utilities:
-            assert set(utility.keys()) == required_keys
+    assert urls == [
+        reverse("lfs_manage_clear_cache"),
+        reverse("lfs_manage_set_category_levels"),
+        reverse("lfs_manage_reindex_topseller"),
+        reverse("lfs_manage_update_effective_price"),
+    ]
 
-    @pytest.mark.parametrize(
-        "utility_index,expected_name,expected_icon",
-        [
-            (0, "Clear Cache", "bi-arrow-clockwise"),
-            (1, "Set Category Levels", "bi-diagram-3"),
-            (2, "Reindex Topseller", "bi-star"),
-            (3, "Update Effective Prices", "bi-currency-dollar"),
-        ],
-    )
-    def test_get_context_data_utility_names_and_icons(self, mock_request, utility_index, expected_name, expected_icon):
-        """Should have correct names and icons for each utility."""
-        view = ToolsView()
-        view.request = mock_request
 
-        context = view.get_context_data()
-        utility = context["utilities"][utility_index]
+def test_clear_cache_empties_the_cache(manager):
+    cache.set("some-key", "some value")
 
-        assert utility["name"] == expected_name
-        assert utility["icon"] == expected_icon
+    assert run_tool(manager, "lfs_manage_clear_cache") == ["Cache has been cleared."]
+    assert cache.get("some-key") is None
 
-    def test_get_context_data_utility_urls_are_valid(self, mock_request):
-        """Should have valid URLs for each utility."""
-        view = ToolsView()
-        view.request = mock_request
 
-        context = view.get_context_data()
-        utilities = context["utilities"]
+def test_set_category_levels_sets_the_depth_of_each_category(manager):
+    top = Category.objects.create(name="Top", slug="top", level=7)
+    middle = Category.objects.create(name="Middle", slug="middle", parent=top, level=7)
+    bottom = Category.objects.create(name="Bottom", slug="bottom", parent=middle, level=7)
 
-        expected_urls = [
-            reverse("lfs_manage_clear_cache"),
-            reverse("lfs_manage_set_category_levels"),
-            reverse("lfs_manage_reindex_topseller"),
-            reverse("lfs_manage_update_effective_price"),
-        ]
+    assert run_tool(manager, "lfs_manage_set_category_levels") == ["Category levels have been created."]
+    assert [Category.objects.get(pk=c.pk).level for c in (top, middle, bottom)] == [1, 2, 3]
 
-        actual_urls = [utility["url"] for utility in utilities]
-        assert actual_urls == expected_urls
 
-    def test_get_context_data_utility_descriptions_are_present(self, mock_request):
-        """Should have non-empty descriptions for each utility."""
-        view = ToolsView()
-        view.request = mock_request
+def test_reindex_topseller_counts_the_sold_amount_per_product_and_variants_for_their_parent(manager):
+    lamp = Product.objects.create(name="Lamp", slug="lamp", sub_type="1")
+    red_lamp = Product.objects.create(name="Red lamp", slug="red-lamp", sub_type="2", parent=lamp)
+    chair = Product.objects.create(name="Chair", slug="chair")
+    address = Address.objects.create()
+    order = Order.objects.create(invoice_address=address, shipping_address=address)
+    OrderItem.objects.create(order=order, product=lamp, product_amount=2)
+    OrderItem.objects.create(order=order, product=red_lamp, product_amount=3)
+    OrderItem.objects.create(order=order, product=chair, product_amount=1)
+    ProductSales.objects.create(product=chair, sales=99)
 
-        context = view.get_context_data()
-        utilities = context["utilities"]
+    assert run_tool(manager, "lfs_manage_reindex_topseller") == ["Topseller have been reindexed."]
+    assert dict(ProductSales.objects.values_list("product__slug", "sales")) == {"lamp": 5, "chair": 1}
 
-        for utility in utilities:
-            assert utility["description"]
-            assert len(utility["description"]) > 0
 
-    def test_view_works_with_regular_user(self, regular_user):
-        """Should work with regular user (permission check is at mixin level)."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.user = regular_user
-        request.session = {}
+def test_update_effective_price_takes_the_sale_price_when_the_product_is_for_sale(manager):
+    on_sale = Product.objects.create(name="Lamp", slug="lamp", price=100, for_sale=True, for_sale_price=80)
+    regular = Product.objects.create(name="Chair", slug="chair", price=50)
+    Product.objects.update(effective_price=0)
 
-        view = ToolsView()
-        view.request = request
-
-        # The view should work but permission check happens at the mixin level
-        context = view.get_context_data()
-        assert "utilities" in context
-
-    def test_view_allows_authenticated_admin(self, mock_request):
-        """Should allow authenticated admin users."""
-        view = ToolsView()
-        view.request = mock_request
-
-        # This should not raise an exception
-        context = view.get_context_data()
-        assert "utilities" in context
+    assert run_tool(manager, "lfs_manage_update_effective_price") == ["Effective prices have been set."]
+    assert Product.objects.get(pk=on_sale.pk).effective_price == 80
+    assert Product.objects.get(pk=regular.pk).effective_price == 50

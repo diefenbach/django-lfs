@@ -1,213 +1,114 @@
+"""Rating mails of the management, tested through real requests as a shop manager: which orders get a mail, who
+receives it and that a sent mail is not sent again.
+
+The mail texts come from the theme; the tests use minimal templates of their own so that they test django-lfs."""
+
+import datetime
+
 import pytest
-from unittest.mock import Mock
-from django.test import RequestFactory
-from django.contrib.auth.models import User
-from django.contrib.messages.storage.fallback import FallbackStorage
-from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.messages import get_messages
+from django.core import mail
+from django.urls import reverse
+from django.utils import timezone
 
-from lfs.manage.review_mails.views import RatingMailManageView, RatingMailSendView
+from lfs.addresses.models import Address
+from lfs.catalog.models import Product
+from lfs.core.utils import get_default_shop
+from lfs.marketing.models import OrderRatingMail
+from lfs.order.models import Order, OrderItem
+from lfs.order.settings import CLOSED, SUBMITTED
+
+pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture(autouse=True)
+def rating_mail_templates(settings, tmp_path):
+    """Minimal rating mail templates listing the products the mail asks to review."""
+    folder = tmp_path / "lfs" / "reviews"
+    folder.mkdir(parents=True)
+    (folder / "rating_mail.txt").write_text("Please review your products.")
+    (folder / "rating_mail.html").write_text("{% for item in order_items %}{{ item.product_name }};{% endfor %}")
+    settings.TEMPLATES = [{**settings.TEMPLATES[0], "DIRS": [str(tmp_path), *settings.TEMPLATES[0]["DIRS"]]}]
 
 
 @pytest.fixture
-def user():
-    """Create a test user with required permissions."""
-    user = User.objects.create_user(username="testuser", password="testpass", email="test@example.com")
-    return user
+def manager(client, admin_user, shop):
+    """A test client logged in as a shop manager; the shop sends from and notifies fixed addresses.
+
+    Other test folders leave a shop of their own behind, so this configures the shop the mails actually use."""
+    shop = get_default_shop()
+    shop.from_email = "shop@example.com"
+    shop.notification_emails = "owner@example.com, office@example.com"
+    shop.save()
+    client.force_login(admin_user)
+    return client
 
 
-@pytest.fixture
-def request_factory():
-    """Create a request factory for testing."""
-    return RequestFactory()
+def order(email: str, state: int = CLOSED, closed_days_ago: int = 20, products=()) -> Order:
+    """Create an order of the given state whose state changed the given number of days ago."""
+    address = Address.objects.create()
+    o = Order.objects.create(invoice_address=address, shipping_address=address, customer_email=email, state=state)
+    Order.objects.filter(pk=o.pk).update(state_modified=timezone.now() - datetime.timedelta(days=closed_days_ago))
+    for product in products:
+        OrderItem.objects.create(order=o, product=product, product_amount=1)
+    return o
 
 
-@pytest.fixture
-def mock_request(request_factory, user):
-    """Create a mock request with user and messages."""
-    request = request_factory.get("/")
-    request.user = user
-    request.session = SessionStore()
-    messages = FallbackStorage(request)
-    request._messages = messages
-    return request
+def messages_of(response) -> list[str]:
+    """Return the messages the request added for the manager."""
+    return [str(m) for m in get_messages(response.wsgi_request)]
 
 
-class TestRatingMailManageView:
-    """Test cases for RatingMailManageView."""
+def test_lists_orders_closed_for_two_weeks_without_a_rating_mail(manager):
+    due = order("due@example.com")
+    order("recent@example.com", closed_days_ago=3)
+    order("open@example.com", state=SUBMITTED)
+    OrderRatingMail.objects.create(order=order("asked@example.com"))
+
+    response = manager.get(reverse("lfs_manage_rating_mails"))
+
+    assert response.context["eligible_orders"] == [due]
 
 
+def test_sends_each_due_customer_a_mail_and_marks_the_order(manager):
+    first = order("first@example.com")
+    second = order("second@example.com")
 
-    @pytest.mark.django_db
-    def test_should_get_eligible_orders_in_context(self, mock_request, monkeypatch):
-        """Test that view includes eligible orders in context."""
-        # Arrange
-        mock_service = Mock()
-        mock_orders = [Mock(), Mock()]
-        mock_service.get_orders_for_rating_mails.return_value = mock_orders
+    response = manager.post(reverse("lfs_send_rating_mails"))
 
-        mock_service_class = Mock(return_value=mock_service)
-        monkeypatch.setattr("lfs.manage.review_mails.views.RatingMailService", mock_service_class)
+    assert sorted(m.to[0] for m in mail.outbox) == ["first@example.com", "second@example.com"]
+    assert all(m.bcc == [] and m.from_email == "shop@example.com" for m in mail.outbox)
+    assert set(OrderRatingMail.objects.values_list("order", flat=True)) == {first.pk, second.pk}
+    assert messages_of(response) == ["Rating mails sent to 2 customers."]
 
-        view = RatingMailManageView()
-        view.request = mock_request
-
-        # Act
-        context = view.get_context_data()
-
-        # Assert
-        assert "eligible_orders" in context
-        assert context["eligible_orders"] == mock_orders
-        mock_service_class.assert_called_once_with(request=mock_request)
-        mock_service.get_orders_for_rating_mails.assert_called_once()
+    mail.outbox.clear()
+    manager.post(reverse("lfs_send_rating_mails"))
+    assert mail.outbox == []
 
 
-class TestRatingMailSendView:
-    """Test cases for RatingMailSendView."""
+def test_bcc_sends_a_copy_to_the_shops_notification_addresses(manager):
+    order("customer@example.com")
+
+    manager.post(reverse("lfs_send_rating_mails"), {"bcc": "on"})
+
+    assert mail.outbox[0].bcc == ["owner@example.com", "office@example.com"]
 
 
+def test_a_test_run_mails_the_shop_and_marks_nothing(manager):
+    order("customer@example.com")
+
+    response = manager.post(reverse("lfs_send_rating_mails"), {"test": "on"})
+
+    assert [m.to for m in mail.outbox] == [["owner@example.com", "office@example.com"]]
+    assert not OrderRatingMail.objects.exists()
+    assert messages_of(response) == ["Test mails sent to shop notification emails."]
 
 
-    @pytest.mark.django_db
-    def test_should_handle_post_request_successfully(self, request_factory, user, monkeypatch):
-        """Test that view handles POST request successfully."""
-        # Arrange
-        mock_service = Mock()
-        mock_orders = [Mock(), Mock()]
-        mock_sent_orders = [Mock()]
-        mock_service.get_orders_for_rating_mails.return_value = mock_orders
-        mock_service.send_rating_mails_batch.return_value = mock_sent_orders
+def test_the_mail_asks_for_the_parent_of_a_bought_variant(manager):
+    lamp = Product.objects.create(name="Lamp", slug="lamp", sub_type="1")
+    red_lamp = Product.objects.create(name="Red lamp", slug="red-lamp", sub_type="2", parent=lamp)
+    order("customer@example.com", products=[red_lamp])
 
-        mock_service_class = Mock(return_value=mock_service)
-        monkeypatch.setattr("lfs.manage.review_mails.views.RatingMailService", mock_service_class)
+    manager.post(reverse("lfs_send_rating_mails"))
 
-        request = request_factory.post("/", {"test": "on", "bcc": "on"})
-        request.user = user
-        request.session = SessionStore()
-        messages = FallbackStorage(request)
-        request._messages = messages
-
-        view = RatingMailSendView()
-        view.request = request
-
-        # Act
-        response = view.post(request)
-
-        # Assert
-        assert response.status_code == 200
-        # Service is called twice: once in post() and once in get_context_data()
-        assert mock_service_class.call_count == 2
-        mock_service.get_orders_for_rating_mails.assert_called()
-        mock_service.send_rating_mails_batch.assert_called_once_with(mock_orders, is_test=True, include_bcc=True)
-
-    @pytest.mark.django_db
-    def test_should_handle_post_without_test_mode(self, request_factory, user, monkeypatch):
-        """Test that view handles POST without test mode."""
-        # Arrange
-        mock_service = Mock()
-        mock_orders = [Mock()]
-        mock_sent_orders = [Mock()]
-        mock_service.get_orders_for_rating_mails.return_value = mock_orders
-        mock_service.send_rating_mails_batch.return_value = mock_sent_orders
-
-        mock_service_class = Mock(return_value=mock_service)
-        monkeypatch.setattr("lfs.manage.review_mails.views.RatingMailService", mock_service_class)
-
-        request = request_factory.post("/", {"bcc": "on"})  # No test checkbox
-        request.user = user
-        request.session = SessionStore()
-        messages = FallbackStorage(request)
-        request._messages = messages
-
-        view = RatingMailSendView()
-        view.request = request
-
-        # Act
-        response = view.post(request)
-
-        # Assert
-        assert response.status_code == 200
-        mock_service.send_rating_mails_batch.assert_called_once_with(mock_orders, is_test=False, include_bcc=True)
-
-    @pytest.mark.django_db
-    def test_should_handle_post_without_bcc(self, request_factory, user, monkeypatch):
-        """Test that view handles POST without BCC."""
-        # Arrange
-        mock_service = Mock()
-        mock_orders = [Mock()]
-        mock_sent_orders = [Mock()]
-        mock_service.get_orders_for_rating_mails.return_value = mock_orders
-        mock_service.send_rating_mails_batch.return_value = mock_sent_orders
-
-        mock_service_class = Mock(return_value=mock_service)
-        monkeypatch.setattr("lfs.manage.review_mails.views.RatingMailService", mock_service_class)
-
-        request = request_factory.post("/", {"test": "on"})  # No bcc checkbox
-        request.user = user
-        request.session = SessionStore()
-        messages = FallbackStorage(request)
-        request._messages = messages
-
-        view = RatingMailSendView()
-        view.request = request
-
-        # Act
-        response = view.post(request)
-
-        # Assert
-        assert response.status_code == 200
-        mock_service.send_rating_mails_batch.assert_called_once_with(mock_orders, is_test=True, include_bcc=False)
-
-    @pytest.mark.django_db
-    def test_should_include_correct_context_in_response(self, request_factory, user, monkeypatch):
-        """Test that view includes correct context in response."""
-        # Arrange
-        mock_service = Mock()
-        mock_orders = [Mock()]
-        mock_sent_orders = [Mock()]
-        mock_service.get_orders_for_rating_mails.return_value = mock_orders
-        mock_service.send_rating_mails_batch.return_value = mock_sent_orders
-
-        mock_service_class = Mock(return_value=mock_service)
-        monkeypatch.setattr("lfs.manage.review_mails.views.RatingMailService", mock_service_class)
-
-        request = request_factory.post("/", {"test": "on"})
-        request.user = user
-        request.session = SessionStore()
-        messages = FallbackStorage(request)
-        request._messages = messages
-
-        view = RatingMailSendView()
-        view.request = request
-
-        # Act
-        response = view.post(request)
-
-        # Assert
-        assert response.status_code == 200
-        context = response.context_data
-        assert context["display_orders_sent"] is True
-        assert context["orders_sent"] == mock_sent_orders
-        assert context["eligible_orders"] == mock_orders
-
-    @pytest.mark.django_db
-    def test_should_get_eligible_orders_in_get_context(self, mock_request, monkeypatch):
-        """Test that view includes eligible orders in GET context."""
-        # Arrange
-        mock_service = Mock()
-        mock_orders = [Mock(), Mock()]
-        mock_service.get_orders_for_rating_mails.return_value = mock_orders
-
-        mock_service_class = Mock(return_value=mock_service)
-        monkeypatch.setattr("lfs.manage.review_mails.views.RatingMailService", mock_service_class)
-
-        view = RatingMailSendView()
-        view.request = mock_request
-
-        # Act
-        context = view.get_context_data()
-
-        # Assert
-        assert "eligible_orders" in context
-        assert context["eligible_orders"] == mock_orders
-        mock_service_class.assert_called_once_with(request=mock_request)
-        mock_service.get_orders_for_rating_mails.assert_called_once()
+    assert mail.outbox[0].alternatives[0][0] == "Lamp;"
