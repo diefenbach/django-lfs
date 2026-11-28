@@ -77,6 +77,16 @@ def test_saves_a_tax(manager):
     assert messages_of(response) == ["Tax has been saved."]
 
 
+def test_saving_and_adding_keep_the_search(manager):
+    tax = Tax.objects.create(rate=16)
+
+    saved = manager.post(reverse("lfs_manage_tax", kwargs={"pk": tax.id}), {"rate": "19", "q": "a & b"})
+    added = manager.post(reverse("lfs_manage_add_tax"), {"create-rate": "7", "q": "a & b"})
+
+    assert saved["Location"].endswith("?q=a+%26+b")
+    assert added["Location"].endswith("?q=a+%26+b")
+
+
 def test_deleting_shows_the_next_tax_and_keeps_its_products(manager):
     full, reduced = Tax.objects.create(rate=19), Tax.objects.create(rate=7)
     lamp = Product.objects.create(name="Lamp", slug="lamp", tax=full)

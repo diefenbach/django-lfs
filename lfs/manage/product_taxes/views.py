@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -42,7 +44,7 @@ class TaxUpdateView(PermissionRequiredMixin, UpdateView):
         search_query = self.request.POST.get("q", "")
         url = reverse_lazy("lfs_manage_tax", kwargs={"pk": self.object.id})
         if search_query:
-            url = f"{url}?q={search_query}"
+            url = f"{url}?{urlencode({'q': search_query})}"
         return url
 
     def get_taxes_queryset(self):
@@ -86,7 +88,7 @@ class TaxCreateView(PermissionRequiredMixin, CreateView):
         search_query = self.request.POST.get("q", "")
         url = reverse_lazy("lfs_manage_tax", kwargs={"pk": self.object.id})
         if search_query:
-            url = f"{url}?q={search_query}"
+            url = f"{url}?{urlencode({'q': search_query})}"
         return url
 
     def get_form_kwargs(self):
