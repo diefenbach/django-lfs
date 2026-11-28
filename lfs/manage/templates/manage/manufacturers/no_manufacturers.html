@@ -2,21 +2,26 @@
 {% load i18n %}
 
 {% block help_link %}user/management/shop/manufacturers.html{% endblock %}
-{% block sextion %}no-manufacturers{% endblock %}
+{% block section %}no-manufacturers{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-    <h2>
-        {% trans "Manufacturers" %}
-    </h2>
-    <div class="no-content">
-        {% trans "There are no manufacturers yet." %}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-building-x display-1 text-muted"></i>
+            </div>
+            <h2 class="h4 mb-3">{% trans "Manufacturers" %}</h2>
+            <p class="text-muted mb-4">{% trans "There are no manufacturers yet." %}</p>
+            <button type="button" class="btn btn-primary"
+                hx-get="{% url 'lfs_manage_add_manufacturer' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click"
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Add Manufacturer" %}
+            </button>
+        </div>
     </div>
-    <div class="buttons">
-        <form action="{% url 'lfs_manage_add_manufacturer' %}">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Add Manufacturer' %}">
-        </form>
-    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

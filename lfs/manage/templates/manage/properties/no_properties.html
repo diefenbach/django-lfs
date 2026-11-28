@@ -12,12 +12,17 @@
                     <p class="text-muted mb-4">
                         {% trans "You haven't created any properties yet. Properties define the characteristics of your products." %}
                     </p>
-                    <a href="{% url 'lfs_add_property' %}" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary"
+                        hx-get="{% url 'lfs_add_property' %}"
+                        hx-target="#modal-body-lg"
+                        hx-trigger="click"
+                        hx-swap="innerHTML">
                         <i class="bi bi-plus-circle me-1"></i>
                         {% trans "Add Your First Property" %}
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}
