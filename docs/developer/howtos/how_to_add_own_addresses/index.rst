@@ -19,11 +19,15 @@ Implement the Address Model
 ===========================
 
 The main part of the application consists of a address model which must inherit
-from the ``BassAddress`` class.
+from the ``BaseAddress`` class.
 
 .. code-block:: python
 
+    from django.db import models
+    from django.utils.translation import gettext_lazy as _
+
     from lfs.addresses.models import BaseAddress
+
 
     class MyAddress(BaseAddress):
         values_before_postal = ("firstname+", "lastname+", "company_name")
@@ -31,7 +35,7 @@ from the ``BassAddress`` class.
 
         company_name = models.CharField(_("Company name"), max_length=50, blank=True, null=True)
         phone = models.CharField(_("Phone"), blank=True, max_length=20)
-        mobile = models.CharField(_("Mobile"), blank=True, max_length=20, required=False)
+        mobile = models.CharField(_("Mobile"), blank=True, max_length=20)
         email = models.EmailField(_("E-Mail"), blank=True, null=True, max_length=50)
 
 In this case we add an extra field ``mobile`` to LFS' default address. In
@@ -57,7 +61,7 @@ inherit from ``AddressBaseForm``
     from django import forms
 
     # lfs imports
-    from lfs.addresses.models import AddressBaseForm
+    from lfs.addresses.forms import AddressBaseForm
 
     # my_addresses imports
     from my_addresses.models import MyAddress
@@ -67,7 +71,7 @@ inherit from ``AddressBaseForm``
         fields_before_postal = ("firstname", "lastname", "company_name")
         fields_after_postal = ("phone", "mobile", "email")
 
-        class Meta(AddressForm.Meta):
+        class Meta(AddressBaseForm.Meta):
             model = MyAddress
 
 The only LFS specific thing you have to take care of are two attributes:
@@ -81,15 +85,13 @@ Plug in the Components
 
 Now, as the code is ready, you can easily plug in your own address:
 
-#. Add your application to the PYTHONPATH
-
 #. Add your application to settings.INSTALLED_APPS (before ``lfs_theme`` if
    you overwrite the default templates)::
 
-     INSTALLED_APPS = (
+     INSTALLED_APPS = [
           ...
           "my_addresses",
-     )
+     ]
 
 #. Add the model to the :ref:`LFS_ADDRESS_MODEL <settings_addresses>` setting::
 
@@ -98,14 +100,15 @@ Now, as the code is ready, you can easily plug in your own address:
 #. Add the forms to the :ref:`LFS_INVOICE_ADDRESS_FORM <settings_addresses>` and
    :ref:`LFS_SHIPPING_ADDRESS_FORM <settings_addresses>` setting::
 
-     LFS_INVOICE_ADDRESS_FORM = "my_addresses.forms.MyInvoiceAddressForm"
-     LFS_SHIPPING_ADDRESS_FORM = "my_addresses.forms.MyShippingAddressForm"
+     LFS_INVOICE_ADDRESS_FORM = "my_addresses.forms.MyAddressForm"
+     LFS_SHIPPING_ADDRESS_FORM = "my_addresses.forms.MyAddressForm"
 
-#. As the address is a new model, you have to synchronize your database::
+#. As the address is a new model, create and apply the migration of your app::
 
-     $ bin/django syncdb
+     $ python manage.py makemigrations my_addresses
+     $ python manage.py migrate
 
-#. Restart your instance and the address should be displayed to the shop
+#. Restart the shop and the address is displayed to the shop
    users for instance within the checkout page.
 
 Good to Know

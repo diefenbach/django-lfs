@@ -13,24 +13,18 @@ them within your templates.
 Add a new action group
 ======================
 
-1. Login as admin.
+Action groups are not part of the management interface; create one in the Django shell::
 
-2. Go to Django's admin interface::
-
-    http://localhost:8000/admin/
-
-3. Go to ``Core / Action groups``.
-
-4. Click on the ``Add Action Group`` button.
-
-5. Enter the name of the group, e.g. ``Sidebar``.
+    $ python manage.py shell -c "from lfs.core.models import ActionGroup; ActionGroup.objects.create(name='Sidebar')"
 
 Display the actions within your templates
 =========================================
 
-Insert the ``actions`` tag to your template as following:
+Insert the ``actions`` tag of ``lfs_tags`` into your template:
 
 .. code-block:: html
+
+    {% load lfs_tags %}
 
     {% actions Sidebar %}
     {% for action in actions %}
@@ -49,13 +43,13 @@ Insert the ``actions`` tag to your template as following:
 Add actions to the group
 ========================
 
-1. Open the :term:`LMI` and go to ``Shop / Actions``.
+1. Go to ``Shop / Actions``.
 
 2. Click on the ``Add Action`` button.
 
-3. Fill in the provided form and select your new group.
+3. Enter the title and the link, select your new group, and click ``Add Action``.
 
-4. Click on the ``Save Action`` button.
+4. Check ``Active`` and click ``Save``.
 
 See also
 ========
