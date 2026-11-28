@@ -1,243 +1,159 @@
-from unittest.mock import Mock, patch
+"""The shop settings, tested through real requests as a shop manager: the data (including the logo), the default
+values, the order numbers, SEO and portlets. Whether the carousel tab appears is tested in
+test_shop_carousel_optional.py."""
 
-from django.apps import apps
-from django.contrib.auth import get_user_model
+import io
+
+import pytest
+from django.contrib.messages import get_messages
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from PIL import Image
 
-from lfs.core.models import Shop
-from lfs.manage.shop.views import (
-    ShopTabMixin,
-    ShopDataView,
-    ShopDefaultValuesView,
-    ShopOrderNumbersView,
-    ShopSEOTabView,
-    ShopPortletsView,
-    ShopCarouselView,
-)
+from lfs.core.models import Country, Shop
+from lfs.core.utils import get_default_shop
+from lfs_order_numbers.models import OrderNumberGenerator
 
-User = get_user_model()
+pytestmark = pytest.mark.django_db
 
 
-class TestShopTabMixin:
-    """Test the ShopTabMixin functionality."""
+def png() -> bytes:
+    """Return a small PNG image."""
+    buffer = io.BytesIO()
+    Image.new("RGB", (2, 2), "red").save(buffer, "PNG")
+    return buffer.getvalue()
 
 
+@pytest.fixture(autouse=True)
+def media_root(settings, tmp_path):
+    """Store uploaded files in a temporary folder."""
+    settings.MEDIA_ROOT = str(tmp_path)
 
 
+@pytest.fixture
+def manager(client, admin_user, shop):
+    """A test client logged in as a shop manager."""
+    client.force_login(admin_user)
+    return client
 
 
-    def test_get_shop_returns_default_shop(self, shop):
-        """Should return default shop instance."""
-        mixin = ShopTabMixin()
-        result = mixin.get_shop()
-        assert isinstance(result, Shop)
-        assert result.name == "Test Shop"
+def messages_of(response) -> list[str]:
+    """Return the messages the request added for the manager."""
+    return [str(m) for m in get_messages(response.wsgi_request)]
 
-    def test_get_tabs_returns_correct_tabs(self):
-        """Should return correct tab navigation."""
-        mixin = ShopTabMixin()
-        tabs = mixin._get_tabs(shop=None)
 
-        assert isinstance(tabs, list)
+def form_data(response, form: str = "form") -> dict:
+    """Return the data of the page's form as the browser would send it."""
+    f = response.context[form]
+    data = {}
+    for name in f.fields:
+        value = f[name].value()
+        if name == "image" or value is None or value is False:
+            continue
+        data[name] = value
+    return data
 
-        tab_names = [tab[0] for tab in tabs]
-        expected_tabs = ["data", "default_values", "order_numbers", "seo", "portlets"]
-        if apps.is_installed("lfs_carousel"):
-            expected_tabs.append("carousel")
-        assert tab_names == expected_tabs
 
-    def test_get_context_data_includes_shop_and_tabs(self, shop):
-        """Should include shop and tabs in context."""
-        from django.views.generic import TemplateView
+def shop() -> Shop:
+    """Return the shop the views edit; other test folders may leave a shop of their own behind."""
+    return get_default_shop()
 
-        class TestView(ShopTabMixin, TemplateView):
-            pass
 
-        mixin = TestView()
-        mixin.tab_name = "data"
-        mixin.object = shop
+def test_the_tabs_lead_to_every_setting(manager):
+    tabs = manager.get(reverse("lfs_manage_shop_data")).context["tabs"]
 
-        context = mixin.get_context_data()
+    assert [name for name, _ in tabs][:5] == ["data", "default_values", "order_numbers", "seo", "portlets"]
 
-        assert "shop" in context
-        assert "active_tab" in context
-        assert "tabs" in context
-        assert context["shop"].id == shop.id
-        assert context["active_tab"] == "data"
-        assert isinstance(context["tabs"], list)
 
+class TestData:
+    URL = reverse("lfs_manage_shop_data")
 
-class TestShopDataView:
-    """Test the ShopDataView class-based view."""
+    def test_saves_the_data(self, manager):
+        data = form_data(manager.get(self.URL)) | {
+            "name": "Lamp shop",
+            "notification_emails": "a@example.com, b@example.com",
+        }
 
+        response = manager.post(self.URL, data)
 
+        assert (shop().name, shop().get_notification_emails()) == ("Lamp shop", ["a@example.com", "b@example.com"])
+        assert response["Location"] == self.URL
+        assert messages_of(response) == ["Shop data has been saved."]
 
+    def test_refuses_an_invalid_sender_address(self, manager):
+        data = form_data(manager.get(self.URL)) | {"from_email": "not an address"}
 
+        response = manager.post(self.URL, data)
 
-    def test_get_object_returns_shop(self, shop):
-        """Should return shop instance."""
-        view = ShopDataView()
-        result = view.get_object()
-        assert isinstance(result, Shop)
+        assert response.context["form"].errors["from_email"]
+        assert shop().from_email != "not an address"
 
-    def test_get_success_url_returns_data_url(self):
-        """Should return shop data URL."""
-        view = ShopDataView()
-        url = view.get_success_url()
-        assert url == reverse("lfs_manage_shop_data")
+    def test_uploads_and_clears_the_logo(self, manager):
+        data = form_data(manager.get(self.URL))
 
+        manager.post(self.URL, data | {"image": SimpleUploadedFile("logo.png", png(), content_type="image/png")})
+        assert shop().image.name.endswith(".png")
 
-class TestShopDefaultValuesView:
-    """Test the ShopDefaultValuesView class-based view."""
+        manager.post(self.URL, data | {"image-clear": "on"})
+        assert not shop().image
 
 
+class TestDefaultValues:
+    URL = reverse("lfs_manage_shop_default_values")
 
+    def test_saves_the_countries_and_returns(self, manager):
+        austria = Country.objects.create(code="at", name="Austria")
+        data = form_data(manager.get(self.URL)) | {
+            "invoice_countries": [austria.id],
+            "shipping_countries": [austria.id],
+            "default_country": austria.id,
+            "return_days": 30,
+        }
 
+        response = manager.post(self.URL, data)
 
-    def test_get_object_returns_shop(self, shop):
-        """Should return shop instance."""
-        view = ShopDefaultValuesView()
-        result = view.get_object()
-        assert isinstance(result, Shop)
+        assert list(shop().invoice_countries.all()) == [austria]
+        assert (shop().default_country, shop().return_days) == (austria, 30)
+        assert messages_of(response) == ["Shop default values have been saved."]
 
-    def test_get_success_url_returns_default_values_url(self):
-        """Should return shop default values URL."""
-        view = ShopDefaultValuesView()
-        url = view.get_success_url()
-        assert url == reverse("lfs_manage_shop_default_values")
 
+class TestOrderNumbers:
+    URL = reverse("lfs_manage_shop_order_numbers")
 
-class TestShopOrderNumbersView:
-    """Test the ShopOrderNumbersView class-based view."""
+    def test_shows_the_generator_created_on_first_visit(self, manager):
+        response = manager.get(self.URL)
 
+        assert response.context["order_numbers_form"].instance == OrderNumberGenerator.objects.get(id="order_number")
 
+    def test_saves_the_last_number_and_the_format(self, manager):
+        manager.get(self.URL)
 
+        response = manager.post(self.URL, {"last": 41, "format": "LFS-%05d"})
 
-    @patch("lfs.manage.shop.views.import_symbol")
-    def test_get_context_data_includes_order_numbers_form(self, mock_import_symbol, shop):
-        """Should include order numbers form in context."""
-        mock_ong = Mock()
-        mock_order_number = Mock()
-        mock_order_number.id = "order_number"
-        mock_order_number.get_form.return_value = Mock()
-        mock_ong.objects.get.return_value = mock_order_number
-        mock_import_symbol.return_value = mock_ong
+        assert OrderNumberGenerator.objects.get(id="order_number").get_next() == "LFS-00042"
+        assert response["Location"] == self.URL
+        assert messages_of(response) == ["Order numbers have been saved."]
 
-        view = ShopOrderNumbersView()
-        context = view.get_context_data()
+    def test_refuses_a_last_number_that_is_not_a_number(self, manager):
+        manager.get(self.URL)
 
-        assert "order_numbers_form" in context
-        assert "shop" in context
-        # The view returns the default shop, not necessarily the shop fixture
-        assert isinstance(context["shop"], Shop)
+        response = manager.post(self.URL, {"last": "many", "format": ""})
 
-    @patch("lfs.manage.shop.views.import_symbol")
-    def test_get_context_data_creates_order_number_if_not_exists(self, mock_import_symbol, shop):
-        """Should create order number if it doesn't exist."""
-        from django.core.exceptions import ObjectDoesNotExist
+        assert OrderNumberGenerator.objects.get(id="order_number").last == 0
+        assert messages_of(response) == ["Please correct the indicated errors."]
 
-        mock_ong = Mock()
-        mock_order_number = Mock()
-        mock_order_number.id = "order_number"
-        mock_order_number.get_form.return_value = Mock()
-        mock_ong.objects.get.side_effect = ObjectDoesNotExist()
-        mock_ong.objects.create.return_value = mock_order_number
-        mock_ong.DoesNotExist = ObjectDoesNotExist
-        mock_import_symbol.return_value = mock_ong
 
-        view = ShopOrderNumbersView()
-        context = view.get_context_data()
+def test_saves_the_seo_data(manager):
+    url = reverse("lfs_manage_shop_seo")
 
-        assert "order_numbers_form" in context
-        mock_ong.objects.create.assert_called_once_with(id="order_number")
+    response = manager.post(url, {"meta_title": "Lamps", "meta_description": "Lamps and more", "meta_keywords": "lamp"})
 
+    assert (shop().meta_title, shop().meta_description, shop().meta_keywords) == ("Lamps", "Lamps and more", "lamp")
+    assert response["Location"] == url
+    assert messages_of(response) == ["SEO data has been saved."]
 
-class TestShopSEOTabView:
-    """Test the ShopSEOTabView class-based view."""
 
+def test_shows_the_portlets_tab(manager):
+    response = manager.get(reverse("lfs_manage_shop_portlets"))
 
-
-
-
-    def test_get_object_returns_shop(self, shop):
-        """Should return shop instance."""
-        view = ShopSEOTabView()
-        result = view.get_object()
-        assert isinstance(result, Shop)
-
-    def test_get_success_url_returns_seo_url(self):
-        """Should return shop SEO URL."""
-        view = ShopSEOTabView()
-        url = view.get_success_url()
-        assert url == reverse("lfs_manage_shop_seo")
-
-
-class TestShopPortletsView:
-    """Test the ShopPortletsView class-based view."""
-
-
-
-    @patch("lfs.manage.shop.views.PortletsInlineView")
-    def test_get_context_data_includes_portlets(self, mock_portlets_view, shop):
-        """Should include portlets in context."""
-        mock_instance = Mock()
-        mock_instance.get.return_value = {"portlets": []}
-        mock_portlets_view.return_value = mock_instance
-
-        view = ShopPortletsView()
-        view.request = Mock()
-        context = view.get_context_data()
-
-        assert "portlets" in context
-        assert "shop" in context
-        # The view returns the default shop, not necessarily the shop fixture
-        assert isinstance(context["shop"], Shop)
-
-
-class TestShopCarouselView:
-    """Test the ShopCarouselView class-based view."""
-
-
-
-    def test_get_context_data_includes_shop(self, shop):
-        """Should include shop in context."""
-        view = ShopCarouselView()
-        context = view.get_context_data()
-
-        assert "shop" in context
-        # The view returns the default shop, not necessarily the shop fixture
-        assert isinstance(context["shop"], Shop)
-
-
-class TestShopViewIntegration:
-    """Integration tests for shop views."""
-
-    def test_all_views_require_permission(self):
-        """All shop views should require core.manage_shop permission."""
-        views = [
-            ShopDataView,
-            ShopDefaultValuesView,
-            ShopOrderNumbersView,
-            ShopSEOTabView,
-            ShopPortletsView,
-            ShopCarouselView,
-        ]
-
-        for view in views:
-            assert hasattr(view, "permission_required")
-            assert view.permission_required == "core.manage_shop"
-
-
-    def test_all_views_have_unique_tab_names(self):
-        """All shop views should have unique tab names."""
-        views = [
-            ShopDataView,
-            ShopDefaultValuesView,
-            ShopOrderNumbersView,
-            ShopSEOTabView,
-            ShopPortletsView,
-            ShopCarouselView,
-        ]
-
-        tab_names = [view.tab_name for view in views]
-        assert len(tab_names) == len(set(tab_names)), "Tab names should be unique"
+    assert response.context["active_tab"] == "portlets" and response.context["portlets"]
