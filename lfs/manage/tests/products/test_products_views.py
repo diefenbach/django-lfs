@@ -1,1135 +1,420 @@
+"""The product management pages, tested through real requests as a shop manager: what each tab stores, which
+products it lists, where it redirects, and the messages the manager sees."""
+
 import importlib.util
+from urllib.parse import parse_qs, urlparse
 
 import pytest
-from django.contrib.auth import get_user_model
-from django.test import RequestFactory
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.messages import get_messages
+from django.http import HttpResponse
+from django.test import Client
 from django.urls import reverse
-from django.views.generic.edit import UpdateView
+from django.utils import timezone
 
-from lfs.catalog.models import Product
-from lfs.manage.products.views import (
-    ManageProductsView,
-    ProductDataView,
-    ProductListView,
-    ProductImagesView,
-    ProductAttachmentsView,
-    ProductAccessoriesView,
-    ProductVariantsView,
-    ProductRelatedProductsView,
-    ProductPropertiesView,
-    ProductDeleteConfirmView,
-    ProductDeleteView,
-    ApplyProductFiltersView,
-    ResetProductFiltersView,
-    ProductTabMixin,
+from lfs.catalog.models import (
+    Image,
+    Product,
+    ProductAccessories,
+    ProductAttachment,
+    ProductPropertyValue,
+    Property,
+    PropertyGroup,
+    PropertyOption,
+)
+from lfs.catalog.settings import (
+    CONFIGURABLE_PRODUCT,
+    PRODUCT_TYPE_LOOKUP,
+    PRODUCT_WITH_VARIANTS,
+    PROPERTY_SELECT_FIELD,
+    PROPERTY_VALUE_TYPE_DEFAULT,
+    PROPERTY_VALUE_TYPE_FILTER,
+    STANDARD_PRODUCT,
+    VARIANT,
 )
 
-# The bulk prices tab uses the optional lfs_bulk_prices add-on; these tests need it installed.
+# The bulk prices filter uses the optional lfs_bulk_prices add-on.
 requires_bulk_prices = pytest.mark.skipif(
     importlib.util.find_spec("lfs_bulk_prices") is None, reason="needs the lfs_bulk_prices add-on"
 )
 
-User = get_user_model()
+BULK_PRICES = "lfs_bulk_prices.calculator.BulkPricesCalculator"
 
 
-class TestManageProductsView:
-    """Test the ManageProductsView dispatcher."""
+@pytest.fixture
+def manager(client: Client, admin_user) -> Client:
+    """A test client logged in as a shop manager."""
+    client.force_login(admin_user)
+    return client
 
 
-    def test_permission_required_attribute(self):
-        """Should require core.manage_shop permission."""
-        assert hasattr(ManageProductsView, "permission_required")
-        assert ManageProductsView.permission_required == "core.manage_shop"
+def messages_of(response: HttpResponse) -> list[str]:
+    """Return the messages the request added for the manager."""
+    return [str(m) for m in get_messages(response.wsgi_request)]
 
-    def test_redirects_to_first_product_when_products_exist(self, client, admin_user, product):
-        """Should redirect to first product when products exist."""
-        client.login(username="admin", password="testpass123")
 
-        response = client.get("/manage/products/")  # Adjust URL as needed
-        # This test assumes the view redirects to the first product
-        # Adjust based on actual URL patterns
-        assert response.status_code in [200, 302]
+def set_session(client: Client, **values) -> None:
+    """Store ``values`` in the client's session."""
+    session = client.session
+    session.update(values)
+    session.save()
 
-    def test_redirects_to_no_products_when_none_exist(self, client, admin_user, db):
-        """Should redirect to no products view when no products exist."""
-        # Delete all products
-        Product.objects.all().delete()
 
-        client.login(username="admin", password="testpass123")
-        response = client.get("/manage/products/")
-        # Adjust assertion based on actual behavior
-        assert response.status_code in [200, 302]
+def url(name: str, product: Product) -> str:
+    """Return the URL of the product tab ``name``."""
+    return reverse(f"lfs_manage_product_{name}", kwargs={"id": product.id})
 
 
+def form_data(form) -> dict[str, object]:
+    """Return the POST data a browser sends for ``form`` unchanged: unchecked checkboxes and empty values left out."""
+    data = {}
+    for name in form.fields:
+        value = form[name].value()
+        if value is None or value is False:
+            continue
+        data[form.add_prefix(name)] = value
+    return data
 
 
+def with_variant(parent_name: str = "Widget Cord", parent_sku: str = "WC-PARENT") -> tuple[Product, Product]:
+    """Create a product with variants and one variant without own name and SKU."""
+    parent = Product.objects.create(
+        name=parent_name, slug=parent_name.lower().replace(" ", "-"), sku=parent_sku, sub_type=PRODUCT_WITH_VARIANTS
+    )
+    variant = Product.objects.create(
+        name="", slug=f"{parent.slug}-v1", sku="", sub_type=VARIANT, parent=parent, active_name=False, active_sku=False
+    )
+    return parent, variant
 
 
+def available_ids(response: HttpResponse) -> tuple[list[int], dict[int, list[int]]]:
+    """Return the ids of the products offered on an accessories or related tab, and their variants by parent."""
+    page = response.context["available_page"]
+    return [p.id for p in page.object_list], {p.id: [v.id for v in p.available_variants] for p in page.object_list}
 
 
+class TestProductsStartPage:
+    def test_redirects_to_the_first_product_by_name(self, manager, shop):
+        Product.objects.create(name="Zebra", slug="zebra")
+        apple = Product.objects.create(name="Apple", slug="apple")
 
-class TestProductDataView:
-    """Test the ProductDataView class-based view."""
+        response = manager.get(reverse("lfs_manage_products"))
 
+        assert response["Location"] == url("data", apple)
 
-    def test_get_form_class_returns_product_form_for_standard_product(self, product):
-        """Should return ProductDataForm for standard products."""
-        from lfs.manage.products.forms import ProductDataForm
+    def test_redirects_to_the_no_products_page_without_products(self, manager, shop):
+        response = manager.get(reverse("lfs_manage_products"))
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-        view.kwargs = {"id": product.id}
+        assert response["Location"] == reverse("lfs_manage_no_products")
 
-        form_class = view.get_form_class()
-        assert form_class == ProductDataForm
 
-    def test_get_form_class_returns_variant_form_for_variant_product(self, variant_product):
-        """Should return VariantDataForm for variant products."""
-        from lfs.manage.products.forms import VariantDataForm
+class TestDataTab:
+    def test_variant_gets_the_variant_form(self, manager, variant_product):
+        content = manager.get(url("data", variant_product)).content.decode()
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        view = ProductDataView()
-        view.request = request
-        view.object = variant_product
-        view.kwargs = {"id": variant_product.id}
+        assert 'name="active_name"' in content
 
-        form_class = view.get_form_class()
-        assert form_class == VariantDataForm
+    def test_standard_product_gets_the_product_form(self, manager, product):
+        content = manager.get(url("data", product)).content.decode()
 
-    def test_form_valid_adds_success_message(self, rf, product, mocker):
-        """Should add success message when form is valid."""
+        assert 'name="active_name"' not in content
 
-        factory = RequestFactory()
-        request = factory.post("/", {})
-        request.session = {}
+    def test_saving_stores_the_data_and_keeps_the_search_query(self, manager, product):
+        data = form_data(manager.get(url("data", product)).context["form"])
+        data["name"] = "Renamed"
 
-        view = ProductDataView()
-        view.request = request
-        view.object = product
+        response = manager.post(url("data", product) + "?q=test", data)
 
-        # Mock super().form_valid() to return HttpResponse
-        mock_super_form_valid = mocker.patch.object(UpdateView, "form_valid")
-        mock_super_form_valid.return_value = HttpResponse()
-
-        # Mock messages.success to avoid middleware requirement
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        # Mock form
-        mock_form = mocker.MagicMock()
-
-        # Call form_valid
-        response = view.form_valid(mock_form)
-
-        # Verify success message was added
-        mock_messages_success.assert_called_once_with(request, "Product data has been saved.")
-        assert response is not None
-
-    def test_get_success_url_returns_correct_url(self, product):
-        """Should return URL to product data page."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-
-        url = view.get_success_url()
-        expected_url = f"/manage/product/{product.id}/data/"
-        assert url == expected_url
-
-    def test_get_success_url_preserves_q_parameter(self, product):
-        """Should keep q parameter in redirect URL when provided."""
-        factory = RequestFactory()
-        request = factory.get("/?q=test")
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-
-        url = view.get_success_url()
-        expected_url = f"/manage/product/{product.id}/data/?q=test"
-        assert url == expected_url
-
-    def test_get_success_url_preserves_q_from_referer(self, product):
-        """Should keep q parameter from referer when not in request GET."""
-        factory = RequestFactory()
-        request = factory.post("/")
-        request.META["HTTP_REFERER"] = f"http://testserver/manage/product/{product.id}/data/?q=test"
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-
-        url = view.get_success_url()
-        expected_url = f"/manage/product/{product.id}/data/?q=test"
-        assert url == expected_url
-
-    def test_data_form_action_preserves_q_parameter(self, client, admin_user, product):
-        """Should include q parameter in data form action."""
-        client.login(username="admin", password="testpass123")
-
-        response = client.get(f"/manage/product/{product.id}/data/?q=test")
-
-        assert response.status_code == 200
-        expected_action = f'action="/manage/product/{product.id}/data/?q=test"'
-        assert expected_action in response.content.decode("utf-8")
-
-    def test_variant_product_page_shows_base_product_button(self, client, admin_user, variant_product):
-        """Should show a base-product button linking to parent for variants."""
-        client.login(username="admin", password="testpass123")
-
-        response = client.get(reverse("lfs_manage_product_data", kwargs={"id": variant_product.id}))
-        content = response.content.decode("utf-8")
-
-        assert response.status_code == 200
-        assert "Base Product" in content
-        assert reverse("lfs_manage_product_data", kwargs={"id": variant_product.parent_id}) in content
-
-    def test_standard_product_page_hides_base_product_button(self, client, admin_user, product):
-        """Should not render the base-product button for non-variant products."""
-        client.login(username="admin", password="testpass123")
-
-        response = client.get(reverse("lfs_manage_product_data", kwargs={"id": product.id}))
-
-        assert response.status_code == 200
-        assert "Base Product" not in response.content.decode("utf-8")
-
-    def test_delete_standard_product_redirects_to_products_overview(self, rf, admin_user, product, mocker):
-        """Should redirect to products overview when deleting standard product."""
-
-        factory = RequestFactory()
-        request = factory.post("/", {})
-        request.user = admin_user
-        request.session = {}
-
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success to avoid middleware requirement
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.delete(request)
-
-        # Should redirect to products overview
-        assert isinstance(response, HttpResponseRedirect)
-        assert "/manage/products/" in response.url
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Product has been deleted.")
-
-    def test_delete_variant_product_redirects_to_parent(self, rf, admin_user, variant_product, mocker):
-        """Should redirect to parent product when deleting variant."""
-
-        factory = RequestFactory()
-        request = factory.post("/", {})
-        request.user = admin_user
-        request.session = {}
-
-        view = ProductDataView()
-        view.request = request
-        view.object = variant_product
-        view.kwargs = {"id": variant_product.id}
-
-        # Mock messages.success to avoid middleware requirement
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.delete(request)
-
-        # Should redirect to parent product data page
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/manage/product/{variant_product.parent_id}/data/" in response.url
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Product has been deleted.")
-
-    def test_get_with_view_parameter_redirects_to_public_page(self, rf, product):
-        """Should redirect to public product page when view parameter is present."""
-        factory = RequestFactory()
-        request = factory.get("/?view=1")
-
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-        view.kwargs = {"id": product.id}
-
-        response = view.get(request)
-
-        # Should redirect to public product page
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/product/{product.slug}/" in response.url
-
-    def test_get_without_view_parameter_calls_super(self, rf, product, mocker):
-        """Should call super().get() when view parameter is not present."""
-        factory = RequestFactory()
-        request = factory.get("/")
-
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-        view.kwargs = {"id": product.id}
-
-        # Mock super().get()
-        mock_super_get = mocker.patch.object(UpdateView, "get")
-        mock_super_get.return_value = HttpResponse()
-
-        response = view.get(request)
-
-        # Should call super().get()
-        mock_super_get.assert_called_once_with(request)
-        assert response is not None
-
-
-class TestProductImagesView:
-    """Test the ProductImagesView class-based view."""
-
-
-    def test_post_toggle_active_images(self, rf, product, mocker):
-        """Should toggle active images setting."""
-        factory = RequestFactory()
-        request = factory.post("/", {"toggle_active_images": "1", "active_images": "1"})
-        request.session = {}
-
-        view = ProductImagesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update product active_images
         product.refresh_from_db()
-        assert product.active_images is True
+        assert product.name == "Renamed"
+        assert response["Location"] == url("data", product) + "?q=test"
+        assert messages_of(response) == ["Product data has been saved."]
 
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Active images has been updated.")
+    def test_saving_keeps_the_search_query_of_the_referring_page(self, manager, product):
+        data = form_data(manager.get(url("data", product)).context["form"])
 
-    def test_post_delete_images(self, rf, product, mocker):
-        """Should delete selected images."""
-        from lfs.catalog.models import Image
-
-        # Create test image
-        image = Image.objects.create(content=product, title="test.jpg", position=10)
-
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "delete", f"delete-{image.id}": "1"})
-        request.session = {}
-
-        view = ProductImagesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should delete the image
-        assert not Image.objects.filter(id=image.id).exists()
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Images have been deleted.")
-
-    def test_post_update_images(self, rf, product, mocker):
-        """Should update image properties."""
-        from lfs.catalog.models import Image
-
-        # Create test image
-        image = Image.objects.create(content=product, title="old.jpg", position=10)
-
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "update", f"title-{image.id}": "new.jpg", f"position-{image.id}": "20"})
-        request.session = {}
-
-        view = ProductImagesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update the image
-        image.refresh_from_db()
-        assert image.title == "new.jpg"
-        # Position gets refreshed to 10 (first image position)
-        assert image.position == 10
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Images have been updated.")
-
-
-class TestProductAttachmentsView:
-    """Test the ProductAttachmentsView class-based view."""
-
-
-    def test_post_delete_attachments(self, rf, product, mocker):
-        """Should delete selected attachments."""
-        from lfs.catalog.models import ProductAttachment
-
-        # Create test attachment
-        attachment = ProductAttachment.objects.create(product=product, title="test.pdf", position=10)
-
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "delete", f"delete-{attachment.id}": "1"})
-        request.session = {}
-
-        view = ProductAttachmentsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should delete the attachment
-        assert not ProductAttachment.objects.filter(id=attachment.id).exists()
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Attachment has been deleted.")
-
-    def test_post_update_attachments(self, rf, product, mocker):
-        """Should update attachment properties."""
-        from lfs.catalog.models import ProductAttachment
-
-        # Create test attachment
-        attachment = ProductAttachment.objects.create(
-            product=product, title="old.pdf", position=10, description="old desc"
+        response = manager.post(
+            url("data", product), data, HTTP_REFERER=f"http://testserver{url('data', product)}?q=lamp"
         )
 
-        factory = RequestFactory()
-        request = factory.post(
-            "/",
+        assert response["Location"] == url("data", product) + "?q=lamp"
+
+    def test_form_action_keeps_the_search_query(self, manager, product):
+        content = manager.get(url("data", product) + "?q=test").content.decode()
+
+        assert f'action="{url("data", product)}?q=test"' in content
+
+    def test_variant_links_to_its_base_product(self, manager, variant_product):
+        content = manager.get(url("data", variant_product)).content.decode()
+
+        assert "Base Product" in content
+        assert url("data", variant_product.parent) in content
+
+    def test_standard_product_has_no_base_product_link(self, manager, product):
+        assert "Base Product" not in manager.get(url("data", product)).content.decode()
+
+    def test_view_parameter_opens_the_product_in_the_shop(self, manager, product):
+        response = manager.get(url("data", product) + "?view=1")
+
+        assert response["Location"] == reverse("lfs_product", kwargs={"slug": product.slug})
+
+    def test_delete_request_deletes_a_product_and_returns_to_the_products(self, manager, product):
+        response = manager.delete(url("data", product))
+
+        assert not Product.objects.filter(pk=product.pk).exists()
+        assert response["Location"] == reverse("lfs_manage_products")
+
+    def test_delete_request_on_a_variant_returns_to_its_parent(self, manager, variant_product):
+        response = manager.delete(url("data", variant_product))
+
+        assert not Product.objects.filter(pk=variant_product.pk).exists()
+        assert response["Location"] == url("data", variant_product.parent)
+
+
+class TestStockTab:
+    def test_saving_stores_the_stock_data(self, manager, product):
+        data = form_data(manager.get(url("stock", product)).context["form"])
+        data.update({"stock-manage_stock_amount": "on", "stock-stock_amount": "12", "stock-weight": "2.5"})
+
+        response = manager.post(url("stock", product), data)
+
+        product.refresh_from_db()
+        assert (product.manage_stock_amount, product.stock_amount, product.weight) == (True, 12, 2.5)
+        assert response["Location"] == url("stock", product)
+        assert messages_of(response) == ["Product stock data has been saved."]
+
+
+class TestSEOTab:
+    def test_saving_stores_the_meta_data(self, manager, product):
+        response = manager.post(
+            url("seo", product),
+            {
+                "active_meta_title": "on",
+                "meta_title": "Lamp",
+                "meta_keywords": "lamp, light",
+                "meta_description": "A lamp",
+            },
+        )
+
+        product.refresh_from_db()
+        assert (product.active_meta_title, product.meta_title, product.meta_keywords) == (True, "Lamp", "lamp, light")
+        assert response["Location"] == url("seo", product)
+        assert messages_of(response) == ["SEO data has been saved."]
+
+    def test_too_long_meta_title_is_refused(self, manager, product):
+        response = manager.post(url("seo", product), {"meta_title": "A" * 201})
+
+        product.refresh_from_db()
+        assert product.meta_title != "A" * 201
+        assert "meta_title" in response.context["form"].errors
+
+
+class TestImagesTab:
+    def test_toggling_active_images(self, manager, product):
+        response = manager.post(url("images", product), {"toggle_active_images": "1", "active_images": "1"})
+
+        product.refresh_from_db()
+        assert product.active_images is True
+        assert messages_of(response) == ["Active images has been updated."]
+
+    def test_deleting_selected_images(self, manager, product):
+        image = Image.objects.create(content=product, title="test.jpg", position=10)
+
+        response = manager.post(url("images", product), {"action": "delete", f"delete-{image.id}": "1"})
+
+        assert not Image.objects.filter(id=image.id).exists()
+        assert messages_of(response) == ["Images have been deleted."]
+
+    def test_updating_images_stores_the_title_and_renumbers_the_positions(self, manager, product):
+        image = Image.objects.create(content=product, title="old.jpg", position=10)
+
+        manager.post(
+            url("images", product), {"action": "update", f"title-{image.id}": "new.jpg", f"position-{image.id}": "20"}
+        )
+
+        image.refresh_from_db()
+        assert (image.title, image.position) == ("new.jpg", 10)
+
+
+class TestAttachmentsTab:
+    def test_deleting_selected_attachments(self, manager, product):
+        attachment = ProductAttachment.objects.create(product=product, title="test.pdf", position=10)
+
+        response = manager.post(url("attachments", product), {"action": "delete", f"delete-{attachment.id}": "1"})
+
+        assert not ProductAttachment.objects.filter(id=attachment.id).exists()
+        assert messages_of(response) == ["Attachment has been deleted."]
+
+    def test_updating_attachments(self, manager, product):
+        attachment = ProductAttachment.objects.create(product=product, title="old.pdf", position=10, description="old")
+
+        manager.post(
+            url("attachments", product),
             {
                 "action": "update",
                 f"title-{attachment.id}": "new.pdf",
                 f"position-{attachment.id}": "20",
-                f"description-{attachment.id}": "new desc",
+                f"description-{attachment.id}": "new",
             },
         )
-        request.session = {}
 
-        view = ProductAttachmentsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update the attachment
         attachment.refresh_from_db()
-        assert attachment.title == "new.pdf"
-        # Position gets refreshed to 10 (first attachment position)
-        assert attachment.position == 10
-        assert attachment.description == "new desc"
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Attachment has been updated.")
+        assert (attachment.title, attachment.position, attachment.description) == ("new.pdf", 10, "new")
 
 
-class TestProductAccessoriesView:
-    """Test the ProductAccessoriesView class-based view."""
+class TestAccessoriesTab:
+    def test_toggling_active_accessories(self, manager, product):
+        response = manager.post(url("accessories", product), {"action": "toggle_active", "active_accessories": "1"})
 
-
-    def test_post_toggle_active_accessories(self, rf, product, mocker):
-        """Should toggle active accessories setting."""
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "toggle_active", "active_accessories": "1"})
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update product active_accessories
         product.refresh_from_db()
         assert product.active_accessories is True
+        assert messages_of(response) == ["Accessories have been updated."]
 
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Accessories have been updated.")
+    def test_toggling_by_htmx_shows_no_message(self, manager, product):
+        response = manager.post(
+            url("accessories", product), {"action": "toggle_active", "active_accessories": "1"}, HTTP_HX_REQUEST="true"
+        )
 
-    def test_post_toggle_active_accessories_htmx(self, rf, product, mocker):
-        """Should not show success message for HTMX requests."""
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "toggle_active", "active_accessories": "1"})
-        request.META["HTTP_HX_REQUEST"] = "true"
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update product active_accessories
         product.refresh_from_db()
         assert product.active_accessories is True
+        assert messages_of(response) == []
 
-        # Should NOT add success message for HTMX
-        mock_messages_success.assert_not_called()
+    def test_adding_accessories(self, manager, product):
+        accessory = Product.objects.create(name="Accessory", slug="accessory")
 
-    def test_post_add_accessories(self, rf, product, mocker):
-        """Should add selected products as accessories."""
-        from lfs.catalog.models import ProductAccessories
+        response = manager.post(url("accessories", product), {"action": "add", f"product-{accessory.id}": "1"})
 
-        # Create another product to add as accessory
-        accessory_product = Product.objects.create(
-            name="Accessory Product", slug="accessory-product", sku="ACC001", price=5.0
+        assert ProductAccessories.objects.filter(product=product, accessory=accessory).exists()
+        assert messages_of(response) == ["Accessories have been added."]
+
+    def test_removing_accessories(self, manager, product):
+        accessory = Product.objects.create(name="Accessory", slug="accessory")
+        ProductAccessories.objects.create(product=product, accessory=accessory, position=10)
+
+        response = manager.post(url("accessories", product), {"action": "remove", f"accessory-{accessory.id}": "1"})
+
+        assert not ProductAccessories.objects.filter(product=product, accessory=accessory).exists()
+        assert messages_of(response) == ["Accessories have been removed."]
+
+    def test_saving_quantities_and_renumbering_positions(self, manager, product):
+        accessory = Product.objects.create(name="Accessory", slug="accessory")
+        pa = ProductAccessories.objects.create(product=product, accessory=accessory, position=10, quantity=1)
+
+        manager.post(
+            url("accessories", product),
+            {"action": "save", f"quantity-{accessory.id}": "5", f"position-{accessory.id}": "20"},
         )
 
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "add", f"product-{accessory_product.id}": "1"})
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should create ProductAccessories relationship
-        pa = ProductAccessories.objects.filter(product=product, accessory=accessory_product).first()
-        assert pa is not None
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Accessories have been added.")
-
-    def test_post_remove_accessories(self, rf, product, mocker):
-        """Should remove selected accessories."""
-        from lfs.catalog.models import ProductAccessories
-
-        # Create accessory relationship
-        accessory_product = Product.objects.create(
-            name="Accessory Product", slug="accessory-product", sku="ACC001", price=5.0
-        )
-        pa = ProductAccessories.objects.create(product=product, accessory=accessory_product, position=10)
-
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "remove", f"accessory-{accessory_product.id}": "1"})
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should delete ProductAccessories relationship
-        assert not ProductAccessories.objects.filter(product=product, accessory=accessory_product).exists()
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Accessories have been removed.")
-
-    def test_post_save_accessories(self, rf, product, mocker):
-        """Should save accessory quantities and positions."""
-        from lfs.catalog.models import ProductAccessories
-
-        # Create accessory relationship
-        accessory_product = Product.objects.create(
-            name="Accessory Product", slug="accessory-product", sku="ACC001", price=5.0
-        )
-        pa = ProductAccessories.objects.create(product=product, accessory=accessory_product, position=10, quantity=1)
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/", {"action": "save", f"quantity-{accessory_product.id}": "5", f"position-{accessory_product.id}": "20"}
-        )
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update quantity and position
         pa.refresh_from_db()
-        assert pa.quantity == 5
-        assert pa.position == 10  # Gets normalized
+        assert (pa.quantity, pa.position) == (5, 10)
 
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Accessories have been updated.")
+    def test_filter_limits_the_offered_products(self, manager, product):
+        apple = Product.objects.create(name="Apple Product", slug="apple-product")
+        Product.objects.create(name="Banana Product", slug="banana-product")
 
-    def test_get_context_data_basic_structure(self, rf, product):
-        """Should return context with basic structure."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
+        top_level, _ = available_ids(manager.get(url("accessories", product) + "?filter=apple"))
 
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
+        assert top_level == [apple.id]
 
-        context = view.get_context_data()
+    @pytest.mark.parametrize("search", ["", "Widget", "WIDGET-99"])
+    def test_variants_are_offered_under_their_parent(self, manager, product, search):
+        parent, variant = with_variant(parent_sku="SKU-WIDGET-99")
 
-        # Check required context keys
-        assert "product_accessories" in context
-        assert "filter" in context
-        assert "amount" in context
-        assert "page_sizes" in context
-        assert "available_page" in context
-        assert "available_paginator" in context
+        top_level, variants = available_ids(manager.get(url("accessories", product) + f"?filter={search}"))
 
-        # Check page sizes
-        assert context["page_sizes"] == [10, 25, 50, 100]
+        assert parent.id in top_level
+        assert variant.id not in top_level
+        assert variants[parent.id] == [variant.id]
 
-    def test_get_context_data_with_filter(self, rf, product):
-        """Should filter available products."""
-        # Create products for filtering
-        Product.objects.create(name="Apple Product", slug="apple-product", sku="APP001", price=10.0)
-        Product.objects.create(name="Banana Product", slug="banana-product", sku="BAN001", price=15.0)
 
-        factory = RequestFactory()
-        request = factory.get("/?filter=apple")
-        request.session = {}
+class TestRelatedProductsTab:
+    def test_toggling_active_related_products(self, manager, product):
+        response = manager.post(url("related", product), {"action": "toggle_active", "active_related_products": "1"})
 
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
+        product.refresh_from_db()
+        assert product.active_related_products is True
+        assert messages_of(response) == ["Related products have been updated."]
 
-        context = view.get_context_data()
-
-        # Should only include filtered products
-        available_page = context["available_page"]
-        assert available_page.paginator.count == 1
-        assert available_page.object_list[0].name == "Apple Product"
-
-    def test_get_context_data_nests_variants_under_parent(self, rf, product):
-        """Should list PWV at top level and nest variants under available_variants."""
-        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
-
-        parent = Product.objects.create(
-            name="Widget Cord",
-            slug="widget-cord",
-            sku="WC-PARENT",
-            price=20.0,
-            sub_type=PRODUCT_WITH_VARIANTS,
-        )
-        variant = Product.objects.create(
-            name="",
-            slug="widget-cord-v1",
-            sku="",
-            price=20.0,
-            sub_type=PRODUCT_VARIANT,
-            parent=parent,
-            active_name=False,
-            active_sku=False,
+    def test_toggling_by_htmx_shows_no_message(self, manager, product):
+        response = manager.post(
+            url("related", product), {"action": "toggle_active", "active_related_products": "1"}, HTTP_HX_REQUEST="true"
         )
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        available_page = view.get_context_data()["available_page"]
-        top_level_ids = [p.id for p in available_page.object_list]
-        assert parent.id in top_level_ids
-        assert variant.id not in top_level_ids
-
-        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
-        assert variant.id in [v.id for v in listed_parent.available_variants]
-
-    def test_get_context_data_filter_includes_variants_by_parent_name(self, rf, product):
-        """Should nest variants under parent when search matches parent name."""
-        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
-
-        parent = Product.objects.create(
-            name="Widget Cord",
-            slug="widget-cord",
-            sku="WC-PARENT",
-            price=20.0,
-            sub_type=PRODUCT_WITH_VARIANTS,
-        )
-        variant = Product.objects.create(
-            name="",
-            slug="widget-cord-v1",
-            sku="",
-            price=20.0,
-            sub_type=PRODUCT_VARIANT,
-            parent=parent,
-            active_name=False,
-            active_sku=False,
-        )
-
-        factory = RequestFactory()
-        request = factory.get("/?filter=Widget")
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        available_page = view.get_context_data()["available_page"]
-        top_level_ids = [p.id for p in available_page.object_list]
-        assert parent.id in top_level_ids
-        assert variant.id not in top_level_ids
-
-        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
-        assert variant.id in [v.id for v in listed_parent.available_variants]
-
-    def test_get_context_data_filter_includes_variants_by_parent_sku(self, rf, product):
-        """Should nest variants under parent when search matches parent sku."""
-        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
-
-        parent = Product.objects.create(
-            name="Other Parent",
-            slug="other-parent",
-            sku="SKU-WIDGET-99",
-            price=20.0,
-            sub_type=PRODUCT_WITH_VARIANTS,
-        )
-        variant = Product.objects.create(
-            name="",
-            slug="other-parent-v1",
-            sku="",
-            price=20.0,
-            sub_type=PRODUCT_VARIANT,
-            parent=parent,
-            active_name=False,
-            active_sku=False,
-        )
-
-        factory = RequestFactory()
-        request = factory.get("/?filter=WIDGET-99")
-        request.session = {}
-
-        view = ProductAccessoriesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        available_page = view.get_context_data()["available_page"]
-        top_level_ids = [p.id for p in available_page.object_list]
-        assert parent.id in top_level_ids
-        assert variant.id not in top_level_ids
-
-        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
-        assert variant.id in [v.id for v in listed_parent.available_variants]
-
-
-class TestProductDeleteConfirmView:
-    """Test the ProductDeleteConfirmView class-based view."""
-
-
-    def test_get_context_data_includes_product(self, rf, product):
-        """Should include the product in context."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductDeleteConfirmView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        assert "product" in context
-        assert context["product"] == product
-
-
-class TestProductDeleteView:
-    """Test the ProductDeleteView class-based view."""
-
-
-    def test_get_success_url_returns_products_list(self):
-        """Should redirect to products list after deletion."""
-        factory = RequestFactory()
-        request = factory.post("/")
-        view = ProductDeleteView()
-        view.request = request
-
-        url = view.get_success_url()
-        assert url == "/manage/products/"
-
-class TestApplyProductFiltersView:
-    """Test the ApplyProductFiltersView class-based view."""
-
-
-    def test_form_valid_saves_filters_to_session(self, rf, admin_user, mocker):
-        """Should save valid filter data to session."""
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/",
-            {
-                "name": "test product",
-                "sku": "TEST001",
-                "sub_type": "standard",
-                "price_calculator": "price",
-                "status": "active",
-            },
-        )
-        request.user = admin_user
-        request.session = {}
-
-        view = ApplyProductFiltersView()
-        view.request = request
-        view.kwargs = {}  # No id in kwargs means we're in product list view
-
-        # Create a mock form with cleaned_data
-        mock_form = mocker.MagicMock(spec=ProductFilterForm)
-        mock_form.cleaned_data = {
-            "name": "test product",
-            "sku": "TEST001",
-            "sub_type": "standard",
-            "price_calculator": "price",
-            "status": "active",
-        }
-
-        response = view.form_valid(mock_form)
-
-        # Should save filters to session
-        assert request.session["product-filters"] == {
-            "name": "test product",
-            "sku": "TEST001",
-            "sub_type": "standard",
-            "price_calculator": "price",
-            "status": "active",
-        }
-
-        # Should redirect to products list (no id in kwargs)
-        assert isinstance(response, HttpResponseRedirect)
-        assert response.url == "/manage/products/"
-
-    def test_form_valid_redirects_to_product_detail_with_id(self, rf, admin_user, product, mocker):
-        """Should redirect to product detail when id is provided."""
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.post("/", {"name": "test product"})
-        request.user = admin_user
-        request.session = {}
-
-        view = ApplyProductFiltersView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        mock_form = mocker.MagicMock(spec=ProductFilterForm)
-        mock_form.cleaned_data = {"name": "test product"}
-
-        response = view.form_valid(mock_form)
-
-        # Should redirect to product detail
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/manage/product/{product.id}/data/" in response.url
-
-    def test_form_invalid_shows_error_message(self, rf, admin_user, mocker):
-        """Should show error message for invalid form."""
-        factory = RequestFactory()
-        request = factory.post("/", {})
-        request.user = admin_user
-        request.session = {}
-
-        view = ApplyProductFiltersView()
-        view.request = request
-        view.kwargs = {}  # No id in kwargs
-
-        # Mock messages.error to avoid middleware requirement
-        mock_messages_error = mocker.patch("lfs.manage.products.views.messages.error")
-
-        mock_form = mocker.MagicMock()
-        mock_form.is_valid.return_value = False
-
-        response = view.form_invalid(mock_form)
-
-        # Should have called messages.error
-        mock_messages_error.assert_called_once_with(request, "Invalid filter data.")
-
-        # Should redirect to products list
-        assert isinstance(response, HttpResponseRedirect)
-        assert response.url == "/manage/products/"
-
-    def test_form_valid_merges_submitted_fields_without_clearing_others(self, rf, admin_user, product):
-        """Should update only submitted fields and keep other session filters."""
-        from unittest.mock import MagicMock
-
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/",
-            {
-                "sub_type": "0",
-                "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
-            },
-        )
-        request.user = admin_user
-        request.session = {
-            "product-filters": {
-                "name": "Apple",
-                "sku": "APP001",
-                "status": "active",
-            }
-        }
-
-        view = ApplyProductFiltersView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        mock_form = MagicMock(spec=ProductFilterForm)
-        mock_form.data = {
-            "sub_type": "0",
-            "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
-        }
-        mock_form.cleaned_data = {
-            "name": "",
-            "sku": "",
-            "sub_type": "0",
-            "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
-            "status": "",
-        }
-
-        response = view.form_valid(mock_form)
-
-        assert request.session["product-filters"] == {
-            "name": "Apple",
-            "sku": "APP001",
-            "status": "active",
-            "sub_type": "0",
-            "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
-        }
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/manage/product/{product.id}/data/" in response.url
-
-    def test_form_valid_clears_submitted_empty_field_from_session(self, rf, admin_user, product):
-        """Should remove a submitted empty field from session without touching others."""
-        from unittest.mock import MagicMock
-
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.post("/", {"sub_type": "", "price_calculator": ""})
-        request.user = admin_user
-        request.session = {
-            "product-filters": {
-                "name": "Apple",
-                "sub_type": "0",
-                "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
-            }
-        }
-
-        view = ApplyProductFiltersView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        mock_form = MagicMock(spec=ProductFilterForm)
-        mock_form.data = {"sub_type": "", "price_calculator": ""}
-        mock_form.cleaned_data = {
-            "name": "",
-            "sku": "",
-            "sub_type": "",
-            "price_calculator": "",
-            "status": "",
-        }
-
-        view.form_valid(mock_form)
-
-        assert request.session["product-filters"] == {"name": "Apple"}
-
-    def test_form_valid_preserves_search_query_on_redirect(self, rf, admin_user, product):
-        """Should keep the live search query on the product detail redirect."""
-        from unittest.mock import MagicMock
-        from urllib.parse import parse_qs, urlparse
-
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.post("/", {"sub_type": "0", "q": "Apple"})
-        request.user = admin_user
-        request.session = {}
-
-        view = ApplyProductFiltersView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        mock_form = MagicMock(spec=ProductFilterForm)
-        mock_form.data = {"sub_type": "0", "q": "Apple"}
-        mock_form.cleaned_data = {"sub_type": "0"}
-
-        response = view.form_valid(mock_form)
-
-        parsed = urlparse(response.url)
-        assert parsed.path == f"/manage/product/{product.id}/data/"
-        assert parse_qs(parsed.query) == {"q": ["Apple"]}
-
-    def test_form_valid_redirect_without_search_query_has_no_query(self, rf, admin_user, product):
-        """Should omit q from the redirect when no search query is present."""
-        from unittest.mock import MagicMock
-        from urllib.parse import urlparse
-
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.post("/", {"sub_type": "0"})
-        request.user = admin_user
-        request.session = {}
-
-        view = ApplyProductFiltersView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        mock_form = MagicMock(spec=ProductFilterForm)
-        mock_form.data = {"sub_type": "0"}
-        mock_form.cleaned_data = {"sub_type": "0"}
-
-        response = view.form_valid(mock_form)
-
-        parsed = urlparse(response.url)
-        assert parsed.path == f"/manage/product/{product.id}/data/"
-        assert parsed.query == ""
-
-
-class TestResetProductFiltersView:
-    """Test the ResetProductFiltersView class-based view."""
-
-
-    def test_get_redirect_url_removes_filters_from_session(self, rf, admin_user):
-        """Should remove product-filters from session."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.user = admin_user
-        request.session = {"product-filters": {"name": "test"}}
-
-        view = ResetProductFiltersView()
-        view.request = request
-        view.kwargs = {}  # No id in kwargs
-
-        url = view.get_redirect_url()
-
-        # Should remove filters from session
-        assert "product-filters" not in request.session
-
-        # Should redirect to products list
-        assert url == "/manage/products/"
-
-    def test_get_redirect_url_redirects_to_product_detail_with_id(self, rf, admin_user, product):
-        """Should redirect to product detail when id is provided."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.user = admin_user
-        request.session = {"product-filters": {"name": "test"}}
-
-        view = ResetProductFiltersView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        url = view.get_redirect_url()
-
-        # Should redirect to product detail
-        assert url == f"/manage/product/{product.id}/data/"
-
-    def test_get_redirect_url_preserves_search_query(self, rf, admin_user, product):
-        """Should keep the live search query on the product detail redirect."""
-        from urllib.parse import parse_qs, urlparse
-
-        factory = RequestFactory()
-        request = factory.get("/?q=Apple")
-        request.user = admin_user
-        request.session = {"product-filters": {"sub_type": "0"}}
-
-        view = ResetProductFiltersView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        url = view.get_redirect_url()
-
-        parsed = urlparse(url)
-        assert parsed.path == f"/manage/product/{product.id}/data/"
-        assert parse_qs(parsed.query) == {"q": ["Apple"]}
-        assert "product-filters" not in request.session
-
-    def test_get_redirect_url_handles_missing_session_filters(self, rf, admin_user):
-        """Should handle case when product-filters doesn't exist in session."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.user = admin_user
-        request.session = {}
-
-        view = ResetProductFiltersView()
-        view.request = request
-        view.kwargs = {}  # No id in kwargs
-
-        url = view.get_redirect_url()
-
-        # Should not raise error and redirect to products list
-        assert url == "/manage/products/"
-
-
-class TestProductVariantsView:
-    """Test the ProductVariantsView class-based view."""
-
-
-    def test_post_delete_variants(self, rf, product, mocker):
-        """Should delete selected variants."""
-        # Create a variant product
-        variant = Product.objects.create(
-            name="Test Variant", slug="test-variant", sku="VAR001", price=10.0, parent=product, sub_type="variant"
-        )
-        product.default_variant_id = variant.id
+        product.refresh_from_db()
+        assert product.active_related_products is True
+        assert messages_of(response) == []
+
+    def test_adding_related_products(self, manager, product):
+        related = Product.objects.create(name="Related", slug="related")
+
+        response = manager.post(url("related", product), {"action": "add", f"product-{related.id}": "1"})
+
+        assert product.related_products.filter(pk=related.pk).exists()
+        assert messages_of(response) == ["Related products have been added."]
+
+    def test_removing_related_products(self, manager, product):
+        related = Product.objects.create(name="Related", slug="related")
+        product.related_products.add(related)
+
+        response = manager.post(url("related", product), {"action": "remove", f"product-{related.id}": "1"})
+
+        assert not product.related_products.filter(pk=related.pk).exists()
+        assert messages_of(response) == ["Related products have been removed."]
+
+    def test_lists_the_related_products_by_name(self, manager, product):
+        second = Product.objects.create(name="Related 2", slug="related-2")
+        first = Product.objects.create(name="Related 1", slug="related-1")
+        product.related_products.add(second, first)
+
+        response = manager.get(url("related", product))
+
+        assert list(response.context["related_products"]) == [first, second]
+
+    def test_offers_neither_the_product_itself_nor_products_already_related(self, manager, product):
+        related = Product.objects.create(name="Related", slug="related")
+        other = Product.objects.create(name="Other", slug="other")
+        product.related_products.add(related)
+
+        top_level, _ = available_ids(manager.get(url("related", product)))
+
+        assert top_level == [other.id]
+
+    def test_filter_limits_the_offered_products(self, manager, product):
+        apple = Product.objects.create(name="Apple Product", slug="apple-product")
+        Product.objects.create(name="Banana Product", slug="banana-product")
+
+        top_level, _ = available_ids(manager.get(url("related", product) + "?filter=apple"))
+
+        assert top_level == [apple.id]
+
+    @pytest.mark.parametrize("search", ["", "Widget", "WIDGET-99"])
+    def test_variants_are_offered_under_their_parent(self, manager, product, search):
+        parent, variant = with_variant(parent_sku="SKU-WIDGET-99")
+
+        top_level, variants = available_ids(manager.get(url("related", product) + f"?filter={search}"))
+
+        assert parent.id in top_level
+        assert variant.id not in top_level
+        assert variants[parent.id] == [variant.id]
+
+
+class TestVariantsTab:
+    def test_deleting_the_default_variant_clears_the_default(self, manager, product):
+        variant = Product.objects.create(name="Variant", slug="variant", parent=product, sub_type=VARIANT)
+        product.default_variant = variant
         product.save()
 
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "delete", f"delete-{variant.id}": "1"})
-        request.session = {}
+        response = manager.post(url("variants", product), {"action": "delete", f"delete-{variant.id}": "1"})
 
-        view = ProductVariantsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should delete the variant
         assert not Product.objects.filter(id=variant.id).exists()
-
-        # Should clear default variant if it was the deleted variant
         product.refresh_from_db()
         assert product.default_variant_id is None
+        assert messages_of(response) == ["Variants have been deleted."]
 
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Variants have been deleted.")
+    def test_updating_variants_stores_their_data_and_the_default_variant(self, manager, product):
+        variant = Product.objects.create(name="Variant", slug="variant", sku="VAR001", parent=product, sub_type=VARIANT)
 
-    def test_post_update_variants(self, rf, product, mocker):
-        """Should update variant properties."""
-        # Create a variant product
-        variant = Product.objects.create(
-            name="Test Variant", slug="test-variant", sku="VAR001", price=10.0, parent=product, sub_type="variant"
-        )
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/",
+        response = manager.post(
+            url("variants", product),
             {
                 "action": "update",
                 f"variant-{variant.id}": "1",
@@ -1144,1120 +429,314 @@ class TestProductVariantsView:
                 "default_variant": str(variant.id),
             },
         )
-        request.session = {}
 
-        view = ProductVariantsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update the variant
         variant.refresh_from_db()
-        assert variant.name == "Updated Variant"
-        assert variant.sku == "UPD001"
-        assert variant.price == 15.0
-        assert variant.active is True
-        assert variant.active_price is True
-        assert variant.active_sku is True
-        assert variant.active_name is True
-        assert variant.variant_position == 10  # Gets normalized
-
-        # Should set as default variant
+        assert (variant.name, variant.sku, variant.price) == ("Updated Variant", "UPD001", 15.0)
+        assert variant.active and variant.active_price and variant.active_sku and variant.active_name
+        assert variant.variant_position == 10
         product.refresh_from_db()
         assert product.default_variant_id == variant.id
+        assert messages_of(response) == ["Variants have been saved."]
 
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Variants have been saved.")
+    def test_adding_variants_creates_one_per_option_with_slug_and_properties(self, manager, product):
+        group = PropertyGroup.objects.create(name="Group")
+        colour = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, variants=True)
+        group.properties.add(colour)
+        red = PropertyOption.objects.create(name="Red", property=colour)
+        blue = PropertyOption.objects.create(name="Blue", property=colour)
+        product.property_groups.add(group)
 
-    def test_post_edit_sub_type(self, rf, product, mocker):
-        """Should update variants display type."""
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "edit_sub_type", "variants_display_type": "1"})  # Use integer value
-        request.session = {}
+        response = manager.post(
+            url("variants", product), {"action": "add_variants", f"property_{group.id}_{colour.id}": "all"}
+        )
 
-        view = ProductVariantsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
+        variants = Product.objects.filter(parent=product).order_by("variant_position")
+        assert [v.slug for v in variants] == [f"{product.slug}-red", f"{product.slug}-blue"]
+        assert [v.sku for v in variants] == [f"{product.sku}-1", f"{product.sku}-2"]
+        values = ProductPropertyValue.objects.filter(product__in=variants, property=colour)
+        assert sorted(v.value for v in values) == sorted([str(red.id), str(blue.id)])
+        assert messages_of(response) == ["Variants have been added."]
 
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
+    def test_added_variant_gets_a_unique_slug(self, manager, product):
+        group = PropertyGroup.objects.create(name="Group")
+        colour = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, variants=True)
+        group.properties.add(colour)
+        red = PropertyOption.objects.create(name="Red", property=colour)
+        product.property_groups.add(group)
+        Product.objects.create(name="Taken", slug=f"{product.slug}-red")
 
-        # Mock the form to be valid
-        mock_form = mocker.MagicMock()
-        mock_form.is_valid.return_value = True
-        mock_form.cleaned_data = {"variants_display_type": 1}
+        manager.post(
+            url("variants", product), {"action": "add_variants", f"property_{group.id}_{colour.id}": str(red.id)}
+        )
 
-        with mocker.patch("lfs.manage.products.forms.DisplayTypeForm", return_value=mock_form):
-            response = view.post(request)
+        assert Product.objects.get(parent=product).slug == f"{product.slug}-red-1"
 
-        # Should update display type
+    def test_changing_the_display_type(self, manager, product):
+        response = manager.post(url("variants", product), {"action": "edit_sub_type", "variants_display_type": "1"})
+
         product.refresh_from_db()
         assert product.variants_display_type == 1
+        assert messages_of(response) == ["Sub type has been saved."]
 
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Sub type has been saved.")
+    def test_assigning_property_groups(self, manager, product):
+        group = PropertyGroup.objects.create(name="Group")
 
-    def test_post_update_property_groups(self, rf, product, mocker):
-        """Should update property group assignments."""
-        from lfs.catalog.models import PropertyGroup
-
-        # Create a property group
-        property_group = PropertyGroup.objects.create(name="Test Group")
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/", {"action": "update_property_groups", "selected-property-groups": [str(property_group.id)]}
-        )
-        request.session = {}
-
-        view = ProductVariantsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should assign property group to product
-        assert property_group.products.filter(pk=product.pk).exists()
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Property groups have been updated.")
-
-    def test_get_context_data_basic_structure(self, rf, product):
-        """Should return context with basic structure."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductVariantsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Check required context keys
-        assert "variants" in context
-        assert "all_properties" in context
-        assert "local_properties" in context
-        assert "display_type_form" in context
-        assert "default_variant_form" in context
-        assert "category_variant_form" in context
-        assert "variant_columns" in context
-        assert "shop_property_groups" in context
-
-        # Check types
-        assert isinstance(context["variants"], list)
-        assert isinstance(context["all_properties"], list)
-        assert isinstance(context["local_properties"], list)
-
-    def test_variants_tab_renders_manage_and_frontend_link_for_each_variant(self, client, admin_user, product):
-        """Should render links to variant management and frontend pages."""
-        client.login(username="admin", password="testpass123")
-        variant = Product.objects.create(
-            parent=product,
-            name="Variant Product",
-            slug="variant-product-manage-link",
-            sku="VAR-MANAGE-001",
-            price=9.99,
+        response = manager.post(
+            url("variants", product), {"action": "update_property_groups", "selected-property-groups": [str(group.id)]}
         )
 
-        response = client.get(f"/manage/product/{product.id}/variants/")
+        assert group.products.filter(pk=product.pk).exists()
+        assert messages_of(response) == ["Property groups have been updated."]
 
-        assert response.status_code == 200
-        content = response.content.decode("utf-8")
-        assert f"/manage/product/{variant.id}/data/" in content
-        assert f"/manage/product/{variant.id}/data/?view=1" in content
+    def test_links_each_variant_to_its_management_and_shop_page(self, manager, product):
+        variant = Product.objects.create(parent=product, name="Variant", slug="variant", sub_type=VARIANT)
+
+        content = manager.get(url("variants", product)).content.decode()
+
+        assert url("data", variant) in content
+        assert url("data", variant) + "?view=1" in content
 
 
-class TestProductRelatedProductsView:
-    """Test the ProductRelatedProductsView class-based view."""
+class TestPropertiesTab:
+    def test_marks_the_assigned_property_groups(self, manager, product):
+        assigned = PropertyGroup.objects.create(name="Assigned")
+        PropertyGroup.objects.create(name="Other")
+        product.property_groups.add(assigned)
 
+        groups = manager.get(url("properties", product)).context["shop_property_groups"]
 
-    def test_post_toggle_active_related_products(self, rf, product, mocker):
-        """Should toggle active related products setting."""
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "toggle_active", "active_related_products": "1"})
-        request.session = {}
+        assert [g["name"] for g in groups if g["selected"]] == ["Assigned"]
 
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
+    def test_updating_property_groups_assigns_the_selected_and_removes_the_others(self, manager, product):
+        selected = PropertyGroup.objects.create(name="Selected")
+        removed = PropertyGroup.objects.create(name="Removed")
+        product.property_groups.add(removed)
 
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update product active_related_products
-        product.refresh_from_db()
-        assert product.active_related_products is True
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Related products have been updated.")
-
-    def test_post_toggle_active_related_products_htmx(self, rf, product, mocker):
-        """Should not show success message for HTMX requests."""
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "toggle_active", "active_related_products": "1"})
-        request.META["HTTP_HX_REQUEST"] = "true"
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should update product active_related_products
-        product.refresh_from_db()
-        assert product.active_related_products is True
-
-        # Should NOT add success message for HTMX
-        mock_messages_success.assert_not_called()
-
-    def test_post_add_related_products(self, rf, product, mocker):
-        """Should add selected products as related products."""
-        # Create another product to add as related
-        related_product = Product.objects.create(
-            name="Related Product", slug="related-product", sku="REL001", price=15.0
+        response = manager.post(
+            url("properties", product),
+            {"action": "update_property_groups", "selected-property-groups": [str(selected.id)]},
         )
 
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "add", f"product-{related_product.id}": "1"})
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should add related product
-        assert product.related_products.filter(pk=related_product.id).exists()
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Related products have been added.")
-
-    def test_post_remove_related_products(self, rf, product, mocker):
-        """Should remove selected related products."""
-        # Create and add a related product
-        related_product = Product.objects.create(
-            name="Related Product", slug="related-product", sku="REL001", price=15.0
-        )
-        product.related_products.add(related_product)
-
-        factory = RequestFactory()
-        request = factory.post("/", {"action": "remove", f"product-{related_product.id}": "1"})
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should remove related product
-        assert not product.related_products.filter(pk=related_product.id).exists()
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Related products have been removed.")
-
-    def test_get_context_data_basic_structure(self, rf, product):
-        """Should return context with basic structure."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Check required context keys
-        assert "related_products" in context
-        assert "filter" in context
-        assert "amount" in context
-        assert "page_sizes" in context
-        assert "available_page" in context
-        assert "available_paginator" in context
-
-        # Check page sizes
-        assert context["page_sizes"] == [10, 25, 50, 100]
-
-        # Check types - related_products is a QuerySet from the view
-        from django.db.models import QuerySet
-
-        assert isinstance(context["related_products"], QuerySet)
-        assert isinstance(context["available_page"], object)  # Paginator page object
-
-    def test_get_context_data_with_related_products(self, rf, product):
-        """Should return existing related products."""
-        # Create and add related products
-        related_product1 = Product.objects.create(
-            name="Related Product 1", slug="related-product-1", sku="REL001", price=15.0
-        )
-        related_product2 = Product.objects.create(
-            name="Related Product 2", slug="related-product-2", sku="REL002", price=20.0
-        )
-        product.related_products.add(related_product1, related_product2)
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Should return related products
-        related_products = context["related_products"]
-        assert len(related_products) == 2
-        # Should be ordered by name
-        assert related_products[0].name == "Related Product 1"
-        assert related_products[1].name == "Related Product 2"
-
-    def test_get_context_data_with_filter(self, rf, product):
-        """Should filter available products."""
-        # Create products for filtering
-        Product.objects.create(name="Apple Product", slug="apple-product", sku="APP001", price=10.0)
-        Product.objects.create(name="Banana Product", slug="banana-product", sku="BAN001", price=15.0)
-
-        factory = RequestFactory()
-        request = factory.get("/?filter=apple")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Should only include filtered products
-        available_page = context["available_page"]
-        assert available_page.paginator.count == 1
-        assert available_page.object_list[0].name == "Apple Product"
-
-    def test_get_context_data_nests_variants_under_parent(self, rf, product):
-        """Should list PWV at top level and nest variants under available_variants."""
-        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
-
-        parent = Product.objects.create(
-            name="Widget Cord",
-            slug="widget-cord",
-            sku="WC-PARENT",
-            price=20.0,
-            sub_type=PRODUCT_WITH_VARIANTS,
-        )
-        variant = Product.objects.create(
-            name="",
-            slug="widget-cord-v1",
-            sku="",
-            price=20.0,
-            sub_type=PRODUCT_VARIANT,
-            parent=parent,
-            active_name=False,
-            active_sku=False,
-        )
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        available_page = view.get_context_data()["available_page"]
-        top_level_ids = [p.id for p in available_page.object_list]
-        assert parent.id in top_level_ids
-        assert variant.id not in top_level_ids
-
-        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
-        assert variant.id in [v.id for v in listed_parent.available_variants]
-
-    def test_get_context_data_filter_includes_variants_by_parent_name(self, rf, product):
-        """Should nest variants under parent when search matches parent name."""
-        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
-
-        parent = Product.objects.create(
-            name="Widget Cord",
-            slug="widget-cord",
-            sku="WC-PARENT",
-            price=20.0,
-            sub_type=PRODUCT_WITH_VARIANTS,
-        )
-        variant = Product.objects.create(
-            name="",
-            slug="widget-cord-v1",
-            sku="",
-            price=20.0,
-            sub_type=PRODUCT_VARIANT,
-            parent=parent,
-            active_name=False,
-            active_sku=False,
-        )
-
-        factory = RequestFactory()
-        request = factory.get("/?filter=Widget")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        available_page = view.get_context_data()["available_page"]
-        top_level_ids = [p.id for p in available_page.object_list]
-        assert parent.id in top_level_ids
-        assert variant.id not in top_level_ids
-
-        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
-        assert variant.id in [v.id for v in listed_parent.available_variants]
-
-    def test_get_context_data_filter_includes_variants_by_parent_sku(self, rf, product):
-        """Should nest variants under parent when search matches parent sku."""
-        from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT as PRODUCT_VARIANT
-
-        parent = Product.objects.create(
-            name="Other Parent",
-            slug="other-parent",
-            sku="SKU-WIDGET-99",
-            price=20.0,
-            sub_type=PRODUCT_WITH_VARIANTS,
-        )
-        variant = Product.objects.create(
-            name="",
-            slug="other-parent-v1",
-            sku="",
-            price=20.0,
-            sub_type=PRODUCT_VARIANT,
-            parent=parent,
-            active_name=False,
-            active_sku=False,
-        )
-
-        factory = RequestFactory()
-        request = factory.get("/?filter=WIDGET-99")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        available_page = view.get_context_data()["available_page"]
-        top_level_ids = [p.id for p in available_page.object_list]
-        assert parent.id in top_level_ids
-        assert variant.id not in top_level_ids
-
-        listed_parent = next(p for p in available_page.object_list if p.id == parent.id)
-        assert variant.id in [v.id for v in listed_parent.available_variants]
-
-    def test_get_context_data_excludes_current_product(self, rf, product):
-        """Should exclude the current product from available products."""
-        # Create another product
-        other_product = Product.objects.create(name="Other Product", slug="other-product", sku="OTH001", price=25.0)
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Should include the other product but not the current product
-        available_page = context["available_page"]
-        assert available_page.paginator.count == 1
-        assert available_page.object_list[0] == other_product
-
-    def test_get_context_data_excludes_already_related_products(self, rf, product):
-        """Should exclude products that are already related."""
-        # Create products
-        related_product = Product.objects.create(
-            name="Related Product", slug="related-product", sku="REL001", price=15.0
-        )
-        available_product = Product.objects.create(
-            name="Available Product", slug="available-product", sku="AVA001", price=20.0
-        )
-
-        # Add one as related
-        product.related_products.add(related_product)
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductRelatedProductsView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Should only include the available product, not the already related one
-        available_page = context["available_page"]
-        assert available_page.paginator.count == 1
-        assert available_page.object_list[0] == available_product
-
-
-class TestProductPropertiesView:
-    """Test the ProductPropertiesView class-based view."""
-
-
-    def test_get_context_data_basic_structure(self, rf, product):
-        """Should return context with basic structure."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductPropertiesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Check required context keys
-        assert "filterables" in context
-        assert "display_filterables" in context
-        assert "configurables" in context
-        assert "display_configurables" in context
-        assert "displayables" in context
-        assert "display_displayables" in context
-        assert "product_property_groups" in context
-        assert "shop_property_groups" in context
-        assert "product_variant_properties" in context
-
-        # Check types
-        assert isinstance(context["filterables"], list)
-        assert isinstance(context["configurables"], list)
-        assert isinstance(context["displayables"], list)
-        assert isinstance(context["shop_property_groups"], list)
-        assert isinstance(context["product_variant_properties"], list)
-
-    def test_get_context_data_with_property_groups(self, rf, product):
-        """Should return property groups in context."""
-        from lfs.catalog.models import PropertyGroup
-
-        # Create property groups
-        property_group1 = PropertyGroup.objects.create(name="Test Group 1")
-        property_group2 = PropertyGroup.objects.create(name="Test Group 2")
-        product.property_groups.add(property_group1, property_group2)
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductPropertiesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Should include all property groups
-        shop_property_groups = context["shop_property_groups"]
-        assert len(shop_property_groups) >= 2
-
-        # Should mark selected property groups
-        selected_groups = [pg for pg in shop_property_groups if pg["selected"]]
-        assert len(selected_groups) == 2
-
-    def test_post_update_property_groups(self, rf, product, mocker):
-        """Should update property group assignments."""
-        from lfs.catalog.models import PropertyGroup
-
-        # Create property groups
-        property_group1 = PropertyGroup.objects.create(name="Test Group 1")
-        property_group2 = PropertyGroup.objects.create(name="Test Group 2")
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/", {"action": "update_property_groups", "selected-property-groups": [str(property_group1.id)]}
-        )
-        request.session = {}
-
-        view = ProductPropertiesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should add selected property group
-        assert property_group1.products.filter(pk=product.pk).exists()
-
-        # Should remove unselected property group
-        assert not property_group2.products.filter(pk=product.pk).exists()
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Property groups have been updated.")
-
-        # Should redirect to properties page
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/manage/product/{product.id}/properties/" in response.url
-
-    def test_post_update_properties(self, rf, product, mocker):
-        """Should update individual property values."""
-        from lfs.catalog.models import PropertyGroup, Property, PropertyOption, ProductPropertyValue
-        from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT, PROPERTY_SELECT_FIELD
-
-        # Create property group and property
-        property_group = PropertyGroup.objects.create(name="Test Group")
-        prop = Property.objects.create(name="Test Property", title="Test Property", type=PROPERTY_SELECT_FIELD)
-
-        # Create property option
-        option = PropertyOption.objects.create(name="Test Option", property=prop)
-
-        # Add property group to product
-        product.property_groups.add(property_group)
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/",
+        assert list(product.property_groups.all()) == [selected]
+        assert response["Location"] == url("properties", product)
+        assert messages_of(response) == ["Property groups have been updated."]
+
+    def test_updating_a_property_stores_its_value(self, manager, product):
+        group = PropertyGroup.objects.create(name="Group")
+        prop = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD)
+        option = PropertyOption.objects.create(name="Red", property=prop)
+        product.property_groups.add(group)
+
+        response = manager.post(
+            url("properties", product),
             {
                 "action": "update_properties",
                 "type": str(PROPERTY_VALUE_TYPE_DEFAULT),
-                f"property-{property_group.id}-{prop.id}": [str(option.id)],
+                f"property-{group.id}-{prop.id}": [str(option.id)],
             },
         )
-        request.session = {}
 
-        view = ProductPropertiesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
+        values = ProductPropertyValue.objects.filter(product=product, property=prop, type=PROPERTY_VALUE_TYPE_DEFAULT)
+        assert [v.value for v in values] == [str(option.id)]
+        assert response["Location"] == url("properties", product)
+        assert messages_of(response) == ["Properties have been updated."]
 
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
+    def test_a_filterable_property_stores_several_values(self, manager, product):
+        group = PropertyGroup.objects.create(name="Group")
+        prop = Property.objects.create(name="Colour", title="Colour", type=PROPERTY_SELECT_FIELD, filterable=True)
+        red = PropertyOption.objects.create(name="Red", property=prop)
+        blue = PropertyOption.objects.create(name="Blue", property=prop)
+        product.property_groups.add(group)
 
-        response = view.post(request)
-
-        # Should create property value
-        ppv = ProductPropertyValue.objects.filter(
-            product=product, property=prop, property_group=property_group, type=PROPERTY_VALUE_TYPE_DEFAULT
-        ).first()
-        assert ppv is not None
-        assert ppv.value == str(option.id)
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Properties have been updated.")
-
-        # Should redirect to properties page
-        assert isinstance(response, HttpResponseRedirect)
-        assert f"/manage/product/{product.id}/properties/" in response.url
-
-    def test_post_update_properties_multiple_values(self, rf, product, mocker):
-        """Should handle multiple values for filterable properties."""
-        from lfs.catalog.models import PropertyGroup, Property, PropertyOption, ProductPropertyValue
-        from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER, PROPERTY_SELECT_FIELD
-
-        # Create property group and filterable property
-        property_group = PropertyGroup.objects.create(name="Test Group")
-        prop = Property.objects.create(
-            name="Test Property", title="Test Property", type=PROPERTY_SELECT_FIELD, filterable=True
-        )
-
-        # Create property options
-        option1 = PropertyOption.objects.create(name="Option 1", property=prop)
-        option2 = PropertyOption.objects.create(name="Option 2", property=prop)
-
-        # Add property group to product
-        product.property_groups.add(property_group)
-
-        factory = RequestFactory()
-        request = factory.post(
-            "/",
+        manager.post(
+            url("properties", product),
             {
                 "action": "update_properties",
                 "type": str(PROPERTY_VALUE_TYPE_FILTER),
-                f"property-{property_group.id}-{prop.id}": [str(option1.id), str(option2.id)],
+                f"property-{group.id}-{prop.id}": [str(red.id), str(blue.id)],
             },
         )
-        request.session = {}
 
-        view = ProductPropertiesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        # Mock messages.success
-        mock_messages_success = mocker.patch("lfs.manage.products.views.messages.success")
-
-        response = view.post(request)
-
-        # Should create multiple property values
-        ppvs = ProductPropertyValue.objects.filter(
-            product=product, property=prop, property_group=property_group, type=PROPERTY_VALUE_TYPE_FILTER
-        )
-        assert ppvs.count() == 2
-        values = [ppv.value for ppv in ppvs]
-        assert str(option1.id) in values
-        assert str(option2.id) in values
-
-        # Should add success message
-        mock_messages_success.assert_called_once_with(request, "Properties have been updated.")
-
-    def test_get_context_data_with_variant_product(self, rf, product):
-        """Should handle products without variants correctly."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductPropertiesView()
-        view.request = request
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        # Should return empty variant properties for non-variant products
-        product_variant_properties = context["product_variant_properties"]
-        assert isinstance(product_variant_properties, list)
-        # For non-variant products, this should be empty
-        assert len(product_variant_properties) == 0
+        values = ProductPropertyValue.objects.filter(product=product, property=prop, type=PROPERTY_VALUE_TYPE_FILTER)
+        assert sorted(v.value for v in values) == sorted([str(red.id), str(blue.id)])
 
 
-class TestProductTabMixin:
-    """Test the ProductTabMixin class."""
+class TestDeleteProduct:
+    def test_confirmation_page_names_the_product(self, manager, product):
+        response = manager.get(reverse("lfs_manage_delete_product_confirm", kwargs={"id": product.id}))
 
-    def test_mixin_has_template_name(self):
-        """Should have template_name attribute."""
-        assert hasattr(ProductTabMixin, "template_name")
-        assert ProductTabMixin.template_name == "manage/products/product.html"
+        assert response.context["product"] == product
 
+    def test_deleting_returns_to_the_product_list(self, manager, product):
+        response = manager.post(reverse("lfs_manage_delete_product", kwargs={"id": product.id}))
 
-
-
-
-
-    def test_get_tabs_returns_correct_structure(self, product):
-        """Should return correct tab structure."""
-        factory = RequestFactory()
-        request = factory.get("/")
-
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-        view.kwargs = {"id": product.id}
-
-        tabs = view._get_tabs(product)
-
-        # Verify tabs structure
-        assert isinstance(tabs, list)
-        assert len(tabs) > 0
-        assert all(isinstance(tab, tuple) and len(tab) == 3 for tab in tabs)
+        assert not Product.objects.filter(id=product.id).exists()
+        assert response["Location"] == reverse("lfs_manage_products_list")
+        assert messages_of(response) == ["Product has been deleted."]
 
 
-    def test_get_products_queryset_filters_by_session_sub_type(self, product, shop):
-        """Should filter sidebar products by session sub_type."""
-        from lfs.catalog.settings import CONFIGURABLE_PRODUCT, PRODUCT_WITH_VARIANTS, STANDARD_PRODUCT
+class TestProductFilters:
+    def test_applying_filters_in_the_list_stores_them_and_returns_to_the_list(self, manager, shop):
+        response = manager.post(reverse("lfs_apply_product_filters_list"), {"name": " Apple ", "status": "active"})
 
-        standard = product
-        with_variants = Product.objects.create(
-            name="Variant Parent",
-            slug="variant-parent-sidebar",
-            sku="VAR-PARENT",
-            price=10.0,
-            sub_type=PRODUCT_WITH_VARIANTS,
-        )
-        configurable = Product.objects.create(
-            name="Configurable Product",
-            slug="configurable-sidebar",
-            sku="CONF001",
-            price=15.0,
-            sub_type=CONFIGURABLE_PRODUCT,
+        assert manager.session["product-filters"] == {"name": "Apple", "status": "active"}
+        assert response["Location"] == reverse("lfs_manage_products_list")
+
+    def test_applying_filters_on_a_product_returns_to_the_product(self, manager, product):
+        response = manager.post(reverse("lfs_apply_product_filters", kwargs={"id": product.id}), {"name": "Apple"})
+
+        assert response["Location"] == url("data", product)
+
+    def test_applying_filters_changes_only_the_submitted_fields(self, manager, product):
+        set_session(manager, **{"product-filters": {"name": "Apple", "sku": "APP001", "sub_type": "0"}})
+
+        manager.post(
+            reverse("lfs_apply_product_filters", kwargs={"id": product.id}), {"sub_type": "", "status": "active"}
         )
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {"product-filters": {"sub_type": STANDARD_PRODUCT}}
+        assert manager.session["product-filters"] == {"name": "Apple", "sku": "APP001", "status": "active"}
 
-        view = ProductDataView()
-        view.request = request
+    def test_applying_filters_keeps_the_search_query(self, manager, product):
+        response = manager.post(
+            reverse("lfs_apply_product_filters", kwargs={"id": product.id}), {"sub_type": "0", "q": "Apple"}
+        )
 
-        names = list(view._get_products_queryset().values_list("name", flat=True))
-        assert standard.name in names
-        assert with_variants.name not in names
-        assert configurable.name not in names
+        location = urlparse(response["Location"])
+        assert (location.path, parse_qs(location.query)) == (url("data", product), {"q": ["Apple"]})
 
-        request.session = {"product-filters": {"sub_type": PRODUCT_WITH_VARIANTS}}
-        names = list(view._get_products_queryset().values_list("name", flat=True))
-        assert names == [with_variants.name]
+    def test_invalid_filters_are_refused_with_a_message(self, manager, shop):
+        response = manager.post(reverse("lfs_apply_product_filters_list"), {"sub_type": "no-such-type"})
 
-        request.session = {"product-filters": {"sub_type": CONFIGURABLE_PRODUCT}}
-        names = list(view._get_products_queryset().values_list("name", flat=True))
-        assert names == [configurable.name]
+        assert "product-filters" not in manager.session
+        assert messages_of(response) == ["Invalid filter data."]
+
+    def test_resetting_filters_clears_them_and_keeps_the_search_query(self, manager, product):
+        set_session(manager, **{"product-filters": {"name": "Apple"}})
+
+        response = manager.get(reverse("lfs_reset_product_filters", kwargs={"id": product.id}) + "?q=Apple")
+
+        assert "product-filters" not in manager.session
+        location = urlparse(response["Location"])
+        assert (location.path, parse_qs(location.query)) == (url("data", product), {"q": ["Apple"]})
+
+    def test_resetting_filters_without_filters_returns_to_the_list(self, manager, shop):
+        response = manager.get(reverse("lfs_reset_product_filters_list"))
+
+        assert response["Location"] == reverse("lfs_manage_products_list")
+
+
+class TestProductSidebar:
+    """The product list beside each product tab follows the search query and the stored filters."""
+
+    def sidebar(self, manager: Client, product: Product, query: str = "") -> list[str]:
+        """Return the names of the products in the sidebar of the data tab."""
+        return [p.name for p in manager.get(url("data", product) + query).context["products"]]
+
+    def test_filters_by_the_stored_product_type(self, manager, product):
+        Product.objects.create(name="With Variants", slug="with-variants", sub_type=PRODUCT_WITH_VARIANTS)
+        Product.objects.create(name="Configurable", slug="configurable", sub_type=CONFIGURABLE_PRODUCT)
+
+        set_session(manager, **{"product-filters": {"sub_type": STANDARD_PRODUCT}})
+        assert self.sidebar(manager, product) == [product.name]
+        set_session(manager, **{"product-filters": {"sub_type": CONFIGURABLE_PRODUCT}})
+        assert self.sidebar(manager, product) == ["Configurable"]
 
     @requires_bulk_prices
-    def test_get_products_queryset_filters_by_session_bulkprice_calculator(self, product, shop):
-        """Should filter sidebar products by bulk prices calculator."""
-        bulk_product = Product.objects.create(
-            name="Bulk Product",
-            slug="bulk-product-sidebar",
-            sku="BULK001",
-            price=12.0,
-            price_calculator="lfs_bulk_prices.calculator.BulkPricesCalculator",
-        )
-        Product.objects.create(
-            name="Gross Product",
-            slug="gross-product-sidebar",
-            sku="GROSS001",
-            price=8.0,
-            price_calculator="lfs.gross_price.calculator.GrossPriceCalculator",
-        )
+    def test_filters_by_the_stored_price_calculator(self, manager, product):
+        Product.objects.create(name="Bulk", slug="bulk", price_calculator=BULK_PRICES)
+        set_session(manager, **{"product-filters": {"price_calculator": BULK_PRICES}})
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {
-            "product-filters": {"price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator"}
-        }
+        assert self.sidebar(manager, product) == ["Bulk"]
 
-        view = ProductDataView()
-        view.request = request
+    def test_combines_the_search_query_with_the_stored_filters(self, manager, shop):
+        apple = Product.objects.create(name="Apple Standard", slug="apple-standard", sub_type=STANDARD_PRODUCT)
+        Product.objects.create(name="Banana Standard", slug="banana-standard", sub_type=STANDARD_PRODUCT)
+        Product.objects.create(name="Apple Configurable", slug="apple-configurable", sub_type=CONFIGURABLE_PRODUCT)
+        set_session(manager, **{"product-filters": {"sub_type": STANDARD_PRODUCT}})
 
-        names = list(view._get_products_queryset().values_list("name", flat=True))
-        assert names == [bulk_product.name]
+        assert self.sidebar(manager, apple, "?q=Apple") == ["Apple Standard"]
 
-    def test_get_products_queryset_combines_search_and_session_filters(self, shop):
-        """Should apply search query and session filters together."""
-        from lfs.catalog.settings import CONFIGURABLE_PRODUCT, STANDARD_PRODUCT
+    def test_filter_form_shows_the_stored_filters(self, manager, product):
+        set_session(manager, **{"product-filters": {"sub_type": "0", "status": "active"}})
 
-        apple_standard = Product.objects.create(
-            name="Apple Standard", slug="apple-standard-sidebar", sku="APP-STD", price=10.0, sub_type=STANDARD_PRODUCT
-        )
-        Product.objects.create(
-            name="Banana Standard", slug="banana-standard-sidebar", sku="BAN-STD", price=11.0, sub_type=STANDARD_PRODUCT
-        )
-        Product.objects.create(
-            name="Apple Configurable",
-            slug="apple-configurable-sidebar",
-            sku="APP-CONF",
-            price=12.0,
-            sub_type=CONFIGURABLE_PRODUCT,
-        )
+        form = manager.get(url("data", product)).context["filter_form"]
 
-        factory = RequestFactory()
-        request = factory.get("/?q=Apple")
-        request.session = {"product-filters": {"sub_type": STANDARD_PRODUCT}}
-
-        view = ProductDataView()
-        view.request = request
-
-        names = list(view._get_products_queryset().values_list("name", flat=True))
-        assert names == [apple_standard.name]
-
-    def test_get_context_data_includes_required_context(self, product):
-        """Should include required context variables."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        assert "product" in context
-        assert "active_tab" in context
-        assert "tabs" in context
-        assert "products" in context
-        assert "search_query" in context
-        assert "filter_form" in context
-
-    def test_get_context_data_filter_form_uses_session_initial(self, product):
-        """Should initialize sidebar filter form from session filters."""
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {
-            "product-filters": {
-                "sub_type": "0",
-                "price_calculator": "lfs_bulk_prices.calculator.BulkPricesCalculator",
-            }
-        }
-
-        view = ProductDataView()
-        view.request = request
-        view.object = product
-        view.kwargs = {"id": product.id}
-
-        context = view.get_context_data()
-
-        filter_form = context["filter_form"]
-        assert isinstance(filter_form, ProductFilterForm)
-        assert filter_form.initial["sub_type"] == "0"
-        assert filter_form.initial["price_calculator"] == "lfs_bulk_prices.calculator.BulkPricesCalculator"
+        assert (form.initial["sub_type"], form.initial["status"]) == ("0", "active")
 
 
-class TestProductListView:
-    """Test the ProductListView class-based view."""
+@pytest.mark.xfail(
+    strict=True,
+    reason="ProductListView is unreachable: lfs_manage_products and lfs_manage_products_list share the path "
+    "products/, so /manage/products/ always redirects to the first product",
+)
+class TestProductList:
+    def list_page(self, manager: Client, query: str = "") -> HttpResponse:
+        """Return the product list page."""
+        return manager.get(reverse("lfs_manage_products_list") + query)
 
-
-
-    def test_get_context_data_basic_structure(self, rf, db, category, shop):
-        """Should return context with basic structure when no filters."""
-        from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
-
-        # Create test product
+    def test_shows_categories_price_stock_and_type_of_each_product(self, manager, category, shop):
         product = Product.objects.create(
-            name="Test Product", sku="TEST001", price=10.0, active=True, manage_stock_amount=True, stock_amount=5
+            name="Shown", slug="shown", price=10.0, active=True, manage_stock_amount=True, stock_amount=5
         )
         product.categories.add(category)
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
+        [row] = self.list_page(manager).context["products_with_data"]
 
-        view = ProductListView()
-        view.request = request
+        assert row["product"] == product
+        assert row["categories"] == "Test Category"
+        assert (row["price"], row["stock"], row["active"]) == (10.0, 5, True)
+        assert row["sub_type_display"] == PRODUCT_TYPE_LOOKUP[product.sub_type]
 
-        context = view.get_context_data()
+    def test_hides_the_stock_when_it_is_not_managed(self, manager, shop):
+        Product.objects.create(name="Unmanaged", slug="unmanaged", manage_stock_amount=False, stock_amount=5)
 
-        # Check basic context structure
-        assert "products_page" in context
-        assert "products_with_data" in context
-        assert "product_filters" in context
-        assert "filter_form" in context
+        [row] = self.list_page(manager).context["products_with_data"]
 
-        # Check products_with_data structure
-        products_with_data = context["products_with_data"]
-        assert isinstance(products_with_data, list)
-        assert len(products_with_data) > 0
+        assert row["stock"] is None
 
-        product_data = products_with_data[0]
-        assert "product" in product_data
-        assert "categories" in product_data
-        assert "price" in product_data
-        assert "stock" in product_data
-        assert "active" in product_data
-        assert "sub_type_display" in product_data
+    def test_shows_at_most_three_categories(self, manager, product):
+        from lfs.catalog.models import Category
 
-        # Check product data enrichment
-        assert product_data["product"] == product
-        assert "Test Category" in product_data["categories"]
-        assert product_data["price"] == 10.0
-        assert product_data["stock"] == 5
-        assert product_data["active"] is True
-        assert product_data["sub_type_display"] == PRODUCT_TYPE_LOOKUP.get(product.sub_type, product.sub_type)
+        for i in range(5):
+            product.categories.add(Category.objects.create(name=f"Category {i}", slug=f"category-{i}"))
 
-    def test_get_context_data_with_session_filters(self, rf, db, shop):
-        """Should apply filters from session."""
+        [row] = self.list_page(manager).context["products_with_data"]
 
-        # Create test data
-        product1 = Product.objects.create(name="Apple Product", slug="apple-product", sku="APP001", price=10.0)
-        product2 = Product.objects.create(name="Banana Product", slug="banana-product", sku="BAN001", price=20.0)
+        assert len(row["categories"].split(", ")) == 3
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {"product-filters": {"name": "Apple"}}
+    def test_applies_the_stored_filters(self, manager, shop):
+        apple = Product.objects.create(name="Apple Product", slug="apple-product")
+        Product.objects.create(name="Banana Product", slug="banana-product")
+        set_session(manager, **{"product-filters": {"name": "Apple"}})
 
-        view = ProductListView()
-        view.request = request
+        rows = self.list_page(manager).context["products_with_data"]
 
-        context = view.get_context_data()
+        assert [r["product"] for r in rows] == [apple]
 
-        # Should only include filtered products
-        products_with_data = context["products_with_data"]
-        assert len(products_with_data) == 1
-        assert products_with_data[0]["product"] == product1
-
-    def test_get_context_data_filter_service_exception_handling(self, rf, db, shop, mocker):
-        """Should handle filter service exceptions gracefully."""
-        # Create test data
-        Product.objects.create(name="Test Product", sku="TEST001", price=10.0)
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {"product-filters": {"name": "test"}}
-
-        # Mock filter service to raise exception
-        mock_filter_service = mocker.patch("lfs.manage.products.views.ProductFilterService")
-        mock_filter_service.return_value.filter_products.side_effect = Exception("Filter error")
-
-        view = ProductListView()
-        view.request = request
-
-        context = view.get_context_data()
-
-        # Should return empty queryset on exception
-        products_with_data = context["products_with_data"]
-        assert len(products_with_data) == 0
-
-    def test_get_context_data_pagination(self, rf, db, shop):
-        """Should paginate products correctly."""
-        from django.core.paginator import Paginator
-
-        # Create more products than page size (22)
-        products = []
+    def test_shows_22_products_per_page_newest_first(self, manager, shop):
+        now = timezone.now()
         for i in range(25):
-            product = Product.objects.create(
-                name=f"Product {i}", slug=f"product-{i}", sku=f"SKU{i:03d}", price=float(i + 1)
-            )
-            products.append(product)
+            product = Product.objects.create(name=f"Product {i}", slug=f"product-{i}")
+            Product.objects.filter(pk=product.pk).update(creation_date=now - timezone.timedelta(days=i))
 
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
+        first = self.list_page(manager).context["products_with_data"]
+        second = self.list_page(manager, "?page=2").context["products_with_data"]
 
-        view = ProductListView()
-        view.request = request
+        assert [r["product"].name for r in first] == [f"Product {i}" for i in range(22)]
+        assert [r["product"].name for r in second] == ["Product 22", "Product 23", "Product 24"]
 
-        context = view.get_context_data()
+    def test_lists_no_variants(self, manager, variant_product):
+        rows = self.list_page(manager).context["products_with_data"]
 
-        products_page = context["products_page"]
-        assert hasattr(products_page, "paginator")
-        assert isinstance(products_page.paginator, Paginator)
-        assert products_page.paginator.per_page == 22
-        assert len(products_page.object_list) == 22  # Should be paginated
+        assert [r["product"] for r in rows] == [variant_product.parent]
 
-    def test_get_context_data_pagination_with_page_param(self, rf, db, shop):
-        """Should handle page parameter correctly."""
-        # Create more products than page size
-        for i in range(25):
-            Product.objects.create(name=f"Product {i}", slug=f"product-page-{i}", sku=f"SKU{i:03d}", price=float(i + 1))
+    def test_filter_form_shows_the_stored_filters(self, manager, shop):
+        set_session(manager, **{"product-filters": {"name": "test name", "sku": "test sku", "status": "active"}})
 
-        factory = RequestFactory()
-        request = factory.get("/?page=2")
-        request.session = {}
+        form = self.list_page(manager).context["filter_form"]
 
-        view = ProductListView()
-        view.request = request
-
-        context = view.get_context_data()
-
-        products_page = context["products_page"]
-        assert products_page.number == 2
-        assert len(products_page.object_list) == 3  # Remaining products on page 2
-
-    def test_get_context_data_filter_form_creation(self, rf):
-        """Should create filter form with session data."""
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {
-            "product-filters": {
-                "name": "test name",
-                "sku": "test sku",
-                "sub_type": "standard",
-                "price_calculator": "price",
-                "status": "active",
-            }
-        }
-
-        view = ProductListView()
-        view.request = request
-
-        context = view.get_context_data()
-
-        filter_form = context["filter_form"]
-        assert isinstance(filter_form, ProductFilterForm)
-
-        # Check form is initialized with session data
-        assert filter_form.initial["name"] == "test name"
-        assert filter_form.initial["sku"] == "test sku"
-        assert filter_form.initial["sub_type"] == "standard"
-        assert filter_form.initial["price_calculator"] == "price"
-        assert filter_form.initial["status"] == "active"
-
-    def test_get_context_data_filter_form_exception_handling(self, rf, db, mocker):
-        """Should handle filter form creation exceptions gracefully."""
-        from lfs.manage.products.forms import ProductFilterForm
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {"product-filters": {"invalid": "data"}}
-
-        # Mock ProductFilterForm to raise exception only when called with initial data
-        original_form_class = ProductFilterForm
-        mock_form_instance = mocker.MagicMock()
-        mock_form_instance.initial = {}
-
-        def side_effect(*args, **kwargs):
-            if "initial" in kwargs:
-                raise Exception("Form error")
-            return mock_form_instance
-
-        mock_form = mocker.patch("lfs.manage.products.views.ProductFilterForm", side_effect=side_effect)
-
-        view = ProductListView()
-        view.request = request
-
-        context = view.get_context_data()
-
-        filter_form = context["filter_form"]
-        # Should be the mock instance created in except block
-        assert filter_form == mock_form_instance
-        assert filter_form.initial == {}
-
-    def test_get_context_data_no_session_filters(self, rf, db, shop):
-        """Should handle missing session filters gracefully."""
-        # Create test data
-        Product.objects.create(name="Test Product", sku="TEST001", price=10.0)
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        # No session attribute at all
-        request.session = {}
-
-        view = ProductListView()
-        view.request = request
-
-        context = view.get_context_data()
-
-        # Should use empty dict as default
-        assert context["product_filters"] == {}
-
-        # Should still process products
-        products_with_data = context["products_with_data"]
-        assert len(products_with_data) == 1
-
-    def test_get_context_data_product_ordering(self, rf, db, shop):
-        """Should order products by creation_date descending."""
-        from django.utils import timezone
-
-        # Create products with different creation dates
-        older_product = Product.objects.create(
-            name="Older Product",
-            slug="older-product",
-            sku="OLD001",
-            price=10.0,
-            creation_date=timezone.now() - timezone.timedelta(days=1),
+        assert (form.initial["name"], form.initial["sku"], form.initial["status"]) == (
+            "test name",
+            "test sku",
+            "active",
         )
-        newer_product = Product.objects.create(
-            name="Newer Product", slug="newer-product", sku="NEW001", price=20.0, creation_date=timezone.now()
-        )
-
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.session = {}
-
-        view = ProductListView()
-        view.request = request
-
-        context = view.get_context_data()
-
-        products_with_data = context["products_with_data"]
-        assert len(products_with_data) == 2
-        # Should be ordered by creation_date descending (newest first)
-        assert products_with_data[0]["product"] == newer_product
-        assert products_with_data[1]["product"] == older_product
