@@ -50,3 +50,21 @@ version = { attr = "lfs.__version__" }
 
 [tool.setuptools.packages.find]
 include = ["lfs*"]
+
+[dependency-groups]
+# The tools to run the tests: uv sync installs them, then run pytest.
+dev = [
+    "lfs-theme>=1.0,<2",
+    "pytest>=9.2,<10",
+    "pytest-django>=4.14,<5",
+    "pytest-mock>=3.17,<4",
+    "pytest-xdist>=3.8,<4",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+pythonpath = ["."]
+testpaths = ["lfs"]
+python_files = ["tests.py", "test_*.py"]
+python_classes = ["Test*", "*Test", "*TestCase", "*Tests"]
+addopts = "--ignore=lfs/manage/tests_e2e"
