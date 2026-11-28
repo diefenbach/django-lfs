@@ -6,12 +6,14 @@ import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages import get_messages
 from django.urls import reverse
-from portlets.models import PortletAssignment, PortletBlocking, Slot
+from portlets.models import PortletAssignment, PortletBlocking, PortletRegistration, Slot
 from portlets.utils import register_portlet
 
 from lfs.catalog.models import Category
 from lfs.page.models import Page
-from lfs.portlet.models import TextPortlet
+from lfs.core.utils import get_default_shop
+from lfs.manufacturer.models import Manufacturer
+from lfs.portlet.models import LatestPortlet, TextPortlet
 
 pytestmark = pytest.mark.django_db
 
@@ -20,6 +22,7 @@ pytestmark = pytest.mark.django_db
 def text_portlets():
     """Text portlets are registered and there are a left and a right slot."""
     register_portlet(TextPortlet, "Text")
+    register_portlet(LatestPortlet, "Latest")
     Slot.objects.get_or_create(name="Left")
     Slot.objects.get_or_create(name="Right")
 
@@ -114,16 +117,34 @@ class TestAdd:
         assert response["Location"] == reverse("lfs_manage_page_portlets", kwargs={"id": page.id})
         assert messages_of(response) == ["Portlet has been added."]
 
-    def test_a_category_returns_to_its_own_portlets_tab(self, manager):
-        lights = Category.objects.create(name="Lights", slug="lights")
+    @pytest.mark.parametrize("owner", ["category", "manufacturer", "shop"])
+    def test_returns_to_the_owners_own_portlets_tab(self, manager, owner: str):
+        if owner == "category":
+            obj = Category.objects.create(name="Lights", slug="lights")
+            tab = reverse("lfs_manage_category_portlets", kwargs={"id": obj.id})
+        elif owner == "manufacturer":
+            obj = Manufacturer.objects.create(name="Acme", slug="acme")
+            tab = reverse("lfs_manage_manufacturer_portlets", kwargs={"id": obj.id})
+        else:
+            obj, tab = get_default_shop(), reverse("lfs_manage_shop_portlets")
 
         response = manager.post(
-            reverse("lfs_add_portlet", kwargs=object_kwargs(lights)),
+            reverse("lfs_add_portlet", kwargs=object_kwargs(obj)),
             {"portlet_type": "textportlet", "slot": slot("Right").id, "portlet-title": "Tip"},
         )
 
-        assert titles(lights, "Right") == [("Tip", 10)]
-        assert response["Location"] == reverse("lfs_manage_category_portlets", kwargs={"id": lights.id})
+        assert titles(obj, "Right") == [("Tip", 10)]
+        assert response["Location"] == tab
+
+    def test_an_invalid_portlet_form_is_shown_again(self, manager, page):
+        response = manager.post(
+            reverse("lfs_add_portlet", kwargs=object_kwargs(page)),
+            {"portlet_type": "latestportlet", "slot": slot("Left").id, "portlet-limit": "many"},
+        )
+
+        assert response.context["form"].errors["limit"]
+        assert response.context["portlet_type_name"] == PortletRegistration.objects.get(type="latestportlet").name
+        assert not PortletAssignment.objects.exists()
 
     @pytest.mark.parametrize("portlet_type", ["user", "page", "nosuchportlet"])
     def test_only_registered_portlet_types_are_offered(self, manager, page, portlet_type: str):
@@ -136,6 +157,13 @@ class TestAdd:
         assert "Invalid portlet type." in shown.content.decode()
         assert "Invalid portlet type." in posted.content.decode()
         assert not PortletAssignment.objects.exists()
+
+    def test_a_deactivated_portlet_type_is_not_offered(self, manager, page):
+        PortletRegistration.objects.filter(type="textportlet").update(active=False)
+
+        response = manager.get(reverse("lfs_add_portlet", kwargs=object_kwargs(page)), {"portlet_type": "textportlet"})
+
+        assert "Invalid portlet type." in response.content.decode()
 
     def test_without_a_type_asks_for_one(self, manager, page):
         response = manager.get(reverse("lfs_add_portlet", kwargs=object_kwargs(page)))
@@ -155,6 +183,24 @@ class TestEditAndDelete:
         assert (pa.slot.name, pa.portlet.title, pa.portlet.text) == ("Right", "Hours", "9-5")
         assert response["Location"] == reverse("lfs_manage_page_portlets", kwargs={"id": page.id})
         assert messages_of(response) == ["Portlet has been saved."]
+
+    def test_an_invalid_edit_is_shown_again(self, manager, page):
+        pa = PortletAssignment.objects.create(
+            slot=slot("Left"), content=page, portlet=LatestPortlet.objects.create(title="New", limit=5), position=10
+        )
+
+        response = manager.post(
+            reverse("lfs_edit_portlet", kwargs={"portletassignment_id": pa.id}),
+            {"slot": slot("Right").id, "portlet-title": "New", "portlet-limit": "many"},
+        )
+
+        assert response.context["form"].errors["limit"]
+        assert PortletAssignment.objects.get(pk=pa.pk).slot == slot("Left")
+
+    def test_editing_an_unknown_portlet_shows_an_error(self, manager):
+        url = reverse("lfs_edit_portlet", kwargs={"portletassignment_id": 99999})
+
+        assert "Portlet not found." in manager.get(url, HTTP_HX_REQUEST="true").content.decode()
 
     def test_deletes_the_portlet_and_renumbers_the_slot(self, manager, page):
         assign(page, "A", position=10)
