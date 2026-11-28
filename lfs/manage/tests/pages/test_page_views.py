@@ -141,5 +141,19 @@ class TestRootPage:
 
         assert [name for name, _ in response.context["tabs"]] == ["portlets"]
 
+    def test_data_tab_leads_to_the_portlets(self, manager, root):
+        response = manager.get(reverse("lfs_manage_page", kwargs={"id": root.id}))
+
+        assert response["Location"] == reverse("lfs_manage_page_portlets", kwargs={"id": root.id})
+
+    @pytest.mark.parametrize("method", ["get", "post"])
+    def test_has_no_seo(self, manager, root, method: str):
+        response = getattr(manager, method)(
+            reverse("lfs_manage_page_seo", kwargs={"id": root.id}), {"meta_title": "X"} if method == "post" else {}
+        )
+
+        assert response.status_code == 403
+        assert Page.objects.get(pk=root.pk).meta_title != "X"
+
     def test_cannot_be_viewed_in_the_shop(self, manager, root):
         assert manager.get(reverse("lfs_page_view_by_id", kwargs={"id": root.id})).status_code == 404
