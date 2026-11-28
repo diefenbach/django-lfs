@@ -4,283 +4,166 @@
 Installation
 ============
 
-Prerequisites
-=============
-
-Make sure you have installed:
-
-* Python 2.6.x or 2.7.x
-* A RDBMS of your choice (PostgreSQL, MySQL, SQLite or Oracle)
-* libjpeg8-dev zlib1g-dev (for Image handling via Pillow)
-
-.. note::
-
-    Be prepared that we might abandon all other databases but PostgreSQL in one
-    of the next releases.
-
-Installation
+Requirements
 ============
 
-The installation is straightforward and should last just a few minutes. Please
-execute following steps:
+* Python 3.12 or newer
+* Django 5.2 (installed with django-lfs)
+* A database supported by Django. PostgreSQL is recommended for a shop in production; SQLite is fine to try LFS.
 
-#. Preferably create a virtualenv and activate it, e.g.::
+There are two ways to install LFS: start a new shop from the template lfs-starter (recommended), or add LFS to an
+existing Django project.
 
-   $ virtualenv lfs_env
+New shop with lfs-starter
+=========================
 
-#. Install django-lfs::
+`lfs-starter <https://github.com/diefenbach/lfs-starter>`_ is a ready Django project with LFS, the default theme
+and the standard add-ons. Its settings come from environment variables, so the same code runs locally and in
+production. It uses `uv <https://docs.astral.sh/uv/>`_::
 
-   $ pip install django-lfs
+    $ git clone https://github.com/diefenbach/lfs-starter.git myshop && cd myshop
+    $ cp .env.example .env
+    $ uv sync
+    $ uv run python manage.py migrate
+    $ uv run python manage.py lfs_init
+    $ uv run python manage.py createsuperuser
+    $ uv run python manage.py runserver
 
-#. If you not have an existing one, create a new project::
+Then open http://127.0.0.1:8000/ for the shop and http://127.0.0.1:8000/manage/dashboard/ for the management
+interface (log in with the superuser). Without ``POSTGRES_DB`` in ``.env`` the shop uses SQLite.
 
-   $ django-admin startproject <your-projectname>
+Optional add-ons such as PayPal or Stripe are extras of the project, for example ``uv sync --extra stripe``. The
+`README of lfs-starter <https://github.com/diefenbach/lfs-starter#readme>`_ lists them and the settings for
+production.
 
-#. Add the following urls to your project's ``urls.py`` file::
+Add LFS to an existing Django project
+=====================================
 
-    import django.views.static
-    from django.conf import settings
-    from django.conf.urls import include
+#. Install LFS and a theme::
 
-    url(r'', include('lfs.core.urls')),
-    url(r'^manage/', include('lfs.manage.urls')),
-    url(r'^reviews/', include('reviews.urls')),
-    url(r'^media/(?P<path>.*)$', django.views.static.serve, {'document_root': settings.MEDIA_ROOT}),
+    $ pip install django-lfs lfs-theme
 
-#. Add the following settings to your project's ``settings.py`` file::
+#. Put the theme and the apps LFS needs into ``INSTALLED_APPS``. ``LFS_APPS`` contains the Django apps, LFS, and
+   the packages LFS depends on, in an order that works. The theme goes first, so its templates win::
 
-    # Django
-    from django.utils.translation import gettext_lazy as _
+    from lfs.settings import LFS_APPS
 
     INSTALLED_APPS = [
-        'lfs_theme',
-        ...
-        'django.contrib.redirects',
-        'django.contrib.sites',
-        'compressor',
-        'lfs.addresses',
-        'lfs.caching',
-        'lfs.cart',
-        'lfs.catalog',
-        'lfs.checkout',
-        'lfs.core',
-        'lfs.criteria',
-        'lfs.customer',
-        'lfs.customer_tax',
-        'lfs.discounts',
-        'lfs.export',
-        'lfs.gross_price',
-        'lfs.mail',
-        'lfs.manage',
-        'lfs.marketing',
-        'lfs.manufacturer',
-        'lfs.net_price',
-        'lfs.order',
-        'lfs.page',
-        'lfs.payment',
-        'lfs.portlet',
-        'lfs.search',
-        'lfs.shipping',
-        'lfs.supplier',
-        'lfs.tax',
-        'lfs.tests',
-        'lfs.utils',
-        'lfs.voucher',
-        'lfs_contact',
-        'lfs_order_numbers',
-        'lfs_paypal',
-        'localflavor',
-        'paypal.standard.ipn',
-        'portlets',
-        'postal',
-        'reviews',
+        "lfs_theme",
+        *LFS_APPS,
+        # LFS add-ons and your own apps
     ]
 
-    AUTHENTICATION_BACKENDS = (
-        'lfs.customer.auth.EmailBackend',
-        'django.contrib.auth.backends.ModelBackend',
-    )
+#. Add the settings LFS relies on::
 
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR + '/media'
-
-    SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
+    AUTHENTICATION_BACKENDS = [
+        "lfs.customer.auth.EmailBackend",
+        "django.contrib.auth.backends.ModelBackend",
+    ]
+    LOGIN_URL = "/login/"
+    LOGIN_REDIRECT_URL = "/manage/dashboard/"
 
     SITE_ID = 1
+    SESSION_SERIALIZER = "lfs.core.pickle_serializer.PickleSerializer"
 
-    STATICFILES_FINDERS = (
-        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-        'compressor.finders.CompressorFinder',
-    )
+    STATICFILES_FINDERS = [
+        "django.contrib.staticfiles.finders.FileSystemFinder",
+        "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+        "compressor.finders.CompressorFinder",
+    ]
+    STATIC_ROOT = BASE_DIR / "static"
+    MEDIA_URL = "media/"
+    MEDIA_ROOT = BASE_DIR / "media"
 
-    STATIC_URL = '/static/'
-    STATIC_ROOT = BASE_DIR + "/sitestatic"
+    CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+    CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-    # Please note that ``lfs.core.context_processors.main`` has been added
+   and the context processor ``lfs.core.context_processors.main`` to ``TEMPLATES``::
+
     TEMPLATES = [
         {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'context_processors': [
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.request',
-                    'django.contrib.auth.context_processors.auth',
-                    'django.contrib.messages.context_processors.messages',
-                    'lfs.core.context_processors.main',
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [],
+            "APP_DIRS": True,
+            "OPTIONS": {
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                    "django.contrib.auth.context_processors.auth",
+                    "django.contrib.messages.context_processors.messages",
+                    "lfs.core.context_processors.main",
                 ],
             },
         },
     ]
 
-    # LFS
-    # see https://docs.django-lfs.com/developer/settings.html for more
-    LFS_AFTER_ADD_TO_CART = "lfs_added_to_cart"
-    LFS_RECENT_PRODUCTS_LIMIT = 5
+   LFS has defaults for its own settings (price calculators, units, criteria, ...), so you set only those you want
+   to change, for example ``LFS_CURRENCY = "EUR"``; see :doc:`/developer/settings`.
 
-    LFS_CRITERIA = [
-        ["lfs.criteria.models.CartPriceCriterion", _(u"Cart Price")],
-        ["lfs.criteria.models.CombinedLengthAndGirthCriterion", _(u"Combined Length and Girth")],
-        ["lfs.criteria.models.CountryCriterion", _(u"Country")],
-        ["lfs.criteria.models.HeightCriterion", _(u"Height")],
-        ["lfs.criteria.models.LengthCriterion", _(u"Length")],
-        ["lfs.criteria.models.WidthCriterion", _(u"Width")],
-        ["lfs.criteria.models.WeightCriterion", _(u"Weight")],
-        ["lfs.criteria.models.ShippingMethodCriterion", _(u"Shipping Method")],
-        ["lfs.criteria.models.PaymentMethodCriterion", _(u"Payment Method")],
+#. Add the URLs to the project's ``urls.py``::
+
+    from django.conf import settings
+    from django.conf.urls.static import static
+    from django.contrib import admin
+    from django.urls import include, path
+
+    urlpatterns = [
+        path("", include("lfs.core.urls")),
+        path("manage/", include("lfs.manage.urls")),
+        path("admin/", admin.site.urls),
+        path("reviews/", include("reviews.urls")),
+        path("captcha/", include("captcha.urls")),
+        path("theme/", include("lfs_theme.urls")),
     ]
 
-    LFS_ORDER_NUMBER_GENERATOR = "lfs_order_numbers.models.OrderNumberGenerator"
+    if settings.DEBUG:
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    LFS_INVOICE_COMPANY_NAME_REQUIRED = False
-    LFS_INVOICE_EMAIL_REQUIRED = True
-    LFS_INVOICE_PHONE_REQUIRED = True
+#. Create the tables, the shop, and a user for the management interface, then start the development server::
 
-    LFS_SHIPPING_COMPANY_NAME_REQUIRED = False
-    LFS_SHIPPING_EMAIL_REQUIRED = False
-    LFS_SHIPPING_PHONE_REQUIRED = False
+    $ python manage.py migrate
+    $ python manage.py lfs_init
+    $ python manage.py createsuperuser
+    $ python manage.py runserver
 
-    LFS_PAYMENT_METHOD_PROCESSORS = [
-        ["lfs_paypal.processor.PayPalProcessor", _(u"PayPal")],
-    ]
+#. Open http://127.0.0.1:8000/ for the shop and http://127.0.0.1:8000/manage/dashboard/ for the management
+   interface.
 
-    LFS_PRICE_CALCULATORS = [
-        ['lfs.gross_price.calculator.GrossPriceCalculator', _(u'Price includes tax')],
-        ['lfs.net_price.calculator.NetPriceCalculator', _(u'Price excludes tax')],
-    ]
+.. _installation_addons:
 
-    LFS_SHIPPING_METHOD_PRICE_CALCULATORS = [
-        ["lfs.shipping.calculator.GrossShippingMethodPriceCalculator", _(u'Price includes tax')],
-        ["lfs.shipping.calculator.NetShippingMethodPriceCalculator", _(u'Price excludes tax')],
-    ]
+Add-ons
+=======
 
-    LFS_UNITS = [
-        _(u"l"),
-        _(u"m"),
-        _(u"cm"),
-        _(u"lfm"),
-        _(u"Package(s)"),
-        _(u"Piece(s)"),
-    ]
-    LFS_PRICE_UNITS = LFS_BASE_PRICE_UNITS = LFS_PACKING_UNITS = LFS_UNITS
+Each add-on is a package of its own. Install it, add its app to ``INSTALLED_APPS`` after ``*LFS_APPS``, include its
+URLs if it has any, and run ``python manage.py migrate``. The add-on's README names its settings and URLs; the
+``urls.py`` of lfs-starter shows them all.
 
-    # Paypal
-    LFS_PAYPAL_REDIRECT = True
-    PAYPAL_RECEIVER_EMAIL = "info@yourbusiness.com"
-    PAYPAL_IDENTITY_TOKEN = "set_this_to_your_paypal_pdt_identity_token"
+=================== ======================== =========================================================
+Package             App                      Purpose
+=================== ======================== =========================================================
+lfs-paypal          ``lfs_paypal``           Payment with PayPal
+lfs-stripe          ``lfs_stripe``           Card payment with Stripe
+lfs-bulk-prices     ``lfs_bulk_prices``      Price tiers by quantity
+lfs-canonical       ``lfs_canonical``        Canonical URLs
+lfs-cookie-consent  ``lfs_cookie_consent``   Cookie consent banner
+lfs-gtm             ``lfs_gtm``              Google Tag Manager with Consent Mode (needs lfs-cookie-consent)
+lfs-carousel        ``lfs_carousel``         Image carousel
+lfs-samples         ``lfs_samples``          Product samples
+=================== ======================== =========================================================
 
-    # Reviews
-    # see http://django-reviews.readthedocs.io/en/latest/#settings for more
-    REVIEWS_SHOW_PREVIEW = False
-    REVIEWS_IS_NAME_REQUIRED = False
-    REVIEWS_IS_EMAIL_REQUIRED = False
-    REVIEWS_IS_MODERATED = False
+Production
+==========
 
-Optionally you might add::
-
-    # Django
-    # see https://docs.djangoproject.com/en/1.10/topics/cache/ for more.
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        },
-    }
-
-    # Compressor
-    # see http://django-compressor.readthedocs.io/en/latest/settings/ for more
-    COMPRESS_CSS_FILTERS = [
-        'compressor.filters.css_default.CssAbsoluteFilter',
-        'compressor.filters.cssmin.CSSCompressorFilter',
-    ]
-    COMPRESS_ENABLED = True
-    COMPRESS_OFFLINE = True
-
-#. $ python manage.py migrate
-
-#. $ python manage.py lfs_init
-
-#. $ python manage.py runserver
-
-#. Browse to http://localhost:8000
-
-.. note::
-
-    If you encounter problems, please see :ref:`trouble shooting
-    <trouble_shooting_installation>`.
-
-.. note::
-
-    If you're setting up a production environment then you should not use Django's builtin development
-    server (bin/django runserver). Instead, you'll probably want to use uWsgi or Gunicorn servers.
-    Check Django (and uWsgi/Gunicorn) documentation for details.
-
-.. note::
-
-    For production environments you're supposed to change robots.txt file (otherwise bots/crawlers like google bot will
-    not be allowed to scan your site, which is not what you probably want). Default version of robots.txt is located
-    at lfs_theme application: templates/lfs/shop/robots.txt.
-    You should create your own 'mytheme' app with structure like:
-    templates/lfs/shop/robots.txt and place it in settings.INSTALLED_APPS before(!) 'lfs_theme'. Also note, that in
-    production environment it is good to serve robots.txt directly from HTTP server like nginx or Apache.
-
-Migration from version 0.9 to version 0.10 and higher
-=====================================================
-
-Migration starting from 0.10 is based on Django’s default migrations, see:
-https://docs.djangoproject.com/en/1.8/topics/migrations/
-
-#. Install the new LFS version
-
-#. Backup your existing database
-
-#. Enter your existing database to lfs_project/settings.py
-
-#. $ bin/django migrate
-
-Migration from versions 0.5 - 0.8 to version 0.10
-=================================================
-
-Migrations from 0.5 - 0.8 to version 0.10 needs an intermediate step through
-version 0.9.
-
-Migration from versions 0.5 - 0.8 to version 0.9
-================================================
-
-Migration from versions 0.5 - 0.8 to version 0.9 can be done with a migration command (``lfs_migrate``)
-which migrates existing databases up to version 0.9.
-
-#. Install the 0.9
-
-#. Backup your existing database
-
-#. Enter your existing database to lfs_project/settings.py
-
-#. $ bin/django syncdb
-
-#. $ bin/django lfs_migrate
+* Set ``DEBUG = False``, a secret ``SECRET_KEY``, ``ALLOWED_HOSTS`` and ``CSRF_TRUSTED_ORIGINS``, and an e-mail
+  server: the shop sends the order mails.
+* Use PostgreSQL and add ``django.contrib.postgres`` to ``INSTALLED_APPS``; the search then ignores accents.
+* Run ``python manage.py collectstatic`` on every deployment.
+* Run the project with an application server such as gunicorn behind a web server (nginx, Caddy) that terminates
+  HTTPS and serves the static and uploaded files. Do not use ``runserver`` in production.
+* The theme's ``robots.txt`` is the template ``lfs/shop/robots.txt``. To change it, put a template with the same path
+  into your project's templates or your own theme.
 
 What's next?
 ============
 
-Move on to :doc:`getting_started`.
+Move on to :doc:`getting_started`. If you upgrade an existing shop, read :doc:`upgrade_notes` first.

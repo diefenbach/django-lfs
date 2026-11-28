@@ -4,155 +4,127 @@
 Getting Started
 ===============
 
-This document explains the first steps after the shop has been installed. For
-the installation process please refer to :doc:`/introduction/installation`. If
-you want to know more about single data fields within the forms below, you can
-just click on the ``Help`` menu, which opens the context aware help.
+This document explains the first steps after the shop has been installed (see :doc:`/introduction/installation`).
+It leads from an empty shop to a first product that customers can buy.
+
+``lfs_init`` has already created the shop with a delivery time, a shipping method ``Standard``, the payment methods
+``Direct debit``, ``Cash on delivery`` and ``Prepayment``, the pages ``Terms and Conditions`` and ``Imprint``, and the country ``USA``.
+
+Log In
+======
+
+#. Browse to http://127.0.0.1:8000/manage/dashboard/.
+
+#. Log in with the user you created with ``createsuperuser``.
+
+The menu at the top leads to all parts of the management interface: ``Shop``, ``Catalog``, ``Properties``,
+``HTML``, ``Customers``, ``Marketing`` and ``Utils``.
+
+Add Countries
+=============
+
+The shop offers only the countries that exist in the database; ``lfs_init`` creates ``USA``. Add the countries you
+sell to in Django's admin:
+
+#. Browse to http://127.0.0.1:8000/admin/ and go to ``Core / Countries``.
+
+#. Click ``Add country``, enter the ``Country code`` (ISO 3166, for instance ``DE``) and the ``Name``, and save.
 
 Enter Shop Preferences
 ======================
 
-#. Browse http://localhost:8000/manage.
+#. Go to ``Shop / Preferences``. The ``Data`` tab opens.
 
-#. Login, if you aren't yet.
+#. Enter the ``Name``. This is the name of the shop, for instance ``ACME Inc``, which is used in several places,
+   e.g. as part of the meta title of all HTML pages.
 
-#. Browse to ``Shop / Preferences``.
+#. Enter the ``Shop owner``. This is the full name of the shop owner.
 
-#. Go to the ``Shop`` tab.
+#. Enter the ``From e-mail address``. This address is the sender of all e-mails the shop sends, e.g. the order
+   confirmation to the customer.
 
-#. Enter the ``Name``. This is the name of the shop, for instance ``ACME Inc``
-   which is used on several places, e.g. as part of the meta title of all HTML
-   pages.
+#. Enter the ``Notification email addresses``. All notifications go to these addresses, for example when an order
+   has been submitted.
 
-#. Enter the ``Shop Owner``. This is the full name of the shop owner.
-
-#. Enter ``From E-mail Address``. This e-mail address is used as sender for all
-   e-mails which are sent from the shop, e.g. the order confirmation mail to the
-   shop customer.
-
-#. Enter ``Notification E-Mail Addresses``. To this addresses all notification
-   messages will be sent. For example, if an order has been submitted.
-
-#. Click on the ``Save Shop`` button.
+#. Click ``Save Shop Data``.
 
 #. Go to the ``Default Values`` tab.
 
-#. Select the default ``Price Calculator:``. This is the default for all
-   products, if the price calculator is not explicitly selected on a product.
+#. Select the ``Price calculator``. This is the default for all products that do not select one themselves.
 
-#. Select ``Invoice Countries`` and ``Shipping Countries``. All selected
-   countries will be available to the shop customers for selection.
+#. Select the ``Invoice countries`` and ``Shipping countries``. Customers can choose from these in the checkout.
 
-#. Select ``Default Country``. This country will be preselected as default
-   country.
+#. Select the ``Default shipping country``. It is preselected in the checkout.
 
-#. Click on the ``Save Default Values`` button.
+#. Click ``Save Default Values``.
 
 Add Product Taxes
 =================
 
-#. Go to ``Shop / Product Taxes`` and click on the ``Add Product Tax`` button.
+#. Go to ``Shop / Product Taxes`` and click ``Create Your First Tax``.
 
-#. Enter the ``Rate`` (in percentage), for instance 19.0.
+#. Enter the ``Rate`` in percent, for instance 19.0.
 
-#. Click on the ``Add Tax`` button.
+#. Click ``Add Tax``.
 
-#. You can add more taxes by clicking on the ``Add Product Tax`` site action
-   and executing steps 2 to 3.
+Check the Delivery Time
+=======================
 
-Add Delivery Times
-==================
+#. Go to ``Shop / Delivery Times``. ``lfs_init`` has created a delivery time of 1 to 2 days.
 
-#. Go to ``Shop / Delivery Times`` and click on the ``Add Delivery Time``
-   button.
-
-#. Enter ``Min``, the minimal delivery time.
-
-#. Enter ``Max``, the maximal delivery time.
-
-#. Enter the ``Unit`` of this delivery time.
-
-#. Click on the ``Add Delivery Time`` button.
-
-#. You can add more delivery times by clicking on ``Add delivery time`` link and
-   executing steps 2 to 3.
+#. Change ``Min``, ``Max`` and ``Unit`` if your delivery takes longer, and click ``Save``.
 
 Add Categories
 ==============
 
-#. Now go to ``Catalog / Categories``.
+#. Go to ``Catalog / Categories`` and click ``Create Your First Category``.
 
-#. Click on the ``Add Category`` button.
+#. Enter a ``Name`` and a ``Slug``. The slug is the part of the URL, for instance ``chairs``.
 
-#. Enter a ``name`` and a ``slug``.
+#. Click ``Add Category``. The ``Data`` tab of the new category opens.
 
-#. Click on the ``Add Category`` button.
+#. Enter a ``Description``. It is displayed on the page of the category.
 
-#. Go to the ``Data`` tab.
-
-#. Enter a ``Description``. This will be displayed within the detail view of
-   a category.
-
-#. Click on the ``Save Data`` button.
+#. Click ``Save Category Data``.
 
 #. Go to the ``View`` tab.
 
-#. Select the ``Category Template``, In this case ``Category with Products``
-   which means the assigned products of the category will be displayed.
+#. Select the ``Category template``, in this case ``Category with products``, which displays the products assigned
+   to the category.
 
-#. Click on the ``Save View`` button.
+#. Click ``Save View Settings``.
 
 Add Products
 ============
 
-#. Now go to ``Catalog / Products`` and click on the ``Add Product`` button.
+#. Go to ``Catalog / Products`` and click ``Create Your First Product``.
 
-#. Enter ``name`` and a ``slug``.
+#. Enter a ``Name`` and a ``Slug`` and click ``Add Product``. The ``Data`` tab of the new product opens.
 
-#. Click on the ``Add Product`` button.
+#. Enter the ``SKU`` of the product. This is the unique id of the product, taken from your ERP for instance.
 
-#. Go to the ``Data`` tab
+#. Enter the ``Price`` and select the ``Tax``.
 
-#. Enter the ``SKU`` of the product. This is the unique id of the product - taken
-   from your ERP for instance.
+#. Enter a ``Short description``. It is displayed in overviews, e.g. when a category lists its products.
 
-#. Enter the ``Price`` of the product.
+#. Enter a ``Description``. It is displayed on the page of the product.
 
-#. Enter a ``Short Description``. This will be displayed when the product is
-   displayed within a overview, e.g. when a category displays it's assigned
-   products.
+#. Check ``Active``. Only active products are displayed to customers.
 
-#. Enter a ``Description``. This will be displayed within the detail view of
-   a product.
+#. Click ``Save Product Data``.
 
-#. Click on the ``Save Data`` button.
+#. Go to the ``Categories`` tab, select the category from above, and click ``Save Categories``.
 
-#. Go to the ``Categories`` tab
+#. Go to the ``Images`` tab, choose the images of the product, and click ``Upload images``.
 
-#. Select the above entered category and click ``Save Categories``.
+#. Click ``View Product`` to see the product in the shop.
 
-#. Go to the ``Images`` tab
+Set the Currency
+================
 
-#. Click ``Choose Files``, browse to your images and select all images you want
-   to upload. You will see an upload indicator and all images will be uploaded.
-
-#. Go back to the ``Data`` tab
-
-#. Check the ``Active`` check box. Only active products are displayed to the
-   customers.
-
-#. Click on the ``Save Data`` button.
-
-#. Click on ``Goto Product`` to visit the new product.
-
-Set Currency
-============
-
-In Django's settings set the currency you want with
+The currency is a setting of the project, the default is ``EUR``::
 
     LFS_CURRENCY = "USD"
-
-The default value is "EUR".
 
 What's Next?
 ============
@@ -175,4 +147,4 @@ What's Next?
 
 * :ref:`Manage stock information <products_management_stock>`.
 
-* Add some portlets to your shop and/or categories.
+* Edit the pages ``Terms and Conditions`` and ``Imprint`` under ``HTML / Pages`` before the shop goes live.

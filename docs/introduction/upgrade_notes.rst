@@ -3,7 +3,48 @@
 =============
 Upgrade notes
 =============
-Below is a description of changes that are useful to know about when upgrading LFS to newer version
+
+Below is a description of changes that are useful to know about when upgrading LFS to a newer version. The full
+list of changes is in ``HISTORY.txt``.
+
+Upgrading from 0.x to 1.0
+=========================
+
+LFS 1.0 needs Python 3.12 or newer and Django 5.2. It is an installable package with declared dependencies; the
+theme and several add-ons are packages of their own.
+
+#. Back up the database and try the upgrade on a copy first.
+
+#. Install the new packages: ``django-lfs``, a theme (``lfs-theme`` or your own), and the add-ons the shop uses,
+   for example ``lfs-paypal`` or ``lfs-bulk-prices`` (see :ref:`the list of add-ons <installation_addons>`).
+   portlets, reviews, postal, contact form, and order numbers are now django-portlets 2, django-reviews 2,
+   lfs-postal 1, lfs-contact 2, and lfs-order-numbers 2; django-lfs installs them.
+
+#. Replace the list of LFS apps in ``INSTALLED_APPS`` with ``*LFS_APPS`` from ``lfs.settings``, keep the theme
+   before it and the add-ons after it. Compare the result with your old list: apps you added yourself stay.
+
+#. Remove the LFS settings that match the defaults (price calculators, units, criteria, order number generator);
+   ``lfs.settings.DEFAULTS`` lists them. Keep only those you changed.
+
+#. Update the Django settings that changed with Django 5.2 and LFS 1.0:
+
+   * ``SESSION_SERIALIZER = "lfs.core.pickle_serializer.PickleSerializer"`` (Django no longer ships a pickle
+     serializer).
+   * ``CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"`` and ``CRISPY_TEMPLATE_PACK = "bootstrap5"``.
+   * URLs with ``path()`` instead of ``url()``; the theme needs ``path("theme/", include("lfs_theme.urls"))`` and
+     the captcha ``path("captcha/", include("captcha.urls"))``.
+
+   :doc:`installation` shows the complete settings and URLs.
+
+#. Set the settings that your add-ons need in their new versions; each add-on's README lists them.
+
+#. Run ``python manage.py migrate``. Migrations no longer depend on the shop's settings.
+
+#. Review the templates that override LFS templates, above all those of the management interface: it has been
+   rewritten with Bootstrap 5 and htmx.
+
+#. Check the shop on the copy before you switch: prices, shipping costs, the checkout with every payment method,
+   the order mails, and the management interface.
 
 
 Upgrading from 0.7.x to 0.8.x
@@ -41,3 +82,10 @@ This is not full reference of changes but at least some of them are described:
 * modified mimetype returned by ajax calls to: application/json. This requireS changes in javascript ajax calls:
   lfs.js, lfs.manage.js, lfs_tinymce.js, manage/product/attachments.html(!)
 * moved javascript code from manage/product/images.html to lfs.manage.product.js and updated to use proper mimetypes in responses
+
+Older versions
+==============
+
+* From 0.9 to 0.10 and higher: LFS uses Django's migrations; back up the database, install the new version, and
+  run ``migrate``.
+* From 0.5 – 0.8: upgrade to 0.9 first with its command ``lfs_migrate``, then continue as above.
