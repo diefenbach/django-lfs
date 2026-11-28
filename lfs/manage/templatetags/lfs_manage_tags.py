@@ -27,7 +27,7 @@ TAB_LABELS = {
 
 @register.filter
 def tab_label(key: str) -> str:
-    """Return the translated label of the tab ``key``; an unknown key is shown capitalised and translated if possible."""
+    """Return the translated label of the tab ``key``; an unknown key is capitalised and translated if possible."""
     label = TAB_LABELS.get(key)
     return str(label) if label is not None else gettext(key.replace("_", " ").capitalize())
 
