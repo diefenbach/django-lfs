@@ -1,5 +1,5 @@
 {% extends "manage/base.html" %}
-{% load compress i18n static %}
+{% load compress i18n static lfs_manage_tags %}
 
 {% block help_link %}user/management/shop/images.html{% endblock %}
 
@@ -17,7 +17,7 @@
                 <div class="d-flex justify-content-between fw-semibold">
                     <nav aria-label="Breadcrumb" class="me-2 mb-3">
                         <ol class="breadcrumb mb-0 small">
-                            <li class="breadcrumb-item">Manage</li>
+                            <li class="breadcrumb-item">{% translate "Manage" context "breadcrumb" %}</li>
                             <li class="breadcrumb-item active" aria-current="page">{% trans "Images" %}</li>
                         </ol>
                     </nav>
@@ -31,7 +31,7 @@
                             role="tab"
                             aria-controls="{{ key }}-content"
                             aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
-                                {% trans key|title %}
+                                {{ key|tab_label }}
                             </a>
                         </li>
                     {% endfor %}

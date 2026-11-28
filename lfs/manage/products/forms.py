@@ -287,7 +287,7 @@ class ProductDataForm(forms.ModelForm):
             "base_price_amount",
         )
 
-    active_base_price = forms.IntegerField(required=False)
+    active_base_price = forms.IntegerField(label=_("Active base price"), required=False)
 
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
@@ -366,7 +366,7 @@ class VariantDataForm(forms.ModelForm):
             "base_price_amount",
         )
 
-    active_base_price = forms.IntegerField(required=False)
+    active_base_price = forms.IntegerField(label=_("Active base price"), required=False)
 
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)

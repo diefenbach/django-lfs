@@ -1,5 +1,5 @@
 {% extends "manage/base.html" %}
-{% load i18n static crispy_forms_tags %}
+{% load i18n static crispy_forms_tags lfs_manage_tags %}
 
 {% block help_link %}user/management/shop/preferences.html{% endblock %}
 {% block section %}manage-shop{% endblock %}
@@ -11,8 +11,8 @@
                     <div class="d-flex justify-content-between fw-semibold">
                         <nav aria-label="Breadcrumb" class="me-2 mb-4">
                             <ol class="breadcrumb mb-0 small">
-                                <li class="breadcrumb-item">Manage</li>
-                                <li class="breadcrumb-item active" aria-current="page">Shop Settings</li>
+                                <li class="breadcrumb-item">{% translate "Manage" context "breadcrumb" %}</li>
+                                <li class="breadcrumb-item active" aria-current="page">{% translate "Shop Settings" %}</li>
                             </ol>
                         </nav>                                
                     </div>
@@ -25,13 +25,7 @@
                                 role="tab"
                                 aria-controls="{{ key }}-content"
                                 aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
-                                    {% if key == "data" %}{% trans "Data" %}
-                                    {% elif key == "default_values" %}{% trans "Default Values" %}
-                                    {% elif key == "order_numbers" %}{% trans "Order Numbers" %}
-                                    {% elif key == "seo" %}{% trans "SEO" %}
-                                    {% elif key == "portlets" %}{% trans "Portlets" %}
-                                    {% elif key == "carousel" %}Karussell
-                                    {% else %}{% trans key|title %}{% endif %}
+                                    {{ key|tab_label }}
                                 </a>
                             </li>
                         {% endfor %}
