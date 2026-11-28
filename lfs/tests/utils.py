@@ -1,8 +1,16 @@
+import importlib.util
+import unittest
+from collections.abc import Callable
 from io import StringIO
 
 from django.contrib.sessions.backends.file import SessionStore
 from django.core.handlers.wsgi import WSGIRequest
 from django.test import Client
+
+
+def requires_addon(module: str) -> Callable:
+    """Skip the decorated test unless the optional add-on ``module`` (e.g. ``lfs_gtm``) is installed."""
+    return unittest.skipUnless(importlib.util.find_spec(module), f"needs the {module} add-on")
 
 
 class DummySession(object):

@@ -12,6 +12,7 @@ from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import BY_INVOICE
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
+from lfs.tests.utils import requires_addon
 
 
 class BeginCheckoutTrackingTestCase(TestCase):
@@ -75,6 +76,7 @@ class BeginCheckoutTrackingTestCase(TestCase):
         cart = Cart.objects.create(user=user)
         CartItem.objects.create(cart=cart, product=p1, amount=1)
 
+    @requires_addon("lfs_gtm")
     def test_addresses_get_renders_begin_checkout_from_session(self):
         session = self.client.session
         session["begin_checkout_tracking"] = {

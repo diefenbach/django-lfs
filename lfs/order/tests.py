@@ -24,7 +24,7 @@ from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
-from lfs.tests.utils import RequestFactory
+from lfs.tests.utils import RequestFactory, requires_addon
 from lfs.discounts.models import Discount
 
 
@@ -238,6 +238,7 @@ class OrderTestCase(TestCase):
     def test_order_to_tracking_snapshot_returns_none_without_order(self):
         self.assertIsNone(order_to_tracking_snapshot(None))
 
+    @requires_addon("lfs_gtm")
     def test_thank_you_pushes_purchase_and_clears_session(self):
         order = add_order(self.request)
 

@@ -16,7 +16,7 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.utils import get_display_product
 from lfs.catalog.utils import product_to_tracking_snapshot
-from lfs.tests.utils import RequestFactory
+from lfs.tests.utils import RequestFactory, requires_addon
 
 
 class ProductTrackingUtilsTestCase(TestCase):
@@ -144,6 +144,7 @@ class ProductViewItemTrackingTestCase(TestCase):
         self.parent.default_variant = self.variant
         self.parent.save()
 
+    @requires_addon("lfs_gtm")
     def test_product_view_renders_view_item(self):
         response = self.client.get(reverse("lfs_product", kwargs={"slug": "parent-track"}))
         self.assertEqual(response.status_code, 200)
