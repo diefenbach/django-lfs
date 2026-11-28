@@ -139,13 +139,6 @@ class PageDataView(PermissionRequiredMixin, PageTabMixin, UpdateView):
     def form_valid(self, form):
         """Saves and shows success message."""
         # Handle file deletion if checkbox is checked
-        if self.request.POST.get("delete_file"):
-            page = self.get_object()
-            if page.file:
-                page.file.delete()
-                page.file = None
-                page.save()
-
         response = super().form_valid(form)
         messages.success(self.request, _("Page has been saved."))
         return response
