@@ -21,12 +21,11 @@ The features are listed on the website: https://django-lfs.com/#features.
 How To Read This Documentation
 ==============================
 
-You should start with the :ref:`concepts of LFS <index_users_concepts>` to get
-an overview what it can do and what not. After that you might go through the
-:ref:`getting started tutorial <getting_started>`. Once you have done this you
-could try to enter the data you like. When you get stuck, look into the
-:ref:`how-tos for users <index_users_howtos>` or refer to the
-:ref:`management interface reference <index_users_management_interface>`.
+Start with the :doc:`installation <installation>`, then follow :ref:`getting started <getting_started>` from an
+empty shop to a first product. The :ref:`concepts of LFS <index_users_concepts>` explain what it can do and what not.
+When you get stuck, look into the :ref:`how-tos for users <index_users_howtos>` or the
+:ref:`management interface reference <index_users_management_interface>`. Upgrading an existing shop is described
+in the :doc:`upgrade notes <upgrade_notes>`.
 
 Information
 ===========
