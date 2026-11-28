@@ -80,17 +80,20 @@ Requirements
 Installation
 ============
 
-The quickest start is `lfs-starter <https://github.com/diefenbach/lfs-starter>`_:
-a ready Django project with LFS, the default theme and the standard add-ons,
-configured through environment variables.
+To try LFS, start the demo shop with `Docker <https://www.docker.com/>`_::
 
-To add LFS to an existing Django project::
+    docker run --rm -p 8000:8000 ghcr.io/diefenbach/lfs
 
-    pip install django-lfs
+Then open http://localhost:8000/ for the shop and
+http://localhost:8000/manage/dashboard/ for the management interface (user
+``admin``, password ``admin``). The image is for trying LFS only; see
+`lfs-docker <https://github.com/diefenbach/lfs-docker>`_.
 
-Then put the apps of ``lfs.settings.LFS_APPS`` into ``INSTALLED_APPS``, add a
-theme such as ``lfs_theme`` before them, and include the URLs of ``lfs.core``
-and ``lfs.manage``. The steps are described in
+For a real shop start from
+`lfs-starter <https://github.com/diefenbach/lfs-starter>`_: a ready Django
+project with LFS, the default theme and the standard add-ons, configured
+through environment variables. To add LFS to an existing Django project
+instead, follow
 `docs/introduction/installation.rst <docs/introduction/installation.rst>`_.
 
 Documentation
