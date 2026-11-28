@@ -47,7 +47,7 @@ def get_topseller(limit=5):
     cache_key = "%s-topseller" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
     topseller = cache.get(cache_key)
     if topseller is not None:
-        return topseller
+        return topseller[:limit]
 
     products = []
     for explicit_ts in Topseller.objects.all():

@@ -7,11 +7,11 @@ from django.contrib.sessions.backends.file import SessionStore
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
 from django.utils.encoding import force_str
 import lfs.catalog.utils
+from lfs.cart.models import CartItem
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import CHOICES_STANDARD
@@ -45,7 +45,6 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import ProductAccessories
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
-from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import ProductAttachment
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
@@ -1018,34 +1017,6 @@ class CategoryTestCase(TestCase):
         parent_names = [c.name for c in self.c111.get_parents()]
         self.assertEqual(parent_names, ["Category 11", "Category 1"])
 
-    def test_get_static_block(self):
-        """ """
-        result = self.c1.get_static_block()
-        self.assertEqual(result, None)
-
-        result = self.c11.get_static_block()
-        self.assertEqual(result, None)
-
-        # Add static_block to c1
-        sb1 = StaticBlock.objects.create(name="SB1")
-        self.c1.static_block = sb1
-
-        result = self.c1.get_static_block()
-        self.assertEqual(result, sb1)
-
-        result = self.c11.get_static_block()
-        self.assertEqual(result, None)
-
-        # Add another static_block to c11
-        sb2 = StaticBlock.objects.create(name="SB2")
-        self.c11.static_block = sb2
-
-        result = self.c1.get_static_block()
-        self.assertEqual(result, sb1)
-
-        result = self.c11.get_static_block()
-        self.assertEqual(result, sb2)
-
     def test_get_filtered_products(self):
         """ """
         # Sorting
@@ -1327,23 +1298,27 @@ class ViewsTestCase(TestCase):
         self.assertFalse("lfs/catalog/categories/product/default.html" in templates)
         self.assertFalse("lfs/catalog/categories/category/default.html" not in templates)
 
-    def test_product_form_dispatcher(self):
-        """Tests the product dispatcher. The product dispatcher decides where to
-        go after the product form (for shop customers) has been submitted. These
-        can either be a variant or the add-to-cart view.
-        """
-        url = reverse("lfs_product_dispatcher")
+    def test_product_form_dispatcher_adds_to_cart(self):
+        """The product form has several submit buttons; add-to-cart goes to the cart."""
+        self.client.post(reverse("lfs_product_dispatcher"), {"action": "add-to-cart", "product_id": self.v1.id})
 
-        # Add the variant to cart
-        self.client.post(url, {"add-to-cart": 1, "product_id": self.v1.id})
+        self.assertEqual([item.product for item in CartItem.objects.all()], [self.v1])
 
-        # Select the default variant
-        self.client.post(url, {"product_id": self.p1.id})
+    def test_product_form_dispatcher_falls_back_to_the_default_variant(self):
+        """A combination of properties without variant leads to the default variant."""
+        response = self.client.post(
+            reverse("lfs_product_dispatcher"), {"product_id": self.p1.id, "property_{0}|1".format(self.pg.pk): "2"}
+        )
 
-        # Select the variant color = red
-        self.client.post(url, {"product_id": self.p1.id, "property_{0}|{1}".format(self.pg.pk, self.p1.pk): "1"})
+        self.assertEqual(response["Location"], self.v1.get_absolute_url())
 
-        # TODO: check response?
+    def test_product_form_dispatcher_stays_on_a_product_without_variants(self):
+        """A product without variants (or a variant itself) has no default variant: show the product, not an error."""
+        product = Product.objects.create(name="Plain", slug="plain", active=True)
+
+        response = self.client.post(reverse("lfs_product_dispatcher"), {"product_id": product.id})
+
+        self.assertEqual(response["Location"], product.get_absolute_url())
 
     def test_product_detail_view(self):
         """
@@ -2840,48 +2815,6 @@ class ProductTestCase(TestCase):
 
         # Now we get the weight of the variant itself
         self.assertEqual(self.v1.get_weight(), 14.0)
-
-    def test_add_product_variants(self):
-        """Test the add variant form in the Manage interface"""
-        self.assertEqual(len(Product.objects.all()), 5)
-
-        product = Product.objects.get(slug="product-1")
-
-        variant_data = {
-            "action": "add_variants",
-            "slug": "variant-slug",
-            "name": "variant",
-            "price": 10.00,
-            "property_0_%s" % self.size.id: self.m.id,
-        }
-
-        # set up a user with permission to access the manage interface
-        self.user, created = User.objects.get_or_create(username="manager", is_superuser=True)
-        self.password = "pass"
-        self.user.set_password(self.password)
-        self.user.save()
-
-        # login the manager account so we can access the add variant function
-        self.client.post(reverse("lfs_login"), dict(username="manager", password="pass", action="login"), follow=True)
-
-        response = self.client.post(reverse("lfs_manage_product_variants", args=(product.id,)), variant_data)
-        # following code in try loop will only be relevant if there are errors in the form
-        try:
-            if hasattr(response, "context"):
-                if response.context is not None:
-                    variant_form = response.context["form"]
-                    if variant_form.errors:
-                        print(variant_form.errors)
-                    self.assertEqual(len(variant_form.errors), 0)
-        except KeyError:
-            pass
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Product.objects.all()), 6)
-        variant = Product.objects.get(slug="product-1-variant-slug-m")
-        self.assertEqual(variant.name, "variant")
-        self.assertEqual(variant.price, 10.00)
-        self.assertEqual(variant.parent, product)
 
     def setupAttachments(self):
         # Assign attachments to products

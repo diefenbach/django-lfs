@@ -331,6 +331,7 @@ class CheckoutTestCase(TestCase):
             "shipping-country": "NL",
             "shipping-email": "b@b.com",
             "shipping-phone": "7654321",
+            "no_shipping": "on",  # the "Different shipping address" checkbox
             "valid_customer": "1",
             "payment_method": self.by_invoice.id,
         }
@@ -406,6 +407,7 @@ class CheckoutTestCase(TestCase):
             "shipping-country": "IE",
             "shipping-email": "b@b.com",
             "shipping-phone": "7654321",
+            "no_shipping": "on",  # the "Different shipping address" checkbox
             "valid_customer": "1",
             "payment_method": self.by_invoice.id,
         }

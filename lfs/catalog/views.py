@@ -832,6 +832,9 @@ def product_form_dispatcher(request):
 
         if variant is None:
             variant = product.get_default_variant()
+            if variant is None:
+                # A product without variants (or a variant itself) has nothing to switch to.
+                return HttpResponseRedirect(product.get_absolute_url())
 
             return lfs.core.utils.set_message_cookie(
                 variant.get_absolute_url(), msg=_("The choosen combination of properties is not deliverable.")

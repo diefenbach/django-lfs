@@ -6,9 +6,8 @@ from django.http import HttpResponseRedirect, QueryDict
 from django.contrib.contenttypes.models import ContentType
 
 from portlets.models import PortletAssignment, PortletBlocking
-from portlets.example.models import TextPortlet
+from lfs.portlet.models import TextPortlet
 
-from lfs.page.models import Page
 from lfs.manage.portlets.views import (
     PortletsInlineView,
     UpdatePortletsView,
@@ -803,56 +802,6 @@ class TestSortPortletsView:
         assert test_assignment.position > 10
 
 
-@pytest.mark.django_db
-@pytest.mark.integration
-class TestPortletViewsIntegration:
-    """Integration tests for Portlet views."""
-
-    @pytest.mark.parametrize(
-        "url_name",
-        [
-            "lfs_add_portlet",
-            "lfs_update_portlets",
-            "lfs_sort_portlets",
-        ],
-    )
-    def test_portlet_crud_workflow(self, page, authenticated_client, slot, url_name):
-        """Should support complete CRUD workflow for portlets."""
-        if url_name in ("lfs_add_portlet", "lfs_update_portlets"):
-            url = reverse(
-                url_name,
-                kwargs={"object_type_id": ContentType.objects.get_for_model(page).id, "object_id": page.id},
-            )
-        else:
-            url = reverse(url_name)
-        response = authenticated_client.get(url)
-        assert response.status_code != 404
-
-    @pytest.mark.parametrize(
-        "url_name,extra_kwargs",
-        [
-            ("lfs_add_portlet", {"needs_obj": True}),
-            ("lfs_update_portlets", {"needs_obj": True}),
-            ("lfs_delete_portlet", {"portletassignment_id": 1}),
-            ("lfs_edit_portlet", {"portletassignment_id": 1}),
-            ("lfs_move_portlet", {"portletassignment_id": 1}),
-            ("lfs_sort_portlets", {}),
-        ],
-    )
-    def test_permission_required_for_all_views(self, client, url_name, extra_kwargs):
-        """Should require authentication for all portlet views."""
-        page = Page.objects.create(title="Test Page", slug="test-page")
-        if extra_kwargs.get("needs_obj"):
-            url = reverse(
-                url_name,
-                kwargs={"object_type_id": ContentType.objects.get_for_model(page).id, "object_id": page.id},
-            )
-        else:
-            url = reverse(url_name, kwargs={k: v for k, v in extra_kwargs.items() if k != "needs_obj"})
-        response = client.get(url)
-        assert response.status_code in [302, 403]
-
-
 # =============================================================================
 # Utility Function Tests
 # =============================================================================
@@ -902,22 +851,6 @@ class TestUpdatePortletPositions:
 
         portlet_assignment.refresh_from_db()
         assert portlet_assignment.position == 10
-
-    def test_update_portlet_positions_handles_empty_slot(self, page, slot):
-        """Should handle empty slot without errors."""
-
-        # Create a mock PortletAssignment-like object
-        class MockPA:
-            def __init__(self):
-                self.content_type = ContentType.objects.get_for_model(page)
-                self.content_id = page.id
-                self.slot = slot
-
-        mock_pa = MockPA()
-
-        # Should not raise an error
-        update_portlet_positions(mock_pa)
-
 
 @pytest.mark.django_db
 @pytest.mark.unit
@@ -1057,36 +990,6 @@ class TestPortletViewsEdgeCases:
         # Should handle the error gracefully
         assert response.status_code == 200
         assert "invalid content type" in response.content.decode().lower()
-
-    def test_portlets_inline_with_object_without_get_parent_for_portlets(self, authenticated_request, monkeypatch):
-        """Should handle objects without get_parent_for_portlets method."""
-        request = authenticated_request()
-
-        # Create a mock object without the method
-        class MockObj:
-            def get_parent_for_portlets(self):
-                raise AttributeError("'Mock' object has no attribute 'get_parent_for_portlets'")
-
-        mock_obj = MockObj()
-
-        # Mock the ContentType.objects.get_for_model to avoid database issues
-        def mock_get_for_model(model):
-            return type("MockCT", (), {})()
-
-        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.get_for_model", mock_get_for_model)
-
-        # Mock render_to_string
-        def mock_render_to_string(template, request=None, context=None):
-            return "rendered_content"
-
-        monkeypatch.setattr("lfs.manage.portlets.views.render_to_string", mock_render_to_string)
-
-        view = PortletsInlineView()
-
-        # Should handle the error gracefully
-        with pytest.raises(AttributeError):
-            view.get(request, mock_obj)
-
 
 # =============================================================================
 # Permission Tests

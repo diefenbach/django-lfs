@@ -112,69 +112,27 @@ class TopsellerUtilsTestCase(TestCase):
 
         calculate_product_sales()
 
-    def test_topseller_1(self):
-        """Tests general topsellers."""
-        ts = lfs.marketing.utils.get_topseller(2)
+    def test_topseller_are_the_explicit_ones_by_position(self):
+        """Since August 2025 the topsellers are only the explicitly chosen products, not calculated from sales."""
+        Topseller.objects.create(product=self.p1, position=2)
+        Topseller.objects.create(product=self.p2, position=1)
 
-        self.assertEqual(len(ts), 2)
+        self.assertEqual(lfs.marketing.utils.get_topseller(5), [self.p2, self.p1])
 
-        self.assertEqual(ts[0], self.p4)
-        self.assertEqual(ts[1], self.p3)
+    def test_topseller_skips_inactive_products(self):
+        self.p1.active = False
+        self.p1.save()
+        Topseller.objects.create(product=self.p1, position=1)
+        Topseller.objects.create(product=self.p2, position=2)
 
-    def test_topseller_2(self):
-        """Tests general topseller with explicitly selected products."""
-        # Explicit topseller
-        self.p5 = Product.objects.create(name="Product 5", slug="product-5", active=True)
-        t5 = Topseller.objects.create(product=self.p5, position=1)
+        self.assertEqual(lfs.marketing.utils.get_topseller(5), [self.p2])
 
-        ts = lfs.marketing.utils.get_topseller(2)
-        self.assertEqual(ts[0], self.p5)
-        self.assertEqual(ts[1], self.p4)
+    def test_topseller_respects_the_limit_also_when_cached(self):
+        for position, product in enumerate([self.p1, self.p2, self.p3], start=1):
+            Topseller.objects.create(product=product, position=position)
 
-        self.p6 = Product.objects.create(name="Product 6", slug="product-6", active=True)
-        t6 = Topseller.objects.create(product=self.p6, position=2)
-
-        ts = lfs.marketing.utils.get_topseller(2)
-        self.assertEqual(ts[0], self.p5)
-        self.assertEqual(ts[1], self.p6)
-
-        # Exchange positions
-        t5.position = 2
-        t5.save()
-        t6.position = 1
-        t6.save()
-
-        ts = lfs.marketing.utils.get_topseller(2)
-        self.assertEqual(ts[0], self.p6)
-        self.assertEqual(ts[1], self.p5)
-
-        # Now the position is to greater than limit, so it shouldn't be within
-        # topsellers at all
-        t6.position = 3
-        t6.save()
-
-        ts = lfs.marketing.utils.get_topseller(2)
-        self.assertEqual(ts[0], self.p4)
-        self.assertEqual(ts[1], self.p5)  # has to be on pasition 2
-
-    def test_topseller_3(self):
-        """Tests general topseller with explicitly assigned products which
-        are also in calculated topsellers.
-        """
-        ts = lfs.marketing.utils.get_topseller(2)
-
-        self.assertEqual(len(ts), 2)
-
-        self.assertEqual(ts[0], self.p4)
-        self.assertEqual(ts[1], self.p3)
-
-        # Explicit topseller P4, which is already a topseller
-        Topseller.objects.create(product=self.p4, position=1)
-
-        # P4 should only displayed once
-        ts = lfs.marketing.utils.get_topseller(2)
-        self.assertEqual(ts[0], self.p4)
-        self.assertEqual(ts[1], self.p3)
+        self.assertEqual(lfs.marketing.utils.get_topseller(2), [self.p1, self.p2])
+        self.assertEqual(lfs.marketing.utils.get_topseller(2), [self.p1, self.p2])
 
     def test_topseller_for_category_1(self):
         """Tests topseller for specific categories."""
