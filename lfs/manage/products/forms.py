@@ -310,7 +310,7 @@ class ProductDataForm(forms.ModelForm):
                     "DateTimeInput",
                 ]:
                     field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-control"
-                elif widget_class in ["Select"]:
+                elif isinstance(field.widget, Select):
                     field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-select"
                 elif widget_class in ["CheckboxInput", "LFSCheckboxInput"]:
                     field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-check-input"
