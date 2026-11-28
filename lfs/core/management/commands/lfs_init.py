@@ -82,21 +82,13 @@ class Command(BaseCommand):
         Slot.objects.create(name="Right")
 
         # Payment methods
-        pm = PaymentMethod.objects.create(name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
-        pm.id = 1
-        pm.save()
-        pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
-        pm.id = 2
-        pm.save()
+        PaymentMethod.objects.create(name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
+        PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
         if apps.is_installed("lfs_paypal"):
-            pm = PaymentMethod.objects.create(
+            PaymentMethod.objects.create(
                 name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.processor.PayPalProcessor"
             )
-            pm.id = 3
-            pm.save()
-        pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
-        pm.id = 4
-        pm.save()
+        PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
 
         # Shipping methods
         ShippingMethod.objects.create(name="Standard", priority=1, active=1)
