@@ -177,43 +177,32 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
             file.save()
 
     def _delete_files_by_keys(self, request: HttpRequest) -> None:
-        """Deletes files based on delete-* keys in POST request."""
+        """Deletes the block's files named by delete-<id> keys; ids of other files are ignored."""
+        files = self.get_static_block().files
         for key in request.POST.keys():
-            if key.startswith("delete-"):
-                try:
-                    file_id = key.split("-")[1]
-                    # Skip invalid IDs gracefully
-                    if not file_id.isdigit():
-                        continue
-                    File.objects.get(pk=file_id).delete()
-                except (IndexError, File.DoesNotExist, ValueError):
-                    pass
+            file_id = key.removeprefix("delete-")
+            if key.startswith("delete-") and file_id.isdigit():
+                files.filter(pk=file_id).delete()
 
     def _update_files_by_keys(self, request: HttpRequest) -> None:
-        """Updates file titles and positions based on POST keys."""
+        """Updates the titles (title-<id>) and positions (position-<id>) of the block's files.
+
+        Ids of other files and positions that are not whole numbers are ignored.
+        """
+        files = self.get_static_block().files
         for key, value in request.POST.items():
-            if key.startswith("title-"):
-                file_id = key.split("-")[1]
+            field, _, file_id = key.partition("-")
+            if field not in ("title", "position") or not file_id.isdigit():
+                continue
+            if field == "position":
                 try:
-                    # Skip invalid IDs gracefully
-                    if not file_id.isdigit():
-                        continue
-                    file = File.objects.get(pk=file_id)
-                    file.title = value
-                    file.save()
-                except (File.DoesNotExist, ValueError):
-                    pass
-            elif key.startswith("position-"):
-                try:
-                    file_id = key.split("-")[1]
-                    # Skip invalid IDs gracefully
-                    if not file_id.isdigit():
-                        continue
-                    file = File.objects.get(pk=file_id)
-                    file.position = value
-                    file.save()
-                except (IndexError, File.DoesNotExist, ValueError):
-                    pass
+                    value = int(value)
+                except ValueError:
+                    continue
+            file = files.filter(pk=file_id).first()
+            if file is not None:
+                setattr(file, field, value)
+                file.save()
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with static block."""
