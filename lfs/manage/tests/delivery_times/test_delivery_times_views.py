@@ -1,344 +1,167 @@
-import pytest
-from django.contrib.auth import get_user_model
-from django.urls import reverse
-from django.http import Http404
+"""The delivery time management, tested through real requests as a shop manager: the start page, searching the
+list, adding, saving and deleting a delivery time, and keeping the search query while doing so."""
 
-from lfs.catalog.models import DeliveryTime, DELIVERY_TIME_UNIT_DAYS
-from lfs.manage.delivery_times.views import (
-    DeliveryTimeUpdateView,
-    DeliveryTimeCreateView,
-    DeliveryTimeDeleteView,
-    DeliveryTimeDeleteConfirmView,
+import pytest
+from django.contrib.messages import get_messages
+from django.urls import reverse
+
+from lfs.catalog.models import DeliveryTime
+from lfs.catalog.settings import (
+    DELIVERY_TIME_UNIT_DAYS,
+    DELIVERY_TIME_UNIT_HOURS,
+    DELIVERY_TIME_UNIT_MONTHS,
+    DELIVERY_TIME_UNIT_WEEKS,
 )
 
-User = get_user_model()
+pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.django_db
-@pytest.mark.unit
-class TestDeliveryTimeUpdateView:
-    """Tests for DeliveryTimeUpdateView functionality."""
+@pytest.fixture(autouse=True)
+def no_delivery_times(db):
+    """Start without the delivery times other fixtures may have created."""
+    DeliveryTime.objects.all().delete()
 
-    def test_get_delivery_times_queryset_without_search(self, delivery_time):
-        """Should return all delivery times when no search query."""
-        view = DeliveryTimeUpdateView()
-        view.request = type("Request", (), {"GET": {}})()
 
-        result = view.get_delivery_times_queryset()
+@pytest.fixture
+def manager(client, admin_user):
+    """A test client logged in as a shop manager."""
+    client.force_login(admin_user)
+    return client
 
-        assert result.count() == 1
-        assert delivery_time in result
 
-    def test_get_delivery_times_queryset_with_search(self, delivery_time):
-        """Should filter delivery times based on search query."""
-        # Add description to delivery time for search
-        delivery_time.description = "Express delivery"
-        delivery_time.save()
+def page(dt: DeliveryTime) -> str:
+    """Return the URL of the delivery time's page."""
+    return reverse("lfs_manage_delivery_time", kwargs={"pk": dt.pk})
 
-        view = DeliveryTimeUpdateView()
-        view.request = type("Request", (), {"GET": {"q": "express"}})()
 
-        result = view.get_delivery_times_queryset()
+def messages_of(response) -> list[str]:
+    """Return the messages the request added for the manager."""
+    return [str(m) for m in get_messages(response.wsgi_request)]
 
-        assert result.count() == 1
-        assert delivery_time in result
 
-    def test_get_delivery_times_queryset_with_no_matches(self, delivery_time):
-        """Should return empty queryset when search has no matches."""
-        view = DeliveryTimeUpdateView()
-        view.request = type("Request", (), {"GET": {"q": "nonexistent"}})()
+def listed(manager, dt: DeliveryTime, query: str) -> list[DeliveryTime]:
+    """Return the delivery times listed beside ``dt``'s page for the search ``query``."""
+    return list(manager.get(page(dt), {"q": query}).context["delivery_times"])
 
-        result = view.get_delivery_times_queryset()
 
-        assert result.count() == 0
+class TestStartPage:
+    def test_opens_a_delivery_time(self, manager):
+        dt = DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
 
-    def test_get_delivery_times_queryset_with_unit_search(self, delivery_time):
-        """Should filter delivery times based on unit search query."""
-        from lfs.catalog.settings import (
-            DELIVERY_TIME_UNIT_DAYS,
-            DELIVERY_TIME_UNIT_HOURS,
-            DELIVERY_TIME_UNIT_WEEKS,
-            DELIVERY_TIME_UNIT_MONTHS,
-            DELIVERY_TIME_UNIT_CHOICES,
-        )
-        from django.utils.translation import gettext
+        assert manager.get(reverse("lfs_manage_delivery_times"))["Location"] == page(dt)
 
-        # Create delivery times with different units
-        hours_dt = DeliveryTime.objects.create(
-            min=24, max=48, unit=DELIVERY_TIME_UNIT_HOURS, description="Hours delivery"
-        )
-        weeks_dt = DeliveryTime.objects.create(
-            min=1, max=2, unit=DELIVERY_TIME_UNIT_WEEKS, description="Weeks delivery"
-        )
-        months_dt = DeliveryTime.objects.create(
-            min=1, max=2, unit=DELIVERY_TIME_UNIT_MONTHS, description="Months delivery"
-        )
+    def test_without_delivery_times_shows_the_empty_page(self, manager):
+        response = manager.get(reverse("lfs_manage_delivery_times"))
 
-        # Get translated unit names
-        unit_choices_dict = dict(DELIVERY_TIME_UNIT_CHOICES)
-        translated_hours = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_HOURS])
-        translated_days = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_DAYS])
-        translated_weeks = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_WEEKS])
-        translated_months = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_MONTHS])
+        assert response["Location"] == reverse("lfs_no_delivery_times")
 
-        # Test searching for translated "days" - should find the fixture delivery_time
-        view = DeliveryTimeUpdateView()
-        view.request = type("Request", (), {"GET": {"q": translated_days}})()
-        result = view.get_delivery_times_queryset()
-        assert result.count() == 1
-        assert delivery_time in result
 
-        # Test searching for translated "hours"
-        view.request = type("Request", (), {"GET": {"q": translated_hours}})()
-        result = view.get_delivery_times_queryset()
-        assert result.count() == 1
-        assert hours_dt in result
+class TestSearch:
+    @pytest.fixture
+    def times(self) -> dict[str, DeliveryTime]:
+        """One delivery time per unit, ordered by their minimum."""
+        return {
+            "hours": DeliveryTime.objects.create(min=24, max=48, unit=DELIVERY_TIME_UNIT_HOURS, description="Express"),
+            "days": DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS, description="Standard"),
+            "weeks": DeliveryTime.objects.create(min=2, max=4, unit=DELIVERY_TIME_UNIT_WEEKS),
+            "months": DeliveryTime.objects.create(min=3, max=6, unit=DELIVERY_TIME_UNIT_MONTHS),
+        }
 
-        # Test searching for translated "weeks"
-        view.request = type("Request", (), {"GET": {"q": translated_weeks}})()
-        result = view.get_delivery_times_queryset()
-        assert result.count() == 1
-        assert weeks_dt in result
+    def test_lists_all_by_minimum_without_a_search(self, manager, times):
+        assert listed(manager, times["days"], "") == [times["days"], times["weeks"], times["months"], times["hours"]]
 
-        # Test searching for translated "months"
-        view.request = type("Request", (), {"GET": {"q": translated_months}})()
-        result = view.get_delivery_times_queryset()
-        assert result.count() == 1
-        assert months_dt in result
+    def test_finds_by_description_case_insensitive(self, manager, times):
+        assert listed(manager, times["days"], "express") == [times["hours"]]
 
-        # Test partial search - should work bidirectionally
-        # If "days" is "werktage", then "werk" should find it
-        if len(translated_days) > 3:  # Only test if the translated word is long enough
-            partial_search = translated_days[:3]  # First 3 characters
-            view.request = type("Request", (), {"GET": {"q": partial_search}})()
-            result = view.get_delivery_times_queryset()
-            assert result.count() == 1
-            assert delivery_time in result
+    @pytest.mark.parametrize(
+        "query,unit", [("Hours", "hours"), ("days", "days"), ("Wee", "weeks"), ("months", "months")]
+    )
+    def test_finds_by_unit_name_also_in_part(self, manager, times, query: str, unit: str):
+        assert listed(manager, times["days"], query) == [times[unit]]
 
-    def test_get_delivery_times_queryset_combined_search_bug(self, delivery_time):
-        """Should reproduce the bug when combining text and unit search."""
-        from lfs.catalog.settings import (
-            DELIVERY_TIME_UNIT_HOURS,
-            DELIVERY_TIME_UNIT_DAYS,
-            DELIVERY_TIME_UNIT_CHOICES,
-        )
-        from django.utils.translation import gettext
+    def test_a_match_by_description_and_unit_is_listed_once(self, manager, times):
+        times["days"].description = "Delivery in days"
+        times["days"].save()
 
-        # Create a delivery time with description containing unit name
-        # This will trigger both text search and unit search
-        unit_choices_dict = dict(DELIVERY_TIME_UNIT_CHOICES)
-        translated_days = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_DAYS])
+        assert listed(manager, times["days"], "days") == [times["days"]]
 
-        # Create delivery time with description that includes the unit name
-        delivery_time.description = f"Fast {translated_days} delivery"
-        delivery_time.save()
+    def test_finds_nothing_for_an_unknown_term(self, manager, times):
+        assert listed(manager, times["days"], "nonexistent") == []
 
-        # Create another delivery time with hours unit
-        hours_dt = DeliveryTime.objects.create(
-            min=24, max=48, unit=DELIVERY_TIME_UNIT_HOURS, description="Hours delivery"
+
+class TestSaving:
+    def test_stores_the_data_and_shows_a_message(self, manager):
+        dt = DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
+
+        response = manager.post(
+            page(dt), {"min": "2", "max": "4", "unit": str(DELIVERY_TIME_UNIT_WEEKS), "description": "Slow"}
         )
 
-        view = DeliveryTimeUpdateView()
-        # Search for the unit name - this should trigger both text search (description)
-        # and unit search (unit field), causing the queryset OR bug
-        view.request = type("Request", (), {"GET": {"q": translated_days}})()
+        dt.refresh_from_db()
+        assert (dt.min, dt.max, dt.unit, dt.description) == (2, 4, DELIVERY_TIME_UNIT_WEEKS, "Slow")
+        assert response["Location"] == page(dt)
+        assert messages_of(response) == ["Delivery time has been saved."]
 
-        # This should not raise an error and should return the correct results
-        result = view.get_delivery_times_queryset()
+    def test_keeps_the_search_query(self, manager):
+        dt = DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
 
-        # The bug would be here - if the queryset OR operation fails, this would raise an error
-        # But since we can't easily trigger it in test, let's verify the results are correct
-        assert result.count() == 1
-        assert delivery_time in result
+        response = manager.post(page(dt), {"min": "1", "max": "3", "unit": str(DELIVERY_TIME_UNIT_DAYS), "q": "std"})
 
-    def test_get_context_data_includes_search_query(self, delivery_time):
-        """Should include search query in context."""
-        view = DeliveryTimeUpdateView()
-        view.request = type("Request", (), {"GET": {"q": "test"}, "method": "GET"})()
-        view.object = delivery_time
+        assert response["Location"] == page(dt) + "?q=std"
 
-        context = view.get_context_data()
 
-        assert context["search_query"] == "test"
-        assert "delivery_times" in context
-
-    def test_get_success_url_without_search(self, delivery_time):
-        """Should return URL without search parameter when no search query."""
-        view = DeliveryTimeUpdateView()
-        view.request = type("Request", (), {"POST": {}})()
-        view.object = delivery_time
-
-        url = view.get_success_url()
-
-        assert f"delivery-time/{delivery_time.id}" in url
-        assert "?q=" not in url
-
-    def test_get_success_url_with_search(self, delivery_time):
-        """Should return URL with search parameter when search query exists."""
-        view = DeliveryTimeUpdateView()
-        view.request = type("Request", (), {"POST": {"q": "test"}})()
-        view.object = delivery_time
-
-        url = view.get_success_url()
-
-        assert f"delivery-time/{delivery_time.id}" in url
-        assert "?q=test" in url
-
-    def test_form_valid_called_on_valid_submit(self, client, admin_user, delivery_time):
-        """Should call form_valid when form is submitted with valid data."""
-        client.force_login(admin_user)
-
-        # Submit form with valid data
-        response = client.post(
-            reverse("lfs_manage_delivery_time", kwargs={"pk": delivery_time.id}),
-            {
-                "min": "1.0",
-                "max": "3.0",
-                "unit": "1",  # DELIVERY_TIME_UNIT_DAYS
-                "description": "Updated description",
-                "q": "",  # search query
-            },
+class TestAdding:
+    def test_adds_a_delivery_time_and_opens_it(self, manager):
+        response = manager.post(
+            reverse("lfs_manage_add_delivery_time"),
+            {"create-min": "1", "create-max": "2", "create-unit": str(DELIVERY_TIME_UNIT_DAYS)},
         )
 
-        # Should redirect after successful form submission
-        assert response.status_code == 302
+        dt = DeliveryTime.objects.get()
+        assert (dt.min, dt.max, dt.unit) == (1, 2, DELIVERY_TIME_UNIT_DAYS)
+        assert response["Location"] == page(dt)
+        assert messages_of(response) == ["Delivery time has been added."]
+
+    def test_keeps_the_search_query(self, manager):
+        response = manager.post(
+            reverse("lfs_manage_add_delivery_time"),
+            {"create-min": "1", "create-max": "2", "create-unit": str(DELIVERY_TIME_UNIT_DAYS), "q": "std"},
+        )
+
+        assert response["Location"] == page(DeliveryTime.objects.get()) + "?q=std"
+
+    def test_refuses_a_missing_unit(self, manager):
+        response = manager.post(reverse("lfs_manage_add_delivery_time"), {"create-min": "1", "create-max": "2"})
+
+        assert not DeliveryTime.objects.exists()
+        assert "unit" in response.context["form"].errors
 
 
-@pytest.mark.django_db
-@pytest.mark.unit
-class TestDeliveryTimeCreateView:
-    """Tests for DeliveryTimeCreateView functionality."""
+class TestDeleting:
+    def test_confirmation_names_the_delivery_time(self, manager):
+        dt = DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
 
-    def test_get_form_kwargs_adds_prefix(self):
-        """Should add 'create' prefix to form fields."""
-        view = DeliveryTimeCreateView()
-        view.request = type("Request", (), {"method": "GET"})()
+        response = manager.get(reverse("lfs_manage_delete_delivery_time_confirm", kwargs={"pk": dt.pk}))
 
-        kwargs = view.get_form_kwargs()
+        assert response.context["delivery_time"] == dt
 
-        assert kwargs["prefix"] == "create"
+    def test_confirmation_of_an_unknown_delivery_time_is_not_found(self, manager):
+        response = manager.get(reverse("lfs_manage_delete_delivery_time_confirm", kwargs={"pk": 99999}))
 
-    def test_get_context_data_includes_came_from(self):
-        """Should include came_from in context."""
-        view = DeliveryTimeCreateView()
-        view.request = type("Request", (), {"POST": {"came_from": "/test/"}, "method": "POST", "FILES": {}})()
-        view.object = None  # CreateView doesn't have an object initially
+        assert response.status_code == 404
 
-        context = view.get_context_data()
+    def test_opens_a_remaining_delivery_time(self, manager):
+        deleted = DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
+        remaining = DeliveryTime.objects.create(min=2, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
 
-        assert context["came_from"] == "/test/"
+        response = manager.post(reverse("lfs_manage_delete_delivery_time", kwargs={"pk": deleted.pk}))
 
-    def test_get_success_url_without_search(self, delivery_time):
-        """Should return URL without search parameter when no search query."""
-        view = DeliveryTimeCreateView()
-        view.request = type("Request", (), {"POST": {}})()
-        view.object = delivery_time
+        assert list(DeliveryTime.objects.all()) == [remaining]
+        assert response["Location"] == page(remaining)
 
-        url = view.get_success_url()
+    def test_deleting_the_last_one_shows_the_empty_page(self, manager):
+        dt = DeliveryTime.objects.create(min=1, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
 
-        assert f"delivery-time/{delivery_time.id}" in url
-        assert "?q=" not in url
+        response = manager.post(reverse("lfs_manage_delete_delivery_time", kwargs={"pk": dt.pk}))
 
-    def test_get_success_url_with_search(self, delivery_time):
-        """Should return URL with search parameter when search query exists."""
-        view = DeliveryTimeCreateView()
-        view.request = type("Request", (), {"POST": {"q": "test"}})()
-        view.object = delivery_time
-
-        url = view.get_success_url()
-
-        assert f"delivery-time/{delivery_time.id}" in url
-        assert "?q=test" in url
-
-
-@pytest.mark.django_db
-@pytest.mark.unit
-class TestDeliveryTimeDeleteConfirmView:
-    """Tests for DeliveryTimeDeleteConfirmView functionality."""
-
-    def test_get_context_data_includes_delivery_time(self, delivery_time):
-        """Should include delivery_time in context."""
-        view = DeliveryTimeDeleteConfirmView()
-        view.kwargs = {"pk": delivery_time.id}
-
-        context = view.get_context_data()
-
-        assert context["delivery_time"] == delivery_time
-
-    def test_get_context_data_raises_404_for_nonexistent_delivery_time(self):
-        """Should raise Http404 for non-existent delivery time."""
-        view = DeliveryTimeDeleteConfirmView()
-        view.kwargs = {"pk": 99999}
-
-        with pytest.raises(Http404):
-            view.get_context_data()
-
-
-@pytest.mark.django_db
-@pytest.mark.unit
-class TestDeliveryTimeDeleteView:
-    """Tests for DeliveryTimeDeleteView functionality."""
-
-    def test_get_success_url_with_remaining_delivery_times(self, delivery_time):
-        """Should redirect to first remaining delivery time when others exist."""
-        # Create another delivery time
-        other_delivery_time = DeliveryTime.objects.create(min=2, max=3, unit=DELIVERY_TIME_UNIT_DAYS)
-
-        view = DeliveryTimeDeleteView()
-        view.object = delivery_time
-
-        url = view.get_success_url()
-
-        assert f"delivery-time/{other_delivery_time.id}" in url
-
-    def test_get_success_url_with_no_remaining_delivery_times(self, delivery_time):
-        """Should redirect to no delivery times view when no others exist."""
-        view = DeliveryTimeDeleteView()
-        view.object = delivery_time
-
-        url = view.get_success_url()
-
-        assert "delivery-times/no" in url
-
-
-@pytest.mark.django_db
-@pytest.mark.integration
-class TestDeliveryTimeViewsIntegration:
-    """Integration tests for delivery time views."""
-
-    def test_delivery_time_update_view_renders_correctly(self, client, admin_user, delivery_time, shop):
-        """Should render delivery time update view correctly."""
-        client.force_login(admin_user)
-
-        response = client.get(reverse("lfs_manage_delivery_time", args=[delivery_time.id]))
-
-        assert response.status_code == 200
-        assert "delivery_time" in response.context
-        assert response.context["delivery_time"] == delivery_time
-
-    def test_delivery_time_create_view_renders_correctly(self, client, admin_user, shop):
-        """Should render delivery time create view correctly."""
-        client.force_login(admin_user)
-
-        response = client.get(reverse("lfs_manage_add_delivery_time"))
-
-        assert response.status_code == 200
-        assert "form" in response.context
-
-    def test_no_delivery_times_view_renders_correctly(self, client, admin_user, shop):
-        """Should render no delivery times view correctly."""
-        client.force_login(admin_user)
-
-        response = client.get(reverse("lfs_no_delivery_times"))
-
-        assert response.status_code == 200
-
-    def test_delivery_time_delete_confirm_view_renders_correctly(self, client, admin_user, delivery_time, shop):
-        """Should render delivery time delete confirm view correctly."""
-        client.force_login(admin_user)
-
-        response = client.get(reverse("lfs_manage_delete_delivery_time_confirm", args=[delivery_time.id]))
-
-        assert response.status_code == 200
-        assert "delivery_time" in response.context
-        assert response.context["delivery_time"] == delivery_time
+        assert response["Location"] == reverse("lfs_no_delivery_times")
