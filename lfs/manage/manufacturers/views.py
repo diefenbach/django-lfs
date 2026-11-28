@@ -130,11 +130,12 @@ class ManufacturerDataView(PermissionRequiredMixin, ManufacturerTabMixin, Update
         """Saves and shows success message."""
         # Handle image deletion if checkbox is checked
         if self.request.POST.get("delete_image"):
-            manufacturer = self.get_object()
-            if manufacturer.image:
-                manufacturer.image.delete()
-                manufacturer.image = None
-                manufacturer.save()
+            # Delete the stored file and clear it on the form's instance, which the form saves below; clearing it
+            # on a fresh copy only would let the form save the old file name back.
+            stored = self.get_object().image
+            if stored:
+                stored.delete(save=False)
+            form.instance.image = None
 
         response = super().form_valid(form)
         messages.success(self.request, _("Manufacturer data has been saved."))

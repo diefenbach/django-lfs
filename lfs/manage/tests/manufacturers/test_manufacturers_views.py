@@ -3,6 +3,7 @@ saving (including the image), SEO, portlets, viewing and deleting a manufacturer
 that product forms use. Assigning products is tested in test_manufacturer_products.py."""
 
 import io
+import os
 
 import pytest
 from django.contrib.messages import get_messages
@@ -90,6 +91,17 @@ class TestManufacturer:
         assert acme.image.name.endswith(".png")
         assert response["Location"] == url
         assert messages_of(response) == ["Manufacturer data has been saved."]
+
+    def test_deleting_the_image_removes_it(self, manager, acme):
+        url = reverse("lfs_manage_manufacturer", kwargs={"id": acme.id})
+        data = {"name": "Acme", "slug": "acme"}
+        manager.post(url, data | {"image": png()})
+        path = Manufacturer.objects.get(pk=acme.pk).image.path
+
+        manager.post(url, data | {"delete_image": "on"})
+
+        assert not Manufacturer.objects.get(pk=acme.pk).image
+        assert not os.path.exists(path)
 
     def test_saves_the_seo_data(self, manager, acme):
         url = reverse("lfs_manage_manufacturer_seo", kwargs={"id": acme.id})
