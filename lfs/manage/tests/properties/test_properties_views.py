@@ -87,9 +87,10 @@ class TestPropertyDataViewUnit:
             def save(self, commit=True):
                 return p
 
-        with patch("lfs.manage.properties.views.property_type_changed.send") as mock_send, patch(
-            "lfs.manage.properties.views.invalidate_cache_group_id"
-        ) as mock_invalidate:
+        with (
+            patch("lfs.manage.properties.views.property_type_changed.send") as mock_send,
+            patch("lfs.manage.properties.views.invalidate_cache_group_id") as mock_invalidate,
+        ):
             # Simulate change: old_type != new type
             original_type = p.type
             p.type = original_type + 1

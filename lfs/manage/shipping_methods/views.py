@@ -339,6 +339,7 @@ class ShippingMethodDeleteView(DirectDeleteMixin, SuccessMessageMixin, Permissio
     def get_success_url(self):
         return reverse("lfs_manage_shipping_methods")
 
+
 class ShippingMethodPriceCriteriaView(PermissionRequiredMixin, TemplateView):
     """View for editing criteria of a specific shipping method price."""
 

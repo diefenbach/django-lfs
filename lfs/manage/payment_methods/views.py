@@ -346,6 +346,7 @@ class PaymentMethodDeleteView(DirectDeleteMixin, SuccessMessageMixin, Permission
     def get_success_url(self):
         return reverse("lfs_manage_payment_methods")
 
+
 class PaymentMethodPriceCriteriaView(PermissionRequiredMixin, TemplateView):
     """View for editing criteria of a specific payment method price."""
 
