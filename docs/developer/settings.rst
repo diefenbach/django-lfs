@@ -6,10 +6,10 @@
 Settings
 ========
 
-These are settings specific for LFS which can be changed within
-``lfs_project/settings``. For Django's default settings which are also relevant
-for LFS, please visit `Django settings
-<http://docs.djangoproject.com/en/dev/ref/settings/>`_ for an explanation.
+These are the settings specific to LFS. Set them in your project's settings module; every setting is optional
+and LFS uses its default when the project does not set it (``lfs.settings.DEFAULTS`` holds the defaults of the
+plug-in lists). The Django settings LFS needs are described in :doc:`/introduction/installation`; for Django's
+settings in general see `Django settings <https://docs.djangoproject.com/en/5.2/ref/settings/>`_.
 
 
 .. _settings_plugins:
@@ -36,7 +36,7 @@ LFS_PAYMENT_METHOD_PROCESSORS
     payment method management interface, e.g.::
 
         LFS_PAYMENT_METHOD_PROCESSORS = [
-            ["acme.ACMEPaymentMethod", _(u"ACME payment")],
+            ["acme.ACMEPaymentMethod", _("ACME payment")],
         ]
 
     .. seealso::
@@ -52,8 +52,8 @@ LFS_PRICE_CALCULATORS
     the product. LFS is shipped with following entries::
 
         LFS_PRICE_CALCULATORS = [
-            ["lfs.gross_price.calculator.GrossPriceCalculator", _(u"Price includes tax")],
-            ["lfs.net_price.calculator.NetPriceCalculator", _(u"Price excludes tax")],
+            ["lfs.gross_price.calculator.GrossPriceCalculator", _("Price includes tax")],
+            ["lfs.net_price.calculator.NetPriceCalculator", _("Price excludes tax")],
         ]
 
     .. seealso::
@@ -70,8 +70,8 @@ LFS_SHIPPING_METHOD_PRICE_CALCULATORS
     entries::
 
         LFS_SHIPPING_METHOD_PRICE_CALCULATORS = [
-            ["lfs.shipping.GrossShippingMethodPriceCalculator", _(u'Price includes tax')],
-            ["lfs.shipping.NetShippingMethodPriceCalculator", _(u'Price excludes tax')],
+            ["lfs.shipping.calculator.GrossShippingMethodPriceCalculator", _('Price includes tax')],
+            ["lfs.shipping.calculator.NetShippingMethodPriceCalculator", _('Price excludes tax')],
         ]
 
     .. seealso::
@@ -102,15 +102,15 @@ LFS_CRITERIA
     following criteria::
 
         LFS_CRITERIA = [
-            ["lfs.criteria.models.CartPriceCriterion", _(u"Cart Price")],
-            ["lfs.criteria.models.CombinedLengthAndGirthCriterion", _(u"Combined Length and Girth")],
-            ["lfs.criteria.models.CountryCriterion", _(u"Country")],
-            ["lfs.criteria.models.HeightCriterion", _(u"Height")],
-            ["lfs.criteria.models.LengthCriterion", _(u"Length")],
-            ["lfs.criteria.models.WidthCriterion", _(u"Width")],
-            ["lfs.criteria.models.WeightCriterion", _(u"Weight")],
-            ["lfs.criteria.models.ShippingMethodCriterion", _(u"Shipping Method")],
-            ["lfs.criteria.models.PaymentMethodCriterion", _(u"Payment Method")],
+            ["lfs.criteria.models.CartPriceCriterion", _("Cart Price")],
+            ["lfs.criteria.models.CombinedLengthAndGirthCriterion", _("Combined Length and Girth")],
+            ["lfs.criteria.models.CountryCriterion", _("Country")],
+            ["lfs.criteria.models.HeightCriterion", _("Height")],
+            ["lfs.criteria.models.LengthCriterion", _("Length")],
+            ["lfs.criteria.models.WidthCriterion", _("Width")],
+            ["lfs.criteria.models.WeightCriterion", _("Weight")],
+            ["lfs.criteria.models.ShippingMethodCriterion", _("Shipping Method")],
+            ["lfs.criteria.models.PaymentMethodCriterion", _("Payment Method")],
         ]
 
     .. seealso::
@@ -133,12 +133,27 @@ LFS_DOCS
     context aware help link within the management interface. Optional; without
     it the management interface shows no help link.
 
-LFS_LOG_FILE
-    Absolute path to LFS' log file.
+LFS_FORCE_INTEGER_QUANTITY
+    If True, quantities in the cart are always whole numbers, also for products whose quantity field allows
+    decimals. The default value is ``False``.
+
+LFS_IS_LOCAL
+    If True, the template tag ``{% if_local %} ... {% endif_local %}`` renders its content, for instance to show a
+    hint on a local or staging installation. The default value is ``False``.
+
+LFS_PRODUCTS_SORTING
+    The default sorting of products in categories, manufacturers and the search, until the customer chooses
+    another one: ``effective_price``, ``-effective_price``, ``name`` or ``-name``. The default value is
+    ``effective_price``.
 
 LFS_RECENT_PRODUCTS_LIMIT
     The amount of recent products which are displayed within the recent
-    products portlet, e.g. 3.
+    products portlet, e.g. 3. The default value is ``5``.
+
+LFS_THUMBNAIL_SIZES
+    The sizes (width, height) of the thumbnails LFS creates for every uploaded image. The default value is
+    ``((60, 60), (100, 100), (200, 200), (300, 300), (400, 400), (600, 600))``. After a change, create the missing
+    thumbnails with ``python manage.py lfs_regenerate_thumbs``.
 
 
 .. _settings_orders:
@@ -355,14 +370,14 @@ REVIEWS_IS_MODERATED
 PayPal
 ======
 
-PAYPAL_RECEIVER_EMAIL
-    Your PayPal id, e.g. shop@example.com.
+These settings belong to the add-on lfs-paypal; its README describes them.
 
-PAYPAL_IDENTITY_TOKEN
-    PayPal's PDT identity token.
+PAYPAL_MODE
+    ``sandbox`` for tests or ``live`` for real payments. Required when lfs-paypal is installed.
 
-LFS_PAYPAL_REDIRECT
-    True or False. If True the customer is automatically redirected to PayPal
-    after he submitted his order. If False the thank-you page is displayed
-    with a link to PayPal.
+PAYPAL_CLIENT_ID
+    The client ID of your PayPal REST app.
+
+PAYPAL_CLIENT_SECRET
+    The secret of your PayPal REST app.
 
