@@ -53,7 +53,8 @@ msgstr "PLZ"
 msgid "City"
 msgstr "Stadt"
 
-#: addresses/models.py:52 manage/templates/manage/customers/tabs/_data.html:130
+#: addresses/models.py:52
+#: manage/templates/manage/customers/tabs/_data.html:130
 #: manage/templates/manage/orders/order.html:162
 #: manage/templates/manage/orders/order.html:206
 #: manage/templates/manage/orders/order_list.html:116 order/models.py:69
@@ -229,7 +230,8 @@ msgid "Slug"
 msgstr "Slug"
 
 #: catalog/models.py:175 catalog/models.py:743 catalog/models.py:2593
-#: manage/templates/manage/categories/delete_category.html:26 core/models.py:95
+#: manage/templates/manage/categories/delete_category.html:26
+#: core/models.py:95
 msgid "Parent"
 msgstr "Kategorie"
 
@@ -433,8 +435,8 @@ msgstr "Preiseinheit"
 msgid "Quantity field unit"
 msgstr " Einheit Anzahlfeld"
 
-#: catalog/models.py:652 manage/images/forms.py:30 manage/products/views.py:161
-#: manage/templates/manage/base.html:58
+#: catalog/models.py:652 manage/images/forms.py:30
+#: manage/products/views.py:161 manage/templates/manage/base.html:58
 #: manage/templates/manage/images/images.html:21
 msgid "Images"
 msgstr "Bilder"
@@ -610,7 +612,8 @@ msgstr "Angebotspreis aktivieren"
 msgid "Active Images"
 msgstr "Bilder aktivieren"
 
-#: catalog/models.py:754 manage/templates/manage/products/tabs/_related.html:42
+#: catalog/models.py:754
+#: manage/templates/manage/products/tabs/_related.html:42
 msgid "Active related products"
 msgstr "Zugehörige Produkte aktivieren"
 
@@ -716,7 +719,8 @@ msgid "Configurable"
 msgstr "Konfigurierbar"
 
 #: catalog/models.py:2374 catalog/models.py:2605 customer/models.py:230
-#: discounts/models.py:51 manage/templates/manage/actions/delete_action.html:22
+#: discounts/models.py:51
+#: manage/templates/manage/actions/delete_action.html:22
 #: manage/templates/manage/customer_taxes/tabs/_criteria.html:28
 #: manage/templates/manage/discounts/tabs/_criteria.html:28
 #: manage/templates/manage/payment_methods/tabs/_criteria.html:26
@@ -761,7 +765,8 @@ msgstr "Dezimalstellen"
 msgid "Required"
 msgstr "Erforderlich"
 
-#: catalog/models.py:2388 manage/templates/manage/properties/step_inline.html:2
+#: catalog/models.py:2388
+#: manage/templates/manage/properties/step_inline.html:2
 msgid "Step type"
 msgstr "Schritttyp"
 
@@ -1512,9 +1517,11 @@ msgstr "Die Datei '%(filename)s' ist zu groß. Die maximale Größe ist 10 MB."
 
 #: manage/images/forms.py:60
 #, python-format
-msgid "File '%(filename)s' is not a valid image type. Allowed types: %(types)s"
+msgid ""
+"File '%(filename)s' is not a valid image type. Allowed types: %(types)s"
 msgstr ""
-"Die Datei '%(filename)s' ist kein gültiger Bildtyp. Erlaubte Typen: %(types)s"
+"Die Datei '%(filename)s' ist kein gültiger Bildtyp. Erlaubte Typen: "
+"%(types)s"
 
 #: manage/images/forms.py:84
 #, python-format
@@ -2115,8 +2122,8 @@ msgstr "Zur Kasse"
 msgid "Google"
 msgstr "Google"
 
-#: manage/shop/forms.py:42 manage/templates/manage/products/tabs/_data.html:393
-#: page/admin.py:18
+#: manage/shop/forms.py:42
+#: manage/templates/manage/products/tabs/_data.html:393 page/admin.py:18
 msgid "Content"
 msgstr "Inhalt"
 
@@ -2668,8 +2675,8 @@ msgid ""
 "There are currently no carts in the system. Carts will appear here when "
 "customers add items to their shopping carts."
 msgstr ""
-"Zurzeit gibt es keine Warenkörbe. Sie erscheinen hier, sobald Kunden Artikel "
-"in den Warenkorb legen."
+"Zurzeit gibt es keine Warenkörbe. Sie erscheinen hier, sobald Kunden Artikel"
+" in den Warenkorb legen."
 
 #: manage/templates/manage/carts/no_carts.html:19
 msgid "Back to Management"
@@ -3126,8 +3133,8 @@ msgid ""
 "You haven't created any delivery times yet. Delivery times help customers "
 "understand when they can expect their orders to arrive."
 msgstr ""
-"Sie haben noch keine Lieferzeiten angelegt. Lieferzeiten zeigen Kunden, wann "
-"ihre Bestellung ankommt."
+"Sie haben noch keine Lieferzeiten angelegt. Lieferzeiten zeigen Kunden, wann"
+" ihre Bestellung ankommt."
 
 #: manage/templates/manage/delivery_times/no_delivery_times.html:23
 msgid "Create Your First Delivery Time"
@@ -3180,8 +3187,8 @@ msgstr "Ersten Rabatt anlegen"
 #: manage/templates/manage/discounts/tabs/_assigned_products.html:22
 msgid ""
 "If you assign products to this discount, it will only apply to the selected "
-"products. If you do not select any products, the discount will be applied to "
-"the entire cart."
+"products. If you do not select any products, the discount will be applied to"
+" the entire cart."
 msgstr ""
 "Wenn Sie diesem Rabatt Produkte zuordnen, gilt er nur für diese Produkte. "
 "Ohne Produkte gilt er für den ganzen Warenkorb."
@@ -3193,8 +3200,8 @@ msgstr "Diesem Rabatt sind keine Produkte zugeordnet."
 #: manage/templates/manage/discounts/tabs/_assigned_products.html:72
 msgid "Select products from the left panel and add them to this discount."
 msgstr ""
-"Wählen Sie Produkte in der linken Spalte aus und fügen Sie sie diesem Rabatt "
-"hinzu."
+"Wählen Sie Produkte in der linken Spalte aus und fügen Sie sie diesem Rabatt"
+" hinzu."
 
 #: manage/templates/manage/discounts/tabs/_assigned_products.html:82
 msgid "Remove from Discount"
@@ -3590,7 +3597,7 @@ msgstr "Geschlossen am"
 #: manage/templates/manage/review_mails/review_mails.html:105
 #: manage/templates/manage/review_mails/review_mails.html:108
 msgid "DATETIME_FORMAT"
-msgstr "d.m.Y H:i"
+msgstr "DATETIME_FORMAT"
 
 #: manage/templates/manage/marketing/rating_mails.html:89
 #: manage/templates/manage/review_mails/review_mails.html:116
@@ -3791,8 +3798,8 @@ msgid ""
 "You haven't created any payment methods yet. Payment methods define how "
 "customers can pay for their orders."
 msgstr ""
-"Sie haben noch keine Bezahlmethoden angelegt. Bezahlmethoden legen fest, wie "
-"Kunden ihre Bestellungen bezahlen."
+"Sie haben noch keine Bezahlmethoden angelegt. Bezahlmethoden legen fest, wie"
+" Kunden ihre Bestellungen bezahlen."
 
 #: manage/templates/manage/payment_methods/no_payment_methods.html:25
 msgid "Create Your First Payment Method"
@@ -3989,11 +3996,11 @@ msgstr "Mehrwertsteuerdetails"
 
 #: manage/templates/manage/product_taxes/delete_tax.html:30
 msgid ""
-"This action cannot be undone. The tax will be removed from all products that "
-"currently use it."
+"This action cannot be undone. The tax will be removed from all products that"
+" currently use it."
 msgstr ""
-"Dies kann nicht rückgängig gemacht werden. Die Mehrwertsteuer wird bei allen "
-"Produkten entfernt, die sie verwenden."
+"Dies kann nicht rückgängig gemacht werden. Die Mehrwertsteuer wird bei allen"
+" Produkten entfernt, die sie verwenden."
 
 #: manage/templates/manage/product_taxes/no_taxes.html:13
 msgid "No Product Taxes"
@@ -4082,7 +4089,8 @@ msgstr "Keine Produkte entsprechen den aktuellen Filterkriterien."
 msgid ""
 "Accessories are products that can be purchased together with this product."
 msgstr ""
-"Zubehör sind Produkte, die zusammen mit diesem Produkt gekauft werden können."
+"Zubehör sind Produkte, die zusammen mit diesem Produkt gekauft werden "
+"können."
 
 #: manage/templates/manage/products/tabs/_assigned_accessories.html:82
 msgid "No accessories assigned."
@@ -4113,7 +4121,8 @@ msgstr "Zugehörige Produkte"
 
 #: manage/templates/manage/products/tabs/_assigned_related.html:22
 msgid "Related products are shown to customers who view this product."
-msgstr "Ähnliche Produkte werden Kunden angezeigt, die dieses Produkt ansehen."
+msgstr ""
+"Ähnliche Produkte werden Kunden angezeigt, die dieses Produkt ansehen."
 
 #: manage/templates/manage/products/tabs/_assigned_related.html:72
 msgid "No related products assigned."
@@ -4131,7 +4140,8 @@ msgstr ""
 msgid "Select all"
 msgstr "Alle auswählen"
 
-#: manage/templates/manage/products/tabs/_attachments.html:19 page/models.py:23
+#: manage/templates/manage/products/tabs/_attachments.html:19
+#: page/models.py:23
 msgid "File"
 msgstr "Datei"
 
@@ -4629,7 +4639,8 @@ msgstr "Keine Eigenschaften zugeordnet"
 
 #: manage/templates/manage/property_groups/tabs/_assigned_properties.html:63
 msgid ""
-"Select properties from the left column to assign them to this property group."
+"Select properties from the left column to assign them to this property "
+"group."
 msgstr ""
 "Wählen Sie Eigenschaften in der linken Spalte aus, um sie dieser "
 "Eigenschaftsgruppe zuzuordnen."
@@ -4988,7 +4999,8 @@ msgid "No topseller products yet."
 msgstr "Noch keine Topseller."
 
 #: manage/templates/manage/topsellers/_topseller_list.html:73
-msgid "Select products from the left panel and add them to topseller products."
+msgid ""
+"Select products from the left panel and add them to topseller products."
 msgstr ""
 "Wählen Sie Produkte in der linken Spalte aus und fügen Sie sie den "
 "Topsellern hinzu."
@@ -5037,8 +5049,8 @@ msgid ""
 "You haven't created any voucher groups yet. Voucher groups help organize "
 "your discount vouchers and promotional codes."
 msgstr ""
-"Sie haben noch keine Gutscheingruppen angelegt. Gutscheingruppen ordnen Ihre "
-"Gutscheine und Aktionscodes."
+"Sie haben noch keine Gutscheingruppen angelegt. Gutscheingruppen ordnen Ihre"
+" Gutscheine und Aktionscodes."
 
 #: manage/templates/manage/voucher/no_voucher_groups.html:22
 msgid "Create Your First Voucher Group"
@@ -5353,7 +5365,7 @@ msgstr "Verkäufe"
 
 #: marketing/models.py:56
 msgid "DATE_FORMAT"
-msgstr "d.m.Y"
+msgstr "DATE_FORMAT"
 
 #: order/models.py:75
 msgid "firstname"
@@ -5725,7 +5737,8 @@ msgstr "Rückgabefrist in Tagen"
 #: core/models.py:227
 msgid "Days to return a product; 0 means no returns."
 msgstr ""
-"Tage, in denen ein Produkt zurückgegeben werden kann; 0 heißt keine Rückgabe."
+"Tage, in denen ein Produkt zurückgegeben werden kann; 0 heißt keine "
+"Rückgabe."
 
 #: core/models.py:229
 msgid "Return fees"
@@ -5741,11 +5754,11 @@ msgstr "Seite mit der Widerrufsbelehrung"
 
 #: core/models.py:237
 msgid ""
-"Path or URL of the page with the return policy, e.g. /page/"
-"widerrufsbelehrung/."
+"Path or URL of the page with the return policy, e.g. "
+"/page/widerrufsbelehrung/."
 msgstr ""
-"Pfad oder URL der Seite mit der Widerrufsbelehrung, z. B. /page/"
-"widerrufsbelehrung/."
+"Pfad oder URL der Seite mit der Widerrufsbelehrung, z. B. "
+"/page/widerrufsbelehrung/."
 
 #: core/settings.py:10
 msgid "Tabs"
@@ -5783,8 +5796,8 @@ msgid ""
 "Enter a URL (https://…), a path within the shop (/page/…), or \"mailto:\" "
 "with an address."
 msgstr ""
-"Geben Sie eine URL (https://…), einen Pfad im Shop (/page/…) oder \"mailto:"
-"\" mit einer Adresse ein."
+"Geben Sie eine URL (https://…), einen Pfad im Shop (/page/…) oder "
+"\"mailto:\" mit einer Adresse ein."
 
 #: core/widgets/file.py:19
 msgid "Delete file"
